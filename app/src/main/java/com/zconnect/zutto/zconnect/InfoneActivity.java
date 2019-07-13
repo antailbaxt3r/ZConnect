@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -20,12 +21,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.ProgressBar;
-
 import android.widget.Toast;
 
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -62,9 +61,9 @@ public class InfoneActivity extends Fragment {
     private static final int REQUEST_READ_CONTACTS = 2;
     private SharedPreferences communitySP;
     public String communityReference;
-    ProgressBar progressBar;
+    private ShimmerFrameLayout shimmerFrameLayout;
     Toolbar toolbar;
-
+    public boolean isAdmin = false;
 
     public InfoneActivity() {
         // Required empty public constructor
@@ -74,21 +73,33 @@ public class InfoneActivity extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setHasOptionsMenu(true);
+        if(fabCatAdd != null) {
+            if (isAdmin) {
+                fabCatAdd.setVisibility(View.VISIBLE);
+
+            } else {
+                fabCatAdd.setVisibility(View.GONE);
+
+            }
+        }
+
     }
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.activity_infone2, container, false);
-        progressBar = (ProgressBar) view.findViewById(R.id.infone2_progress_circle);
-        progressBar.setVisibility(View.VISIBLE);
+
         recyclerViewCat = (RecyclerView) view.findViewById(R.id.rv_cat_infone);
         recyclerViewCat.setVisibility(View.GONE);
         fabCatAdd = getActivity().findViewById(R.id.fab_cat_infone);
-
+//        fabCatAdd.setVisibility(View.VISIBLE);
+        shimmerFrameLayout = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_view_container_infone_cat);
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
+        shimmerFrameLayout.startShimmerAnimation();
 
         databaseReferenceCat = FirebaseDatabase.getInstance().getReference().child("communities")
                 .child(communityReference).child("infone").child("categoriesInfo");
@@ -98,6 +109,14 @@ public class InfoneActivity extends Fragment {
         listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+//                if(isAdmin){
+//                    fabCatAdd.setVisibility(View.VISIBLE);
+//
+//                }
+//                else{
+//                    fabCatAdd.setVisibility(View.GONE);
+//
+//                }
 
                 categoriesList = new ArrayList<>();
                 for (DataSnapshot childSnapShot :
@@ -113,8 +132,14 @@ public class InfoneActivity extends Fragment {
                         categoriesList.add(infoneCategoryModel);
                     }catch (Exception e){}
 
-                    progressBar.setVisibility(View.GONE);
-                    recyclerViewCat.setVisibility(View.VISIBLE);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            shimmerFrameLayout.stopShimmerAnimation();
+                            shimmerFrameLayout.setVisibility(View.INVISIBLE);
+                            recyclerViewCat.setVisibility(View.VISIBLE);
+                        }
+                    }, 500);
 
                 }
 
@@ -133,19 +158,19 @@ public class InfoneActivity extends Fragment {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e(InfoneActivity.class.getName(), "database error" + databaseError.toString());
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmerAnimation();
+                shimmerFrameLayout.setVisibility(View.INVISIBLE);
                 recyclerViewCat.setVisibility(View.VISIBLE);
                 Toast.makeText(getActivity().getApplicationContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
             }
         };
-        databaseReferenceCat.addValueEventListener(listener);
 
         mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
                 if(userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)){
-                    fabCatAdd.setVisibility(View.VISIBLE);
+                    isAdmin = true;
                 }
             }
 
@@ -154,6 +179,9 @@ public class InfoneActivity extends Fragment {
 
             }
         });
+
+        databaseReferenceCat.addValueEventListener(listener);
+
         fabCatAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

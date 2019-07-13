@@ -31,7 +31,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_search_white_24dp"/>
+                    android:src="@drawable/ic_search_white_on_orange_24dd"/>
             </FrameLayout>
             <TextView
                 android:layout_toRightOf="@+id/explore_icon_row_forums_sub_categories_create"

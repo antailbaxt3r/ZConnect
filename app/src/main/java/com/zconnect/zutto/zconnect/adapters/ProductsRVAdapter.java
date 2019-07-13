@@ -23,7 +23,10 @@ import java.util.Vector;
  * Created by Lokesh Garg on 28-03-2018.
  */
 
-public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsViewHolder>{
+public class
+
+
+ProductsRVAdapter extends RecyclerView.Adapter<ProductsViewHolder>{
 
     Vector<Product> productVector;
     Context ctx;

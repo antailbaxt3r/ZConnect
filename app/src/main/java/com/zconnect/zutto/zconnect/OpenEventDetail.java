@@ -77,9 +77,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.zconnect.zutto.zconnect.R.drawable.ic_arrow_back_black_24dp;
 
-
-public class  OpenEventDetail extends BaseActivity{
+public class OpenEventDetail extends BaseActivity {
 
     DatabaseReference mDatabase;
     SimpleDraweeView EventImage;
@@ -96,7 +96,7 @@ public class  OpenEventDetail extends BaseActivity{
     Boolean flag = false;
     String recieverKey;
 
-    ProgressDialog progressDialog,progressDialogMain;
+    ProgressDialog progressDialog, progressDialogMain;
 
     private LinearLayout chatLayout;
     private EditText chatEditText;
@@ -105,7 +105,7 @@ public class  OpenEventDetail extends BaseActivity{
     private FirebaseUser user;
     private ValueEventListener listener;
     private static final String TAG = "OpenEventDetail";
-    boolean viaDynamicLinkFlag=false;
+    boolean viaDynamicLinkFlag = false;
     private Typeface ralewayBold;
 
 
@@ -119,8 +119,14 @@ public class  OpenEventDetail extends BaseActivity{
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        mActionBarToolbar = findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(mActionBarToolbar);
+        mActionBarToolbar.setTitle("Event Details");
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mActionBarToolbar.setNavigationIcon(ic_arrow_back_black_24dp);
+        mActionBarToolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+        mActionBarToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
 
         SharedPreferences communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
         final String communityReference = communitySP.getString("communityReference", null);
@@ -134,7 +140,7 @@ public class  OpenEventDetail extends BaseActivity{
         EventVenue = (TextView) findViewById(R.id.od_venue);
         venueDirections = (ImageButton) findViewById(R.id.od_directions);
 
-        chatLayout= (LinearLayout) findViewById(R.id.chatLayout);
+        chatLayout = (LinearLayout) findViewById(R.id.chatLayout);
         chatEditText = (EditText) findViewById(R.id.typer);
         chatEditText.setShowSoftInputOnFocus(false);
 
@@ -142,15 +148,15 @@ public class  OpenEventDetail extends BaseActivity{
         Bundle extras = getIntent().getExtras();
         eventId = (String) extras.get("id");
 
-        chatLayout.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener chatListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
+                HashMap<String, String> meta = new HashMap<>();
 
-                meta.put("type","fromTextBox");
-                meta.put("eventID",eventId);
+                meta.put("type", "fromTextBox");
+                meta.put("eventID", eventId);
 
                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                 counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_CHAT_OPEN);
@@ -159,46 +165,47 @@ public class  OpenEventDetail extends BaseActivity{
 
                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                 counterPush.pushValues();
+                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        try {
+                            Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
+                            intent.putExtra("type", "forums");
+                            intent.putExtra("key", dataSnapshot.child("forumUID").getValue().toString());
+                            intent.putExtra("name", getSupportActionBar().getTitle());
+                            intent.putExtra("tab", "others");
+                            if (dataSnapshot.child("forumUID").getValue() != null) {
+                                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(dataSnapshot.child("forumUID").getValue().toString()).toString());
+                            }
+//                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("cabPool").child(dataSnapshot.child("forumID").toString()).toString());
 
-                Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
-                intent.putExtra("type","events");
-                intent.putExtra("key",eventId);
-                intent.putExtra("name",getSupportActionBar().getTitle());
-                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId).toString());
-                startActivity(intent);
-                overridePendingTransition(0, 0);
-            }
-        });
+                            startActivity(intent);
+                            overridePendingTransition(0, 0);
+                        } catch (Exception e) {
 
-        chatEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                            Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
+                            intent.putExtra("type", "events");
+                            intent.putExtra("key", eventId);
+                            intent.putExtra("name", getSupportActionBar().getTitle());
+                            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId).toString());
+                            startActivity(intent);
+                            overridePendingTransition(0, 0);
 
+                        }
+                    }
 
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                meta.put("type","fromTextBox");
-                meta.put("eventID",eventId);
-
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_CHAT_OPEN);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
-
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
-
-                Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
-                intent.putExtra("type","events");
-                intent.putExtra("key",eventId);
-                intent.putExtra("name",getSupportActionBar().getTitle());
-                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId).toString());
-                startActivity(intent);
-                overridePendingTransition(0, 0);
+                    }
+                });
 
             }
-        });
+        };
+
+        chatLayout.setOnClickListener(chatListener);
+
+        chatEditText.setOnClickListener(chatListener);
 
         progressDialog = new ProgressDialog(this);
         progressDialogMain = new ProgressDialog(this);
@@ -228,14 +235,12 @@ public class  OpenEventDetail extends BaseActivity{
 
         try {
             viaDynamicLinkFlag = (boolean) extras.get("flag");
-        }
-        catch (NullPointerException e)
-        {
+        } catch (NullPointerException e) {
             viaDynamicLinkFlag = false;
         }
 
         mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        databaseReference= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId);
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -265,16 +270,16 @@ public class  OpenEventDetail extends BaseActivity{
                 });
 
                 try {
-                    if(dataSnapshot.child("BoostersUids").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                    if (dataSnapshot.child("BoostersUids").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                         boostBtn.setText(dataSnapshot.getChildrenCount() + " Boosted");
-                        boostBtn.setTextColor(getApplicationContext().getResources().getColor(R.color.colorPrimary));
+                        boostBtn.setTextColor(getApplicationContext().getResources().getColor(R.color.deeporange500));
                         boostBtn.setTypeface(ralewayBold);
                     }
                     Date evdate = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").parse(event.getEventDate());
                     DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
                     DateTime date = new DateTime(evdate, indianZone);
                     String minute = String.valueOf(date.getMinuteOfHour());
-                    if(date.getMinuteOfHour() < 10)
+                    if (date.getMinuteOfHour() < 10)
                         minute = "0" + minute;
                     EventDate.setText(date.toString("MMM") + " " + date.getDayOfMonth() + ", " + (date.getHourOfDay() < 12 ? date.getHourOfDay() : date.getHourOfDay() - 12) + ":" + minute + " " + (date.getHourOfDay() < 12 ? "AM" : "PM"));
                     EventDescription.setText(event.getEventDescription());
@@ -371,7 +376,7 @@ public class  OpenEventDetail extends BaseActivity{
 //        }
         //changing fonts
         Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
-        Typeface customFontBold =  Typeface.createFromAsset(getAssets(), "fonts/Raleway-Bold.ttf");
+        Typeface customFontBold = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Bold.ttf");
         Typeface customFont2 = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
         EventDate.setTypeface(customFontBold);
 
@@ -395,9 +400,9 @@ public class  OpenEventDetail extends BaseActivity{
         if (id == R.id.share) {
 
             CounterItemFormat counterItemFormat = new CounterItemFormat();
-            HashMap<String, String> meta= new HashMap<>();
+            HashMap<String, String> meta = new HashMap<>();
 
-            meta.put("eventID",eventId);
+            meta.put("eventID", eventId);
 
             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
             counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_SHARE);
@@ -412,10 +417,10 @@ public class  OpenEventDetail extends BaseActivity{
         } else if (id == R.id.menu_chat_room) {
 
             CounterItemFormat counterItemFormat = new CounterItemFormat();
-            HashMap<String, String> meta= new HashMap<>();
+            HashMap<String, String> meta = new HashMap<>();
 
-            meta.put("type","fromMenu");
-            meta.put("eventID",eventId);
+            meta.put("type", "fromMenu");
+            meta.put("eventID", eventId);
 
             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
             counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_CHAT_OPEN);
@@ -426,13 +431,44 @@ public class  OpenEventDetail extends BaseActivity{
             counterPush.pushValues();
 
             //chat room clicked;
-            Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
-            intent.putExtra("type","events");
-            intent.putExtra("key",eventId);
-            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(event.getKey()).toString());
-            startActivity(intent);
+            FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    try {
+                        Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
+                        intent.putExtra("type", "forums");
+                        intent.putExtra("key", dataSnapshot.child("forumUID").getValue().toString());
+                        intent.putExtra("name", getSupportActionBar().getTitle());
+                        intent.putExtra("tab", "others");
+                        if (dataSnapshot.child("forumUID").getValue() != null) {
+                            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(dataSnapshot.child("forumUID").getValue().toString()).toString());
+                        }
+//                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("cabPool").child(dataSnapshot.child("forumID").toString()).toString());
+
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                    } catch (Exception e) {
+
+                        Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
+                        intent.putExtra("type", "events");
+                        intent.putExtra("key", eventId);
+                        intent.putExtra("name", getSupportActionBar().getTitle());
+                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId).toString());
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
         }
         return super.onOptionsItemSelected(item);
+
     }
 
     private void shareEvent(final String image, final Context context, final String eventID) {
@@ -452,14 +488,13 @@ public class  OpenEventDetail extends BaseActivity{
             Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
 //            https://your_subdomain.page.link/?link=your_deep_link&apn=package_name[&amv=minimum_version][&afl=fallback_link]
 //            https://example.page.link/?link=https://www.example.com/invitation?gameid%3D1234%26referrer%3D555&apn=com.example.android&ibi=com.example.ios&isi=12345
-                    .setLongLink(Uri.parse("https://zconnect.page.link/?link="+encodedUri+"&apn=com.zconnect.zutto.zconnect&amv=11" ))
+                    .setLongLink(Uri.parse("https://zconnect.page.link/?link=" + encodedUri + "&apn=com.zconnect.zutto.zconnect&amv=11"))
                     .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().setMinimumVersion(12).build())
                     .buildShortDynamicLink()
                     .addOnCompleteListener(new OnCompleteListener<ShortDynamicLink>() {
                         @Override
                         public void onComplete(@NonNull Task<ShortDynamicLink> task) {
-                            if(task.isSuccessful())
-                            {
+                            if (task.isSuccessful()) {
                                 //short link
                                 final Uri shortLink = task.getResult().getShortLink();
                                 final Uri flowcharLink = task.getResult().getPreviewLink();
@@ -515,8 +550,7 @@ public class  OpenEventDetail extends BaseActivity{
                                 });
 
                                 thread.start();
-                            }
-                            else {
+                            } else {
                                 Log.d("AAAAAAA", task.getException().getMessage());
                                 Log.d("AAAAAAA", "To Err is to mend");
                             }
@@ -530,8 +564,6 @@ public class  OpenEventDetail extends BaseActivity{
 //                    .setIosParameters(new DynamicLink.IosParameters.Builder("https://www.google.com").build())
 //                    .buildDynamicLink();
 //            final Uri dynamicUri = dynamicLink.getUri();
-
-
 
 
         } catch (android.content.ActivityNotFoundException ex) {
@@ -574,9 +606,9 @@ public class  OpenEventDetail extends BaseActivity{
             public void onClick(View view) {
 
                 CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
+                HashMap<String, String> meta = new HashMap<>();
 
-                meta.put("eventID",eventId);
+                meta.put("eventID", eventId);
 
                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                 counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_SET_REMINDER);
@@ -635,7 +667,7 @@ public class  OpenEventDetail extends BaseActivity{
                 if (user != null) {
                     if (dataSnapshot.hasChild(user.getUid())) {
                         boostBtn.setText(dataSnapshot.getChildrenCount() + " Boosted");
-                        boostBtn.setTextColor(getApplicationContext().getResources().getColor(R.color.colorPrimary));
+                        boostBtn.setTextColor(getApplicationContext().getResources().getColor(R.color.deeporange500));
                         boostBtn.setTypeface(ralewayBold);
                         flag = true;
                     } else {
@@ -672,9 +704,9 @@ public class  OpenEventDetail extends BaseActivity{
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
-                                NotificationSender notificationSender = new NotificationSender(OpenEventDetail.this,userItemFormat.getUserUID());
+                                NotificationSender notificationSender = new NotificationSender(OpenEventDetail.this, userItemFormat.getUserUID());
 
-                                NotificationItemFormat eventBoostNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST,userItemFormat.getUserUID(),recieverKey,1);
+                                NotificationItemFormat eventBoostNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST, userItemFormat.getUserUID(),recieverKey,1);
                                 eventBoostNotification.setItemKey(event.getKey());
                                 eventBoostNotification.setUserImage(userItemFormat.getImageURLThumbnail());
                                 eventBoostNotification.setItemName(event.getEventName());
@@ -689,7 +721,7 @@ public class  OpenEventDetail extends BaseActivity{
 
                             }
                         });
-                    }else {
+                    } else {
                         eventDatabase.child("BoostersUids").child(user.getUid()).removeValue();
 
                     }

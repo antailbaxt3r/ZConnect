@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -67,7 +68,7 @@ public class ProductsTab extends Fragment {
     private Product singleProduct;
     private Boolean flagNoProductsAvailable;
     private TextView noProductsAvailableText;
-    private ProgressBar progressBar;
+    private ShimmerFrameLayout shimmerContainer;
     private FloatingActionButton fab;
     public ProductsTab(){
     }
@@ -85,8 +86,7 @@ public class ProductsTab extends Fragment {
 //        productLinearLayoutManager.setReverseLayout(true);
 //        productLinearLayoutManager.setStackFromEnd(true);
 
-        noProductsAvailableText = (TextView) view.findViewById(R.id.no_products_available_text);
-        progressBar = (ProgressBar) view.findViewById(R.id.products_tab_progress_bar);
+        shimmerContainer = view.findViewById(R.id.shimmer_view_container1);
         mProductList = (RecyclerView) view.findViewById(R.id.productList);
         mProductList.setHasFixedSize(true);
         mProductList.setLayoutManager(productGridLayout);
@@ -131,7 +131,7 @@ public class ProductsTab extends Fragment {
         });
 
         mAuth = FirebaseAuth.getInstance();
-        progressBar.setVisibility(View.VISIBLE);
+        shimmerContainer.startShimmerAnimation();
 
         SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
@@ -205,12 +205,6 @@ public class ProductsTab extends Fragment {
                     }
                 }
 
-                progressBar.setVisibility(View.INVISIBLE);
-                if(flagNoProductsAvailable){
-                    noProductsAvailableText.setVisibility(View.VISIBLE);
-                }else{
-                    noProductsAvailableText.setVisibility(View.GONE);
-                }
                 Collections.reverse(productVector);
                 productAdapter.notifyDataSetChanged();
             }

@@ -82,6 +82,7 @@ public class VerificationPage extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verfication_page);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setToolbar();
         setSupportActionBar(toolbar);
 
         progressDialog = new ProgressDialog(this);

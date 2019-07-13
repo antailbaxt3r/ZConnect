@@ -90,7 +90,7 @@ public class AddInfoneContact extends BaseActivity {
         super.onCreate(savedInstanceState);
         setTitle("Add Contact");
         setContentView(R.layout.activity_infone_add_contact);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {

@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -59,8 +60,10 @@ public class MyProducts extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_products);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+
+        setToolbar();
         setSupportActionBar(toolbar);
+
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -114,9 +117,11 @@ public class MyProducts extends BaseActivity {
         noProductTextView.setVisibility(View.VISIBLE);
         noProductTextView.setOnClickListener(openAddProduct);
 
+        GridLayoutManager productGrid = new GridLayoutManager(this,2);
+
         mProductList = (RecyclerView) findViewById(R.id.productList);
         mProductList.setHasFixedSize(true);
-        mProductList.setLayoutManager(new LinearLayoutManager(MyProducts.this));
+        mProductList.setLayoutManager(productGrid);
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
 
@@ -148,7 +153,6 @@ public class MyProducts extends BaseActivity {
 
                 final String product_key = getRef(position).getKey();
                 holder.setProductName(model.getProductName());
-                holder.setProductDesc(model.getProductDescription());
                 holder.setPrice(model.getPrice());
                 holder.setIntent(model.getKey());
                 holder.setImage(getApplicationContext(), model.getImage());
@@ -259,18 +263,12 @@ public class MyProducts extends BaseActivity {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    itemView.getContext().startActivity(new Intent(itemView.getContext(),ShortlistedPeopleList.class).putExtra("Key",key));
+                    Intent intent = new Intent(itemView.getContext(),ShortlistedPeopleList.class).putExtra("Key",key);
+                    itemView.getContext().startActivity(intent);
                 }
             });
         }
 
-        public void setProductDesc(String productDesc) {
-
-            TextView post_desc = (TextView) mView.findViewById(R.id.productDescription);
-            post_desc.setText(productDesc);
-            Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
-            post_desc.setTypeface(ralewayMedium);
-        }
 
         public void setImage(Context ctx, String image) {
 

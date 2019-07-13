@@ -21,11 +21,17 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.renderscript.RenderScript;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.zconnect.zutto.zconnect.CabPoolAll;
@@ -46,6 +52,8 @@ import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
+
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class NotificationService extends FirebaseMessagingService {
 
@@ -1109,7 +1117,6 @@ public class NotificationService extends FirebaseMessagingService {
     private void cabAddNotification(){
 
         final String communityName = data.get("communityName").toString();
-
         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
         style.bigText("Hey! People around you are using Cab Pool very often").setBigContentTitle(communityName);
 
@@ -1181,6 +1188,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         final String userName = data.get("userName").toString();
         final String cabKey = data.get("cabKey").toString();
+        DatabaseReference cabpoolReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs").child(cabKey);
         final String communityName = data.get("communityName").toString();
         final String userImage = data.get("userImage").toString();
 
@@ -1207,6 +1215,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         Intent intent = new Intent(NotificationService.this, CabPoolListOfPeople.class);
         intent.putExtra("key", cabKey);
+
 
         PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pendingIntent);

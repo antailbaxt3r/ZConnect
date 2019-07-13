@@ -20,8 +20,35 @@ public class ForumCategoriesItemFormat {
     private Integer seenMessages;
     private Integer totalMembers = null;
     private Boolean verified;
+    private String message;
+    private String messageType;
+    private boolean isUnread;
 
-    public ForumCategoriesItemFormat(String name, String catUID, String tabUID, ChatItemFormats lastMessage, PostedByDetails PostedBy, String imageThumb, String image, Integer totalMessages, Boolean verified,Integer totalMembers) {
+    public boolean isUnread() {
+        return isUnread;
+    }
+
+    public void setUnread(boolean unread) {
+        isUnread = unread;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
+    }
+
+    public ForumCategoriesItemFormat(String name, String catUID, String tabUID, ChatItemFormats lastMessage, PostedByDetails PostedBy, String imageThumb, String image, Integer totalMessages, Boolean verified, Integer totalMembers) {
 
         this.name = name;
         this.tabUID = tabUID;

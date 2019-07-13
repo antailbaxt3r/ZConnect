@@ -13,6 +13,6 @@
         android:title="Add a tab"
         android:id="@+id/action_add_tab"
         android:orderInCategory="3"
-        android:icon="@drawable/baseline_add_white_24"
+        android:icon="@drawable/ic_add_black_24dp"
         app:showAsAction="ifRoom"/>
 </menu>

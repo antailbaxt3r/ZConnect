@@ -23,7 +23,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsViewHolder> {
     private Context ctx;
     private Vector<Event> eventsVector;
     private String type;
-
     public EventsAdapter(Context ctx, Vector<Event> eventsVector,String type){
         this.ctx = ctx;
         this.eventsVector = eventsVector;

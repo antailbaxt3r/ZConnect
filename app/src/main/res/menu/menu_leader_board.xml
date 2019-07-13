@@ -5,6 +5,7 @@
         android:title="info"
         android:id="@+id/action_info"
         android:icon="@drawable/ic_info_outline_white_24dp"
+        android:iconTint="@color/black"
         android:orderInCategory="1"
         android:name="info"
         app:showAsAction="collapseActionView|ifRoom" />

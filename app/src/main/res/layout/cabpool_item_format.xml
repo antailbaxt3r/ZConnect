@@ -4,32 +4,64 @@
     android:id="@+id/card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="3dp"
     android:background="@color/gray_holo_light"
-    app:cardCornerRadius="3dp"
+    app:cardCornerRadius="10dp"
     app:cardUseCompatPadding="true"
-    app:cardElevation="0dp">
+    app:cardElevation="3dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:id="@+id/list"
+        android:background="@drawable/rounded_corner"
         android:layout_marginStart="@dimen/margin_x_small"
         android:layout_marginEnd="@dimen/margin_x_small"
         android:padding="@dimen/padding_x_small">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/border_radius_5dp">
+
+            <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/user_circle_image"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/avatar_circle"
+                fresco:actualImageScaleType="centerCrop"
+                fresco:roundAsCircle="true" />
+
+            <TextView
+                android:id="@+id/postedByCabpoolItem"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="bits"
+                android:textSize="12sp"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/primaryText"
+                android:layout_marginStart="5dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center">
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_weight="0.5"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_gravity="center">
+                android:layout_gravity="start">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="@dimen/border_radius_5dp">
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -42,6 +74,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="bits"
+                        android:textStyle="bold"
                         android:textSize="16sp"
                         android:textColor="@color/primaryText"
                         android:layout_marginStart="5dp"/>
@@ -68,6 +101,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight=".7"
                         android:text="bits"
+                        android:textStyle="bold"
                         android:textSize="16sp"
                         android:textColor="@color/primaryText"
                         android:layout_marginStart="5dp"/>
@@ -81,16 +115,19 @@
                 <TextView
                     android:id="@+id/date"
                     android:gravity="end"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="right"
                     android:layout_height="wrap_content"
                     android:text="Date"
+                    android:textStyle="bold"
                     android:textSize="30sp"
-                    android:textColor="@color/primaryText" />
+                    android:textColor="@color/deepPurple500" />
                 <TextView
                     android:id="@+id/time_range"
                     android:gravity="end"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="right"
                     android:text="Time"
                     android:textSize="16sp"
                     android:textColor="@color/primaryText"/>
@@ -111,7 +148,7 @@
             android:orientation="horizontal">
             <LinearLayout
                 android:id="@+id/sharecab"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center">
                 <ImageButton
@@ -123,26 +160,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Share"
+                    android:textSize="16sp"
                     android:textColor="@color/primaryText"/>
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/list"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_small"
-                android:gravity="center">
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/baseline_people_white_24"
-                    android:backgroundTint="@color/primaryText"/>
+
                 <TextView
-                    android:layout_marginStart="@dimen/margin_x_small"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="People"
-                    android:textColor="@color/primaryText"/>
+                    android:text="0 people"
+                    android:id="@+id/people_count"
+                    android:textColor="@color/black"
+                    android:textAlignment="textEnd"
+                    />
             </LinearLayout>
+
         </LinearLayout>
         <View
             android:layout_width="match_parent"
