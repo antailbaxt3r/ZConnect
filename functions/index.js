@@ -172,6 +172,10 @@ exports.syncForumToUserForum_Add = functions.database.ref('/communities/{communi
   const forumRef = snapshot.ref.parent.parent;
   return forumRef.once('value', forumSnapshot => {
     const forumObj = forumSnapshot.val();
+    if(forumObj.tabUID==="personalChats")
+    {
+      delete forumObj["name"];
+    }
     delete forumObj["users"];
     return userForumRef.child(forumID).set(forumObj);
   });
@@ -183,10 +187,14 @@ exports.syncForumToUserForum_Update = functions.database.ref('/communities/{comm
   const snapshot = change.after;
   const forumObj = snapshot.val();
   delete forumObj["users"];
+  if(forumObj.tabUID==="personalChats")
+  {
+    delete forumObj["name"];
+  }
   const userForumListRef = snapshot.ref.parent.parent.parent.child("userForums");
   const joinedUsersListSnapshot = snapshot.child('users');
   return joinedUsersListSnapshot.forEach(userSnapshot => {
-    userForumListRef.child(userSnapshot.key).child("joinedForums").child(forumID).set(forumObj);
+    return userForumListRef.child(userSnapshot.key).child("joinedForums").child(forumID).update(forumObj);
   });
 });
 
@@ -237,7 +245,7 @@ exports.syncUserPointsAndUserPointsNum2 = functions.database.ref('/communities/{
 					return String(user_points_num_aft);
         else
         {
-          console.log("Error in sync " + parseInt(current_value) + " " + current_value + " " + user_points_num_bef);
+          console.lofusg("Error in sync " + parseInt(current_value) + " " + current_value + " " + user_points_num_bef);
           return parseInt(current_value);
         }
 			// }
@@ -463,4 +471,40 @@ exports.updateLastMessageAfterDeletion = functions.database.ref('communities/{co
     secondLastMessage["key"] = messageKey;
     return snapshot.ref.set(secondLastMessage);
   });
+});
+
+exports.addTitleImagePersChatUserForums = functions.database.ref('/communities/{communityID}/features/forums/tabsCategories/{tabID}/{forumID}')
+.onCreate((snapshot, context) => {
+  let { tabID, forumID } = context.params;
+  console.log("1 ", tabID, forumID, snapshot.val());
+  if(tabID === null || forumID === null)
+  {
+    console.warn(`Invalid params, expected 'tabID' and 'forumID'`, context.params);
+    tabID = snapshot.ref.parent.id;
+    forumID = snapshot.ref.id;
+    console.log("2", tabID, forumID, snapshot.val());
+  }
+  if(tabID!=="personalChats")
+    return console.log("Not a personal chat.");
+  if(Object.keys(snapshot.child("users").val()).length!==2)
+    return console.log("Both users did not get added in the personal chat at once");
+  const uid1 = Object.keys(snapshot.child("users").val())[0];
+  const uid2 = Object.keys(snapshot.child("users").val())[1];
+  console.log("User 1 ", uid1, "User 2 ", uid2);
+  const userForumRef1 = snapshot.ref.parent.parent.parent.child("userForums").child(uid1).child("joinedForums");
+  const userForumRef2 = snapshot.ref.parent.parent.parent.child("userForums").child(uid2).child("joinedForums");
+  const forumObj = snapshot.val();
+  const _forumObj1 = {...forumObj, name: forumObj.users[uid2].name,
+                                  image: forumObj.users[uid2].imageThumb,
+                                  imageThumb: forumObj.users[uid2].imageThumb};
+  const _forumObj2 = {...forumObj, name: forumObj.users[uid1].name,
+                                  image: forumObj.users[uid1].imageThumb,
+                                  imageThumb: forumObj.users[uid1].imageThumb};
+  console.log("Name 1 ", _forumObj1.name, "Name 2 ", _forumObj2.name);
+  console.log("Image 1 ", _forumObj1.imageThumb, "Image 2 ", _forumObj2.imageThumb);  
+  delete _forumObj1["users"];
+  delete _forumObj2["users"];
+  console.log("name 1 ", _forumObj1.name, "name 2 ", _forumObj2.name);
+  return userForumRef1.child(forumID).set(_forumObj1)
+  && userForumRef2.child(forumID).set(_forumObj2);
 });

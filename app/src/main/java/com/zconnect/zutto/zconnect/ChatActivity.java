@@ -437,7 +437,7 @@ public class ChatActivity extends BaseActivity {
                     }
                 }
                 adapter.notifyDataSetChanged();
-                if(!type.equals("forums"))
+                if(type.equals("forums"))
                     chatView.scrollToPosition(messages.size()-1);
                 progressBar.setVisibility(View.GONE);
                 chatView.setVisibility(View.VISIBLE);
