@@ -84,6 +84,7 @@ import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.pools.PoolActivity;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
+import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
@@ -1456,6 +1457,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     i.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getKey());
                     i.putExtra("type", "post");
                     i.putExtra("uid",recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUID());
+                    i.putExtra("forumType", ForumUtilities.VALUE_COMMENTS);
 
                     context.startActivity(i);
                 }

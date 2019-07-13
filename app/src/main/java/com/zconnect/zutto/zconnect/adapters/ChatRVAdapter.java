@@ -162,6 +162,25 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 {
                     holder.name.setVisibility(View.GONE);
                 }
+
+                if(forumType.equals(ForumUtilities.VALUE_COMMENTS)){
+                    holder.rightDummy.setVisibility(View.VISIBLE);
+                    holder.leftDummy.setVisibility(View.GONE);
+                    holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box));
+                    holder.chatContainer.setGravity(Gravity.START);
+                    holder.userAvatar.setVisibility(View.VISIBLE);
+                    holder.name.setVisibility(View.VISIBLE);
+                    holder.name.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent(ctx,OpenUserDetail.class);
+                            i.putExtra("Uid",message.getUuid());
+                            ctx.startActivity(i);
+                        }
+                    });
+                }
+                else{
+
                 if(message.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                 {
                     holder.rightDummy.setVisibility(View.GONE);
@@ -187,6 +206,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             ctx.startActivity(i);
                         }
                     });
+                }
                 }
                 String time = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(message.getTimeDate());
                 holder.time.setText(time);
@@ -285,6 +305,23 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 if (position > 0 && chatFormats.get(position - 1).getUuid().equals(message.getUuid())) {
                     holder.name.setVisibility(View.GONE);
                 }
+                if(forumType.equals(ForumUtilities.VALUE_COMMENTS)){
+                    holder.rightDummy.setVisibility(View.VISIBLE);
+                    holder.leftDummy.setVisibility(View.GONE);
+                    holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box));
+                    holder.chatContainer.setGravity(Gravity.START);
+                    holder.userAvatar.setVisibility(View.VISIBLE);
+                    holder.name.setVisibility(View.VISIBLE);
+                    holder.name.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent(ctx, OpenUserDetail.class);
+                            i.putExtra("Uid", message.getUuid());
+                            ctx.startActivity(i);
+                        }
+                    });
+                }
+                else{
                 if (message.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                     holder.rightDummy.setVisibility(View.GONE);
                     holder.leftDummy.setVisibility(View.VISIBLE);
@@ -307,6 +344,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             ctx.startActivity(i);
                         }
                     });
+                }
                 }
                 String time = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(message.getTimeDate());
                 holder.time.setText(time);
@@ -359,31 +397,31 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 {
                     holder.name.setVisibility(View.GONE);
                 }
-                if(message.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                {
-                    holder.rightDummy.setVisibility(View.GONE);
-                    holder.leftDummy.setVisibility(View.VISIBLE);
-                    holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box_self));
-                    holder.chatContainer.setGravity(Gravity.END);
-                    holder.userAvatar.setVisibility(View.GONE);
-                    holder.name.setVisibility(View.GONE);
-                }
-                else
-                {
+                if(forumType.equals(ForumUtilities.VALUE_COMMENTS)){
                     holder.rightDummy.setVisibility(View.VISIBLE);
                     holder.leftDummy.setVisibility(View.GONE);
                     holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box));
                     holder.chatContainer.setGravity(Gravity.START);
                     holder.userAvatar.setVisibility(View.VISIBLE);
                     holder.name.setVisibility(View.VISIBLE);
-//                    holder.name.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            Intent i = new Intent(ctx,OpenUserDetail.class);
-//                            i.putExtra("Uid",message.getUuid());
-//                            ctx.startActivity(i);
-//                        }
-//                    });
+                }
+                else {
+                    if (message.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                        holder.rightDummy.setVisibility(View.GONE);
+                        holder.leftDummy.setVisibility(View.VISIBLE);
+                        holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box_self));
+                        holder.chatContainer.setGravity(Gravity.END);
+                        holder.userAvatar.setVisibility(View.GONE);
+                        holder.name.setVisibility(View.GONE);
+                    } else {
+                        holder.rightDummy.setVisibility(View.VISIBLE);
+                        holder.leftDummy.setVisibility(View.GONE);
+                        holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box));
+                        holder.chatContainer.setGravity(Gravity.START);
+                        holder.userAvatar.setVisibility(View.VISIBLE);
+                        holder.name.setVisibility(View.VISIBLE);
+
+                    }
                 }
                 String time = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(message.getTimeDate());
                 holder.time.setText(time);
@@ -428,28 +466,32 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 if (position > 0 && chatFormats.get(position - 1).getUuid().equals(message.getUuid())) {
                     holder.name.setVisibility(View.GONE);
                 }
-                if (message.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                    holder.rightDummy.setVisibility(View.GONE);
-                    holder.leftDummy.setVisibility(View.VISIBLE);
-                    holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box_self));
-                    holder.chatContainer.setGravity(Gravity.END);
-                    holder.userAvatar.setVisibility(View.GONE);
-                    holder.name.setVisibility(View.GONE);
-                } else {
+                if(forumType.equals(ForumUtilities.VALUE_COMMENTS)) {
                     holder.rightDummy.setVisibility(View.VISIBLE);
                     holder.leftDummy.setVisibility(View.GONE);
                     holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box));
                     holder.chatContainer.setGravity(Gravity.START);
                     holder.userAvatar.setVisibility(View.VISIBLE);
                     holder.name.setVisibility(View.VISIBLE);
-//                    holder.name.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            Intent i = new Intent(ctx, OpenUserDetail.class);
-//                            i.putExtra("Uid", message.getUuid());
-//                            ctx.startActivity(i);
-//                        }
-//                    });
+
+                }
+                else {
+                    if (message.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                        holder.rightDummy.setVisibility(View.GONE);
+                        holder.leftDummy.setVisibility(View.VISIBLE);
+                        holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box_self));
+                        holder.chatContainer.setGravity(Gravity.END);
+                        holder.userAvatar.setVisibility(View.GONE);
+                        holder.name.setVisibility(View.GONE);
+                    } else {
+                        holder.rightDummy.setVisibility(View.VISIBLE);
+                        holder.leftDummy.setVisibility(View.GONE);
+                        holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box));
+                        holder.chatContainer.setGravity(Gravity.START);
+                        holder.userAvatar.setVisibility(View.VISIBLE);
+                        holder.name.setVisibility(View.VISIBLE);
+
+                    }
                 }
                 String time = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(message.getTimeDate());
                 holder.time.setText(time);
@@ -496,22 +538,27 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             if(message.getUuid()!=null)
             {
                     holder.name.setVisibility(View.GONE);
-                if(message.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                {
-                    holder.rightDummy.setVisibility(View.GONE);
-                    holder.leftDummy.setVisibility(View.VISIBLE);
-                    holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box_self));
-                    holder.chatContainer.setGravity(Gravity.END);
+                    if(forumType.equals(ForumUtilities.VALUE_COMMENTS)){
+                        holder.rightDummy.setVisibility(View.VISIBLE);
+                        holder.leftDummy.setVisibility(View.GONE);
+                        holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box));
+                        holder.chatContainer.setGravity(Gravity.START);
+                    }
+                    else {
+                        if (message.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                            holder.rightDummy.setVisibility(View.GONE);
+                            holder.leftDummy.setVisibility(View.VISIBLE);
+                            holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box_self));
+                            holder.chatContainer.setGravity(Gravity.END);
 
-                }
-                else
-                {
-                    holder.rightDummy.setVisibility(View.VISIBLE);
-                    holder.leftDummy.setVisibility(View.GONE);
-                    holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box));
-                    holder.chatContainer.setGravity(Gravity.START);
+                        } else {
+                            holder.rightDummy.setVisibility(View.VISIBLE);
+                            holder.leftDummy.setVisibility(View.GONE);
+                            holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box));
+                            holder.chatContainer.setGravity(Gravity.START);
 
-                }
+                        }
+                    }
                 holder.userAvatar.setVisibility(View.GONE);
                 holder.name.setVisibility(View.GONE);
                 String time = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(message.getTimeDate());

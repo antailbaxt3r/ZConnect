@@ -51,7 +51,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.adapters.ChatRVAdapter;
-import com.zconnect.zutto.zconnect.adapters.CommentsRVAdapter;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
@@ -63,6 +62,8 @@ import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.PostedByDetails;
 import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
@@ -108,6 +109,7 @@ public class OpenStatus extends BaseActivity {
 
     private ValueEventListener loadMessagesListener;
     private Calendar calendar;
+    private ImageView anonymousSendBtn;
 
     @Override
     protected void onPause() {
@@ -130,6 +132,7 @@ public class OpenStatus extends BaseActivity {
         setToolbar();
         setTitle("Status");
         user = FirebaseAuth.getInstance().getCurrentUser();
+        anonymousSendBtn = findViewById(R.id.sendAnonymousButton);
         currentUserID = user.getUid();
 
         if (toolbar != null) {
@@ -282,7 +285,8 @@ public class OpenStatus extends BaseActivity {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new CommentsRVAdapter(messages, ref, ref, this);
+//        adapter = new CommentsRVAdapter(messages, ref, ref, this);
+        adapter = new ChatRVAdapter(messages, ref, ref, this, ForumUtilities.VALUE_COMMENTS);
         recyclerView.setAdapter(adapter);
 
         //posting message
@@ -290,19 +294,20 @@ public class OpenStatus extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(currentUserID);
+                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 user.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
-                        if(dataSnapshot.hasChild("userType")) {
+                        if (dataSnapshot.hasChild("userType")) {
                             if (userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
-                                newUserVerificationAlert.buildAlertCheckNewUser(userItemFormat.getUserType(),"Chat", OpenStatus.this);
+                                newUserVerificationAlert.buildAlertCheckNewUser(userItemFormat.getUserType(), "Chat", OpenStatus.this);
                             } else {
-                                postMessage();
+
+                                postMessage(false);
                             }
-                        }else {
-                            postMessage();
+                        } else {
+                            postMessage(false);
                         }
                     }
 
@@ -314,6 +319,37 @@ public class OpenStatus extends BaseActivity {
 
             }
         });
+
+        anonymousSendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                user.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                        if (dataSnapshot.hasChild("userType")) {
+                            if (userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
+                                newUserVerificationAlert.buildAlertCheckNewUser(userItemFormat.getUserType(), "Chat", OpenStatus.this);
+                            } else {
+
+                                postMessage(true);
+                            }
+                        } else {
+                            postMessage(true);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+        });
+
 
         //Posting Photo
         findViewById(R.id.chat_photo_button).setOnClickListener(new View.OnClickListener() {
@@ -429,7 +465,7 @@ public class OpenStatus extends BaseActivity {
         calendar = Calendar.getInstance();
     }
 
-    private void postMessage(){
+    private void postMessage(boolean isAnonymous){
 
         final EditText typer = ((EditText) findViewById(R.id.typer));
         final String text = typer.getText().toString().trim();
@@ -448,7 +484,13 @@ public class OpenStatus extends BaseActivity {
                 message.setName(userItem.getUsername());
                 message.setImageThumb(userItem.getImageURLThumbnail());
                 message.setMessage("\""+text+"\"");
-                message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
+                if(isAnonymous){
+                    message.setMessageType(MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE_STR);
+
+                }
+                else {
+                    message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
+                }
                 GlobalFunctions.addPoints(2);
                 String messagePushID = ref.child("Chat").push().getKey();
                 message.setKey(messagePushID);
