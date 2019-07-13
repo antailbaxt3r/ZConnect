@@ -36,6 +36,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
@@ -321,12 +322,13 @@ public class OpenUserDetail extends BaseActivity {
                             NotificationSender notificationSender = new NotificationSender(OpenUserDetail.this, userItemFormat.getUserUID());
 
                             NotificationItemFormat infoneLikeNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_LIKE,userItemFormat.getUserUID());
-
+                            Log.d(userProfile.getUsername(), "editprolike");
+                            Log.d(userItemFormat.getUsername(), "editprolike");
                             infoneLikeNotification.setItemKey(userProfile.getUserUID());
                             infoneLikeNotification.setUserImage(userItemFormat.getImageURLThumbnail());
                             infoneLikeNotification.setUserName(userItemFormat.getUsername());
                             infoneLikeNotification.setCommunityName(communityTitle);
-
+                            GlobalFunctions.inAppNotifications("has liked your profile","Your profile is liked",userItemFormat,false,"status",null,userProfile.getUserUID());
                             notificationSender.execute(infoneLikeNotification);
                         }
 
@@ -371,8 +373,9 @@ public class OpenUserDetail extends BaseActivity {
                             infoneLoveNotification.setUserImage(userItemFormat.getImageURLThumbnail());
                             infoneLoveNotification.setUserName(userItemFormat.getUsername());
                             infoneLoveNotification.setCommunityName(communityTitle);
-
+                            GlobalFunctions.inAppNotifications("has loved your profile","Your profile is loved",userItemFormat,false,"status",null,userProfile.getUserUID());
                             notificationSender.execute(infoneLoveNotification);
+
                         }
 
                         @Override
@@ -812,6 +815,7 @@ public class OpenUserDetail extends BaseActivity {
                     requestCallNotification.setUserName(userItemFormat.getUsername());
                     requestCallNotification.setCommunityName(communityTitle);
 
+                    GlobalFunctions.inAppNotifications("tried contacting you"," call him back!",userItemFormat,false,"requestcallback",null,Uid);
                     notificationSender.execute(requestCallNotification);
                 }
 

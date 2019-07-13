@@ -44,4 +44,9 @@ public class NotificationIdentifierUtilities {
 
     public static final String KEY_NOTIFICATION_STATUS_LIKED = "StatusLiked";
 
+
+    //scope of in-app notif
+    public static final String KEY_GLOBAL = "global";
+    public static final String KEY_PERSONAL = "personal";
+
 }

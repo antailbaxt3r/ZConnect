@@ -672,14 +672,22 @@ public class CreateForum extends BaseActivity {
 
             //Home
         if(databaseReferenceHome!=null) {
-            databaseReferenceHome.child(newPush.getKey()).child("feature").setValue("Forums");
-            databaseReferenceHome.child(newPush.getKey()).child("name").setValue(catName);
-            databaseReferenceHome.child(newPush.getKey()).child("id").setValue(tabUid);
-            databaseReferenceHome.child(newPush.getKey()).child("desc").setValue(mtabName);
-            databaseReferenceHome.child(newPush.getKey()).child("Key").setValue(newPush.getKey());
-            databaseReferenceHome.child(newPush.getKey()).child("PostTimeMillis").setValue(postTimeMillis);
+            FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-            databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    UserItemFormat userItemFormat = new UserItemFormat();
+                    userItemFormat.setUsername(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("username").getValue()));
+                    userItemFormat.setImageURL(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("imageURL").getValue()));
+                    userItemFormat.setUserUID(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("userUID").getValue()));
+                    GlobalFunctions.inAppNotifications("added a forum",catName,userItemFormat,true,"addforum",null,null);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
 
             mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {

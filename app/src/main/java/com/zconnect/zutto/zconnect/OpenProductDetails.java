@@ -777,14 +777,14 @@ public class OpenProductDetails extends BaseActivity {
 //                                        notificationSender.execute();
 
                                         NotificationSender notificationSender = new NotificationSender(OpenProductDetails.this, userItemFormat.getUserUID());
-                                        NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST, userItemFormat.getUserUID());
+                                        NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST, userItemFormat.getUserUID(), (String) dataSnapshot.child("PostedBy").child("UID").getValue(),1);
                                         productShortlistNotification.setCommunityName(communityTitle);
                                         productShortlistNotification.setItemKey(productKey);
                                         productShortlistNotification.setItemName(dataSnapshot.child("ProductName").getValue().toString());
                                         productShortlistNotification.setUserName(userItemFormat.getUsername());
                                         productShortlistNotification.setUserMobileNumber(userItemFormat.getMobileNumber());
                                         productShortlistNotification.setUserImage(userItemFormat.getImageURLThumbnail());
-
+                                        productShortlistNotification.setRecieverKey((String) dataSnapshot.child("PostedBy").child("UID").getValue());
 
                                         notificationSender.execute(productShortlistNotification);
 

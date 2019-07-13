@@ -70,8 +70,7 @@
         android:id="@+id/scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:clipToPadding="false">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/view_pager_app_bar_home"

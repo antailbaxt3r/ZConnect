@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -296,36 +297,25 @@ public class AddInfoneContact extends BaseActivity {
                                 uploadImage();
                                 Log.d(TAG, "DATA UPLOADED" + " ");
                                 //Inside Recents
-                                final DatabaseReference recentsPost = databaseRecents.push();
-                                final DatabaseReference recentsPostPostedBy = recentsPost.child("PostedBy");
-
-                                recentsPost.child("infoneContactName").setValue(name);
-                                recentsPostPostedBy.setValue(null);
-                                recentsPost.child("infoneContactCategoryName").setValue(catName);
-                                recentsPost.child("id").setValue(key);
-                                recentsPost.child("feature").setValue("Infone");
-                                recentsPost.child("desc").setValue(catId);
-                                recentsPost.child("PostTimeMillis").setValue(postTimeMillis);
-                                recentsPostPostedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                               FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
-                                        recentsPostPostedBy.child("Username").setValue(user.getUsername());
-                                        newContactNumRef.child("PostedBy").child("Username").setValue(user.getUsername());
-                                        recentsPostPostedBy.child("ImageThumb").setValue(user.getImageURLThumbnail());
-                                        newContactNumRef.child("PostedBy").child("ImageThumb").setValue(user.getImageURLThumbnail());
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                        UserItemFormat userItemFormat = new UserItemFormat();
+                                        HashMap<String,Object> metadata = new HashMap<>();
+                                        userItemFormat.setUsername(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("username").getValue()));
+                                        userItemFormat.setImageURL(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("imageURL").getValue()));
+                                        userItemFormat.setUserUID(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("userUID").getValue()));
+                                        metadata.put("infoneUserId",key);
+                                        metadata.put("catID",catId);
+                                        GlobalFunctions.inAppNotifications("added a contact",name,userItemFormat,true,"contactAdd",metadata,null);
                                     }
 
                                     @Override
-                                    public void onCancelled(DatabaseError databaseError) {
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                     }
                                 });
-
-                                ////writing uid of post to homePosts node in Users1.uid for handling data conistency
-                                mPostedByDetails.child("homePosts").child(recentsPost.getKey()).setValue(true);
-
                                 CounterItemFormat counterItemFormat = new CounterItemFormat();
                                 HashMap<String, String> meta = new HashMap<>();
 

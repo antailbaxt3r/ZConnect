@@ -76,7 +76,7 @@ public class JoinedForums extends Fragment {
 
     //New Forums
     private DatabaseReference userForumsRef;
-    private ValueEventListener forumEventListener;
+//    private ValueEventListener forumEventListener;.
 
     //Share Forums
     boolean isShare =false;

@@ -1,6 +1,8 @@
 package com.zconnect.zutto.zconnect;
 
 import android.Manifest;
+import android.accessibilityservice.GestureDescription;
+import android.app.AlertDialog;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -126,6 +128,7 @@ import java.util.TreeMap;
 public class ChatActivity extends BaseActivity implements QueryTokenReceiver, SuggestionsResultListener, SuggestionsVisibilityManager {
 
     private String TAG = ChatActivity.class.getSimpleName();
+    NotificationItemFormat notificationItemFormat;
     private static final String BUCKET = "people-network";
 
 
@@ -146,6 +149,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
     private DatabaseReference mUserReference;
     private FirebaseAuth mAuth;
     private static boolean unseenFlag, unseenFlag2;
+    private String recieverKey;
     private boolean isAnonymousEnabled = false;
     private final char DELIMIETER =(char)1;
 
@@ -305,11 +309,12 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 databaseReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-
+                        recieverKey = (String) dataSnapshot.child("PostedBy").child("UID").getValue();
                         if (!dataSnapshot.child("usersListItemFormats").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             joinButton.setVisibility(View.VISIBLE);
                             joinLayout.setVisibility(View.VISIBLE);
                             chatLayout.setVisibility(View.GONE);
+
 
                             joinButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -328,11 +333,13 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                                             databaseReference.child("usersListItemFormats").child(userItemFormat.getUserUID()).setValue(userDetails);
 
                                             NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItemFormat.getUserUID());
-                                            NotificationItemFormat cabPoolJoinNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN, userItemFormat.getUserUID());
+                                            NotificationItemFormat cabPoolJoinNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN, userItemFormat.getUserUID(),recieverKey,1);
                                             cabPoolJoinNotification.setCommunityName(communityTitle);
                                             cabPoolJoinNotification.setItemKey(getIntent().getStringExtra("key"));
                                             cabPoolJoinNotification.setUserName(userItemFormat.getUsername());
                                             cabPoolJoinNotification.setUserImage(userItemFormat.getImageURLThumbnail());
+                                            cabPoolJoinNotification.setRecieverKey(recieverKey);
+                                            Log.d(recieverKey, "reciverkey");
                                             notificationSender.execute(cabPoolJoinNotification);
 
                                             CounterItemFormat counterItemFormat = new CounterItemFormat();
@@ -773,16 +780,18 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
                 } else if (type.equals("post")) {
                     NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItem.getUserUID());
-
+                    HashMap<String,Object> metadata = new HashMap<>();
                     NotificationItemFormat postChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_POST, userItem.getUserUID());
-
                     postChatNotification.setItemMessage(text);
                     postChatNotification.setItemKey(getIntent().getStringExtra("key"));
-
                     postChatNotification.setUserImage(userItem.getImageURLThumbnail());
                     postChatNotification.setUserName(userItem.getUsername());
                     postChatNotification.setCommunityName(communityTitle);
-
+                    metadata.put("key",getIntent().getStringExtra("key"));
+                    metadata.put("ref",getIntent().getStringExtra("ref"));
+                    metadata.put("type",getIntent().getStringExtra("type"));
+                    metadata.put("uid",getIntent().getStringExtra("uid"));
+                    GlobalFunctions.inAppNotifications("commented on your status","Comment: "+text,userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
                     notificationSender.execute(postChatNotification);
 
                 } else if (type.equals("messages")) {
