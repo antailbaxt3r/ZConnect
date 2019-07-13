@@ -83,7 +83,7 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
 
                     Log.d("AAAA",notificationsList.get(position).getScope() + " " );
                 try{
-                if (notificationsList.get(position).getScope().equals(NotificationIdentifierUtilities.KEY_GLOBAL)) {
+                if (notificationsList.get(position).getScope().equals(NotificationIdentifierUtilities.KEY_GLOBAL)&&!notificationsList.get(position).getType().equals("adminNotification")) {
                     holder.simpleDraweeView.setVisibility(View.GONE);
 
                 } else {

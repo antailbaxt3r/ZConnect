@@ -15,6 +15,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import org.json.JSONObject;
 
@@ -227,7 +228,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_NOTICES_ADD);
         creator.addData("userKey",userKey);
 
-        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_NOTICES_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_NOTICES_ADD_FREQUENCY_STR);
+        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_NOTICES_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_NOTICES_ADD_FREQUENCY_STR,null,null,null,null,null);
     }
 
     private void newUserRejectNotification(String communityName,String receiverKey,String username,String userimg) {
@@ -458,7 +459,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD);
         creator.addData("userKey",userKey);
 
-        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD_FREQUENCY_STR);
+        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD_FREQUENCY_STR,null,null,null,null,null);
     }
 
     private void productAddNotification(String communityName, String productName,String productPrice,String productKey,String productImage,String userName,String userImage, String productType) {
@@ -481,15 +482,12 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("userKey",userKey);
 
         UserItemFormat userItemFormat=new UserItemFormat();
-        userItemFormat.setUserUID("");
-        userItemFormat.setUsername("");
-        userItemFormat.setImageURL("");
-
+        userItemFormat.setUserUID(UserUtilities.currentUser.getUserUID());
+        userItemFormat.setUsername(UserUtilities.currentUser.getUsername());
+        userItemFormat.setImageURL(UserUtilities.currentUser.getImageURL());
         metadata.put("key",productKey);
         metadata.put("type",productType);
-        GlobalFunctions.inAppNotifications("A new product has been added",productName+" price: "+productPrice,userItemFormat,true,"productAdd",metadata,null);
-
-        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD_FREQUENCY_STR);
+        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD_FREQUENCY_STR," is selling "+productName,"price: "+productPrice,userItemFormat,"productAdd",metadata);
     }
 
     private void eventAddNotification(String communityName,String eventName,String eventLocation,String eventKey,String eventImage) {
@@ -507,12 +505,11 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("userKey",userKey);
 
         UserItemFormat userItemFormat=new UserItemFormat();
-        userItemFormat.setUserUID("");
+        userItemFormat.setUserUID(UserUtilities.currentUser.getUserUID());
         userItemFormat.setUsername("");
         userItemFormat.setImageURL("");
         metadata.put("id",eventKey);
-        GlobalFunctions.inAppNotifications("A new event has been added","Event name: "+eventName+" location: "+eventLocation,userItemFormat,true,"eventAdd",metadata,null);
-        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD_FREQUENCY_STR);
+        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD_FREQUENCY_STR,eventName+" will be happening at ","location: "+eventLocation,userItemFormat,"eventAdd",metadata);
     }
 
     private void cabAddNotification(String communityName) {
@@ -523,8 +520,11 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD);
         creator.addData("userKey",userKey);
         metadata.put("key",userKey);
-        GlobalFunctions.inAppNotifications("A new cabpool has been added","",null,true,"cabAdd",null,null);
-        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD_FREQUENCY_STR);
+        UserItemFormat userItemFormat=new UserItemFormat();
+        userItemFormat.setUsername("");
+        userItemFormat.setImageURL("");
+        userItemFormat.setUserUID(UserUtilities.currentUser.getUserUID());
+        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD_FREQUENCY_STR,"Hey! People around you are using Cab Pool very often","",userItemFormat,"cabAdd",metadata);
     }
 
     private void productShortlistNotification(String productKey,String userName,String userMobileNumber,String productName, String communityName,String userImage,String recieverKey){
@@ -674,7 +674,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
     }
 
 
-    private void compareFrequency(final String notificationIdentifier,final String notificationType){
+    private void compareFrequency(final String notificationIdentifier, final String notificationType, final String title, final String desc, final UserItemFormat userItemFormat,final String type,final HashMap<String,Object> metadata){
 
         DatabaseReference DB_NORMAL = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Notifications").child("frequency").child(notificationType);
         final DatabaseReference DB_CURRENT = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Notifications").child("current").child(notificationType);
@@ -694,7 +694,8 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
                                 if(current_frequency == normal_frequency){
 
                                     DB_CURRENT.setValue(Long.valueOf(0));
-
+                                    if(title!=null)
+                                    GlobalFunctions.inAppNotifications(title,desc,userItemFormat,true,type,metadata,null);
                                     sendNotification(true,notificationIdentifier + communityReference);
 
                                 }else{
