@@ -387,7 +387,8 @@ public class JoinedForums extends Fragment {
         inflater.inflate(R.menu.menu_joinedforum_search, menu);
         MenuItem item = menu.findItem(R.id.action_search);
 
-        SearchView searchView = new SearchView(((BaseActivity)getActivity()).getActionBar().getThemedContext());
+        SearchView searchView = new SearchView(((BaseActivity)getActivity()).getSupportActionBar().getThemedContext());
+        searchView.setVisibility(View.VISIBLE);
         MenuItemCompat.setShowAsAction(item,MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
         MenuItemCompat.setActionView(item,searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

@@ -743,6 +743,18 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
             }
         });
+
+        if(getIntent().getIntExtra("tab",0) != 0){
+            tabs.getTabAt(getIntent().getIntExtra("tab",0)).select();
+//            fm = getSupportFragmentManager();
+//            recent = new Recents();
+//            forums = new JoinedForums();
+//            active = recent;
+//
+//
+//            fm.beginTransaction().hide(active).show(forums).commit();
+//            active = forums;
+        }
     }
 
     //Setting contents in the different tabs

@@ -37,6 +37,29 @@ public class ShortlistedPeopleList extends BaseActivity {
     private String pName, pPrice, pDescription, pImage;
     private TextView productName, productDescription, productPrice;
     private ImageView productImage;
+     DatabaseReference productRef;
+    ValueEventListener listener;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(productRef!=null && listener!= null) {
+            productRef.addValueEventListener(listener);
+        }
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        productRef.removeEventListener(listener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        productRef.removeEventListener(listener);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,10 +115,11 @@ public class ShortlistedPeopleList extends BaseActivity {
 
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
                 .child("features").child("storeroom").child("products").child(key).child("UsersReserved");
-        final DatabaseReference productRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
+        productRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
                 .child("features").child("storeroom").child("products").child(key);
 
-        productRef.addValueEventListener(new ValueEventListener() {
+
+        listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
@@ -121,7 +145,7 @@ public class ShortlistedPeopleList extends BaseActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        };
 
 
 

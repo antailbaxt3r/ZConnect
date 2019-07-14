@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.WindowManager;
 
@@ -14,6 +15,8 @@ import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 public class ShareToForum extends BaseActivity {
 
     JoinedForums joinedForums;
+    Toolbar toolbar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +28,9 @@ public class ShareToForum extends BaseActivity {
         String receivedAction = receivedIntent.getAction();
         Log.d("HereTry",bundle.toString());
         Log.d("hereTry",receivedType);
+        toolbar = findViewById(R.id.toolbar_share_to_forum);
+        setSupportActionBar(toolbar);
+
 
 //        For future in app sharing
 //        if(receivedAction.equals(Intent.ACTION_SEND)){
