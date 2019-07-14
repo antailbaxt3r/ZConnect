@@ -7,7 +7,8 @@
         android:title="Add Contact"
         android:id="@+id/action_done"
         android:icon="@drawable/ic_done_white_24dp"
+        android:iconTint="@color/black"
         android:orderInCategory="1"
         android:name="Add Contact"
-        app:showAsAction="collapseActionView|ifRoom" />
+        app:showAsAction="always" />
 </menu>

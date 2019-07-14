@@ -80,7 +80,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     private final String TAG = getClass().getSimpleName();
     public ProgressDialog mProgress;
 
-    @BindView(R.id.toolbar_app_bar_home)
+
     Toolbar toolbar;
 
     private SimpleDraweeView userImageView;
@@ -126,10 +126,15 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-        ButterKnife.bind(this);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
 
         if (toolbar != null) {
-            setSupportActionBar(toolbar);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -259,7 +264,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                         if(userInfo.getPhotoUrl() != null)
                             userImageView.setImageURI(userInfo.getPhotoUrl());
                         else
-                            userImageView.setImageURI(DEFAULT_PHOTO_URL);
+                            userImageView.setImageURI(Uri.parse(DEFAULT_PHOTO_URL));
                     }
                 }
             }

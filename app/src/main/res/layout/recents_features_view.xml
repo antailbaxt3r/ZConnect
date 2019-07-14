@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:id="@+id/recentView">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
         android:padding="5dp"
-        android:background="@color/colorPrimaryDark">
+        android:background="@color/white">
 
         <HorizontalScrollView
             android:id="@+id/hsv_recents_features_view"
@@ -48,7 +49,8 @@
                                 android:layout_width="36dp"
                                 android:layout_height="36dp"
                                 android:src="@drawable/outline_settings_applications_white_36"
-                                android:tint="@color/white"/>
+                                android:tint="@color/deepPurple500"
+                                />
                             <FrameLayout
                                 android:id="@+id/admin_unread_count_fl_recents_feature_item"
                                 android:layout_width="15dp"
@@ -78,7 +80,7 @@
                             android:text="Admin"
                             android:layout_below="@+id/admin_circle_recents_feature_item_fl"
                             android:layout_centerHorizontal="true"
-                            android:textColor="@color/white"
+                            android:textColor="@color/black"
                             android:layout_marginTop="5dp"
                             android:textSize="10sp"/>
                     </RelativeLayout>
@@ -106,8 +108,8 @@
                                 android:id="@+id/shops_circle_recents_feature_item"
                                 android:layout_width="36dp"
                                 android:layout_height="36dp"
-                                android:src="@drawable/ic_store_white_36dp"
-                                android:tint="@color/white" />
+                                android:src="@drawable/ic_outline_store_36"
+                                android:tint="@color/deepPurple500" />
                             <FrameLayout
                                 android:id="@+id/shops_unread_count_fl_recents_feature_item"
                                 android:layout_width="15dp"
@@ -137,7 +139,7 @@
                             android:text="Shop"
                             android:layout_below="@+id/shops_recents_features_view_fl"
                             android:layout_centerHorizontal="true"
-                            android:textColor="@color/white"
+                            android:textColor="@color/black"
                             android:layout_marginTop="5dp"
                             android:textSize="10sp"/>
                     </RelativeLayout>
@@ -166,7 +168,7 @@
                                 android:layout_width="36dp"
                                 android:layout_height="36dp"
                                 android:src="@drawable/outline_local_mall_white_36"
-                                android:tint="@color/white"/>
+                                android:tint="@color/deepPurple500"/>
                             <FrameLayout
                                 android:id="@+id/storeroom_unread_count_fl_recents_feature_item"
                                 android:layout_width="15dp"
@@ -196,7 +198,7 @@
                             android:text="Storeroom"
                             android:layout_below="@+id/storeroom_circle_recents_feature_item_fl"
                             android:layout_centerHorizontal="true"
-                            android:textColor="@color/white"
+                            android:textColor="@color/black"
                             android:layout_marginTop="5dp"
                             android:textSize="10sp"/>
                     </RelativeLayout>
@@ -225,7 +227,7 @@
                                 android:layout_width="36dp"
                                 android:layout_height="36dp"
                                 android:src="@drawable/outline_event_white_36"
-                                android:tint="@color/white" />
+                                android:tint="@color/deepPurple500" />
                             <FrameLayout
                                 android:id="@+id/events_unread_count_fl_recents_feature_item"
                                 android:layout_width="15dp"
@@ -255,7 +257,7 @@
                             android:text="Events"
                             android:layout_below="@+id/events_circle_recents_feature_item_fl"
                             android:layout_centerHorizontal="true"
-                            android:textColor="@color/white"
+                            android:textColor="@color/black"
                             android:layout_marginTop="5dp"
                             android:textSize="10sp"/>
                     </RelativeLayout>
@@ -284,7 +286,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:src="@drawable/outline_local_taxi_white_36"
-                                android:tint="@color/white" />
+                                android:tint="@color/deepPurple500" />
                             <FrameLayout
                                 android:id="@+id/cabpool_unread_count_fl_recents_feature_item"
                                 android:layout_width="15dp"
@@ -314,7 +316,7 @@
                             android:text="Cabpool"
                             android:layout_below="@+id/cabpool_circle_recents_feature_item_fl"
                             android:layout_centerHorizontal="true"
-                            android:textColor="@color/white"
+                            android:textColor="@color/black"
                             android:layout_marginTop="5dp"
                             android:textSize="10sp"/>
                     </RelativeLayout>
@@ -342,8 +344,8 @@
                                 android:id="@+id/notices_circle_recents_feature_item"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:src="@drawable/baseline_insert_photo_white_36"
-                                android:tint="@color/white" />
+                                android:src="@drawable/ic_outline_insert_photo_36"
+                                android:tint="@color/deepPurple500" />
                             <FrameLayout
                                 android:id="@+id/notices_unread_count_fl_recents_feature_item"
                                 android:layout_width="15dp"
@@ -373,7 +375,7 @@
                             android:text="Notices"
                             android:layout_below="@+id/notices_circle_recents_feature_item_fl"
                             android:layout_centerHorizontal="true"
-                            android:textColor="@color/white"
+                            android:textColor="@color/black"
                             android:layout_marginTop="5dp"
                             android:textSize="10sp"/>
                     </RelativeLayout>
@@ -510,4 +512,4 @@
             </LinearLayout>
         </HorizontalScrollView>
     </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

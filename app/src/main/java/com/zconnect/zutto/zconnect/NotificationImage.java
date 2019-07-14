@@ -44,10 +44,13 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.addActivities.AddProduct;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CustomSpinner;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.io.IOException;
 
@@ -79,6 +82,12 @@ public class NotificationImage extends BaseActivity{
 
         mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(mActionBarToolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mActionBarToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        mActionBarToolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+        mActionBarToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
+
 
         if (mActionBarToolbar != null) {
             mActionBarToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -141,7 +150,7 @@ public class NotificationImage extends BaseActivity{
                     toast.show();
 
                 } else {
-                    startPosting();
+                   startPosting();
                 }
             }
         });
@@ -230,6 +239,11 @@ public class NotificationImage extends BaseActivity{
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         final Uri downloadUri = task.getResult();
+                        UserItemFormat userItemFormat= new UserItemFormat();
+                        userItemFormat.setUserUID(UserUtilities.currentUser.getUserUID());
+                        userItemFormat.setImageURL(UserUtilities.currentUser.getImageURL());
+                        userItemFormat.setUsername(UserUtilities.currentUser.getUsername());
+                        GlobalFunctions.inAppNotifications(" has send a notification","Notification message: "+notificationDescription.getText().toString()+"             Notification URL: "+nottificationURL.getText().toString(),userItemFormat,true,"adminNotification",null,null);
 
                         NotificationSender notificationSender = new NotificationSender(NotificationImage.this, userId);
                         NotificationItemFormat addImageNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_IMAGE_URL, userId);
@@ -254,7 +268,22 @@ public class NotificationImage extends BaseActivity{
             });
 
 
-        }else {
+        }
+        // Sending a notification without an image
+        else if (!TextUtils.isEmpty(notificationDescription.getText()) && !TextUtils.isEmpty(notificationTitle.getText()) && !TextUtils.isEmpty(nottificationURL.getText()) ) {
+
+            NotificationSender notificationSender = new NotificationSender(NotificationImage.this, userId);
+            NotificationItemFormat addImageNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_TEXT_URL, userId);
+            addImageNotification.setItemMessage(notificationDescription.getText().toString());
+            addImageNotification.setItemTitle(notificationTitle.getText().toString());
+            addImageNotification.setItemURL(nottificationURL.getText().toString());
+
+            notificationSender.execute(addImageNotification);
+
+            mProgress.dismiss();
+            finish();
+        }
+        else {
             Snackbar snack = Snackbar.make(mAddImage, "Fields are empty", Snackbar.LENGTH_LONG);
             TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
             snackBarText.setTextColor(Color.WHITE);

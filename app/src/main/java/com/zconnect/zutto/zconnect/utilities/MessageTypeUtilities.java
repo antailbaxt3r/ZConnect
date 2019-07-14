@@ -16,5 +16,6 @@ public class MessageTypeUtilities {
     public static final String KEY_SHOP_MESSAGE_STR = "shopMessage";
     public static final String KEY_SHOP_PHOTO_STR = "shopPhoto";
     public static final String KEY_PHOTO_SENDING_STR = "photoSending";
+    public static final String KEY_ANONYMOUS_MESSAGE_STR = "AnonymousMessage";
 
 }

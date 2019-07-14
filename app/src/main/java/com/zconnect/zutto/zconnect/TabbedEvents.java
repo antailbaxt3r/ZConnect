@@ -36,6 +36,8 @@ import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.zconnect.zutto.zconnect.R.drawable.ic_arrow_back_black_24dp;
+
 public class TabbedEvents extends BaseActivity {
 
     FirebaseAuth mAuth;
@@ -55,8 +57,14 @@ public class TabbedEvents extends BaseActivity {
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setTitle("Events");
+        toolbar.setNavigationIcon(ic_arrow_back_black_24dp);
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -96,7 +104,6 @@ public class TabbedEvents extends BaseActivity {
         communityReference = communitySP.getString("communityReference", null);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {

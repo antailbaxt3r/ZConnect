@@ -64,7 +64,7 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
     FirebaseAuth mAuth;
     SharedPreferences sharedPref;
     Boolean status;
-
+String recieverKey;
     SharedPreferences communitySP;
     String communityReference;
 
@@ -345,7 +345,17 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
     public void setBoost(final String key, final String name) {
 
         final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(key);
+eventDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+    @Override
+    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        recieverKey = (String) dataSnapshot.child("PostedBy").child("UID").getValue();
+    }
 
+    @Override
+    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+    }
+});
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final ImageButton boostBtn = (ImageButton) mView.findViewById(R.id.boostBtn);
         final TextView eventNumLit = (TextView) mView.findViewById(R.id.eventsNumLit);
@@ -401,13 +411,13 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
                                 UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
 
                                 NotificationSender notificationSender = new NotificationSender(itemView.getContext(),FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                NotificationItemFormat eventBoostNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST,FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                NotificationItemFormat eventBoostNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST,FirebaseAuth.getInstance().getCurrentUser().getUid(),recieverKey,1);
                                 eventBoostNotification.setItemKey(key);
                                 eventBoostNotification.setUserImage(userItemFormat.getImageURLThumbnail());
                                 eventBoostNotification.setItemName(name);
                                 eventBoostNotification.setUserName(userItemFormat.getUsername());
                                 eventBoostNotification.setCommunityName(communityTitle);
-
+                                eventBoostNotification.setRecieverKey(recieverKey);
                                 notificationSender.execute(eventBoostNotification);
                             }
 

@@ -10,6 +10,25 @@ public class ChatItemFormats {
     private String uuid,name,message, imageThumb;
     private String messageType;
     private String photoURL;
+    private String userName;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public boolean isAnonymous() {
+        return isAnonymous;
+    }
+
+    public void setAnonymous(boolean anonymous) {
+        isAnonymous = anonymous;
+    }
+
+    private boolean isAnonymous;
 
     private String key;
 

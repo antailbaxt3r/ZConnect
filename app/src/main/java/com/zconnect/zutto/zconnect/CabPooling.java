@@ -43,7 +43,6 @@ import java.util.HashMap;
 public class CabPooling extends BaseActivity {
 
     Button done;
-    ImageButton clear;
     CustomSpinner source, destination, time_to, time_from;
     TextView calender;
     int year, month, day;
@@ -61,8 +60,9 @@ public class CabPooling extends BaseActivity {
         setContentView(R.layout.activity_cab_pooling);
 
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
+        toolbar.setTitle("Search For Rides");
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -121,7 +121,6 @@ public class CabPooling extends BaseActivity {
         time_to = (CustomSpinner) findViewById(R.id.spinner_time_to);
         time_from = (CustomSpinner) findViewById(R.id.spinner_time_from);
         done = (Button) findViewById(R.id.done);
-        clear=(ImageButton) findViewById(R.id.clear);
 
         source.setAdapter(locationsSpinnerAdapter);
         destination.setAdapter(locationsSpinnerAdapter);
@@ -144,17 +143,10 @@ public class CabPooling extends BaseActivity {
                             }
                         }, year, month, day);
                 datePickerDialog.show();
-                clear.setVisibility(View.VISIBLE);
             }
         });
 
-        clear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                calender.setText("Click to choose");
-                clear.setVisibility(View.GONE);
-            }
-        });
+
 
         done.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -276,13 +268,14 @@ public class CabPooling extends BaseActivity {
         TextView destination = (TextView) findViewById(R.id.destination);
         TextView date = (TextView) findViewById(R.id.date);
         TextView timeslot = (TextView) findViewById(R.id.timeslot);
-        TextView search_for_rides = (TextView) findViewById(R.id.search_for_rides);
-
+        TextView timeslot2 = (TextView) findViewById(R.id.timeslot2);
         from.setTypeface(customFont);
         destination.setTypeface(customFont);
         date.setTypeface(customFont);
         timeslot.setTypeface(customFont);
-        search_for_rides.setTypeface(customFont2);
+        timeslot2.setTypeface(customFont);
+        calender.setTypeface(customFont);
+
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

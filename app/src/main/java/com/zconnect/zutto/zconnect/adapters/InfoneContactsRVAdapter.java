@@ -27,6 +27,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.InfoneContactListActivity;
 import com.zconnect.zutto.zconnect.ZConnectDetails;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.holders.InfoneContactsRVViewHolder;
 import com.zconnect.zutto.zconnect.InfoneProfileActivity;
@@ -56,6 +57,7 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
     Context context;
     ArrayList<InfoneContactsRVItem> infoneContactsRVItems = new ArrayList<InfoneContactsRVItem>();
     String catId;
+    DatabaseReference forumReference;
     final DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
     public InfoneContactsRVAdapter(Context context, ArrayList<InfoneContactsRVItem> infoneContactsRVItems, String catId) {
@@ -64,6 +66,7 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
         this.catId = catId;
 
     }
+
 
     @Override
     public InfoneContactsRVViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -94,76 +97,78 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
         }
         final ArrayList<String> phoneNums = infoneContactsRVItems.get(position).getPhoneNums();
 
-        holder.dialogRequestCall1btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.dialogVerifyphoneEt.setText(holder.dialogRequestCall1btn.getText().toString());
-                makeCall(holder.dialogRequestCall1btn.getText().toString(), holder.verifyDialog, holder.requestCallDialog);
-            }
-        });
-        holder.dialogRequestCall2btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.dialogVerifyphoneEt.setText(holder.dialogRequestCall2btn.getText().toString());
 
-                makeCall(holder.dialogRequestCall2btn.getText().toString(), holder.verifyDialog, holder.requestCallDialog);
-            }
-        });
-        try{
-            final String phoneNum = phoneNums.get(1);
-            if(phoneNum.length()<9){
-                throw new Exception();
-            }
-            holder.whatsAppImageBtn.setOnClickListener(new View.OnClickListener() {
+
+
+            holder.dialogRequestCall1btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    redirectToWhatsApp(phoneNum);
+                    holder.dialogVerifyphoneEt.setText(holder.dialogRequestCall1btn.getText().toString());
+                    makeCall(holder.dialogRequestCall1btn.getText().toString(), holder.verifyDialog, holder.requestCallDialog);
+                }
+            });
+            holder.dialogRequestCall2btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.dialogVerifyphoneEt.setText(holder.dialogRequestCall2btn.getText().toString());
+
+                    makeCall(holder.dialogRequestCall2btn.getText().toString(), holder.verifyDialog, holder.requestCallDialog);
+                }
+            });
+            try {
+                final String phoneNum = phoneNums.get(1);
+                if (phoneNum.length() < 9) {
+                    throw new Exception();
+                }
+                holder.whatsAppImageBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        redirectToWhatsApp(phoneNum);
+                    }
+                });
+
+
+            } catch (Exception e) {
+                holder.whatsAppImageBtn.setVisibility(View.GONE);
+            }
+
+            holder.callImageBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (infoneContactsRVItems.get(position).getContactHidden()) {
+                        createAlertForRequest(infoneContactsRVItems.get(position).getInfoneUserId(), currentUser);
+                    } else {
+                        String phoneNum1, phoneNum2;
+                        try {
+                            phoneNum1 = phoneNums.get(0);
+                            if (phoneNum1.length() < 9) {
+                                throw new Exception();
+                            }
+                            holder.dialogRequestCall1btn.setText(phoneNum1);
+                        } catch (Exception e) {
+                            holder.dialogRequestCall1btn.setVisibility(View.GONE);
+                        }
+                        try {
+                            phoneNum2 = phoneNums.get(1);
+                            if (phoneNum2.length() < 9) {
+                                throw new Exception();
+                            }
+                            holder.dialogRequestCall2btn.setText(phoneNum2);
+                        } catch (Exception e) {
+                            holder.dialogRequestCall2btn.setVisibility(View.GONE);
+                        }
+                        holder.requestCallDialog.show();
+
+                    }
+
                 }
             });
 
-
-        }
-        catch (Exception e){
-            holder.whatsAppImageBtn.setVisibility(View.GONE);
-        }
-
-        holder.callImageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (infoneContactsRVItems.get(position).getContactHidden()) {
-                    createAlertForRequest(infoneContactsRVItems.get(position).getInfoneUserId(), currentUser);
-                } else {
-                    String phoneNum1, phoneNum2;
-                    try {
-                        phoneNum1 = phoneNums.get(0);
-                        if (phoneNum1.length() < 9) {
-                            throw new Exception();
-                        }
-                        holder.dialogRequestCall1btn.setText(phoneNum1);
-                    } catch (Exception e) {
-                        holder.dialogRequestCall1btn.setVisibility(View.GONE);
-                    }
-                    try {
-                        phoneNum2 = phoneNums.get(1);
-                        if (phoneNum2.length() < 9) {
-                            throw new Exception();
-                        }
-                        holder.dialogRequestCall2btn.setText(phoneNum2);
-                    } catch (Exception e) {
-                        holder.dialogRequestCall2btn.setVisibility(View.GONE);
-                    }
-                    holder.requestCallDialog.show();
-
-                }
-
-            }
-        });
-
-        final DatabaseReference databaseReferenceInfone = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB)
-                .child(communityReference).child(ZConnectDetails.INFONE_DB_NEW);
-        final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        final DatabaseReference databaseReferenceContact = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB)
-                .child(communityReference).child(ZConnectDetails.INFONE_DB_NEW).child("numbers").child(infoneContactsRVItems.get(position).getInfoneUserId());
+            final DatabaseReference databaseReferenceInfone = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB)
+                    .child(communityReference).child(ZConnectDetails.INFONE_DB_NEW);
+            final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            final DatabaseReference databaseReferenceContact = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB)
+                    .child(communityReference).child(ZConnectDetails.INFONE_DB_NEW).child("numbers").child(infoneContactsRVItems.get(position).getInfoneUserId());
 
         holder.dialogVerifyYesbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,26 +177,77 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
                 databaseReferenceInfone.child("numbers").child(infoneContactsRVItems.get(position).getInfoneUserId()).child("valid").child(mAuth.getCurrentUser().getUid()).setValue("true");
                 long postTimeMillis = System.currentTimeMillis();
                 databaseReferenceContact.child("verifiedDate").setValue(postTimeMillis);
+
+                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        UserItemFormat userItemFormat = new UserItemFormat();
+                        userItemFormat.setUsername((String) dataSnapshot.child("username").getValue());
+                        userItemFormat.setUserUID((String) dataSnapshot.child("userUID").getValue());
+                        userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
+
+                        GlobalFunctions.inAppNotifications("has validated your phone number",phoneNums.get(0),userItemFormat,false,"infoneverify",null,infoneContactsRVItems.get(position).getInfoneUserId());
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
                 holder.verifyDialog.dismiss();
 
-            }
-        });
-        holder.dialogVerifyNobtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                databaseReferenceInfone.child("numbers").child(infoneContactsRVItems.get(position).getInfoneUserId()).child("valid").child(mAuth.getCurrentUser().getUid()).removeValue();
-                databaseReferenceInfone.child("numbers").child(infoneContactsRVItems.get(position).getInfoneUserId()).child("invalid").child(mAuth.getCurrentUser().getUid()).setValue("true");
-                long postTimeMillis = System.currentTimeMillis();
-                databaseReferenceContact.child("verifiedDate").setValue(postTimeMillis);
+                }
+            });
+            holder.dialogVerifyNobtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    databaseReferenceInfone.child("numbers").child(infoneContactsRVItems.get(position).getInfoneUserId()).child("valid").child(mAuth.getCurrentUser().getUid()).removeValue();
+                    databaseReferenceInfone.child("numbers").child(infoneContactsRVItems.get(position).getInfoneUserId()).child("invalid").child(mAuth.getCurrentUser().getUid()).setValue("true");
+                    long postTimeMillis = System.currentTimeMillis();
+                    databaseReferenceContact.child("verifiedDate").setValue(postTimeMillis);
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        UserItemFormat userItemFormat = new UserItemFormat();
+                        userItemFormat.setUsername((String) dataSnapshot.child("username").getValue());
+                        userItemFormat.setUserUID((String) dataSnapshot.child("userUID").getValue());
+                        userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
+
+                        GlobalFunctions.inAppNotifications("has validated your phone number",phoneNums.get(0),userItemFormat,false,"infoneverify",null,infoneContactsRVItems.get(position).getInfoneUserId());
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
                 holder.verifyDialog.dismiss();
 
+                }
+            });
+
+            holder.hiddentv.setVisibility(View.GONE);
+            holder.callImageBtn.setVisibility(View.VISIBLE);
+            holder.nametv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.primaryText));
+            holder.desctv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.primaryText));
+
+            if (infoneContactsRVItems.get(position).getContactHidden()) {
+                holder.hiddentv.setVisibility(View.VISIBLE);
+                holder.whatsAppImageBtn.setVisibility(View.GONE);
+                holder.callImageBtn.setVisibility(View.GONE);
+                holder.nametv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.gray_holo_light));
+                holder.desctv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.gray_holo_light));
+                holder.hiddentv.setText("hidden");
             }
-        });
 
         holder.hiddentv.setVisibility(View.GONE);
         holder.callImageBtn.setVisibility(View.VISIBLE);
         holder.nametv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.primaryText));
-        holder.desctv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.primaryText));
+        holder.desctv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.secondaryText));
 
         if (infoneContactsRVItems.get(position).getContactHidden()) {
             holder.hiddentv.setVisibility(View.VISIBLE);
@@ -201,35 +257,37 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
             holder.desctv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.gray_holo_light));
             holder.hiddentv.setText("hidden");
         }
+            holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                    if (infoneContactsRVItems.get(position).getContactHidden()) {
+                        createAlertForRequest(infoneContactsRVItems.get(position).getInfoneUserId(), currentUser);
+                    } else {
+                        Intent profileIntent = new Intent(context, InfoneProfileActivity.class);
+                        profileIntent.putExtra("infoneUserId", infoneContactsRVItems.get(position).getInfoneUserId());
+                        profileIntent.putExtra("catID", catId);
 
-                if (infoneContactsRVItems.get(position).getContactHidden()) {
-                    createAlertForRequest(infoneContactsRVItems.get(position).getInfoneUserId(), currentUser);
-                } else {
-                    Intent profileIntent = new Intent(context, InfoneProfileActivity.class);
-                    profileIntent.putExtra("infoneUserId", infoneContactsRVItems.get(position).getInfoneUserId());
-                    profileIntent.putExtra("catID", catId);
-                    context.startActivity(profileIntent);
+                        profileIntent.putExtra("infoneUserImageThumb",infoneContactsRVItems.get(position).getImageThumb());
+                        context.startActivity(profileIntent);
 
-                    CounterItemFormat counterItemFormat = new CounterItemFormat();
-                    HashMap<String, String> meta = new HashMap<>();
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        HashMap<String, String> meta = new HashMap<>();
 
-                    meta.put("catID", catId);
+                        meta.put("catID", catId);
 
-                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                    counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_CONTACT_OPEN);
-                    counterItemFormat.setTimestamp(System.currentTimeMillis());
-                    counterItemFormat.setMeta(meta);
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_CONTACT_OPEN);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        counterItemFormat.setMeta(meta);
 
-                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                    counterPush.pushValues();
+                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                        counterPush.pushValues();
+                    }
                 }
-            }
-        });
-    }
+            });
+        }
+
 
     private void makeCall(final String phoneNum, final Dialog verifyDialog, final Dialog dialogCallRequest) {
 
@@ -325,7 +383,7 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
                 requestCallNotification.setUserImage(userItemFormat.getImageURLThumbnail());
                 requestCallNotification.setUserName(userItemFormat.getUsername());
                 requestCallNotification.setCommunityName(communityTitle);
-
+                GlobalFunctions.inAppNotifications("tried contacting you"," call him back!",userItemFormat,false,"requestcallback",null,itemUID);
                 notificationSender.execute(requestCallNotification);
             }
 

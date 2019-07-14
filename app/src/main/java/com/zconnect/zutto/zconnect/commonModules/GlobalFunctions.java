@@ -1,8 +1,10 @@
 package com.zconnect.zutto.zconnect.commonModules;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -10,6 +12,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 
 import java.util.HashMap;
 
@@ -50,33 +56,45 @@ public class GlobalFunctions {
         });
     }
 
-    public static void pushNotifications(String title, String desc, boolean audience, String type, HashMap<String, Object> metadata) {
-
+    public static void inAppNotifications(String title, String desc, final UserItemFormat notifiedby, boolean audience, String type, HashMap<String, Object> metadata, String uid) {
+        String key;
+        HashMap<String, Object> notificationMap = new HashMap<>();
+        HashMap<String, Boolean> seenmap = new HashMap<>();
         /*
         audience true - Community specific notifications
         audience false - User specific notifications
         */
-        if(audience) {
+        if(!notifiedby.getUserUID().equals(uid)){
+        if (audience) {
             notificationsRef = FirebaseDatabase.getInstance().getReference().child("communities").
-                    child(communityReference).child("notifications");
+                    child(communityReference).child("globalNotifications");
+            key = NotificationIdentifierUtilities.KEY_GLOBAL;
 
-        }
-        else {
+        } else {
             notificationsRef = FirebaseDatabase.getInstance().getReference().child("communities").
-                    child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getUid())
+                    child(communityReference).child("Users1").child(uid)
                     .child("notifications");
-        }
 
+            key = NotificationIdentifierUtilities.KEY_PERSONAL;
+        }
+        seenmap.put(FirebaseAuth.getInstance().getUid(),false);
         DatabaseReference newNotifRef = notificationsRef.push();
+        notificationMap.put("scope",key);
+        notificationMap.put("title", title);
+        notificationMap.put("desc", desc);
+        notificationMap.put("PostTimeMillis", System.currentTimeMillis());
+        notificationMap.put("seen", seenmap);
+        notificationMap.put("type", type);
+        notificationMap.put("key", newNotifRef.getKey());
+        notificationMap.put("notifiedBy", notifiedby);
 
-        newNotifRef.child("title").setValue(title);
-        newNotifRef.child("desc").setValue(desc);
-        newNotifRef.child("PostTimeMillis").setValue(System.currentTimeMillis());
-        newNotifRef.child("seen").setValue(false);
-        newNotifRef.child("type").setValue(type);
-        for(HashMap.Entry<String, Object> entry : metadata.entrySet()) {
-            newNotifRef.child("metadata").child(entry.getKey()).setValue(entry.getValue());
+        newNotifRef.setValue(notificationMap);
+        if (metadata != null) {
+            for (HashMap.Entry<String, Object> entry : metadata.entrySet()) {
+                newNotifRef.child("metadata").child(entry.getKey()).setValue(entry.getValue());
+            }
+
         }
-        newNotifRef.child("key").setValue(newNotifRef.getKey());
+    }
     }
 }

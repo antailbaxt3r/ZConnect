@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -26,10 +29,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -49,9 +55,12 @@ import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 
 public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemClickListener {
 
@@ -86,8 +95,9 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
     private Product singleProduct;
     private Boolean flagNoProductsAvailable;
     private TextView noProductsAvailableText;
-    private ProgressBar progressBar;
+
     private FloatingActionButton fab;
+    private ShimmerFrameLayout shimmerContainer;
 
     private int OPT_ELEC = 0, OPT_SPK = 1, OPT_STG = 2, OPT_ACAD = 3, OPT_ROOM = 4, OPT_FIC = 5, OPT_OTH = 6, OPT_ALL = 7;
     private int currentOptionCategory = 7;
@@ -104,8 +114,10 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        Toolbar toolbar = findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
+        toolbar.setTitle("Storeroom");
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -184,8 +196,8 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
         GridLayoutManager productGridLayout = new GridLayoutManager(this, 2);
 
         noProductsAvailableText = (TextView) findViewById(R.id.no_products_available_text);
-        progressBar = (ProgressBar) findViewById(R.id.products_tab_progress_bar);
 
+        shimmerContainer = (ShimmerFrameLayout) findViewById(R.id.shimmer_view_container1);
         mProductList = (RecyclerView) findViewById(R.id.productList);
         mProductList.setHasFixedSize(true);
         mProductList.setLayoutManager(productGridLayout);
@@ -232,7 +244,7 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
         });
 
         mAuth = FirebaseAuth.getInstance();
-        progressBar.setVisibility(View.VISIBLE);
+        shimmerContainer.startShimmerAnimation();
 
         SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
@@ -328,13 +340,7 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                     }
                 }
 
-                progressBar.setVisibility(View.INVISIBLE);
 
-                if(flagNoProductsAvailable){
-                    noProductsAvailableText.setVisibility(View.VISIBLE);
-                }else{
-                    noProductsAvailableText.setVisibility(View.GONE);
-                }
 
                 Collections.sort(productVector, new Comparator<Product>() {
                     @Override
@@ -344,7 +350,10 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                 });
 
                 productAdapter.notifyDataSetChanged();
+                shimmerContainer.stopShimmerAnimation();
+                shimmerContainer.setVisibility(View.INVISIBLE);
             }
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -397,6 +406,7 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
     }
 
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
@@ -412,6 +422,11 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                     (SearchView) menu.findItem(R.id.search).getActionView();
             searchView.setSearchableInfo(
                     searchManager.getSearchableInfo(getComponentName()));
+            EditText searchEditText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+            ImageView searchClose = (ImageView) searchView.findViewById (android.support.v7.appcompat.R.id.search_close_btn);
+            searchClose.setColorFilter (Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
+            searchEditText.setTextColor(getResources().getColor(R.color.black));
+            searchEditText.setHintTextColor(getResources().getColor(R.color.secondaryText));
 
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
@@ -557,6 +572,8 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
     public void onPause() {
         super.onPause();
         productsQuery.removeEventListener(mListener);
+        shimmerContainer.stopShimmerAnimation();
+        shimmerContainer.setVisibility(View.INVISIBLE);
     }
 
     @Override

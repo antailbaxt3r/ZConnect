@@ -239,7 +239,7 @@ public class MyProfileFragment extends Fragment {
                 }
 
                 if(db_like != null){
-                    db_like.addValueEventListener(new ValueEventListener() {
+                    db_like.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             long like = dataSnapshot.getChildrenCount();

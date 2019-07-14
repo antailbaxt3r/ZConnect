@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,11 +30,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.AdminHome;
 import com.zconnect.zutto.zconnect.MakeAdmin;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+
 import java.util.Vector;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class MakeAdminRVAdapter extends RecyclerView.Adapter<MakeAdminRVAdapter.ViewHolder> {
+    UserItemFormat userItemFormat = new UserItemFormat();
     Context context;
     private SharedPreferences communitySP;
     public String communityReference;
@@ -88,7 +93,25 @@ public class MakeAdminRVAdapter extends RecyclerView.Adapter<MakeAdminRVAdapter.
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             Toast.makeText(context, "User promoted successfully", Toast.LENGTH_SHORT).show();
-                                            context.startActivity(new Intent(context, AdminHome.class));
+
+                                     databaseReference.child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                         @Override
+                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                             userItemFormat.setUserUID(String.valueOf(dataSnapshot.child("userUID").getValue()));
+                                             userItemFormat.setUsername(String.valueOf(dataSnapshot.child("username").getValue()));
+                                             userItemFormat.setImageURL(String.valueOf(dataSnapshot.child("imageURL").getValue()));
+                                             GlobalFunctions.inAppNotifications("you have been promoted to admin by","You are now a admin",userItemFormat,false,"status",null,uid.get(holder.getAdapterPosition()));
+                                             Intent intent = new Intent(context,AdminHome.class);
+                                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                             context.startActivity(intent);
+                                         }
+
+                                         @Override
+                                         public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                         }
+                                     });
+
 
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {

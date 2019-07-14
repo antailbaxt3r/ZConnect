@@ -508,3 +508,16 @@ exports.addTitleImagePersChatUserForums = functions.database.ref('/communities/{
   return userForumRef1.child(forumID).set(_forumObj1)
   && userForumRef2.child(forumID).set(_forumObj2);
 });
+
+exports.deleteForumInAppNotif = functions.database.ref('communities/{communityID}/features/forums/categories/{forumID}')
+.onDelete((snapshot, context) => {
+  let { forumID, communityID } = context.params;
+  const forumInAppNotifsRef = snapshot.ref.parent.parent.child("inAppNotifications").child(forumID);
+  const inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/globalNotifications`);
+  return forumInAppNotifsRef.once('value', notificationsSnapshot => {
+    return notificationsSnapshot.forEach(notif => {
+      inAppNotifsRef.child(notif.key).remove();
+      notif.ref.remove();
+    });
+  });
+});
