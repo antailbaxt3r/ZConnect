@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,6 +48,8 @@ public class AddMembersToForumActivity extends BaseActivity {
     RecyclerView recyclerViewContacts;
     ArrayList<String> addedUserIds = new ArrayList<>();
     SearchView searchView;
+    Toolbar toolbar;
+
 
 
 
@@ -56,7 +59,8 @@ public class AddMembersToForumActivity extends BaseActivity {
         setContentView(R.layout.activity_add_members_to_forum);
         recyclerViewContacts = findViewById(R.id.members_rv);
         recyclerViewContacts.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
+        toolbar = findViewById(R.id.toolbar_add_members);
+        setSupportActionBar(toolbar);
         listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -154,7 +158,7 @@ public class AddMembersToForumActivity extends BaseActivity {
                 Toast.makeText(getApplicationContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
             }
         };
-    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").addListenerForSingleValueEvent(listener);
+        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").addListenerForSingleValueEvent(listener);
 
 
 
@@ -220,6 +224,7 @@ public class AddMembersToForumActivity extends BaseActivity {
         searchView.setSearchableInfo(searchManager
                 .getSearchableInfo(getComponentName()));
         searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setDrawingCacheBackgroundColor(getResources().getColor(R.color.black));
 
         // listening to search query text change
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -244,5 +249,4 @@ public class AddMembersToForumActivity extends BaseActivity {
 
     }
 
-    }
-
+}

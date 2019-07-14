@@ -26,6 +26,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Adapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -463,6 +464,15 @@ public class OpenStatus extends BaseActivity {
         comments = findViewById(R.id.comment_text_open_status);
         recyclerView = findViewById(R.id.open_status_comments_RV);
         calendar = Calendar.getInstance();
+        commentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                findViewById(R.id.typer).requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(findViewById(R.id.typer), InputMethodManager.SHOW_IMPLICIT);
+
+            }
+        });
     }
 
     private void postMessage(boolean isAnonymous){

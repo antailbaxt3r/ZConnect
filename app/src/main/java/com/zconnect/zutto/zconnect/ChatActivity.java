@@ -484,8 +484,13 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         }
         calendar = Calendar.getInstance();
         chatView = (RecyclerView) findViewById(R.id.chatList);
-        if(getIntent().getStringExtra("forumType").equals(ForumUtilities.VALUE_COMMENTS)){
-        adapter = new ChatRVAdapter(messages, databaseReference, forumCategory, this, ForumUtilities.VALUE_COMMENTS);
+        if(getIntent().getStringExtra("forumType") != null) {
+            if (getIntent().getStringExtra("forumType").equals(ForumUtilities.VALUE_COMMENTS)) {
+                adapter = new ChatRVAdapter(messages, databaseReference, forumCategory, this, ForumUtilities.VALUE_COMMENTS);
+            } else {
+                adapter = new ChatRVAdapter(messages, databaseReference, forumCategory, this, ForumUtilities.VALUE_NORMAL_FORUM);
+
+            }
         }
         else{
             adapter = new ChatRVAdapter(messages, databaseReference, forumCategory, this, ForumUtilities.VALUE_NORMAL_FORUM);

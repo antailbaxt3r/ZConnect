@@ -70,7 +70,7 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:visibility="gone"
-        android:tint="@color/colorPrimary"
+        android:tint="@color/deepPurple500"
         android:src="@drawable/baseline_check_24"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="@dimen/border_radius_5dp"
