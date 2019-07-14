@@ -20,7 +20,7 @@ import java.util.Arrays;
 
 public class NotificationAdmin extends BaseActivity {
 
-    private ArrayList notification_type=new ArrayList<>(Arrays.asList("Send Text/Image Notification"));
+    private ArrayList notification_type=new ArrayList<>(Arrays.asList("Add a Notification"));
     private Toolbar mActionBarToolbar;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
