@@ -156,7 +156,7 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
                 .build();
 
         communitiesReference = FirebaseDatabase.getInstance().getReference().child("communitiesInfo");
-        userCommunitiesReference = FirebaseDatabase.getInstance().getReference().child("userCommunities");
+        userCommunitiesReference = FirebaseDatabase.getInstance().getReference().child("userCommunities").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("communitiesJoined");
         communitiesRecycler = (RecyclerView) findViewById(R.id.all_communities);
         communitiesRecycler.setLayoutManager(new LinearLayoutManager(this));
         noCommunitiesLayout = (RelativeLayout) findViewById(R.id.no_communities_layout);
@@ -384,14 +384,21 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
 
                     }
                 }
+                Log.d("ReferencePath",userCommunitiesReference.toString());
 
+                Boolean finalFlagNoCommunity = flagNoCommunity;
                 userCommunitiesReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
 
                         communitiesJoinedList.clear();
+                        if(dataSnapshot2.getValue() == null){
+                            CommunitiesItemFormat noUsers = new CommunitiesItemFormat();
+                            noUsers.setName("No communities found");
+                            return;
+                        }
                         try {
-                            for (DataSnapshot shot : dataSnapshot2.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("communitiesJoined").getChildren()) {
+                            for (DataSnapshot shot : dataSnapshot2.getChildren()) {
                                 CommunitiesItemFormat communitiesItemFormat2 = dataSnapshot.child(shot.getValue().toString()).getValue(CommunitiesItemFormat.class);
                                 communitiesJoinedList.add(communitiesItemFormat2);
                             }
@@ -400,6 +407,18 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
                         {
                             Log.e("Message","New User");
                         }
+                        totalCommunitiesList.clear();
+                        totalCommunitiesList.addAll(communitiesList);
+                        totalCommunitiesList.add(titleCommunitiesJoined);
+                        totalCommunitiesList.addAll(communitiesJoinedList);
+
+                        if(finalFlagNoCommunity){
+                            noCommunitiesLayout.setVisibility(View.VISIBLE);
+                        }else{
+                            noCommunitiesLayout.setVisibility(View.GONE);
+                        }
+                        progressDialog.dismiss();
+                        adapter.notifyDataSetChanged();
                     }
 
                     @Override
@@ -408,17 +427,17 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
                     }
                 });
 
-                totalCommunitiesList.addAll(communitiesList);
-                totalCommunitiesList.add(titleCommunitiesJoined);
-                totalCommunitiesList.addAll(communitiesJoinedList);
-
-                if(flagNoCommunity){
-                    noCommunitiesLayout.setVisibility(View.VISIBLE);
-                }else{
-                    noCommunitiesLayout.setVisibility(View.GONE);
-                }
-                progressDialog.dismiss();
-                adapter.notifyDataSetChanged();
+//                totalCommunitiesList.addAll(communitiesList);
+//                totalCommunitiesList.add(titleCommunitiesJoined);
+//                totalCommunitiesList.addAll(communitiesJoinedList);
+//
+//                if(flagNoCommunity){
+//                    noCommunitiesLayout.setVisibility(View.VISIBLE);
+//                }else{
+//                    noCommunitiesLayout.setVisibility(View.GONE);
+//                }
+//                progressDialog.dismiss();
+//                adapter.notifyDataSetChanged();
             }
 
             @Override
