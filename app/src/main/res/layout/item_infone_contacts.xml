@@ -69,7 +69,7 @@
         android:id="@+id/item_checked"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:visibility="gone"
+        android:visibility="invisible"
         android:tint="@color/deepPurple500"
         android:src="@drawable/baseline_check_24"
         android:layout_marginTop="5dp"

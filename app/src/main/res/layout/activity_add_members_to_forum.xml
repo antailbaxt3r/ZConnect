@@ -28,11 +28,18 @@
 
 
     </android.support.design.widget.AppBarLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/app_bar_layout"
+        android:id="@+id/add_members_tv"
+        android:text="20 Remaining"
+        android:padding="3dp"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/members_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/app_bar_layout" />
+        android:layout_below="@id/add_members_tv" />
 
 </RelativeLayout>

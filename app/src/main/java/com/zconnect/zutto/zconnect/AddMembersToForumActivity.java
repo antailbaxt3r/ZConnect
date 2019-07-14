@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,6 +50,7 @@ public class AddMembersToForumActivity extends BaseActivity {
     ArrayList<String> addedUserIds = new ArrayList<>();
     SearchView searchView;
     Toolbar toolbar;
+    TextView members;
 
 
 
@@ -61,6 +63,8 @@ public class AddMembersToForumActivity extends BaseActivity {
         recyclerViewContacts.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         toolbar = findViewById(R.id.toolbar_add_members);
         setSupportActionBar(toolbar);
+        setActionBarTitle("Add Users");
+        members = findViewById(R.id.add_members_tv);
         listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -126,7 +130,7 @@ public class AddMembersToForumActivity extends BaseActivity {
 
                             addedUserIds.add(item.getInfoneUserId());
                             Log.d("Hoi",addedUserIds.toString());
-                            setActionBarTitle("Add users "+Integer.toString(20-addedUserIds.size())+" Remaining");
+                            members.setText(20-addedUserIds.size()+" Remaining");
                             return true;
                         }
                         return false;
@@ -138,7 +142,7 @@ public class AddMembersToForumActivity extends BaseActivity {
                         if(addedUserIds.size()>0){
                             Log.d("Hoi",item.getInfoneUserId());
                             addedUserIds.remove(item.getInfoneUserId());
-                            setActionBarTitle("Add users "+Integer.toString(20-addedUserIds.size())+" Remaining");
+                            members.setText(20-addedUserIds.size()+" Remaining");
                             return true;
                         }
                         return false;

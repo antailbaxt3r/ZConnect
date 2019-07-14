@@ -291,17 +291,20 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         }
 
         if (type.equals("forums")) {
+            toolbar.setTitle(getIntent().getStringExtra("name"));
             setActionBarTitle(getIntent().getStringExtra("name"));
+            Log.d("Setting it to: ",getIntent().getStringExtra("name"));
         } else if (type.equals("cabPool")) {
-            setActionBarTitle("Discussion");
+            toolbar.setTitle("Discussion");
+
         } else if (type.equals("events")) {
-            setActionBarTitle("Discussion");
+            toolbar.setTitle("Discussion");
         } else if (type.equals("messages")) {
-            setActionBarTitle("Comments");
+            toolbar.setTitle("Comments");
         } else if (type.equals("storeroom")) {
-            setActionBarTitle("Chat with seller");
+            toolbar.setTitle("Chat with seller");
         } else if (type.equals("post")) {
-            setActionBarTitle("Comments");
+            toolbar.setTitle("Comments");
         } else if (type.equals("personalChats")) {
             Log.d("Setting it to:", getIntent().getStringExtra("name"));
 //            setActionBarTitle(getIntent().getStringExtra("name"));
@@ -389,6 +392,10 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 tab = getIntent().getStringExtra("tab");
                 forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab).child(key);
                 //TODO usersReference IS HARDCODED
+                setActionBarTitle(getIntent().getStringExtra("name"));
+                toolbar.setTitle(getIntent().getStringExtra("name"));
+
+
 
 
                 forumCategory.addValueEventListener(new ValueEventListener() {
@@ -595,6 +602,9 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
                 if (type.equals("forums") || type.equals("others") || type.equals("personalChats")) {
                     DBHelper mydb = new DBHelper(ChatActivity.this);
+                    setActionBarTitle(getIntent().getStringExtra("name"));
+                    toolbar.setTitle(getIntent().getStringExtra("name"));
+
 
                     String key, tab, name;
                     int unseen_num;
@@ -1182,6 +1192,8 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 menu.findItem(R.id.action_list_people).setVisible(false);
                 Log.d("Menu Setting", getIntent().getStringExtra("name"));
                 setActionBarTitle(getIntent().getStringExtra("name"));
+                toolbar.setTitle(getIntent().getStringExtra("name"));
+
             }
         }
         return super.onPrepareOptionsMenu(menu);
