@@ -47,6 +47,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.zconnect.zutto.zconnect.R.layout.activity_infone2;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class InfoneActivity extends Fragment {
@@ -90,7 +91,7 @@ public class InfoneActivity extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.activity_infone2, container, false);
+        View view = inflater.inflate(activity_infone2, container, false);
 
         recyclerViewCat = (RecyclerView) view.findViewById(R.id.rv_cat_infone);
         recyclerViewCat.setVisibility(View.GONE);
@@ -149,7 +150,11 @@ public class InfoneActivity extends Fragment {
                         return cat1.getName().trim().compareToIgnoreCase(cat2.getName().trim());
                     }
                 });
+                if(categoriesList.isEmpty()){
 
+                }else{
+
+                }
                 infoneCategoriesRVAdapter = new InfoneCategoriesRVAdapter(categoriesList, getContext());
                 recyclerViewCat.setAdapter(infoneCategoriesRVAdapter);
 

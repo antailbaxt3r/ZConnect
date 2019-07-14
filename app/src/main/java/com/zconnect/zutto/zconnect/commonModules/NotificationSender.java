@@ -442,6 +442,8 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
 
     private void forumAddNotification(String communityName, String forumName, String forumCategory, String forumCategoryUID, String forumKey, String userName,String userImage) {
 
+        if(forumCategory.equals("others") || forumCategory.equals("personalChats"))
+            return;
 
         creator = new RemoteMessage.Builder("data");
 
@@ -487,6 +489,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         userItemFormat.setImageURL(UserUtilities.currentUser.getImageURL());
         metadata.put("key",productKey);
         metadata.put("type",productType);
+        metadata.put("featurePID",productKey);
         compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD_FREQUENCY_STR," is selling "+productName,"price: "+productPrice,userItemFormat,"productAdd",metadata);
     }
 
@@ -509,6 +512,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         userItemFormat.setUsername("");
         userItemFormat.setImageURL("");
         metadata.put("id",eventKey);
+        metadata.put("featurePID",eventKey);
         compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD_FREQUENCY_STR,eventName+" will be happening at ","location: "+eventLocation,userItemFormat,"eventAdd",metadata);
     }
 
@@ -540,6 +544,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST);
         creator.addData("userKey",userKey);
         metadata.put("key",productKey);
+        metadata.put("featurePID",productKey);
         UserItemFormat userItemFormat=new UserItemFormat();
         userItemFormat.setUserUID(userKey);
         userItemFormat.setUsername(userName);
@@ -593,6 +598,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST);
         creator.addData("userKey",userKey);
         metadata.put("key",eventKey);
+        metadata.put("featurePID",eventKey);
         UserItemFormat userItemFormat=new UserItemFormat();
         userItemFormat.setUserUID(userKey);
         userItemFormat.setUsername(userName);

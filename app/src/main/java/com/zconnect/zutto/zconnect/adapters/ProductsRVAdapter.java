@@ -19,6 +19,8 @@ import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 
 import java.util.Vector;
 
+import uk.co.senab.photoview.gestures.EclairGestureDetector;
+
 /**
  * Created by Lokesh Garg on 28-03-2018.
  */
@@ -51,23 +53,8 @@ ProductsRVAdapter extends RecyclerView.Adapter<ProductsViewHolder>{
 
     @Override
     public void onBindViewHolder(final ProductsViewHolder holder, final int position) {
-        try {
-            StoreRoomRef.child(productVector.get(position).getKey()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.hasChild("NumberOfViews"))
-                        holder.setNumberOfViewsInHolder(productVector.get(position).getNumberOfViews());
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        } catch (Exception e){
-            Log.e("Error Message","Null reference to Database");
-        }
-
+        if(productVector.get(position).getNumberOfViews()!=-1)
+            holder.setNumberOfViewsInHolder(productVector.get(position).getNumberOfViews());
         if(getItemViewType(position) == ProductUtilities.TYPE_ADD)
         {
             holder.setPrice(productVector.get(position).getPrice());

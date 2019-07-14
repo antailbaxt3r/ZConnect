@@ -71,6 +71,8 @@
             android:layout_height="40dp"
             android:layout_marginLeft="70dp"
             android:layout_marginRight="90dp"
+            android:backgroundTint="#FFFFFF"
+            android:backgroundTintMode="src_over"
             android:gravity="right"
             android:paddingBottom="3dp"
             android:scaleType="centerCrop"

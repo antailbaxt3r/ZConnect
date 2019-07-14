@@ -150,19 +150,25 @@ public class AddInfoneCat extends BaseActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.setMessage("Creating category");
-                saveChanges();
+                if (mImageUri != null && !nameEt.getText().toString().trim().equals("")) {
+                    Log.d(String.valueOf(nameEt.getText()), "saveChanges: ");
+                    progressDialog.setMessage("Creating category");
+                    saveChanges();
 
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta = new HashMap<>();
 
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_ADDED_CATEGORY);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_ADDED_CATEGORY);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
 
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
+                }
+                else{
+                    Toast.makeText(AddInfoneCat.this, "Category name cannot be empty!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

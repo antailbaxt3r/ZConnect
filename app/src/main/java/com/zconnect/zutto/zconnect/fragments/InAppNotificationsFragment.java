@@ -103,11 +103,11 @@ public class InAppNotificationsFragment extends Fragment {
                 globalnotificationsList.clear();
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     InAppNotificationsItemFormat globalnotification = childSnapshot.getValue(InAppNotificationsItemFormat.class);
-                    if (globalnotification != null) {
+                    if (globalnotification != null && !globalnotification.getNotifiedBy().getUserUID().equals(UserUtilities.currentUser.getUserUID())) {
                         globalnotificationsList.add(globalnotification);
                     }
                 }
-
+                if(!globalnotificationsList.isEmpty())
                 totalnotificationsList.addAll(globalnotificationsList);
                 totalnotificationsList.addAll(usernotificationsList);
                 Collections.sort(totalnotificationsList, new Comparator<InAppNotificationsItemFormat>() {
@@ -145,6 +145,7 @@ public class InAppNotificationsFragment extends Fragment {
                         if(usernotification!=null)
                         usernotificationsList.add(usernotification);
                     }
+                    if(!globalnotificationsList.isEmpty())
                     totalnotificationsList.addAll(globalnotificationsList);
                     totalnotificationsList.addAll(usernotificationsList);
                     Collections.sort(totalnotificationsList, new Comparator<InAppNotificationsItemFormat>() {
