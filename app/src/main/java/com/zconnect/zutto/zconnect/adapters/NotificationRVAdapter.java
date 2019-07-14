@@ -45,7 +45,7 @@ public class NotificationRVAdapter extends RecyclerView.Adapter<NotificationRVAd
                     nottif_no_image.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(nottif_no_image);
                 }*/
-                if (holder.notif.getText()=="Send Text/Image Notification"){
+                if (holder.notif.getText()=="Add a Notification"){
                     Intent notif_image = new Intent(context,NotificationImage.class);
                     notif_image.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(notif_image);
