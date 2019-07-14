@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:title="@string/anonymous_forum"
-        android:id="@+id/action_anonymous_forum"
-        android:icon="@drawable/baseline_people_24"
-        android:iconTint="@color/white"
-        android:orderInCategory="0"
-        app:showAsAction="collapseActionView|ifRoom" />
+
     <item
         android:title="@string/edit_forum"
         android:id="@+id/action_edit_forum"

@@ -21,6 +21,7 @@ public class ForumUtilities {
 
     public static final String VALUE_NORMAL_FORUM = "Normal Forum";
     public static final String VALUE_ANONYMOUS_FORUM = "Anonymous Forum";
+    public static final String VALUE_COMMENTS = "Comments";
 
 
 }
