@@ -19,6 +19,7 @@ import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
+import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 
 import java.text.SimpleDateFormat;
@@ -55,7 +56,7 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
     public void setDetails(ForumCategoriesItemFormat forumCategoriesItemFormat){
 
         catName.setText(forumCategoriesItemFormat.getName());
-        Log.d("NOTIFICATIONNAME",forumCategoriesItemFormat.getName());
+//        Log.d("NOTIFICATIONNAME",forumCategoriesItemFormat.getName());
         setUnSeenMessages(forumCategoriesItemFormat.getTotalMessages(),forumCategoriesItemFormat.getSeenMessages());
 
         if(forumCategoriesItemFormat.getImageThumb()!=null)
@@ -68,7 +69,7 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
             forumIcon.setBackground(mView.getContext().getResources().getDrawable(R.drawable.forum_circle));
         }
 
-        if(forumCategoriesItemFormat.getLastMessage().isAnonymous()){
+        if(forumCategoriesItemFormat.getLastMessage().getMessageType().equals(MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE_STR)){
             lastMessageWithName.setVisibility(View.VISIBLE);
             lastMessageWithName.setText("Anonymous");
             lastMessageTime.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(forumCategoriesItemFormat.getLastMessage().getTimeDate()));

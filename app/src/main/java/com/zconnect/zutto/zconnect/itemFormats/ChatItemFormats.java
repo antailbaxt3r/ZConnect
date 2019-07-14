@@ -20,15 +20,6 @@ public class ChatItemFormats {
         this.userName = userName;
     }
 
-    public boolean isAnonymous() {
-        return isAnonymous;
-    }
-
-    public void setAnonymous(boolean anonymous) {
-        isAnonymous = anonymous;
-    }
-
-    private boolean isAnonymous;
 
     private String key;
 
