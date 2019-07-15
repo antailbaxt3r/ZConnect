@@ -508,3 +508,54 @@ exports.addTitleImagePersChatUserForums = functions.database.ref('/communities/{
   return userForumRef1.child(forumID).set(_forumObj1)
   && userForumRef2.child(forumID).set(_forumObj2);
 });
+
+exports.deleteForumInAppNotif = functions.database.ref('communities/{communityID}/features/forums/categories/{forumID}')
+.onDelete((snapshot, context) => {
+  let { forumID, communityID } = context.params;
+  const forumInAppNotifsRef = snapshot.ref.parent.parent.child("inAppNotifications").child(forumID);
+  const global_inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/globalNotifications`);
+  const personal_inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/Users1`);
+  return forumInAppNotifsRef.once('value', notificationsSnapshot => {
+    return notificationsSnapshot.forEach(notif => {
+      if(notif.hasChild('receiverUID'))
+        personal_inAppNotifsRef.child(notif.child('receiverUID').val()).child(notif.key).remove();
+      else
+        global_inAppNotifsRef.child(notif.key).remove();
+      notif.ref.remove();
+    });
+  });
+});
+
+exports.deleteStoreroomInAppNotif = functions.database.ref('communities/{communityID}/features/storeroom/products/{productID}')
+.onDelete((snapshot, context) => {
+  let { productID, communityID } = context.params;
+  const productInAppNotifsRef = snapshot.parent.parent.child('inAppNotifications').child(productID);
+  const global_inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/globalNotifications`);
+  const personal_inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/Users1`);
+  return productInAppNotifsRef.once('value', notificationsSnapshot => {
+    return notificationsSnapshot.forEach(notif => {
+      if(notif.hasChild('receiverUID'))
+        personal_inAppNotifsRef.child(notif.child('receiverUID').val()).child(notif.key).remove();
+      else
+        global_inAppNotifsRef.child(notif.key).remove();
+      notif.ref.remove();
+    });
+  });
+});
+
+exports.deleteEventsInAppNotif = functions.database.ref('communities/{communityID}/features/events/activeEvents/{eventID}')
+.onDelete((snapshot, context) => {
+  let { eventID, communityID } = context.params;
+  const eventInAppNotifsRef = snapshot.parent.parent.child('inAppNotifications').child(eventID);
+  const global_inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/globalNotifications`);
+  const personal_inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/Users1`);
+  return eventInAppNotifsRef.once('value', notificationsSnapshot => {
+    return notificationsSnapshot.forEach(notif => {
+      if(notif.hasChild('receiverUID'))
+        personal_inAppNotifsRef.child(notif.child('receiverUID').val()).child(notif.key).remove();
+      else
+        global_inAppNotifsRef.child(notif.key).remove();
+      notif.ref.remove();
+    });
+  });
+});
