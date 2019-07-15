@@ -99,25 +99,26 @@ public class GlobalFunctions {
         notificationMap.put("type", type);
         notificationMap.put("key", newNotifRef.getKey());
         notificationMap.put("notifiedBy", notifiedby);
-
         newNotifRef.setValue(notificationMap);
         if (metadata != null) {
             switch (type) {
                 case "addforum":
                     Log.d("Adding", "inAppNotifications: ");
-                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/forums/inAppNotifications/" + metadata.get("featurePID")).child(newNotifRef.getKey()).setValue(true);
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/forums/inAppNotifications/" + metadata.get("featurePID")).child("key").setValue(newNotifRef.getKey());
                     break;
                 case "productAdd":
-                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/storeroom/inAppNotifications/" + metadata.get("featurePID")).child(newNotifRef.getKey()).setValue(true);
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/storeroom/inAppNotifications/" + metadata.get("featurePID")).child("key").setValue(newNotifRef.getKey());
                     break;
                 case "productShortlist":
-                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/storeroom/inAppNotifications/" + metadata.get("featurePID")).child(newNotifRef.getKey()).setValue(true);
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/storeroom/inAppNotifications/" + metadata.get("featurePID")).child("key").setValue(newNotifRef.getKey());
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/storeroom/inAppNotifications/" + metadata.get("featurePID")).child("receiverUID").setValue(uid);
                     break;
                 case "eventBoost":
-                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/events/inAppNotifications/" + metadata.get("featurePID")).child(newNotifRef.getKey()).setValue(true);
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/events/inAppNotifications/" + metadata.get("featurePID")).child("key").setValue(newNotifRef.getKey());
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/events/inAppNotifications/" + metadata.get("featurePID")).child("receiverUID").setValue(uid);
                     break;
                 case "eventAdd":
-                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/events/inAppNotifications/" + metadata.get("featurePID")).child(newNotifRef.getKey()).setValue(true);
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/events/inAppNotifications/" + metadata.get("featurePID")).child("key").setValue(newNotifRef.getKey());
                     break;
             }
             for (HashMap.Entry<String, Object> entry : metadata.entrySet()) {
