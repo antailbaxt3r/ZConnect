@@ -96,7 +96,7 @@ public class InAppNotificationsFragment extends Fragment {
         super.onResume();
         Log.d("inapresume", "onResume: ");
         if(!UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || !UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
-        globalReference.child("globalNotifications").addListenerForSingleValueEvent(new ValueEventListener() {
+        globalReference.child("globalNotifications").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 totalnotificationsList.clear();
@@ -106,6 +106,7 @@ public class InAppNotificationsFragment extends Fragment {
                     if (globalnotification != null && !globalnotification.getNotifiedBy().getUserUID().equals(UserUtilities.currentUser.getUserUID())) {
                         globalnotificationsList.add(globalnotification);
                     }
+
                 }
                 if(!globalnotificationsList.isEmpty())
                 totalnotificationsList.addAll(globalnotificationsList);
@@ -135,7 +136,7 @@ public class InAppNotificationsFragment extends Fragment {
             }
         });
     }
-            globalReference.child("Users1").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("notifications").addListenerForSingleValueEvent(new ValueEventListener() {
+            globalReference.child("Users1").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("notifications").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     totalnotificationsList.clear();
