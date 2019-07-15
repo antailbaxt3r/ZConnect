@@ -58,21 +58,24 @@ public class GlobalFunctions {
     }
 
     public static void inAppNotifications(String title, String desc, final UserItemFormat notifiedby, boolean audience, String type, HashMap<String, Object> metadata, String uid) {
+        //uid variable is uid of receiver
         String key;
         HashMap<String, Object> notificationMap = new HashMap<>();
         HashMap<String, Boolean> seenmap = new HashMap<>();
-      
+
+        Log.d("dddinggg", "productShortlistNotification: ");
         /*
         audience true - Community specific notifications
         audience false - User specific notifications
         */
+        Log.d("SASASA", uid+"");
         if (audience) {
             notificationsRef = FirebaseDatabase.getInstance().getReference().child("communities").
                     child(communityReference).child("globalNotifications");
             key = NotificationIdentifierUtilities.KEY_GLOBAL;
 
         }
-        else if(notifiedby.getUserUID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+        else if(notifiedby.getUserUID().equals(uid))
         {
             //for personal in app notifs return void if the notified by is same as the current user.
             return;
@@ -84,6 +87,8 @@ public class GlobalFunctions {
 
             key = NotificationIdentifierUtilities.KEY_PERSONAL;
         }
+
+        Log.d("aaaaaaaaddddinggg", "productShortlistNotification: ");
         seenmap.put(FirebaseAuth.getInstance().getUid(),false);
         DatabaseReference newNotifRef = notificationsRef.push();
         notificationMap.put("scope",key);

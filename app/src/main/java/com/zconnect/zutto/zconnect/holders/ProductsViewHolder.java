@@ -21,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
@@ -205,7 +206,7 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                                         productShortlistNotification.setUserName(userItemFormat.getUsername());
                                         productShortlistNotification.setUserMobileNumber(userItemFormat.getMobileNumber());
                                         productShortlistNotification.setUserImage(userItemFormat.getImageURLThumbnail());
-                                        productShortlistNotification.setRecieverKey((String) dataSnapshot.child("PostedBy").child("UID").getValue());
+                                        productShortlistNotification.setRecieverKey(dataSnapshot.child(key).child("PostedBy").child("UID").getValue().toString());
                                         notificationSender.execute(productShortlistNotification);
 
                                     }

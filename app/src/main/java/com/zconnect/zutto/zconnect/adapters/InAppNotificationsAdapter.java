@@ -131,12 +131,15 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
             holder.desctv.setText(notificationsList.get(position).getDesc());
             holder.notificationsLayout.setOnClickListener(view -> {
                 //Seenzone
+                HashMap<String,Boolean> seenmap = new HashMap<>();
+                seenmap.put(FirebaseAuth.getInstance().getCurrentUser().getUid(),true);
+                Log.d("im the log msg onclick", notificationsList.get(position).getTitle());
                 if (notificationsList.get(position).getScope().equals(NotificationIdentifierUtilities.KEY_GLOBAL)) {
                     seenReference = FirebaseDatabase.getInstance().getReference()
                             .child("communities").child(communityRef).child("globalNotifications")
                             .child(notificationsList.get(position).getKey())
                             .child("seen").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-                    seenReference.setValue(true);
+                    seenReference.setValue(seenmap);
 
                 } else {
                     seenReference = FirebaseDatabase.getInstance().getReference()
@@ -144,11 +147,9 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
                             .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())
                             .child("notifications").child(notificationsList.get(position).getKey())
                             .child("seen");
-                    seenReference.setValue(true);
+                    seenReference.setValue(seenmap);
                 }
                 holder.seen.setVisibility(View.INVISIBLE);
-                HashMap<String,Boolean> seenmap = new HashMap<>();
-                seenmap.put(FirebaseAuth.getInstance().getCurrentUser().getUid(),true);
                 notificationsList.get(position).setSeen(seenmap);
                 String type = notificationsList.get(position).getType();
                 switch (type) {
@@ -211,6 +212,7 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
                     case "productShortlist":
                         intent = new Intent(context, OpenProductDetails.class);
                         intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                        intent.putExtra("type", String.valueOf(notificationsList.get(position).getMetadata().get("type")));
                         context.startActivity(intent);
                         break;
                     case "infoneinvalidate":

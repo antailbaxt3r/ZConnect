@@ -48,6 +48,7 @@ import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.commonModules.viewImage;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
@@ -778,7 +779,7 @@ public class OpenProductDetails extends BaseActivity {
 //
 //                                        NotificationSender notificationSender=new NotificationSender(dataSnapshot.child("PostedBy").child("UID").getValue().toString(),null,null,null,null,userDetails.getUserUID(),productName.getText().toString(),KEY_PRODUCT,false,true,getApplicationContext());
 //                                        notificationSender.execute();
-
+                                    HashMap<String,Object> metadata = new HashMap<>();
                                     NotificationSender notificationSender = new NotificationSender(OpenProductDetails.this, userItemFormat.getUserUID());
                                     NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST, userItemFormat.getUserUID(), (String) dataSnapshot.child("PostedBy").child("UID").getValue(),1);
                                     productShortlistNotification.setCommunityName(communityTitle);
@@ -787,7 +788,10 @@ public class OpenProductDetails extends BaseActivity {
                                     productShortlistNotification.setUserName(userItemFormat.getUsername());
                                     productShortlistNotification.setUserMobileNumber(userItemFormat.getMobileNumber());
                                     productShortlistNotification.setUserImage(userItemFormat.getImageURLThumbnail());
-                                    productShortlistNotification.setRecieverKey((String) dataSnapshot.child("PostedBy").child("UID").getValue());
+                                    productShortlistNotification.setRecieverKey(dataSnapshot.child("PostedBy").child("UID").getValue().toString());
+                                    metadata.put("key",productKey);
+                                    metadata.put("featurePID",productKey);
+                                    GlobalFunctions.inAppNotifications("shortlisted your product","",userItemFormat,false,"productShortlist",metadata,dataSnapshot.child("PostedBy").child("UID").getValue().toString());
 
                                     notificationSender.execute(productShortlistNotification);
 
