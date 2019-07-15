@@ -95,46 +95,48 @@ public class InAppNotificationsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d("inapresume", "onResume: ");
-        if(!UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || !UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
-        globalReference.child("globalNotifications").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                totalnotificationsList.clear();
-                globalnotificationsList.clear();
-                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                    InAppNotificationsItemFormat globalnotification = childSnapshot.getValue(InAppNotificationsItemFormat.class);
-                    if (globalnotification != null) {
-                        globalnotificationsList.add(globalnotification);
-                    }
-                }
-
-                totalnotificationsList.addAll(globalnotificationsList);
-                totalnotificationsList.addAll(usernotificationsList);
-                Collections.sort(totalnotificationsList, new Comparator<InAppNotificationsItemFormat>() {
+        if(UserUtilities.currentUser!= null) {
+            if (!UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || !UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
+                globalReference.child("globalNotifications").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public int compare(InAppNotificationsItemFormat o1, InAppNotificationsItemFormat o2) {
-                        return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis());
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        totalnotificationsList.clear();
+                        globalnotificationsList.clear();
+                        for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                            InAppNotificationsItemFormat globalnotification = childSnapshot.getValue(InAppNotificationsItemFormat.class);
+                            if (globalnotification != null) {
+                                globalnotificationsList.add(globalnotification);
+                            }
+                        }
+
+                        totalnotificationsList.addAll(globalnotificationsList);
+                        totalnotificationsList.addAll(usernotificationsList);
+                        Collections.sort(totalnotificationsList, new Comparator<InAppNotificationsItemFormat>() {
+                            @Override
+                            public int compare(InAppNotificationsItemFormat o1, InAppNotificationsItemFormat o2) {
+                                return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis());
+                            }
+                        });
+                        progressBar.setVisibility(View.GONE);
+                        notifRecyclerView.setVisibility(View.VISIBLE);
+                        if (!totalnotificationsList.isEmpty()) {
+                            noNotif.setVisibility(View.GONE);
+                            notifRecyclerView.setVisibility(View.VISIBLE);
+                            inAppNotificationsAdapter.notifyDataSetChanged();
+
+                        } else {
+                            noNotif.setVisibility(View.VISIBLE);
+                            notifRecyclerView.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
                     }
                 });
-                progressBar.setVisibility(View.GONE);
-                notifRecyclerView.setVisibility(View.VISIBLE);
-                if(!totalnotificationsList.isEmpty()) {
-                    noNotif.setVisibility(View.GONE);
-                    notifRecyclerView.setVisibility(View.VISIBLE);
-                    inAppNotificationsAdapter.notifyDataSetChanged();
-
-                } else {
-                    noNotif.setVisibility(View.VISIBLE);
-                    notifRecyclerView.setVisibility(View.GONE);
-                }
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
+        }
             globalReference.child("Users1").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("notifications").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
