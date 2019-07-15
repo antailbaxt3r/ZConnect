@@ -454,6 +454,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".Internships"
+            android:label="Internships"
+            android:parentActivityName=".HomeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".VerificationPage"
             android:label="@string/title_activity_verfication_page"
             android:screenOrientation="portrait"

@@ -107,11 +107,6 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
 
     @Override
     public void onBindViewHolder(final CabPoolRVAdapter.ViewHolder holder, int position) {
-
-
-
-
-
         if(i==0){
            DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
            DateTime date = null;
