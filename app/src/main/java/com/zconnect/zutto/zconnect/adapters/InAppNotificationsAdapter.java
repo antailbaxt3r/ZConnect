@@ -83,12 +83,12 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
 
                     Log.d("AAAA",notificationsList.get(position).getScope() + " " );
                 try{
-                if (notificationsList.get(position).getScope().equals(NotificationIdentifierUtilities.KEY_GLOBAL)&&!notificationsList.get(position).getType().equals("adminNotification")) {
+               /* if (notificationsList.get(position).getScope().equals(NotificationIdentifierUtilities.KEY_GLOBAL)&&!notificationsList.get(position).getType().equals("adminNotification")) {
                     holder.simpleDraweeView.setVisibility(View.GONE);
 
                 } else {
                     holder.simpleDraweeView.setVisibility(View.VISIBLE);
-                }
+                }*/
                 if (notificationsList.get(position).isSeen().get(FirebaseAuth.getInstance().getCurrentUser().getUid()) != null) {
 
                     if(!notificationsList.get(position).isSeen().get(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
@@ -99,10 +99,13 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
                     }
                 }
                 else{
-                   /* HashMap<String,Boolean> seenmap = new HashMap<>();
+                    HashMap<String,Boolean> seenmap = new HashMap<>();
                     seenmap.put(FirebaseAuth.getInstance().getCurrentUser().getUid(),false);
-                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityRef).child("globalNotifications").child(notificationsList.get(position).getKey()).child("seen").setValue(seenmap);
-                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityRef).child("Users1").child("notifications").child(notificationsList.get(position).getKey()).child("seen").setValue(seenmap);*/
+                    if(notificationsList.get(position).getScope().equals(NotificationIdentifierUtilities.KEY_GLOBAL)) {
+                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityRef).child("globalNotifications").child(notificationsList.get(position).getKey()).child("seen").setValue(seenmap);
+                    }else {
+                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityRef).child("Users1").child("notifications").child(notificationsList.get(position).getKey()).child("seen").setValue(seenmap);
+                    }
                     holder.seen.setVisibility(View.VISIBLE);
                 }
 
