@@ -145,7 +145,7 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
                     seenReference = FirebaseDatabase.getInstance().getReference()
                             .child("communities").child(communityRef).child("globalNotifications")
                             .child(notificationsList.get(position).getKey())
-                            .child("seen").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+                            .child("seen");
                     seenReference.setValue(seenmap);
 
                 } else {

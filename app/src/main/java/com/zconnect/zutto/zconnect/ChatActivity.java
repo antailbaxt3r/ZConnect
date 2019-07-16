@@ -170,6 +170,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
     //For Storeroom message
     String storeRoomMessage;
+    String storeRoomImage;
     private AppBarLayout appBarLayout;
     private FrameLayout chatFrameLayout;
 
@@ -281,6 +282,12 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         }
         if (callingActivityIntent.getStringExtra("store_room_message") != null) {
             storeRoomMessage = callingActivityIntent.getStringExtra("store_room_message");
+            if(callingActivityIntent.getStringExtra("store_room_image") != null){
+                storeRoomImage = callingActivityIntent.getStringExtra("store_room_image");
+            }
+            else{
+                storeRoomImage = "";
+            }
         }
         mUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         if (getIntent() != null && !TextUtils.isEmpty(getIntent().getStringExtra("ref"))) {
@@ -723,8 +730,63 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         String messagePushID = databaseReference.child("Chat").push().getKey();
 
         if (storeRoomMessage != null) {
-            text = storeRoomMessage + "\n" + typer.getText().toString().trim();
+            text = storeRoomMessage + "\n\n" + typer.getText().toString().trim();
             storeRoomMessage = null;
+            if(storeRoomImage != "" && storeRoomImage != null){
+                mImageUri = Uri.parse(storeRoomImage);
+                mUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
+                        ChatItemFormats message = new ChatItemFormats();
+                        message.setUuid(userItem.getUserUID());
+                        message.setName(userItem.getUsername());
+                        message.setPhotoURL(storeRoomImage);
+                        message.setTimeDate(calendar.getTimeInMillis());
+                        message.setImageThumb(userItem.getImageURLThumbnail());
+                        message.setMessage(" \uD83D\uDCF7 Image ");
+                        message.setMessageType(MessageTypeUtilities.KEY_PHOTO_STR);
+                        GlobalFunctions.addPoints(5);
+                        String messagePushID = databaseReference.child("Chat").push().getKey();
+                        message.setKey(messagePushID);
+                        databaseReference.child("Chat").child(messagePushID).setValue(message);
+                            NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItem.getUserUID());
+
+                            NotificationItemFormat forumChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_FORUM, userItem.getUserUID());
+
+                            forumChatNotification.setItemMessage(" \uD83D\uDCF7 Image ");
+                            forumChatNotification.setItemCategoryUID(getIntent().getStringExtra("tab"));
+                            forumChatNotification.setItemName(getIntent().getStringExtra("name"));
+                            forumChatNotification.setItemKey(getIntent().getStringExtra("key"));
+
+                            forumChatNotification.setUserImage(userItem.getImageURLThumbnail());
+                            forumChatNotification.setUserName(userItem.getUsername());
+                            forumChatNotification.setCommunityName(communityTitle);
+
+                            notificationSender.execute(forumChatNotification);
+
+                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(dataSnapshot.child("tab").getValue().toString()).child(getIntent().getStringExtra("key")).child("lastMessage").setValue(message);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
         } else {
             String text1 = typer.getText().toString().trim();
             String textCopy = text1;
@@ -909,19 +971,6 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         message.setTimeDate(calendar.getTimeInMillis());
 
         if (mImageUri != null) {
-            Log.d("L", Integer.toString(messages.size()));
-            messageTemp.setUuid(mAuth.getCurrentUser().getUid());
-            messageTemp.setName(mAuth.getCurrentUser().getDisplayName());
-            messageTemp.setPhotoURL(mImageUri != null ? mImageUri.toString() : null);
-            messageTemp.setImageThumb(mImageUri.toString());
-            messageTemp.setMessage(" \uD83D\uDCF7 Image ");
-            messageTemp.setMessageType(MessageTypeUtilities.KEY_PHOTO_STR);
-            messages.add(messageTemp);
-//            messages.add()
-            messages.add(messages.get(0));
-            Log.d("L", Integer.toString(messages.size()));
-            adapter.notifyDataSetChanged();
-
 
             final StorageReference filePath = mStorage.child(communityReference).child("features").child(type).child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
             UploadTask uploadTask = filePath.putFile(mImageUri);

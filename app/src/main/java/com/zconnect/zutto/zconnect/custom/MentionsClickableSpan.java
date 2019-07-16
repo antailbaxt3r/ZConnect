@@ -22,7 +22,7 @@ public class MentionsClickableSpan extends ClickableSpan {
     @Override
     public void updateDrawState(@NonNull TextPaint ds) {
         super.updateDrawState(ds);
-        ds.setColor(ContextCompat.getColor(context, R.color.colorPrimary));
+        ds.setColor(ContextCompat.getColor(context, R.color.deepPurple500));
         ds.setUnderlineText(false);
     }
 

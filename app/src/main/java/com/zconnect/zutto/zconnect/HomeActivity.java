@@ -1098,6 +1098,24 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             startActivity(intent);
         } else if (mUser != null) {
 
+            FirebaseDatabase.getInstance().getReference().child("minimumClientVersion").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.getValue(Integer.class)>BuildConfig.VERSION_CODE){
+                        Intent intent = new Intent(HomeActivity.this, UpdateAppActivity.class);
+                        startActivity(intent);
+                        finish();
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+
             FirebaseMessaging.getInstance().subscribeToTopic(mUser.getUid());
 
             username = mAuth.getCurrentUser().getDisplayName();
@@ -1436,35 +1454,17 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onResume() {
         super.onResume();
         mUser = mAuth.getCurrentUser();
+        launchRelevantActivitiesIfNeeded();
 
-        FirebaseDatabase.getInstance().getReference().child("minimumClientVersion").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue(Integer.class)>BuildConfig.VERSION_CODE){
-                    Intent intent = new Intent(HomeActivity.this, UpdateAppActivity.class);
-                    startActivity(intent);
-                    finish();
+        if (communityReference != null) {
+            uiDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui");
 
-                }
-                else{
-                    launchRelevantActivitiesIfNeeded();
+            mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("PopUps");
+            mDatabasePopUps.keepSynced(true);
 
-                    if (communityReference != null) {
-                        uiDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui");
+            mDatabasePopUps.addValueEventListener(popupsListener);
+        }
 
-                        mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("PopUps");
-                        mDatabasePopUps.keepSynced(true);
-
-                        mDatabasePopUps.addValueEventListener(popupsListener);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
 
     }
