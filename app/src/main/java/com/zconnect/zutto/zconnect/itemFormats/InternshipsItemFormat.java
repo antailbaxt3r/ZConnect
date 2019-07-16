@@ -3,16 +3,18 @@ package com.zconnect.zutto.zconnect.itemFormats;
 public class InternshipsItemFormat {
     private String description;
     private String duration;
-    private String organisation;
+    private String organization;
     private String question;
     private String role;
-    private String stipend;
+    private Long stipend;
 
-    public InternshipsItemFormat(String description,String duration,String organisation,String question,String role,String stipend)
+    public InternshipsItemFormat() { }
+
+    public InternshipsItemFormat(String description,String duration,String organization,String question,String role,Long stipend)
     {
         this.description = description;
         this.duration = duration;
-        this.organisation = organisation;
+        this.organization = organization;
         this.question = question;
         this.role = role;
         this.stipend = stipend;
@@ -34,12 +36,12 @@ public class InternshipsItemFormat {
         this.duration = duration;
     }
 
-    public String getOrganisation() {
-        return organisation;
+    public String getOrganization() {
+        return organization;
     }
 
-    public void setOrganisation(String organisation) {
-        this.organisation = organisation;
+    public void setOrganization(String organization) {
+        this.organization = organization;
     }
 
     public String getQuestion() {
@@ -58,11 +60,11 @@ public class InternshipsItemFormat {
         this.role = role;
     }
 
-    public String getStipend() {
+    public Long getStipend() {
         return stipend;
     }
 
-    public void setStipend(String stipend) {
+    public void setStipend(Long stipend) {
         this.stipend = stipend;
     }
 }

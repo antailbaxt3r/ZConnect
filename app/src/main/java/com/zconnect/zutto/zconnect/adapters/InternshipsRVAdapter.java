@@ -34,12 +34,12 @@ public class InternshipsRVAdapter extends RecyclerView.Adapter<InternshipsRVAdap
 
     @Override
     public void onBindViewHolder(final InternshipsRVAdapter.ViewHolder holder, int position) {
-        holder.description.setText(internshipsList.get(position).getDescription());
-        holder.duration.setText(internshipsList.get(position).getDuration());
-        holder.question.setText(internshipsList.get(position).getQuestion());
-        holder.role.setText(internshipsList.get(position).getRole());
-        holder.organisaton.setText(internshipsList.get(position).getOrganisation());
-        holder.stipend.setText(internshipsList.get(position).getStipend());
+        holder.description.setText("Description : "+internshipsList.get(position).getDescription());
+        holder.duration.setText("Duration : "+internshipsList.get(position).getDuration());
+        holder.question.setText("Question : "+internshipsList.get(position).getQuestion());
+        holder.role.setText("Role : "+internshipsList.get(position).getRole());
+        holder.organisaton.setText("Organization : "+internshipsList.get(position).getOrganization());
+        holder.stipend.setText("Stipend : "+internshipsList.get(position).getStipend().toString());
 
     }
 
