@@ -199,6 +199,7 @@ public class JoinedForums extends Fragment {
                             }
                         }
                         else {
+                            if(shot2.child("forumType").getValue()==null)
                             temp.setForumType(ForumTypeUtilities.KEY_JOINED_STR);
                         }
                         if(name!=null){

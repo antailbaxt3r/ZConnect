@@ -101,11 +101,8 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
                 else{
                     HashMap<String,Boolean> seenmap = new HashMap<>();
                     seenmap.put(FirebaseAuth.getInstance().getCurrentUser().getUid(),false);
-                    if(notificationsList.get(position).getScope().equals(NotificationIdentifierUtilities.KEY_GLOBAL)) {
-                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityRef).child("globalNotifications").child(notificationsList.get(position).getKey()).child("seen").setValue(seenmap);
-                    }else {
+                    if(notificationsList.get(position).getScope().equals(NotificationIdentifierUtilities.KEY_PERSONAL))
                         FirebaseDatabase.getInstance().getReference().child("communities").child(communityRef).child("Users1").child("notifications").child(notificationsList.get(position).getKey()).child("seen").setValue(seenmap);
-                    }
                     holder.seen.setVisibility(View.VISIBLE);
                 }
 
@@ -141,127 +138,116 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
                 HashMap<String,Boolean> seenmap = new HashMap<>();
                 seenmap.put(FirebaseAuth.getInstance().getCurrentUser().getUid(),true);
                 Log.d("im the log msg onclick", notificationsList.get(position).getTitle());
-                if (notificationsList.get(position).getScope().equals(NotificationIdentifierUtilities.KEY_GLOBAL)) {
-                    seenReference = FirebaseDatabase.getInstance().getReference()
-                            .child("communities").child(communityRef).child("globalNotifications")
-                            .child(notificationsList.get(position).getKey())
-                            .child("seen").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-                    seenReference.setValue(seenmap);
-
-                } else {
-                    seenReference = FirebaseDatabase.getInstance().getReference()
-                            .child("communities").child(communityRef).child("Users1")
-                            .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())
-                            .child("notifications").child(notificationsList.get(position).getKey())
-                            .child("seen");
-                    seenReference.setValue(seenmap);
-                }
-                holder.seen.setVisibility(View.INVISIBLE);
-                notificationsList.get(position).setSeen(seenmap);
-                String type = notificationsList.get(position).getType();
-                switch (type) {
-                    case "acceptforum":
-                        intent = new Intent(context, ExploreForumsActivity.class);
-                        context.startActivity(intent);
-                        break;
-                    case "infonevalidate":
-                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityRef).child("Users1")
-                                .child(Objects.requireNonNull(notificationsList.get(position).getNotifiedBy().getUserUID())).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                intent = new Intent(context, InfoneProfileActivity.class);
-                                catID = (String) dataSnapshot.child("infoneTyoe").getValue();
-                                intent.putExtra("infoneUserId", notificationsList.get(position).getNotifiedBy().getUserUID());
-                                intent.putExtra("catID", catID);
-                                context.startActivity(intent);
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
-                        break;
-                    case "addforum":
-                        intent = new Intent(context, ExploreForumsActivity.class);
-                        context.startActivity(intent);
-                        break;
-                    case "contactAdd":
-                        intent = new Intent(context, InfoneProfileActivity.class);
-                        intent.putExtra("infoneUserId", String.valueOf(notificationsList.get(position).getMetadata().get("infoneUserId")));
-                        intent.putExtra("catID", String.valueOf(notificationsList.get(position).getMetadata().get("catID")));
-                        context.startActivity(intent);
-                        break;
-                    case "productAdd":
-                        intent = new Intent(context, OpenProductDetails.class);
-                        intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
-                        intent.putExtra("type", String.valueOf(notificationsList.get(position).getMetadata().get("type")));
-                        context.startActivity(intent);
-                        break;
-
-                    case "eventAdd":
-                        intent = new Intent(context, OpenEventDetail.class);
-                        intent.putExtra("id", String.valueOf(notificationsList.get(position).getMetadata().get("id")));
-                        context.startActivity(intent);
-                        break;
-
-                    case "cabpoolAdd":
-                        intent = new Intent(context, CabPoolAll.class);
-                        intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
-                        context.startActivity(intent);
-                        break;
-                    case "eventBoost":
-                        intent = new Intent(context, OpenEventDetail.class);
-                        intent.putExtra("id", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
-                        context.startActivity(intent);
-                        break;
-                    case "productShortlist":
-                        intent = new Intent(context, OpenProductDetails.class);
-                        intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
-                        intent.putExtra("type", String.valueOf(notificationsList.get(position).getMetadata().get("type")));
-                        context.startActivity(intent);
-                        break;
-                    case "infoneinvalidate":
-                        intent = new Intent(context, InfoneProfileActivity.class);
-                        intent.putExtra("infoneUserId", notificationsList.get(position).getNotifiedBy().getUserUID());
-                        intent.putExtra("catID", catID);
-                        context.startActivity(intent);
-                        break;
-                    case "verification":
-                        intent = new Intent(context, VerificationPage.class);
-                        context.startActivity(intent);
-                        break;
-                    case "statusComment":
-                        intent = new Intent(context, ChatActivity.class);
-                        intent.putExtra("ref", String.valueOf(notificationsList.get(position).getMetadata().get("ref")));
-                        intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
-                        intent.putExtra("type", "post");
-                        intent.putExtra("uid", String.valueOf(notificationsList.get(position).getMetadata().get("uid")));
-                        context.startActivity(intent);
-                        break;
-                }
-
-                if (notificationsList.get(position).getTitle().equals("tried contacting you")) {
-                    Log.d("onclick", "calling ");
-                    Intent call = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + notificationsList.get(position).getNotifiedBy().getMobileNumber()));
-                    PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, call, PendingIntent.FLAG_UPDATE_CURRENT);
-                    try {
-                        pendingIntent.send(context, 0, call);
-                    } catch (PendingIntent.CanceledException e) {
-                        e.printStackTrace();
+                if (notificationsList.get(position).getScope().equals(NotificationIdentifierUtilities.KEY_PERSONAL)) {
+                    {
+                        seenReference = FirebaseDatabase.getInstance().getReference()
+                                .child("communities").child(communityRef).child("Users1")
+                                .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())
+                                .child("notifications").child(notificationsList.get(position).getKey())
+                                .child("seen");
+                        seenReference.setValue(seenmap);
                     }
-                }
+                    holder.seen.setVisibility(View.INVISIBLE);
+                    notificationsList.get(position).setSeen(seenmap);
+                    String type = notificationsList.get(position).getType();
+                    switch (type) {
+                        case "acceptforum":
+                            intent = new Intent(context, ExploreForumsActivity.class);
+                            context.startActivity(intent);
+                            break;
+                        case "infonevalidate":
+                            FirebaseDatabase.getInstance().getReference().child("communities").child(communityRef).child("Users1")
+                                    .child(Objects.requireNonNull(notificationsList.get(position).getNotifiedBy().getUserUID())).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    intent = new Intent(context, InfoneProfileActivity.class);
+                                    catID = (String) dataSnapshot.child("infoneTyoe").getValue();
+                                    intent.putExtra("infoneUserId", notificationsList.get(position).getNotifiedBy().getUserUID());
+                                    intent.putExtra("catID", catID);
+                                    context.startActivity(intent);
+                                }
 
-                //Open Metadata related stuff
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
+                            break;
+                        case "addforum":
+                            intent = new Intent(context, ExploreForumsActivity.class);
+                            context.startActivity(intent);
+                            break;
+                        case "contactAdd":
+                            intent = new Intent(context, InfoneProfileActivity.class);
+                            intent.putExtra("infoneUserId", String.valueOf(notificationsList.get(position).getMetadata().get("infoneUserId")));
+                            intent.putExtra("catID", String.valueOf(notificationsList.get(position).getMetadata().get("catID")));
+                            context.startActivity(intent);
+                            break;
+                        case "productAdd":
+                            intent = new Intent(context, OpenProductDetails.class);
+                            intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                            intent.putExtra("type", String.valueOf(notificationsList.get(position).getMetadata().get("type")));
+                            context.startActivity(intent);
+                            break;
+
+                        case "eventAdd":
+                            intent = new Intent(context, OpenEventDetail.class);
+                            intent.putExtra("id", String.valueOf(notificationsList.get(position).getMetadata().get("id")));
+                            context.startActivity(intent);
+                            break;
+
+                        case "cabpoolAdd":
+                            intent = new Intent(context, CabPoolAll.class);
+                            intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                            context.startActivity(intent);
+                            break;
+                        case "eventBoost":
+                            intent = new Intent(context, OpenEventDetail.class);
+                            intent.putExtra("id", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                            context.startActivity(intent);
+                            break;
+                        case "productShortlist":
+                            intent = new Intent(context, OpenProductDetails.class);
+                            intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                            intent.putExtra("type", String.valueOf(notificationsList.get(position).getMetadata().get("type")));
+                            context.startActivity(intent);
+                            break;
+                        case "infoneinvalidate":
+                            intent = new Intent(context, InfoneProfileActivity.class);
+                            intent.putExtra("infoneUserId", notificationsList.get(position).getNotifiedBy().getUserUID());
+                            intent.putExtra("catID", catID);
+                            context.startActivity(intent);
+                            break;
+                        case "verification":
+                            intent = new Intent(context, VerificationPage.class);
+                            context.startActivity(intent);
+                            break;
+                        case "statusComment":
+                            intent = new Intent(context, ChatActivity.class);
+                            intent.putExtra("ref", String.valueOf(notificationsList.get(position).getMetadata().get("ref")));
+                            intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                            intent.putExtra("type", "post");
+                            intent.putExtra("uid", String.valueOf(notificationsList.get(position).getMetadata().get("uid")));
+                            context.startActivity(intent);
+                            break;
+                    }
+
+                    if (notificationsList.get(position).getTitle().equals("tried contacting you")) {
+                        Log.d("onclick", "calling ");
+                        Intent call = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + notificationsList.get(position).getNotifiedBy().getMobileNumber()));
+                        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, call, PendingIntent.FLAG_UPDATE_CURRENT);
+                        try {
+                            pendingIntent.send(context, 0, call);
+                        } catch (PendingIntent.CanceledException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }           //Open Metadata related stuff
             });
-        } catch (Exception e){
-                    Log.d("onBindViewHolder: ", String.valueOf(e));
-                }
+                }catch (Exception e){}
         }
-
-
-
     }
 
     @Override
