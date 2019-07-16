@@ -7,12 +7,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.zconnect.zutto.zconnect.Links;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.WebViewActivity;
 import com.zconnect.zutto.zconnect.itemFormats.ListItem;
 
 import java.util.ArrayList;
@@ -42,11 +44,11 @@ public class LinksRVAdapter extends RecyclerView.Adapter<LinksRVAdapter.Programm
         String link=LinksList.get(position).getLinkURL().toString();
         holder.link.setText(link);
         holder.title.setText(title);
-        holder.link.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent browseIntent=new Intent(Intent.ACTION_VIEW, Uri.parse(holder.link.getText().toString()));
-            }
+        holder.link.setOnClickListener(view -> {
+            Intent intent = new Intent(context, WebViewActivity.class);
+            intent.putExtra("url",LinksList.get(position).getLinkURL());
+            intent.putExtra("title",LinksList.get(position).getTitle());
+            context.startActivity(intent);
         });
     }
 
