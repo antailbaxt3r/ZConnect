@@ -1,7 +1,9 @@
 package com.zconnect.zutto.zconnect.fragments;
 
 import android.content.SharedPreferences;
+import android.nfc.cardemulation.HostNfcFService;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,7 +44,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class InAppNotificationsFragment extends Fragment {
 
     private RecyclerView notifRecyclerView;
-    private ProgressBar progressBar;
+    private ShimmerFrameLayout shimmerFrameLayout;
     private SharedPreferences communitySP;
     public String communityRef;
     private DatabaseReference notificationsReference;
@@ -68,9 +71,10 @@ public class InAppNotificationsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notifications,container,false);
         notifRecyclerView = (RecyclerView) view.findViewById(R.id.rv_notifications_fragment);
-        progressBar = (ProgressBar) view.findViewById(R.id.fragment_notifications_progress_circle);
+        shimmerFrameLayout = view.findViewById(R.id.shimmer_view_container_in_app_notifications);
         noNotif = view.findViewById(R.id.noNotif);
-        progressBar.setVisibility(View.VISIBLE);
+        shimmerFrameLayout.startShimmerAnimation();
+        shimmerFrameLayout.setVisibility(View.VISIBLE);
 
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
         communityRef = communitySP.getString("communityReference", null);
@@ -116,7 +120,14 @@ public class InAppNotificationsFragment extends Fragment {
                         return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis());
                     }
                 });
-                progressBar.setVisibility(View.GONE);
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        shimmerFrameLayout.setVisibility(View.GONE);
+                        shimmerFrameLayout.stopShimmerAnimation();
+                    }
+                }, 500);
                 notifRecyclerView.setVisibility(View.VISIBLE);
                 if(!totalnotificationsList.isEmpty()) {
                     noNotif.setVisibility(View.GONE);
@@ -153,7 +164,13 @@ public class InAppNotificationsFragment extends Fragment {
                             return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis());
                         }
                     });
-                    progressBar.setVisibility(View.GONE);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            shimmerFrameLayout.setVisibility(View.GONE);
+                            shimmerFrameLayout.stopShimmerAnimation();
+                        }
+                    }, 500);
                     notifRecyclerView.setVisibility(View.VISIBLE);
                     if(!totalnotificationsList.isEmpty()) {
                         noNotif.setVisibility(View.GONE);
