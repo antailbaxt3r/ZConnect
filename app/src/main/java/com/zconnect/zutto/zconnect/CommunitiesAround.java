@@ -392,15 +392,18 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
 
                         communitiesJoinedList.clear();
+                        boolean noJoinedCommunities = true;
                         if(dataSnapshot2.getValue() == null){
                             CommunitiesItemFormat noUsers = new CommunitiesItemFormat();
                             noUsers.setName("No communities found");
                             return;
                         }
+
                         try {
                             for (DataSnapshot shot : dataSnapshot2.getChildren()) {
                                 CommunitiesItemFormat communitiesItemFormat2 = dataSnapshot.child(shot.getValue().toString()).getValue(CommunitiesItemFormat.class);
                                 communitiesJoinedList.add(communitiesItemFormat2);
+                                noJoinedCommunities = false;
                             }
                         }
                         catch (Exception e)
@@ -412,7 +415,7 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
                         totalCommunitiesList.add(titleCommunitiesJoined);
                         totalCommunitiesList.addAll(communitiesJoinedList);
 
-                        if(finalFlagNoCommunity){
+                        if(finalFlagNoCommunity && noJoinedCommunities){
                             noCommunitiesLayout.setVisibility(View.VISIBLE);
                         }else{
                             noCommunitiesLayout.setVisibility(View.GONE);

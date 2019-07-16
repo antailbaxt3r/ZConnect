@@ -65,6 +65,7 @@ import com.zconnect.zutto.zconnect.fragments.ForumsFragment;
 import com.zconnect.zutto.zconnect.fragments.JoinedForums;
 import com.zconnect.zutto.zconnect.fragments.MyProfileFragment;
 import com.zconnect.zutto.zconnect.fragments.InAppNotificationsFragment;
+import com.zconnect.zutto.zconnect.fragments.UpdateAppActivity;
 import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
@@ -1068,6 +1069,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @SuppressLint("ApplySharedPref")
     private void launchRelevantActivitiesIfNeeded() {
 
+
         //Check authentication
         if (mUser == null) {
             editProfileItem.setVisible(false);
@@ -1435,16 +1437,36 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         super.onResume();
         mUser = mAuth.getCurrentUser();
 
-        launchRelevantActivitiesIfNeeded();
+        FirebaseDatabase.getInstance().getReference().child("minimumClientVersion").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue(Integer.class)>BuildConfig.VERSION_CODE){
+                    Intent intent = new Intent(HomeActivity.this, UpdateAppActivity.class);
+                    startActivity(intent);
+                    finish();
 
-        if (communityReference != null) {
-            uiDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui");
+                }
+                else{
+                    launchRelevantActivitiesIfNeeded();
 
-            mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("PopUps");
-            mDatabasePopUps.keepSynced(true);
+                    if (communityReference != null) {
+                        uiDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui");
 
-            mDatabasePopUps.addValueEventListener(popupsListener);
-        }
+                        mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("PopUps");
+                        mDatabasePopUps.keepSynced(true);
+
+                        mDatabasePopUps.addValueEventListener(popupsListener);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     @Override

@@ -277,7 +277,11 @@ public class NotificationImage extends BaseActivity{
             addImageNotification.setItemMessage(notificationDescription.getText().toString());
             addImageNotification.setItemTitle(notificationTitle.getText().toString());
             addImageNotification.setItemURL(nottificationURL.getText().toString());
-
+            UserItemFormat userItemFormat= new UserItemFormat();
+            userItemFormat.setUserUID(UserUtilities.currentUser.getUserUID());
+            userItemFormat.setImageURL(UserUtilities.currentUser.getImageURL());
+            userItemFormat.setUsername(UserUtilities.currentUser.getUsername());
+            GlobalFunctions.inAppNotifications(" has send a notification","Notification message: "+notificationDescription.getText().toString()+"             Notification URL: "+nottificationURL.getText().toString(),userItemFormat,true,"adminNotification",null,null);
             notificationSender.execute(addImageNotification);
 
             mProgress.dismiss();

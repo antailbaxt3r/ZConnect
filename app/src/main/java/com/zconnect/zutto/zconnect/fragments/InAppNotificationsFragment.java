@@ -156,6 +156,7 @@ public class InAppNotificationsFragment extends Fragment {
                         if(usernotification!=null)
                         usernotificationsList.add(usernotification);
                     }
+                    if(!globalnotificationsList.isEmpty())
                     totalnotificationsList.addAll(globalnotificationsList);
                     totalnotificationsList.addAll(usernotificationsList);
                     Collections.sort(totalnotificationsList, new Comparator<InAppNotificationsItemFormat>() {

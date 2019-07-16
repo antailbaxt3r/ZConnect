@@ -311,17 +311,8 @@ public class CabPoolListOfPeople extends BaseActivity {
         formatted_date = getIntent().getStringExtra("date");
 
         //Setting old database or new database
-        if (formatted_date == null) {
 
             reference = reference_default;
-
-        } else {
-            if (Date.compareTo(formatted_date) > 0) {
-                reference = reference_old;
-            } else {
-                reference = reference_default;
-            }
-        }
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child(reference);
        databaseReference.child(key).child("PostedBy").child("UID").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -367,9 +358,12 @@ public class CabPoolListOfPeople extends BaseActivity {
             postedByImageDV.setImageURI(Uri.parse(postedByImageText));
 
         }else {
-            fullPool.addValueEventListener(new ValueEventListener() {
+            Log.d("fullpool", key);
+            fullPool.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Log.d("fullpoolref", String.valueOf(fullPool));
+                    Log.d("datapool", String.valueOf(dataSnapshot.child("source").getValue()));
                     source = dataSnapshot.child("source").getValue().toString();
                     destination = dataSnapshot.child("destination").getValue().toString();
 

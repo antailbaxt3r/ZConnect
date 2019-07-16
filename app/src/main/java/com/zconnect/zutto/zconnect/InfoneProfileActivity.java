@@ -433,6 +433,7 @@ public class InfoneProfileActivity extends BaseActivity {
 
                 userType = dataSnapshot.child("type").getValue(String.class);
                 infoneUserDetails.setUserType(userType);
+                Log.d("date", String.valueOf(dataSnapshot.getRef()));
                 verfiedDate = dataSnapshot.child("verifiedDate").getValue().toString();
                 TimeUtilities ta = new TimeUtilities(Long.parseLong(verfiedDate), System.currentTimeMillis());
                 verifiedDateTextView.setText(ta.calculateTimeAgo());
@@ -605,64 +606,87 @@ public class InfoneProfileActivity extends BaseActivity {
 //            }
 //        });
 
-        validButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                databaseReferenceInfone.child("numbers").child(infoneUserId).child("valid").child(mAuth.getCurrentUser().getUid()).setValue("true");
-                databaseReferenceInfone.child("numbers").child(infoneUserId).child("invalid").child(mAuth.getCurrentUser().getUid()).removeValue();
-                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        UserItemFormat userItemFormat = new UserItemFormat();
-                        userItemFormat.setUsername((String) dataSnapshot.child("username").getValue());
-                        userItemFormat.setUserUID((String) dataSnapshot.child("userUID").getValue());
-                        userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
+        validButton.setOnClickListener(v -> {
+            FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB)
+                    .child(communityReference).child(ZConnectDetails.INFONE_DB_NEW).child("numbers").child(infoneUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    final String uid = dataSnapshot.child("UID").getValue().toString();
+                    databaseReferenceInfone.child("numbers").child(infoneUserId).child("valid").child(mAuth.getCurrentUser().getUid()).setValue("true");
+                    databaseReferenceInfone.child("numbers").child(infoneUserId).child("invalid").child(mAuth.getCurrentUser().getUid()).removeValue();
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            UserItemFormat userItemFormat = new UserItemFormat();
+                            userItemFormat.setUsername((String) dataSnapshot.child("username").getValue());
+                            userItemFormat.setUserUID((String) dataSnapshot.child("userUID").getValue());
+                            userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
 
-                        GlobalFunctions.inAppNotifications("has validated your phone number",phoneNums.get(0),userItemFormat,false,"infonevalidate",null,infoneUserUID);
+                            GlobalFunctions.inAppNotifications("has validated your phone number",phoneNums.get(0),userItemFormat,false,"infonevalidate",null,uid);
 
-                    }
+                        }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
+                        }
+                    });
 
-                postTimeMillis = System.currentTimeMillis();
-                databaseReferenceContact.child("verifiedDate").setValue(postTimeMillis);
+                }
 
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta = new HashMap<>();
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                meta.put("catID", catID);
+                }
+            });
+            postTimeMillis = System.currentTimeMillis();
+            databaseReferenceContact.child("verifiedDate").setValue(postTimeMillis);
 
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_VALIDATE);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
+            CounterItemFormat counterItemFormat = new CounterItemFormat();
+            HashMap<String, String> meta = new HashMap<>();
 
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
+            meta.put("catID", catID);
+
+            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+            counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_VALIDATE);
+            counterItemFormat.setTimestamp(System.currentTimeMillis());
+            counterItemFormat.setMeta(meta);
+
+            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+            counterPush.pushValues();
 //                displayThankYou();
-            }
         });
         invalidButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                databaseReferenceInfone.child("numbers").child(infoneUserId).child("invalid").child(mAuth.getCurrentUser().getUid()).setValue("true");
-                databaseReferenceInfone.child("numbers").child(infoneUserId).child("valid").child(mAuth.getCurrentUser().getUid()).removeValue();
-                postTimeMillis = System.currentTimeMillis();
-                databaseReferenceContact.child("verifiedDate").setValue(postTimeMillis);
-
-                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB)
+                        .child(communityReference).child(ZConnectDetails.INFONE_DB_NEW).child("numbers").child(infoneUserId).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        UserItemFormat userItemFormat = new UserItemFormat();
-                        userItemFormat.setUsername((String) dataSnapshot.child("username").getValue());
-                        userItemFormat.setUserUID((String) dataSnapshot.child("userUID").getValue());
-                        userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
 
-                        GlobalFunctions.inAppNotifications("has invalidated your phone number",phoneNums.get(0),userItemFormat,false,"infoneinvalidate",null,infoneUserUID);
+                        databaseReferenceInfone.child("numbers").child(infoneUserId).child("invalid").child(mAuth.getCurrentUser().getUid()).setValue("true");
+                        databaseReferenceInfone.child("numbers").child(infoneUserId).child("valid").child(mAuth.getCurrentUser().getUid()).removeValue();
+                        postTimeMillis = System.currentTimeMillis();
+                        databaseReferenceContact.child("verifiedDate").setValue(postTimeMillis);
+
+                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                UserItemFormat userItemFormat = new UserItemFormat();
+                                userItemFormat.setUsername((String) dataSnapshot.child("username").getValue());
+                                userItemFormat.setUserUID((String) dataSnapshot.child("userUID").getValue());
+                                userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
+
+                                GlobalFunctions.inAppNotifications("has invalidated your phone number",phoneNums.get(0),userItemFormat,false,"infoneinvalidate",null,infoneUserUID);
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
 
                     }
 
@@ -671,8 +695,6 @@ public class InfoneProfileActivity extends BaseActivity {
 
                     }
                 });
-
-
 //                displayThankYou();
 
             }

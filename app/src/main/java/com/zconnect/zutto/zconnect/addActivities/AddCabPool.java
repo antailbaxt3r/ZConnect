@@ -265,11 +265,10 @@ public class AddCabPool extends BaseActivity {
                                         newPost.child("to").setValue(T2);
                                         newPost.child("usersListItemFormats").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(usersListItemFormat);
                                         newPost.child("PostTimeMillis").setValue(postTimeMillis);
-                                        postedBy.setValue(null);
-                                        postedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                         mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
+                                                postedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                                 postedBy.child("Username").setValue(dataSnapshot.child("username").getValue().toString());
                                                 //needs to be changed after image thumbnail is put
                                                 postedBy.child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());

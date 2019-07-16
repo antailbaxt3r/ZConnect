@@ -16,6 +16,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.util.HashMap;
 
@@ -57,26 +58,37 @@ public class GlobalFunctions {
     }
 
     public static void inAppNotifications(String title, String desc, final UserItemFormat notifiedby, boolean audience, String type, HashMap<String, Object> metadata, String uid) {
+        //uid variable is uid of receiver
         String key;
         HashMap<String, Object> notificationMap = new HashMap<>();
         HashMap<String, Boolean> seenmap = new HashMap<>();
+
+        Log.d("dddinggg", "productShortlistNotification: ");
         /*
         audience true - Community specific notifications
         audience false - User specific notifications
         */
-        if(!notifiedby.getUserUID().equals(uid)){
+        Log.d("SASASA", uid+"");
         if (audience) {
             notificationsRef = FirebaseDatabase.getInstance().getReference().child("communities").
                     child(communityReference).child("globalNotifications");
             key = NotificationIdentifierUtilities.KEY_GLOBAL;
 
-        } else {
+        }
+        else if(notifiedby.getUserUID().equals(uid))
+        {
+            //for personal in app notifs return void if the notified by is same as the current user.
+            return;
+        }
+        else {
             notificationsRef = FirebaseDatabase.getInstance().getReference().child("communities").
                     child(communityReference).child("Users1").child(uid)
                     .child("notifications");
 
             key = NotificationIdentifierUtilities.KEY_PERSONAL;
         }
+
+        Log.d("aaaaaaaaddddinggg", "productShortlistNotification: ");
         seenmap.put(FirebaseAuth.getInstance().getUid(),false);
         DatabaseReference newNotifRef = notificationsRef.push();
         notificationMap.put("scope",key);
@@ -87,14 +99,31 @@ public class GlobalFunctions {
         notificationMap.put("type", type);
         notificationMap.put("key", newNotifRef.getKey());
         notificationMap.put("notifiedBy", notifiedby);
-
         newNotifRef.setValue(notificationMap);
         if (metadata != null) {
+            switch (type) {
+                case "addforum":
+                    Log.d("Adding", "inAppNotifications: ");
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/forums/inAppNotifications/" + metadata.get("featurePID")).child("key").setValue(newNotifRef.getKey());
+                    break;
+                case "productAdd":
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/storeroom/inAppNotifications/" + metadata.get("featurePID")).child("key").setValue(newNotifRef.getKey());
+                    break;
+                case "productShortlist":
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/storeroom/inAppNotifications/" + metadata.get("featurePID")).child("key").setValue(newNotifRef.getKey());
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/storeroom/inAppNotifications/" + metadata.get("featurePID")).child("receiverUID").setValue(uid);
+                    break;
+                case "eventBoost":
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/events/inAppNotifications/" + metadata.get("featurePID")).child("key").setValue(newNotifRef.getKey());
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/events/inAppNotifications/" + metadata.get("featurePID")).child("receiverUID").setValue(uid);
+                    break;
+                case "eventAdd":
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/events/inAppNotifications/" + metadata.get("featurePID")).child("key").setValue(newNotifRef.getKey());
+                    break;
+            }
             for (HashMap.Entry<String, Object> entry : metadata.entrySet()) {
                 newNotifRef.child("metadata").child(entry.getKey()).setValue(entry.getValue());
             }
-
         }
-    }
     }
 }

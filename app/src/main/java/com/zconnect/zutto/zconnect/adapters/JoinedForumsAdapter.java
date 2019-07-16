@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.google.android.gms.flags.Flag;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,6 +25,7 @@ import com.zconnect.zutto.zconnect.ExploreForumsActivity;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.holders.JoinedForumsRVViewHolder;
+import com.zconnect.zutto.zconnect.holders.otherForumsRVViewHolder;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
@@ -79,8 +82,8 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             return new JoinedForumsRVViewHolder(joinedContactView);
         }
         else {
-            View joinedContactView = layoutInflater.inflate(R.layout.row_forums_sub_categories_joined, parent, false);
-            return new JoinedForumsRVViewHolder(joinedContactView);
+            View otherForumsView = layoutInflater.inflate(R.layout.row_other_forums, parent, false);
+            return new otherForumsRVViewHolder(otherForumsView);
         }
     }
 
@@ -190,8 +193,13 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 });
             }
             else {
-                            Log.d("Setting View",Integer.toString(position));
-
+                final otherForumsRVViewHolder otherForumsRVViewHolder = (otherForumsRVViewHolder) holder;
+                otherForumsRVViewHolder.itemView.setOnClickListener(v -> {
+                    Intent i = new Intent(android.content.Intent.ACTION_VIEW);
+                    i.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect"));
+                    context.startActivity(i);
+                });
+                Log.d("Setting View",Integer.toString(position));
             holderMain.setDetailsForShare(forumCategoriesItemFormats.get(position));
             holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID()
                     , forumCategoriesItemFormats.get(position).getTabUID()
