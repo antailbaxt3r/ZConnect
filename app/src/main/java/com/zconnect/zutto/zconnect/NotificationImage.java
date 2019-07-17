@@ -141,17 +141,14 @@ public class NotificationImage extends BaseActivity{
             }
         });
 
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!isNetworkAvailable(getApplicationContext())) {
+        submit.setOnClickListener(view -> {
+            if (!isNetworkAvailable(getApplicationContext())) {
 
-                    Toast toast=Toast.makeText(getApplicationContext(),"No internet connection", Toast.LENGTH_SHORT);
-                    toast.show();
+                Toast toast=Toast.makeText(getApplicationContext(),"No internet connection", Toast.LENGTH_SHORT);
+                toast.show();
 
-                } else {
-                   startPosting();
-                }
+            } else {
+               startPosting();
             }
         });
 
@@ -213,9 +210,6 @@ public class NotificationImage extends BaseActivity{
 
     private void startPosting(){
 
-        mProgress.setMessage("Sending Notification..");
-        mProgress.show();
-
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         assert user != null;
@@ -223,6 +217,8 @@ public class NotificationImage extends BaseActivity{
         mUsername = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
 
         if (!TextUtils.isEmpty(notificationDescription.getText()) && mImageUri != null && !TextUtils.isEmpty(notificationTitle.getText()) && !TextUtils.isEmpty(nottificationURL.getText()) ) {
+            mProgress.setMessage("Sending Notification..");
+            mProgress.show();
             final StorageReference filepath = mStorage.child("NotificationImage").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
             UploadTask uploadTask = filepath.putFile(mImageUri);
             uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -243,7 +239,7 @@ public class NotificationImage extends BaseActivity{
                         userItemFormat.setUserUID(UserUtilities.currentUser.getUserUID());
                         userItemFormat.setImageURL(UserUtilities.currentUser.getImageURL());
                         userItemFormat.setUsername(UserUtilities.currentUser.getUsername());
-                        GlobalFunctions.inAppNotifications(" has send a notification","Notification message: "+notificationDescription.getText().toString()+"             Notification URL: "+nottificationURL.getText().toString(),userItemFormat,true,"adminNotification",null,null);
+                        GlobalFunctions.inAppNotifications(" has send a notification","Notification message: "+notificationDescription.getText().toString()+"\nNotification URL: "+nottificationURL.getText().toString(),userItemFormat,true,"adminNotification",null,null);
 
                         NotificationSender notificationSender = new NotificationSender(NotificationImage.this, userId);
                         NotificationItemFormat addImageNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_IMAGE_URL, userId);
@@ -271,13 +267,18 @@ public class NotificationImage extends BaseActivity{
         }
         // Sending a notification without an image
         else if (!TextUtils.isEmpty(notificationDescription.getText()) && !TextUtils.isEmpty(notificationTitle.getText()) && !TextUtils.isEmpty(nottificationURL.getText()) ) {
-
+            mProgress.setMessage("Sending Notification..");
+            mProgress.show();
             NotificationSender notificationSender = new NotificationSender(NotificationImage.this, userId);
             NotificationItemFormat addImageNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_TEXT_URL, userId);
             addImageNotification.setItemMessage(notificationDescription.getText().toString());
             addImageNotification.setItemTitle(notificationTitle.getText().toString());
             addImageNotification.setItemURL(nottificationURL.getText().toString());
-
+            UserItemFormat userItemFormat= new UserItemFormat();
+            userItemFormat.setUserUID(UserUtilities.currentUser.getUserUID());
+            userItemFormat.setImageURL(UserUtilities.currentUser.getImageURL());
+            userItemFormat.setUsername(UserUtilities.currentUser.getUsername());
+            GlobalFunctions.inAppNotifications(" has send a notification","Notification message: "+notificationDescription.getText().toString()+"             Notification URL: "+nottificationURL.getText().toString(),userItemFormat,true,"adminNotification",null,null);
             notificationSender.execute(addImageNotification);
 
             mProgress.dismiss();

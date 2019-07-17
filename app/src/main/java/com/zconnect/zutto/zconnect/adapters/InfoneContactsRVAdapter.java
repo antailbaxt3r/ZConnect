@@ -182,11 +182,12 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         UserItemFormat userItemFormat = new UserItemFormat();
+                        HashMap<String,Object> metadata = new HashMap<>();
                         userItemFormat.setUsername((String) dataSnapshot.child("username").getValue());
                         userItemFormat.setUserUID((String) dataSnapshot.child("userUID").getValue());
                         userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
-
-                        GlobalFunctions.inAppNotifications("has validated your phone number",phoneNums.get(0),userItemFormat,false,"infoneverify",null,infoneContactsRVItems.get(position).getInfoneUserId());
+                        metadata.put("catID",catId);
+                        GlobalFunctions.inAppNotifications("has validated your phone number",phoneNums.get(0),userItemFormat,false,"infonevalidate",metadata,infoneContactsRVItems.get(position).getInfoneUserId());
 
                     }
 
@@ -211,11 +212,12 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         UserItemFormat userItemFormat = new UserItemFormat();
+                        HashMap<String,Object> metadata = new HashMap<>();
                         userItemFormat.setUsername((String) dataSnapshot.child("username").getValue());
                         userItemFormat.setUserUID((String) dataSnapshot.child("userUID").getValue());
                         userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
-
-                        GlobalFunctions.inAppNotifications("has validated your phone number",phoneNums.get(0),userItemFormat,false,"infoneverify",null,infoneContactsRVItems.get(position).getInfoneUserId());
+                        metadata.put("catID",catId);
+                        GlobalFunctions.inAppNotifications("has invalidated your phone number",phoneNums.get(0),userItemFormat,false,"infoneinvalidate",metadata,infoneContactsRVItems.get(position).getInfoneUserId());
 
                     }
 

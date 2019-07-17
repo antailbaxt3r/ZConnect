@@ -83,22 +83,26 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
 
                     Log.d("AAAA",notificationsList.get(position).getScope() + " " );
                 try{
-                if (notificationsList.get(position).getScope().equals(NotificationIdentifierUtilities.KEY_GLOBAL)&&!notificationsList.get(position).getType().equals("adminNotification")) {
+               /* if (notificationsList.get(position).getScope().equals(NotificationIdentifierUtilities.KEY_GLOBAL)&&!notificationsList.get(position).getType().equals("adminNotification")) {
                     holder.simpleDraweeView.setVisibility(View.GONE);
 
                 } else {
                     holder.simpleDraweeView.setVisibility(View.VISIBLE);
-                }
+                }*/
                 if (notificationsList.get(position).isSeen().get(FirebaseAuth.getInstance().getCurrentUser().getUid()) != null) {
 
                     if(!notificationsList.get(position).isSeen().get(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                         holder.seen.setVisibility(View.VISIBLE);
                     }
+                    else{
+                        holder.seen.setVisibility(View.INVISIBLE);
+                    }
                 }
                 else{
                     HashMap<String,Boolean> seenmap = new HashMap<>();
                     seenmap.put(FirebaseAuth.getInstance().getCurrentUser().getUid(),false);
-                    FirebaseDatabase.getInstance().getReference().child("globalNotifications").child(notificationsList.get(position).getKey()).child("seen").setValue(seenmap);
+                    if(notificationsList.get(position).getScope().equals(NotificationIdentifierUtilities.KEY_PERSONAL))
+                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityRef).child("Users1").child("notifications").child(notificationsList.get(position).getKey()).child("seen").setValue(seenmap);
                     holder.seen.setVisibility(View.VISIBLE);
                 }
 
@@ -129,28 +133,22 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
             TimeUtilities timeUtilities = new TimeUtilities(notificationsList.get(position).getPostTimeMillis(), System.currentTimeMillis());
             holder.timetv.setText(timeUtilities.calculateTimeAgo());
             holder.desctv.setText(notificationsList.get(position).getDesc());
-            holder.notificationsLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //Seenzone
-                    if (notificationsList.get(position).getScope().equals(NotificationIdentifierUtilities.KEY_GLOBAL)) {
-                        seenReference = FirebaseDatabase.getInstance().getReference()
-                                .child("communities").child(communityRef).child("globalNotifications")
-                                .child(notificationsList.get(position).getKey())
-                                .child("seen").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-                        seenReference.setValue(true);
+            holder.notificationsLayout.setOnClickListener(view -> {
+                //Seenzone
+                HashMap<String,Boolean> seenmap = new HashMap<>();
+                seenmap.put(FirebaseAuth.getInstance().getCurrentUser().getUid(),true);
+                Log.d("im the log msg onclick", notificationsList.get(position).getTitle());
 
-                    } else {
+                if (notificationsList.get(position).getScope().equals(NotificationIdentifierUtilities.KEY_PERSONAL)) {
+                    {
                         seenReference = FirebaseDatabase.getInstance().getReference()
                                 .child("communities").child(communityRef).child("Users1")
                                 .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())
                                 .child("notifications").child(notificationsList.get(position).getKey())
                                 .child("seen");
-                        seenReference.setValue(true);
+                        seenReference.setValue(seenmap);
                     }
                     holder.seen.setVisibility(View.INVISIBLE);
-                    HashMap<String,Boolean> seenmap = new HashMap<>();
-                    seenmap.put(FirebaseAuth.getInstance().getCurrentUser().getUid(),true);
                     notificationsList.get(position).setSeen(seenmap);
                     String type = notificationsList.get(position).getType();
                     switch (type) {
@@ -159,27 +157,15 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
                             context.startActivity(intent);
                             break;
                         case "infonevalidate":
-                            FirebaseDatabase.getInstance().getReference().child("communities").child(communityRef).child("Users1")
-                                    .child(Objects.requireNonNull(notificationsList.get(position).getNotifiedBy().getUserUID())).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    intent = new Intent(context, InfoneProfileActivity.class);
-                                    catID = (String) dataSnapshot.child("infoneTyoe").getValue();
-                                    intent.putExtra("infoneUserId", notificationsList.get(position).getNotifiedBy().getUserUID());
-                                    intent.putExtra("catID", catID);
-                                    context.startActivity(intent);
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-
+                            intent = new Intent(context, InfoneProfileActivity.class);
+                            intent.putExtra("infoneUserId", notificationsList.get(position).getNotifiedBy().getUserUID());
+                            intent.putExtra("catID", String.valueOf(notificationsList.get(position).getMetadata().get("catID")));
+                            context.startActivity(intent);
                             break;
                         case "addforum":
                             intent = new Intent(context, ExploreForumsActivity.class);
                             context.startActivity(intent);
+                            break;
                         case "contactAdd":
                             intent = new Intent(context, InfoneProfileActivity.class);
                             intent.putExtra("infoneUserId", String.valueOf(notificationsList.get(position).getMetadata().get("infoneUserId")));
@@ -212,12 +198,13 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
                         case "productShortlist":
                             intent = new Intent(context, OpenProductDetails.class);
                             intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                            intent.putExtra("type", String.valueOf(notificationsList.get(position).getMetadata().get("type")));
                             context.startActivity(intent);
                             break;
                         case "infoneinvalidate":
                             intent = new Intent(context, InfoneProfileActivity.class);
                             intent.putExtra("infoneUserId", notificationsList.get(position).getNotifiedBy().getUserUID());
-                            intent.putExtra("catID", catID);
+                            intent.putExtra("catID", String.valueOf(notificationsList.get(position).getMetadata().get("catID")));
                             context.startActivity(intent);
                             break;
                         case "verification":
@@ -231,6 +218,7 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
                             intent.putExtra("type", "post");
                             intent.putExtra("uid", String.valueOf(notificationsList.get(position).getMetadata().get("uid")));
                             context.startActivity(intent);
+                            break;
                     }
 
                     if (notificationsList.get(position).getTitle().equals("tried contacting you")) {
@@ -244,16 +232,10 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
                         }
                     }
 
-                    //Open Metadata related stuff
-                }
+                }           //Open Metadata related stuff
             });
-        } catch (Exception e){
-                    Log.d("onBindViewHolder: ", String.valueOf(e));
-                }
+                }catch (Exception e){}
         }
-
-
-
     }
 
     @Override

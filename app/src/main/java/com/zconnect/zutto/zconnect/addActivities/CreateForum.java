@@ -94,6 +94,7 @@ public class CreateForum extends BaseActivity {
     }
     String mtabName, uid;
     boolean editForumFlag;
+    String featurePID;
     FrameLayout addForumIcon, done;
     MaterialEditText addForumName, firstMessage;
     IntentHandle intentHandle;
@@ -136,6 +137,7 @@ public class CreateForum extends BaseActivity {
             String tab = callingActivityIntent.getStringExtra(ForumUtilities.KEY_FORUM_TAB_STR);
             final DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
             final DatabaseReference databaseReferenceTabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab);
+
             forumIDSaveLocation.child("forumUID").setValue(createForumWithDetails(name,
                     databaseReferenceCategories,
                     databaseReferenceTabsCategories,
@@ -148,6 +150,7 @@ public class CreateForum extends BaseActivity {
                     null,
                     imageUri,
                     false
+
             ));
             return;
 
@@ -634,6 +637,7 @@ public class CreateForum extends BaseActivity {
             newPush.child("PostTimeMillis").setValue(postTimeMillis);
             newPush.child("UID").setValue(newPush.getKey());
             newPush.child("tab").setValue(tabUid);
+            featurePID = newPush.getKey();
 
             final DatabaseReference userDataRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
             userDataRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -682,10 +686,12 @@ public class CreateForum extends BaseActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                     UserItemFormat userItemFormat = new UserItemFormat();
+                    HashMap<String,Object> metadata = new HashMap<>();
+                    metadata.put("featurePID",featurePID);
                     userItemFormat.setUsername(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("username").getValue()));
                     userItemFormat.setImageURL(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("imageURL").getValue()));
                     userItemFormat.setUserUID(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("userUID").getValue()));
-                    GlobalFunctions.inAppNotifications("added a forum",catName,userItemFormat,true,"addforum",null,null);
+                    GlobalFunctions.inAppNotifications("added a forum",catName,userItemFormat,true,"addforum",metadata,null);
                 }
 
                 @Override

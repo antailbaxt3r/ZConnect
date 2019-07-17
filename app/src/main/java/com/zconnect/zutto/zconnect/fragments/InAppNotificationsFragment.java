@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -48,8 +49,6 @@ public class InAppNotificationsFragment extends Fragment {
     private DatabaseReference globalReference;
     private ValueEventListener listener;
     private TextView noNotif;
-    ArrayList<InAppNotificationsItemFormat> usernotificationsList;
-    ArrayList<InAppNotificationsItemFormat> globalnotificationsList;
     ArrayList<InAppNotificationsItemFormat> totalnotificationsList;
     private InAppNotificationsAdapter inAppNotificationsAdapter;
 
@@ -66,7 +65,7 @@ public class InAppNotificationsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_notifications,container,false);
+        View view = inflater.inflate(R.layout.fragment_notifications, container, false);
         notifRecyclerView = (RecyclerView) view.findViewById(R.id.rv_notifications_fragment);
         progressBar = (ProgressBar) view.findViewById(R.id.fragment_notifications_progress_circle);
         noNotif = view.findViewById(R.id.noNotif);
@@ -79,13 +78,11 @@ public class InAppNotificationsFragment extends Fragment {
         notifRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false));
         totalnotificationsList = new ArrayList<>();
-        usernotificationsList = new ArrayList<>();
-        globalnotificationsList = new ArrayList<>();
         //Test Notification. Uncomment for testing
         //GlobalFunctions.pushNotifications("Test", "This is a test", false, 1, new HashMap<String, String>());
-            Log.d("outside", "onDataChange: ");
-            inAppNotificationsAdapter = new InAppNotificationsAdapter(getContext(), communityRef, totalnotificationsList);
-            notifRecyclerView.setAdapter(inAppNotificationsAdapter);
+        Log.d("outside", "onDataChange: ");
+        inAppNotificationsAdapter = new InAppNotificationsAdapter(getContext(), communityRef, totalnotificationsList);
+        notifRecyclerView.setAdapter(inAppNotificationsAdapter);
 
 
         return view;
@@ -95,39 +92,55 @@ public class InAppNotificationsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d("inapresume", "onResume: ");
-        if(UserUtilities.currentUser!= null) {
+        if (UserUtilities.currentUser != null) {
             if (!UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || !UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
-                globalReference.child("globalNotifications").addListenerForSingleValueEvent(new ValueEventListener() {
+                globalReference.child("Users1").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("notifications").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         totalnotificationsList.clear();
-                        globalnotificationsList.clear();
                         for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                            InAppNotificationsItemFormat globalnotification = childSnapshot.getValue(InAppNotificationsItemFormat.class);
-                            if (globalnotification != null) {
-                                globalnotificationsList.add(globalnotification);
-                            }
+                            InAppNotificationsItemFormat usernotification = childSnapshot.getValue(InAppNotificationsItemFormat.class);
+                            if (usernotification != null && !usernotification.getNotifiedBy().getUserUID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                totalnotificationsList.add(usernotification);
                         }
-
-                        totalnotificationsList.addAll(globalnotificationsList);
-                        totalnotificationsList.addAll(usernotificationsList);
-                        Collections.sort(totalnotificationsList, new Comparator<InAppNotificationsItemFormat>() {
-                            @Override
-                            public int compare(InAppNotificationsItemFormat o1, InAppNotificationsItemFormat o2) {
-                                return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis());
-                            }
-                        });
+                        Collections.sort(totalnotificationsList, (o1, o2) -> Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis()));
                         progressBar.setVisibility(View.GONE);
                         notifRecyclerView.setVisibility(View.VISIBLE);
                         if (!totalnotificationsList.isEmpty()) {
                             noNotif.setVisibility(View.GONE);
                             notifRecyclerView.setVisibility(View.VISIBLE);
                             inAppNotificationsAdapter.notifyDataSetChanged();
+                            boolean isUnread = false;
+                            for(InAppNotificationsItemFormat notificationsItemFormat : totalnotificationsList){
+                                try{
+                                    Log.d("NOTIFICATION",notificationsItemFormat.isSeen().get(UserUtilities.currentUser.getUserUID()).toString());
+                                    if(!notificationsItemFormat.isSeen().get(UserUtilities.currentUser.getUserUID())){
+                                        TabLayout tabs = getActivity().findViewById(R.id.navigation);
+                                        tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
+                                        isUnread = true;
+                                    }
+                                }
+                                catch (Exception e){
+                                    TabLayout tabs = getActivity().findViewById(R.id.navigation);
+                                    tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
+                                    Log.d("NOTIFICATIONERROR",e.toString());
+                                }
+                            }
+
+                            if(!isUnread){
+                                TabLayout tabs = getActivity().findViewById(R.id.navigation);
+                                tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
+
+                            }
+
 
                         } else {
                             noNotif.setVisibility(View.VISIBLE);
                             notifRecyclerView.setVisibility(View.GONE);
+                            TabLayout tabs = getActivity().findViewById(R.id.navigation);
+                            tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
                         }
+
                     }
 
                     @Override
@@ -135,45 +148,9 @@ public class InAppNotificationsFragment extends Fragment {
 
                     }
                 });
+
             }
         }
-            globalReference.child("Users1").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("notifications").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    totalnotificationsList.clear();
-                    usernotificationsList.clear();
-                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                        InAppNotificationsItemFormat usernotification = childSnapshot.getValue(InAppNotificationsItemFormat.class);
-                        if(usernotification!=null)
-                        usernotificationsList.add(usernotification);
-                    }
-                    totalnotificationsList.addAll(globalnotificationsList);
-                    totalnotificationsList.addAll(usernotificationsList);
-                    Collections.sort(totalnotificationsList, new Comparator<InAppNotificationsItemFormat>() {
-                        @Override
-                        public int compare(InAppNotificationsItemFormat o1, InAppNotificationsItemFormat o2) {
-                            return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis());
-                        }
-                    });
-                    progressBar.setVisibility(View.GONE);
-                    notifRecyclerView.setVisibility(View.VISIBLE);
-                    if(!totalnotificationsList.isEmpty()) {
-                        noNotif.setVisibility(View.GONE);
-                        notifRecyclerView.setVisibility(View.VISIBLE);
-                        inAppNotificationsAdapter.notifyDataSetChanged();
-                    } else {
-                        noNotif.setVisibility(View.VISIBLE);
-                        notifRecyclerView.setVisibility(View.GONE);
-                    }
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-
 
     }
 }

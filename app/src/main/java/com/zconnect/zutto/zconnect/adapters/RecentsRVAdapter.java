@@ -51,12 +51,14 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.AdminHome;
+import com.zconnect.zutto.zconnect.BuildConfig;
 import com.zconnect.zutto.zconnect.CabPoolAll;
 import com.zconnect.zutto.zconnect.CabPoolListOfPeople;
 import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.HomeActivity;
 import com.zconnect.zutto.zconnect.InfoneProfileActivity;
 import com.zconnect.zutto.zconnect.LeaderBoard;
+import com.zconnect.zutto.zconnect.Links;
 import com.zconnect.zutto.zconnect.LoginActivity;
 import com.zconnect.zutto.zconnect.Notices;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
@@ -73,6 +75,7 @@ import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.commonModules.NumberNotificationForFeatures;
 import com.zconnect.zutto.zconnect.commonModules.viewImage;
+import com.zconnect.zutto.zconnect.fragments.UpdateAppActivity;
 import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
@@ -2039,9 +2042,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         HorizontalScrollView hsv;
         LinearLayout linearLayout;
-        RelativeLayout notices, events, cabpool, storeroom, shops, admin;
-        FrameLayout unreadCountStoreroomFL, unreadCountEventsFL, unreadCountShopsFL, unreadCountCabpoolFL, unreadCountAdminPanelFL, unreadCountNoticesFL;
-        TextView unreadCountStoreroomTV, unreadCountEventsTV, unreadCountShopsTV, unreadCountCabpoolTV, unreadCountAdminPanelTV, unreadCountNoticesTV;
+        RelativeLayout notices, events, cabpool, storeroom, shops, admin, links;
+        FrameLayout unreadCountLinksFL,unreadCountStoreroomFL, unreadCountEventsFL, unreadCountShopsFL, unreadCountCabpoolFL, unreadCountAdminPanelFL, unreadCountNoticesFL;
+        TextView unreadCountLinksTV,unreadCountStoreroomTV, unreadCountEventsTV, unreadCountShopsTV, unreadCountCabpoolTV, unreadCountAdminPanelTV, unreadCountNoticesTV;
         Query mOtherFeatures;
 
         //for other features
@@ -2062,7 +2065,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             cabpool = (RelativeLayout) itemView.findViewById(R.id.cabpool_recents_features_view);
             admin = (RelativeLayout) itemView.findViewById(R.id.admin_recents_features_view);
             shops = (RelativeLayout) itemView.findViewById(R.id.shops_recents_features_view);
+            links = (RelativeLayout) itemView.findViewById(R.id.links_recents_features_view);
 
+            unreadCountLinksFL = (FrameLayout) itemView.findViewById(R.id.links_unread_count_fl_recents_feature_item);
+            unreadCountLinksTV = (TextView) itemView.findViewById(R.id.links_unread_count_text_recents_feature_item);
 
             unreadCountStoreroomFL = (FrameLayout) itemView.findViewById(R.id.storeroom_unread_count_fl_recents_feature_item);
             unreadCountStoreroomTV = (TextView) itemView.findViewById(R.id.storeroom_unread_count_text_recents_feature_item);
@@ -2121,6 +2127,24 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             });
                         }
                     }
+
+                    //for Links
+                    if (dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_LINKS)) {
+                        final long current = dataSnapshot.child("featuresUnreadCount").child(FeatureDBName.KEY_LINKS).getValue(Long.class);
+                        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_LINKS);
+                        numberNotificationForFeatures.getCount(value -> {
+                            if (value - current > 0) {
+                                unreadCountLinksTV.setText(String.valueOf(value - current));
+                                unreadCountLinksFL.setVisibility(View.VISIBLE);
+                            } else {
+                                unreadCountLinksFL.setVisibility(View.GONE);
+                            }
+                        });
+                    } else {
+                        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_LINKS);
+                        numberNotificationForFeatures.getCount(value -> mUserDetails.child("featuresUnreadCount").child(FeatureDBName.KEY_LINKS).setValue(value));
+                    }
+
                     //for storeroom
                     if (dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_STOREROOM)) {
                         final long current = dataSnapshot.child("featuresUnreadCount").child(FeatureDBName.KEY_STOREROOM).getValue(Long.class);
@@ -2284,6 +2308,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     storeroom.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+
                             if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
                                 resetFeaturesUnreadCount(FeatureDBName.KEY_STOREROOM, dataSnapshot);
                                 Intent intent = new Intent(context, TabStoreRoom.class);
@@ -2309,24 +2334,47 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     cabpool.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
-                                resetFeaturesUnreadCount(FeatureDBName.KEY_CABPOOL, dataSnapshot);
-                                Intent intent = new Intent(context, CabPoolAll.class);
-                                context.startActivity(intent);
-                                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                HashMap<String, String> meta = new HashMap<>();
 
-                                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                                counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_OPEN);
-                                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                                counterItemFormat.setMeta(meta);
+                            FirebaseDatabase.getInstance().getReference().child("communities").
+                                    child(communityReference).child("features").child("shops").
+                                    child("minimumClientVersion").addListenerForSingleValueEvent(
+                                    new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            Log.d("VERSIONN", dataSnapshot.getValue(Integer.class) + "");
+                                            if (dataSnapshot.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
+                                                Intent intent = new Intent(context, UpdateAppActivity.class);
+                                                intent.putExtra("feature", "shops");
+                                                context.startActivity(intent);
 
-                                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                                counterPush.pushValues();
-                            } else {
-                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Cab Pool", context);
-                            }
+                                            } else {
 
+                                                if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
+                                                    resetFeaturesUnreadCount(FeatureDBName.KEY_CABPOOL, dataSnapshot);
+                                                    Intent intent = new Intent(context, CabPoolAll.class);
+                                                    context.startActivity(intent);
+                                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                                    HashMap<String, String> meta = new HashMap<>();
+
+                                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_OPEN);
+                                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                                    counterItemFormat.setMeta(meta);
+
+                                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                                    counterPush.pushValues();
+                                                } else {
+                                                    newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Cab Pool", context);
+                                                }
+
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
                         }
                     });
 
@@ -2357,25 +2405,71 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     shops.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
-                                resetFeaturesUnreadCount(FeatureDBName.KEY_SHOPS, dataSnapshot);
-                                Intent intent = new Intent(context, PoolActivity.class);
-                                context.startActivity(intent);
-                                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                HashMap<String, String> meta = new HashMap<>();
+                            FirebaseDatabase.getInstance().getReference().child("communities").
+                                    child(communityReference).child("features").child("shops").
+                                    child("minimumClientVersion").addListenerForSingleValueEvent(
+                                    new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            Log.d("VERSIONN",dataSnapshot.getValue(Integer.class)+"");
+                                            if (dataSnapshot.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
+                                                Intent intent = new Intent(context, UpdateAppActivity.class);
+                                                intent.putExtra("feature", "shops");
+                                                context.startActivity(intent);
 
-                                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                                counterItemFormat.setUniqueID(CounterUtilities.KEY_SHOPS_OPEN);
-                                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                                counterItemFormat.setMeta(meta);
+                                            } else {
+                                                if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
+                                                    resetFeaturesUnreadCount(FeatureDBName.KEY_SHOPS, dataSnapshot);
+                                                    Intent intent = new Intent(context, PoolActivity.class);
+                                                    context.startActivity(intent);
+                                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                                    HashMap<String, String> meta = new HashMap<>();
 
-                                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                                counterPush.pushValues();
-                            } else {
-                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Storeroom", context);
-                            }
+                                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_SHOPS_OPEN);
+                                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                                    counterItemFormat.setMeta(meta);
+
+                                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                                    counterPush.pushValues();
+                                                } else {
+                                                    newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Storeroom", context);
+                                                }
+
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    }
+                            );
+
 
                         }
+                    });
+
+                    links.setOnClickListener(v -> {
+                        if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
+                            resetFeaturesUnreadCount(FeatureDBName.KEY_LINKS, dataSnapshot);
+                            Intent intent = new Intent(context, Links.class);
+                            context.startActivity(intent);
+                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                            HashMap<String, String> meta = new HashMap<>();
+
+
+                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                            counterItemFormat.setUniqueID(CounterUtilities.KEY_LINKS_OPEN);
+                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                            counterItemFormat.setMeta(meta);
+
+                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                            counterPush.pushValues();
+                        } else {
+                            newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Links", context);
+                        }
+
                     });
 
                     mOtherFeatures.addValueEventListener(new ValueEventListener() {
@@ -2452,9 +2546,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
 
                 if (communityFeatures.getLinks().equals("true")) {
-
+                    links.setVisibility(View.VISIBLE);
                 } else {
-
+                    links.setVisibility(View.VISIBLE);
                 }
 
                 if (communityFeatures.getStoreroom().equals("true")) {

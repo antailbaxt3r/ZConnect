@@ -442,6 +442,8 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
 
     private void forumAddNotification(String communityName, String forumName, String forumCategory, String forumCategoryUID, String forumKey, String userName,String userImage) {
 
+        if(forumCategory.equals("others") || forumCategory.equals("personalChats"))
+            return;
 
         creator = new RemoteMessage.Builder("data");
 
@@ -487,7 +489,17 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         userItemFormat.setImageURL(UserUtilities.currentUser.getImageURL());
         metadata.put("key",productKey);
         metadata.put("type",productType);
-        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD_FREQUENCY_STR," is selling "+productName,"price: "+productPrice,userItemFormat,"productAdd",metadata);
+        metadata.put("featurePID",productKey);
+        if(productType.equals("ADD")) {
+            compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD, NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD_FREQUENCY_STR, " is selling " + productName, "price: " + productPrice, userItemFormat, "productAdd", metadata);
+        }
+        else{
+            if(productPrice==null) {
+                compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD, NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD_FREQUENCY_STR, " is asking for " + productName, "", userItemFormat, "productAdd", metadata);
+            }else{
+                compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD, NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD_FREQUENCY_STR, " is asking for " + productName, "price: " + productPrice, userItemFormat, "productAdd", metadata);
+            }
+        }
     }
 
     private void eventAddNotification(String communityName,String eventName,String eventLocation,String eventKey,String eventImage) {
@@ -509,6 +521,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         userItemFormat.setUsername("");
         userItemFormat.setImageURL("");
         metadata.put("id",eventKey);
+        metadata.put("featurePID",eventKey);
         compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD_FREQUENCY_STR,eventName+" will be happening at ","location: "+eventLocation,userItemFormat,"eventAdd",metadata);
     }
 
@@ -540,10 +553,12 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST);
         creator.addData("userKey",userKey);
         metadata.put("key",productKey);
+        metadata.put("featurePID",productKey);
         UserItemFormat userItemFormat=new UserItemFormat();
         userItemFormat.setUserUID(userKey);
         userItemFormat.setUsername(userName);
         userItemFormat.setImageURL(userImage);
+        Log.d("addinggg", "productShortlistNotification: ");
         GlobalFunctions.inAppNotifications("shortlisted your product","",userItemFormat,false,"productShortlist",metadata,recieverKey);
         sendNotification(true, productKey);
     }
@@ -593,6 +608,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST);
         creator.addData("userKey",userKey);
         metadata.put("key",eventKey);
+        metadata.put("featurePID",eventKey);
         UserItemFormat userItemFormat=new UserItemFormat();
         userItemFormat.setUserUID(userKey);
         userItemFormat.setUsername(userName);

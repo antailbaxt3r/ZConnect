@@ -47,7 +47,7 @@ public class Links extends BaseActivity {
                 for (DataSnapshot shot: dataSnapshot.getChildren()){
                     try{
                         singleProduct = shot.getValue(ListItem.class);
-                        if(!singleProduct.getLinkURL().equals(null)&& !singleProduct.getTitle().equals(null) && !(singleProduct.getUpvote()==0)) {
+                        if(singleProduct.getLinkURL()!=null&& singleProduct.getTitle()!=null) {
                             LinksList.add(singleProduct);
 
                         }

@@ -48,6 +48,7 @@ import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.commonModules.viewImage;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
@@ -183,6 +184,7 @@ public class OpenProductDetails extends BaseActivity {
                                 intent.putExtra("store_room_message", "Hey there, I was checking out the following product:\nProduct Name: " +
                                         productName.getText().toString() + "\nProduct Category:" + productCategory + "\nPrice:" +
                                         productPrice.getText().toString());
+                                intent.putExtra("store_room_image",mImageUri);
 
                                 intent.putExtra("name", productSellerName.getText());
                                 intent.putExtra("tab", "personalChats");
@@ -424,6 +426,7 @@ public class OpenProductDetails extends BaseActivity {
                                 intent.putExtra("store_room_message", "Hey there, I was checking out the following product:\nProduct Name: " +
                                         productName.getText().toString() + "\nProduct Category:" + productCategory + "\nPrice:" +
                                         productPrice.getText().toString());
+                                intent.putExtra("store_room_image",mImageUri);
 
                                 intent.putExtra("name", productSellerName.getText());
                                 intent.putExtra("tab", "personalChats");
@@ -448,7 +451,6 @@ public class OpenProductDetails extends BaseActivity {
 
                     }
                 });
-
 
                 break;
             default:
@@ -730,86 +732,86 @@ public class OpenProductDetails extends BaseActivity {
         });
 
 
-        mListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mListener = v -> {
 
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta = new HashMap<>();
-                meta.put("type", "fromRV");
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_SHORTLIST);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
+            CounterItemFormat counterItemFormat = new CounterItemFormat();
+            HashMap<String, String> meta = new HashMap<>();
+            meta.put("type", "fromRV");
+            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+            counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_SHORTLIST);
+            counterItemFormat.setTimestamp(System.currentTimeMillis());
+            counterItemFormat.setMeta(meta);
 
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
-                flag = true;
-                final DatabaseReference userReservedReference = mDatabaseProduct.child(productKey);
-                userReservedReference.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(final DataSnapshot dataSnapshot) {
-                        if (flag) {
+            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+            counterPush.pushValues();
+            flag = true;
+            final DatabaseReference userReservedReference = mDatabaseProduct.child(productKey);
+            userReservedReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(final DataSnapshot dataSnapshot) {
+                    if (flag) {
 
-                            if (dataSnapshot.child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
-                                userReservedReference.child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
-                                productShortlist.setText("Shortlist");
-                                flag = false;
-                                productShortlist.setTextColor(getApplicationContext().getResources().getColor(R.color.primaryText));
-                                productShortlist.setTypeface(ralewayBold);
+                        if (dataSnapshot.child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
+                            userReservedReference.child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
+                            productShortlist.setText("Shortlist");
+                            flag = false;
+                            productShortlist.setTextColor(getApplicationContext().getResources().getColor(R.color.primaryText));
+                            productShortlist.setTypeface(ralewayBold);
 
-                            } else {
-                                productShortlist.setText("Shortlisted");
+                        } else {
 
-                                final UsersListItemFormat userDetails = new UsersListItemFormat();
-                                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                user.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot2) {
-                                        UserItemFormat userItemFormat = dataSnapshot2.getValue(UserItemFormat.class);
-                                        userDetails.setImageThumb(userItemFormat.getImageURLThumbnail());
-                                        userDetails.setName(userItemFormat.getUsername());
-                                        userDetails.setPhonenumber(userItemFormat.getMobileNumber());
-                                        userDetails.setUserUID(userItemFormat.getUserUID());
-                                        userReservedReference.child("UsersReserved").child(userItemFormat.getUserUID()).setValue(userDetails);
+
+                            Log.d("shortlist", "Im the shortlisted feature , im clicked");
+                            productShortlist.setTypeface(ralewayBold);
+                            productShortlist.setTextColor(getApplicationContext().getResources().getColor(R.color.primaryText));
+                            productShortlist.setText("Shortlisted");
+
+                            final UsersListItemFormat userDetails = new UsersListItemFormat();
+                            DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            user.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot2) {
+                                    UserItemFormat userItemFormat = dataSnapshot2.getValue(UserItemFormat.class);
+                                    userDetails.setImageThumb(userItemFormat.getImageURLThumbnail());
+                                    userDetails.setName(userItemFormat.getUsername());
+                                    userDetails.setPhonenumber(userItemFormat.getMobileNumber());
+                                    userDetails.setUserUID(userItemFormat.getUserUID());
+                                    userReservedReference.child("UsersReserved").child(userItemFormat.getUserUID()).setValue(userDetails);
 //
 //                                        NotificationSender notificationSender=new NotificationSender(dataSnapshot.child("PostedBy").child("UID").getValue().toString(),null,null,null,null,userDetails.getUserUID(),productName.getText().toString(),KEY_PRODUCT,false,true,getApplicationContext());
 //                                        notificationSender.execute();
 
-                                        NotificationSender notificationSender = new NotificationSender(OpenProductDetails.this, userItemFormat.getUserUID());
-                                        NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST, userItemFormat.getUserUID(), (String) dataSnapshot.child("PostedBy").child("UID").getValue(),1);
-                                        productShortlistNotification.setCommunityName(communityTitle);
-                                        productShortlistNotification.setItemKey(productKey);
-                                        productShortlistNotification.setItemName(dataSnapshot.child("ProductName").getValue().toString());
-                                        productShortlistNotification.setUserName(userItemFormat.getUsername());
-                                        productShortlistNotification.setUserMobileNumber(userItemFormat.getMobileNumber());
-                                        productShortlistNotification.setUserImage(userItemFormat.getImageURLThumbnail());
-                                        productShortlistNotification.setRecieverKey((String) dataSnapshot.child("PostedBy").child("UID").getValue());
+                                    NotificationSender notificationSender = new NotificationSender(OpenProductDetails.this, userItemFormat.getUserUID());
+                                    NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST, userItemFormat.getUserUID(), (String) dataSnapshot.child("PostedBy").child("UID").getValue(),1);
+                                    productShortlistNotification.setCommunityName(communityTitle);
+                                    productShortlistNotification.setItemKey(productKey);
+                                    productShortlistNotification.setItemName(dataSnapshot.child("ProductName").getValue().toString());
+                                    productShortlistNotification.setUserName(userItemFormat.getUsername());
+                                    productShortlistNotification.setUserMobileNumber(userItemFormat.getMobileNumber());
+                                    productShortlistNotification.setUserImage(userItemFormat.getImageURLThumbnail());
+                                    productShortlistNotification.setRecieverKey(dataSnapshot.child("PostedBy").child("UID").getValue().toString());
 
-                                        notificationSender.execute(productShortlistNotification);
+                                    notificationSender.execute(productShortlistNotification);
 
 
-                                    }
+                                }
 
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                                    }
-                                });
-                                productShortlist.setTextColor(getApplicationContext().getResources().getColor(R.color.colorPrimary));
-                                productShortlist.setTypeface(ralewayBold);
-                                flag = false;
-                            }
+                                }
+                            });
+                            flag = false;
                         }
                     }
+                }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
+                }
+            });
 
-            }
         };
 
         productShortlist.setOnClickListener(mListener);

@@ -7,15 +7,6 @@
     tools:context=".AdminHome$PlaceholderFragment"
     android:orientation="vertical">
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/primaryText"
-        android:textStyle="bold"
-        android:textSize="16sp"
-        android:text="Features"
-        android:padding="@dimen/padding_small"
-        android:layout_marginTop="@dimen/margin_small"/>
-    <TextView
         android:id="@+id/admin_func_0"
         android:tag="admin_func_0"
         android:layout_width="match_parent"
@@ -40,6 +31,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Promote to Admin"
+        android:padding="@dimen/padding_small"
+        android:layout_marginTop="@dimen/margin_small"
+        android:textSize="16sp"
+        android:textColor="@color/primaryText"/>
+    <TextView
+        android:id="@+id/admin_func_3"
+        android:tag="admin_func_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Send Notifications"
         android:padding="@dimen/padding_small"
         android:layout_marginTop="@dimen/margin_small"
         android:textSize="16sp"

@@ -509,9 +509,13 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                 if(downloadUri!=null)
                     addProductNotification.setItemImage(downloadUri.toString());
                 addProductNotification.setItemName(productNameValue);
-                if(!isAsk)
+                if(!isAsk) {
+                    addProductNotification.setItemType("ADD");
                     addProductNotification.setItemPrice(productPriceValue);
-
+                }else{
+                    addProductNotification.setItemType("ASK");
+                    addProductNotification.setItemPrice(productPriceValue);
+                }
                 addProductNotification.setUserName(user.getUsername());
                 addProductNotification.setUserImage(user.getImageURLThumbnail());
 
