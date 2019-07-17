@@ -157,23 +157,10 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
                             context.startActivity(intent);
                             break;
                         case "infonevalidate":
-                            FirebaseDatabase.getInstance().getReference().child("communities").child(communityRef).child("Users1")
-                                    .child(Objects.requireNonNull(notificationsList.get(position).getNotifiedBy().getUserUID())).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    intent = new Intent(context, InfoneProfileActivity.class);
-                                    catID = (String) dataSnapshot.child("infoneTyoe").getValue();
-                                    intent.putExtra("infoneUserId", notificationsList.get(position).getNotifiedBy().getUserUID());
-                                    intent.putExtra("catID", catID);
-                                    context.startActivity(intent);
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-
+                            intent = new Intent(context, InfoneProfileActivity.class);
+                            intent.putExtra("infoneUserId", notificationsList.get(position).getNotifiedBy().getUserUID());
+                            intent.putExtra("catID", String.valueOf(notificationsList.get(position).getMetadata().get("catID")));
+                            context.startActivity(intent);
                             break;
                         case "addforum":
                             intent = new Intent(context, ExploreForumsActivity.class);
@@ -217,7 +204,7 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
                         case "infoneinvalidate":
                             intent = new Intent(context, InfoneProfileActivity.class);
                             intent.putExtra("infoneUserId", notificationsList.get(position).getNotifiedBy().getUserUID());
-                            intent.putExtra("catID", catID);
+                            intent.putExtra("catID", String.valueOf(notificationsList.get(position).getMetadata().get("catID")));
                             context.startActivity(intent);
                             break;
                         case "verification":

@@ -325,7 +325,7 @@ public class InfoneProfileActivity extends BaseActivity {
         Log.e(TAG, "data comRef:" + communityReference);
 
         updateViews();
-        Log.e(TAG, "inside" + infoneUserId);
+        Log.e(TAG, "insidethekjld" + catID);
 
         databaseReferenceInfone.child("categoriesInfo").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -618,11 +618,12 @@ public class InfoneProfileActivity extends BaseActivity {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             UserItemFormat userItemFormat = new UserItemFormat();
+                            HashMap<String, Object> metadata = new HashMap<>();
                             userItemFormat.setUsername((String) dataSnapshot.child("username").getValue());
                             userItemFormat.setUserUID((String) dataSnapshot.child("userUID").getValue());
                             userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
-
-                            GlobalFunctions.inAppNotifications("has validated your phone number",phoneNums.get(0),userItemFormat,false,"infonevalidate",null,uid);
+                            metadata.put("catID",catID);
+                            GlobalFunctions.inAppNotifications("has validated your phone number",phoneNums.get(0),userItemFormat,false,"infonevalidate",metadata,uid);
 
                         }
 
@@ -673,11 +674,12 @@ public class InfoneProfileActivity extends BaseActivity {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 UserItemFormat userItemFormat = new UserItemFormat();
+                                HashMap<String,Object> metadata = new HashMap<>();
                                 userItemFormat.setUsername((String) dataSnapshot.child("username").getValue());
                                 userItemFormat.setUserUID((String) dataSnapshot.child("userUID").getValue());
                                 userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
-
-                                GlobalFunctions.inAppNotifications("has invalidated your phone number",phoneNums.get(0),userItemFormat,false,"infoneinvalidate",null,infoneUserUID);
+                                metadata.put("catID",catID);
+                                GlobalFunctions.inAppNotifications("has invalidated your phone number",phoneNums.get(0),userItemFormat,false,"infoneinvalidate",metadata,infoneUserUID);
 
                             }
 
