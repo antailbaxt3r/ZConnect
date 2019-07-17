@@ -482,11 +482,6 @@
             android:label="Image Notification"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".NotificationAdmin"
-            android:label="Send Notifications"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Links" />
         <activity
             android:name=".pools.PoolActivity"
