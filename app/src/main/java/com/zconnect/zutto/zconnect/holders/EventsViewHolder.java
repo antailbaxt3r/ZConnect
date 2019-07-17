@@ -362,7 +362,7 @@ eventDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
 
 
 
-        eventDatabase.child("BoostersUids").addValueEventListener(new ValueEventListener() {
+        eventDatabase.child("BoostersUids").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -400,9 +400,13 @@ eventDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                     if(!flag){
                         Map<String, Object> taskMap = new HashMap<String, Object>();
                         taskMap.put(user.getUid(), user.getUid());
+                        if(eventNumLit.getText().toString().equals("0")){
+                            eventNumLit.setText("1");
+                        }else {
+                            eventNumLit.setText(String.valueOf(Integer.valueOf(eventNumLit.getText().toString()) + 1));
+                        }
                         eventDatabase.child("BoostersUids").updateChildren(taskMap);
-
-
+                        boostBtn.setColorFilter(mView.getContext().getResources().getColor(R.color.lit));
 
                         DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         user.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -427,9 +431,18 @@ eventDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                             }
 
                         });
+                        flag = true;
 
                     }else {
                         eventDatabase.child("BoostersUids").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
+                            eventNumLit.setText(String.valueOf(Integer.valueOf(eventNumLit.getText().toString())-1));
+                            if(eventNumLit.getText().toString().equals("0")){
+                                eventNumLit.setText("0");
+                            }
+                            boostBtn.setColorFilter(mView.getContext().getResources().getColor(R.color.primaryText));
+                        flag = false;
+
+
 
                     }
                 }

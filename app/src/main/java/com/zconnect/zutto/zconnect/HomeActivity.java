@@ -339,10 +339,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         if(isFirstRun){
             showAppTour();
+            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit()
+                    .putBoolean("isFirstRun", false).commit();
         }
 
-        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit()
-                .putBoolean("isFirstRun", false).commit();
+
     /////////////////////////////////////////////////////////////////////////////////////
 
 //        Log.d("USEROBJECT",UserUtilities.currentUser.toString());

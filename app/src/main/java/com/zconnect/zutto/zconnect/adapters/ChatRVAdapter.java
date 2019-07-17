@@ -147,6 +147,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         final ChatItemFormats message = chatFormats.get(position);
 
         if(message.getMessageType().equals("message")){
+            ((messageViewHolder) rvHolder).anonymousImage.setVisibility(View.GONE);
 
             messageViewHolder holder = (messageViewHolder) rvHolder;
             long previousTs = 0;
@@ -167,6 +168,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 if(forumType.equals(ForumUtilities.VALUE_COMMENTS)){
                     holder.rightDummy.setVisibility(View.VISIBLE);
+                    holder.usernameLayout.setGravity(Gravity.START);
+
                     holder.leftDummy.setVisibility(View.GONE);
                     holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box));
                     holder.chatContainer.setGravity(Gravity.START);
@@ -196,6 +199,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 {
                     holder.rightDummy.setVisibility(View.VISIBLE);
                     holder.leftDummy.setVisibility(View.GONE);
+                    holder.usernameLayout.setGravity(Gravity.START);
+
                     holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box));
                     holder.chatContainer.setGravity(Gravity.START);
                     holder.userAvatar.setVisibility(View.VISIBLE);
@@ -543,17 +548,26 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     if(forumType.equals(ForumUtilities.VALUE_COMMENTS)){
                         holder.rightDummy.setVisibility(View.VISIBLE);
                         holder.leftDummy.setVisibility(View.GONE);
+                        holder.usernameLayout.setGravity(Gravity.START);
                         holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box));
                         holder.chatContainer.setGravity(Gravity.START);
                     }
                     else {
                         if (message.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                            holder.name.setVisibility(View.GONE);
+//                            holder.usernameLayout.setGravity(Gravity.END);
+                            holder.anonymousImage.setVisibility(View.GONE);
+//                            holder.name.setGravity(Gravity.END);
                             holder.rightDummy.setVisibility(View.GONE);
                             holder.leftDummy.setVisibility(View.VISIBLE);
                             holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box_self));
                             holder.chatContainer.setGravity(Gravity.END);
 
                         } else {
+                            holder.name.setVisibility(View.VISIBLE);
+                            holder.name.setText(message.getUserName());
+                            holder.usernameLayout.setGravity(Gravity.START);
+                            holder.anonymousImage.setVisibility(View.VISIBLE);
                             holder.rightDummy.setVisibility(View.VISIBLE);
                             holder.leftDummy.setVisibility(View.GONE);
                             holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box));
@@ -562,10 +576,11 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         }
                     }
                 holder.userAvatar.setVisibility(View.GONE);
-                holder.name.setVisibility(View.GONE);
+
+
                 String time = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(message.getTimeDate());
                 holder.time.setText(time);
-                holder.message.setText("Anonymous");
+                holder.message.setText("Message is hidden");
                 holder.message.setTypeface(holder.message.getTypeface(),Typeface.BOLD_ITALIC);
                 Linkify.addLinks(holder.message, Linkify.ALL);
             }
@@ -574,6 +589,75 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
                 holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
                 holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box_dark_mode));
+                if(position>=1){
+                    ChatItemFormats pm = chatFormats.get(position-1);
+                    previousTs = pm.getTimeDate();
+                }
+                String messageText = message.getMessage();
+                messageText = messageText.substring(1,messageText.length()-1);
+                //TODO IMPROVE EXTRACTION OF USERNAME AND UID
+                String newMessageText = "", token = "";
+                ArrayList<Integer> startIndexList = new ArrayList<>();
+                ArrayList<Integer> endIndexList = new ArrayList<>();
+                ArrayList<String> uid = new ArrayList<>();
+
+                int startIndex = 0;
+                int endIndex = 0;
+                boolean isToken = false;
+                try {
+                    for (int i = 0; i < messageText.length(); i++) {
+                        char letter = messageText.charAt(i);
+                        if (letter == '@') {
+                            startIndex = i;
+                            isToken = true;
+                        } else if (letter == '~') {
+                            endIndex = i;
+                            newMessageText += token;
+                            token = "";
+                        } else if (letter == ';') {
+                            startIndexList.add(newMessageText.length()-endIndex+startIndex);
+                            endIndexList.add(newMessageText.length());
+                            Log.d("logtokrn", token);
+                            uid.add(token.substring(1));
+                            startIndex = 0;
+                            endIndex = 0;
+                            token = "";
+                            isToken = false;
+                            continue;
+                        }
+
+                        if (isToken) {
+                            token += letter;
+                        } else {
+                            newMessageText += letter;
+                        }
+
+                    }
+                    SpannableString spannableString = new SpannableString(newMessageText);
+                    int i = 0;
+                    for (String u : uid) {
+                        spannableString.setSpan(new MentionsClickableSpan(holder.itemView.getContext(), u), startIndexList.get(i), endIndexList.get(i), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        i++;
+                    }
+                    holder.message.setText(spannableString);
+                    holder.message.setMovementMethod(LinkMovementMethod.getInstance());
+                    holder.message.setHighlightColor(Color.TRANSPARENT);
+                    Linkify.addLinks(holder.message, Linkify.ALL);
+                    holder.name.setEnabled(false);
+                    holder.name.setText(message.getUserName());
+                    holder.userAvatar.setVisibility(View.GONE);
+                    holder.message.setTypeface(holder.message.getTypeface(),Typeface.BOLD_ITALIC);
+                    holder.name.setText(message.getUserName());
+                    holder.name.setVisibility(View.VISIBLE);
+                    holder.userAvatar.setVisibility(View.GONE);
+
+                }
+                catch (Exception e){
+                    Log.e("MYERROR",e.toString());
+                    holder.message.setText("Unable to load the message");
+
+                }
+
             }
             else{
                 holder.message.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
@@ -583,76 +667,17 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             }
 
-            holder.messageBubble.setOnClickListener(new View.OnClickListener() {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    long previousTs = 0;
-                    if(position>=1){
-                        ChatItemFormats pm = chatFormats.get(position-1);
-                        previousTs = pm.getTimeDate();
-                    }
-                    String messageText = message.getMessage();
-                    messageText = messageText.substring(1,messageText.length()-1);
-                    //TODO IMPROVE EXTRACTION OF USERNAME AND UID
-                    String newMessageText = "", token = "";
-                    ArrayList<Integer> startIndexList = new ArrayList<>();
-                    ArrayList<Integer> endIndexList = new ArrayList<>();
-                    ArrayList<String> uid = new ArrayList<>();
-
-                    int startIndex = 0;
-                    int endIndex = 0;
-                    boolean isToken = false;
-                    try {
-                        for (int i = 0; i < messageText.length(); i++) {
-                            char letter = messageText.charAt(i);
-                            if (letter == '@') {
-                                startIndex = i;
-                                isToken = true;
-                            } else if (letter == '~') {
-                                endIndex = i;
-                                newMessageText += token;
-                                token = "";
-                            } else if (letter == ';') {
-                                startIndexList.add(newMessageText.length()-endIndex+startIndex);
-                                endIndexList.add(newMessageText.length());
-                                Log.d("logtokrn", token);
-                                uid.add(token.substring(1));
-                                startIndex = 0;
-                                endIndex = 0;
-                                token = "";
-                                isToken = false;
-                                continue;
-                            }
-
-                            if (isToken) {
-                                token += letter;
-                            } else {
-                                newMessageText += letter;
-                            }
-
-                        }
-                        SpannableString spannableString = new SpannableString(newMessageText);
-                        int i = 0;
-                        for (String u : uid) {
-                            spannableString.setSpan(new MentionsClickableSpan(holder.itemView.getContext(), u), startIndexList.get(i), endIndexList.get(i), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            i++;
-                        }
-                        holder.message.setText(spannableString);
-                        holder.message.setMovementMethod(LinkMovementMethod.getInstance());
-                        holder.message.setHighlightColor(Color.TRANSPARENT);
-                        Linkify.addLinks(holder.message, Linkify.ALL);
-                        holder.name.setEnabled(false);
-                        holder.name.setText(message.getUserName());
-                        holder.userAvatar.setVisibility(View.GONE);
-                        holder.message.setTypeface(holder.message.getTypeface(),Typeface.BOLD_ITALIC);
-
-                    }
-                    catch (Exception e){
-                        Log.e("MYERROR",e.toString());
-                        holder.message.setText("Unable to load the message");
-
-                    }
-
+                   if(ctx instanceof ChatActivity){
+                       if(forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                           return;
+                       }
+                       else {
+                           ((ChatActivity) ctx).setAnonymousChat();
+                       }
+                   }
 
 
                 }
@@ -739,9 +764,11 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     class messageViewHolder extends RecyclerView.ViewHolder {
 
         TextView message, name, time, timeGroupText;
+        LinearLayout usernameLayout;
         SimpleDraweeView userAvatar;
         LinearLayout rightDummy, leftDummy, messageBubble, chatContainer, chatItem;
         Context context;
+        ImageView anonymousImage;
 
         public messageViewHolder(final View itemView, final Context context) {
             super(itemView);
@@ -756,6 +783,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             leftDummy = (LinearLayout) itemView.findViewById(R.id.chat_format_leftdummy);
             rightDummy = (LinearLayout) itemView.findViewById(R.id.chat_format_rightdummy);
             messageBubble = (LinearLayout) itemView.findViewById(R.id.chat_format_message_bubble);
+            anonymousImage = itemView.findViewById(R.id.anonymous_image);
+            usernameLayout = itemView.findViewById(R.id.username_layout);
 
             Typeface quicksandRegular = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Quicksand-Regular.ttf");
             Typeface quicksandBold = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Quicksand-Bold.ttf");

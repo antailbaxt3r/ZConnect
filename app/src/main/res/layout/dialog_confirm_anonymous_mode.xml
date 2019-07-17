@@ -20,57 +20,43 @@
 
 
     <TextView
-        style="@style/TextAppearance.AppCompat.Title"
         android:id="@+id/validate_infone_text"
+        style="@style/TextAppearance.AppCompat.Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="You are about to enter Anonymous Mode."
-        android:gravity="center"
         android:layout_marginBottom="10dp"
-        android:textColor="@color/colorPrimary"/>
+        android:gravity="center"
+        android:text="Please provide a username for Anonymous Mode"
+        android:textColor="@color/deepPurple500" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/appbar_padding_top"
-        android:gravity="center_horizontal"
-        android:text="You will be able to see all the aonymous messages and post anonymous messages under the username:"
-        android:textStyle="bold"
-        app:met_hideUnderline="true"
-        app:met_textColor="@color/primaryText" />
     <EditText
         android:id="@+id/anonymous_username_et"
         android:layout_marginTop="@dimen/margin_small8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.EditText"
-        android:text="User"
+        android:text=""
         android:textAlignment="center"/>
-    <CheckBox
-        android:id="@+id/anonymous_show_again_cb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Don't show this again."/>
 
     <LinearLayout
         android:layout_marginTop="10dp"
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
         <Button
-            android:layout_marginEnd="@dimen/margin_small8dp"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:text="ENTER"
             android:id="@+id/anonymous_enter_button"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginEnd="@dimen/margin_small8dp"
+            android:background="@color/deepPurple500"
             android:maxLength="10"
-            android:background="@color/colorPrimary"
-            android:textIsSelectable="true"
-            android:textSize="16sp"
+            android:text="Done"
             android:textColor="@color/white"
-            />
+            android:textIsSelectable="true"
+            android:textSize="16sp" />
         <Button
             android:text="CANCEL"
             android:background="@color/white"
