@@ -59,6 +59,7 @@ import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.HomeActivity;
 import com.zconnect.zutto.zconnect.InfoneProfileActivity;
 import com.zconnect.zutto.zconnect.LeaderBoard;
+import com.zconnect.zutto.zconnect.Links;
 import com.zconnect.zutto.zconnect.LoginActivity;
 import com.zconnect.zutto.zconnect.Notices;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
@@ -2045,9 +2046,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         HorizontalScrollView hsv;
         LinearLayout linearLayout;
-        RelativeLayout notices, events, cabpool, storeroom, shops, admin;
-        FrameLayout unreadCountStoreroomFL, unreadCountEventsFL, unreadCountShopsFL, unreadCountCabpoolFL, unreadCountAdminPanelFL, unreadCountNoticesFL;
-        TextView unreadCountStoreroomTV, unreadCountEventsTV, unreadCountShopsTV, unreadCountCabpoolTV, unreadCountAdminPanelTV, unreadCountNoticesTV;
+        RelativeLayout notices, events, cabpool, storeroom, shops, admin, links;
+        FrameLayout unreadCountLinksFL,unreadCountStoreroomFL, unreadCountEventsFL, unreadCountShopsFL, unreadCountCabpoolFL, unreadCountAdminPanelFL, unreadCountNoticesFL;
+        TextView unreadCountLinksTV,unreadCountStoreroomTV, unreadCountEventsTV, unreadCountShopsTV, unreadCountCabpoolTV, unreadCountAdminPanelTV, unreadCountNoticesTV;
         Query mOtherFeatures;
 
         //for other features
@@ -2068,7 +2069,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             cabpool = (RelativeLayout) itemView.findViewById(R.id.cabpool_recents_features_view);
             admin = (RelativeLayout) itemView.findViewById(R.id.admin_recents_features_view);
             shops = (RelativeLayout) itemView.findViewById(R.id.shops_recents_features_view);
+            links = (RelativeLayout) itemView.findViewById(R.id.links_recents_features_view);
 
+            unreadCountLinksFL = (FrameLayout) itemView.findViewById(R.id.links_unread_count_fl_recents_feature_item);
+            unreadCountLinksTV = (TextView) itemView.findViewById(R.id.links_unread_count_text_recents_feature_item);
 
             unreadCountStoreroomFL = (FrameLayout) itemView.findViewById(R.id.storeroom_unread_count_fl_recents_feature_item);
             unreadCountStoreroomTV = (TextView) itemView.findViewById(R.id.storeroom_unread_count_text_recents_feature_item);
@@ -2127,6 +2131,24 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             });
                         }
                     }
+
+                    //for Links
+                    if (dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_LINKS)) {
+                        final long current = dataSnapshot.child("featuresUnreadCount").child(FeatureDBName.KEY_LINKS).getValue(Long.class);
+                        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_LINKS);
+                        numberNotificationForFeatures.getCount(value -> {
+                            if (value - current > 0) {
+                                unreadCountLinksTV.setText(String.valueOf(value - current));
+                                unreadCountLinksFL.setVisibility(View.VISIBLE);
+                            } else {
+                                unreadCountLinksFL.setVisibility(View.GONE);
+                            }
+                        });
+                    } else {
+                        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_LINKS);
+                        numberNotificationForFeatures.getCount(value -> mUserDetails.child("featuresUnreadCount").child(FeatureDBName.KEY_LINKS).setValue(value));
+                    }
+
                     //for storeroom
                     if (dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_STOREROOM)) {
                         final long current = dataSnapshot.child("featuresUnreadCount").child(FeatureDBName.KEY_STOREROOM).getValue(Long.class);
@@ -2432,6 +2454,28 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }
                     });
 
+                    links.setOnClickListener(v -> {
+                        if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
+                            resetFeaturesUnreadCount(FeatureDBName.KEY_LINKS, dataSnapshot);
+                            Intent intent = new Intent(context, Links.class);
+                            context.startActivity(intent);
+                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                            HashMap<String, String> meta = new HashMap<>();
+
+
+                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                            counterItemFormat.setUniqueID(CounterUtilities.KEY_LINKS_OPEN);
+                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                            counterItemFormat.setMeta(meta);
+
+                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                            counterPush.pushValues();
+                        } else {
+                            newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Links", context);
+                        }
+
+                    });
+
                     mOtherFeatures.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -2506,9 +2550,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
 
                 if (communityFeatures.getLinks().equals("true")) {
-
+                    links.setVisibility(View.VISIBLE);
                 } else {
-
+                    links.setVisibility(View.VISIBLE);
                 }
 
                 if (communityFeatures.getStoreroom().equals("true")) {

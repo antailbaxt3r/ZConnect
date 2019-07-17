@@ -426,6 +426,7 @@ public class OpenProductDetails extends BaseActivity {
                                 intent.putExtra("store_room_message", "Hey there, I was checking out the following product:\nProduct Name: " +
                                         productName.getText().toString() + "\nProduct Category:" + productCategory + "\nPrice:" +
                                         productPrice.getText().toString());
+                                intent.putExtra("store_room_image",mImageUri);
 
                                 intent.putExtra("name", productSellerName.getText());
                                 intent.putExtra("tab", "personalChats");
@@ -450,7 +451,6 @@ public class OpenProductDetails extends BaseActivity {
 
                     }
                 });
-
 
                 break;
             default:
@@ -780,7 +780,7 @@ public class OpenProductDetails extends BaseActivity {
 //
 //                                        NotificationSender notificationSender=new NotificationSender(dataSnapshot.child("PostedBy").child("UID").getValue().toString(),null,null,null,null,userDetails.getUserUID(),productName.getText().toString(),KEY_PRODUCT,false,true,getApplicationContext());
 //                                        notificationSender.execute();
-                                    HashMap<String,Object> metadata = new HashMap<>();
+
                                     NotificationSender notificationSender = new NotificationSender(OpenProductDetails.this, userItemFormat.getUserUID());
                                     NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST, userItemFormat.getUserUID(), (String) dataSnapshot.child("PostedBy").child("UID").getValue(),1);
                                     productShortlistNotification.setCommunityName(communityTitle);
@@ -790,9 +790,6 @@ public class OpenProductDetails extends BaseActivity {
                                     productShortlistNotification.setUserMobileNumber(userItemFormat.getMobileNumber());
                                     productShortlistNotification.setUserImage(userItemFormat.getImageURLThumbnail());
                                     productShortlistNotification.setRecieverKey(dataSnapshot.child("PostedBy").child("UID").getValue().toString());
-                                    metadata.put("key",productKey);
-                                    metadata.put("featurePID",productKey);
-                                    GlobalFunctions.inAppNotifications("shortlisted your product","",userItemFormat,false,"productShortlist",metadata,dataSnapshot.child("PostedBy").child("UID").getValue().toString());
 
                                     notificationSender.execute(productShortlistNotification);
 

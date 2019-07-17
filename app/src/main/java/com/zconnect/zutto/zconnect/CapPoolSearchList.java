@@ -103,7 +103,11 @@ public class CapPoolSearchList extends BaseActivity {
             time_to = getIntent().getStringExtra("time_to");
             time_from = getIntent().getStringExtra("time_from");
 
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            Log.d("FATAL E",e.toString());
+            finish();
+
+        }
 
         // Fab for creating this
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -206,7 +210,7 @@ public class CapPoolSearchList extends BaseActivity {
                     try {
 
                         CabItemFormat cabItemFormat = shot.getValue(CabItemFormat.class);
-                        if(!cabItemFormat.getDestination().equals(null)&& !cabItemFormat.getSource().equals(null)) {
+                        if(shot.child("destination").getValue() != null && shot.child("source").getValue() !=  null && shot.child("PostedBy").child("ImageThumb").getValue() != null) {
                             cabItemFormatVector.add(cabItemFormat);
                         }
                     }catch (Exception e){}
@@ -329,9 +333,12 @@ public class CapPoolSearchList extends BaseActivity {
                     poolrv.setHasFixedSize(true);
                     poolrv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
                    if(hasTime_from) {
-                       adapter = new CabPoolRVAdapter(mcontext, treeMap_double);
+                       Vector<CabItemFormat> vector = new Vector<>(treeMap_double.values());
+                       adapter = new CabPoolRVAdapter(mcontext, vector);
                    }else{
-                       adapter = new CabPoolRVAdapter(mcontext, treeMap_string,1);
+                       Vector<CabItemFormat> vector = new Vector<>(treeMap_string.values());
+
+                       adapter = new CabPoolRVAdapter(mcontext,vector);
 
                    }
                    poolrv.setAdapter(adapter);

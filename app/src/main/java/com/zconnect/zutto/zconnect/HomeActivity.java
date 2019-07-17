@@ -1033,6 +1033,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                                 fm = getSupportFragmentManager();
                                 active = recent;
 
+
                                 fm.beginTransaction().add(R.id.container, notifications, "4").hide(notifications).commit();
                                 fm.beginTransaction().add(R.id.container, infone, "3").hide(infone).commit();
                                 fm.beginTransaction().add(R.id.container, forums, "2").hide(forums).commit();

@@ -1252,7 +1252,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
             menu.findItem(R.id.action_edit_forum).setVisible(false);
         } else {
             final String tabuid = getIntent().getStringExtra("tab");
-            if (tabuid.equals("shopPools") || tabuid.equals("otherChats")) {
+            if (tabuid.equals("shopPools") ) {
 
                 menu.findItem(R.id.action_edit_forum).setVisible(false);
             }

@@ -137,6 +137,7 @@ public class CreateForum extends BaseActivity {
             String tab = callingActivityIntent.getStringExtra(ForumUtilities.KEY_FORUM_TAB_STR);
             final DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
             final DatabaseReference databaseReferenceTabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab);
+
             forumIDSaveLocation.child("forumUID").setValue(createForumWithDetails(name,
                     databaseReferenceCategories,
                     databaseReferenceTabsCategories,
@@ -149,6 +150,7 @@ public class CreateForum extends BaseActivity {
                     null,
                     imageUri,
                     false
+
             ));
             return;
 
