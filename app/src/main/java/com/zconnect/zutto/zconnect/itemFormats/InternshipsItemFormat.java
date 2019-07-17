@@ -7,10 +7,12 @@ public class InternshipsItemFormat {
     private String question;
     private String role;
     private Long stipend;
+    private String orgID;
+    private String key;
 
     public InternshipsItemFormat() { }
 
-    public InternshipsItemFormat(String description,String duration,String organization,String question,String role,Long stipend)
+    public InternshipsItemFormat(String description,String duration,String organization,String question,String role,Long stipend,String key,String orgID)
     {
         this.description = description;
         this.duration = duration;
@@ -18,6 +20,8 @@ public class InternshipsItemFormat {
         this.question = question;
         this.role = role;
         this.stipend = stipend;
+        this.orgID = orgID;
+        this.key = key;
     }
 
     public String getDescription() {
@@ -66,5 +70,21 @@ public class InternshipsItemFormat {
 
     public void setStipend(Long stipend) {
         this.stipend = stipend;
+    }
+
+    public String getOrgID() {
+        return orgID;
+    }
+
+    public void setOrgID(String orgID) {
+        this.orgID = orgID;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }
