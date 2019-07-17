@@ -479,7 +479,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".NotificationImage"
-            android:label="Image Notification"
+            android:label="Send Notification"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Links" />
