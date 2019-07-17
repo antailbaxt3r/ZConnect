@@ -470,7 +470,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
-    private class  blankViewHolder extends  RecyclerView.ViewHolder{
+    public static class  blankViewHolder extends  RecyclerView.ViewHolder{
 
         public blankViewHolder(View itemView) {
             super(itemView);

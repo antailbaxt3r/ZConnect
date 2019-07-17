@@ -468,6 +468,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".WebViewActivity"
+            android:label="@string/title_activity_admin_home"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".addActivities.CreateForum"
             android:label="Create Forum"
             android:screenOrientation="portrait"
@@ -479,12 +484,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".NotificationImage"
-            android:label="Image Notification"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".NotificationAdmin"
-            android:label="Send Notifications"
+            android:label="Send Notification"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Links" />

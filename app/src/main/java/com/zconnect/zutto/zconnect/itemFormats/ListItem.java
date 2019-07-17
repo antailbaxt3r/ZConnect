@@ -12,10 +12,15 @@ public class ListItem implements Serializable {
         this.upvote=0;
     }
 
-    public  ListItem(String linkURL, String title){
+    public ListItem(String linkURL, String title){
         this.linkURL=linkURL;
         this.title=title;
         this.upvote=0;
+    }
+    public ListItem(String linkURL, String title, int upvote){
+        this.linkURL=linkURL;
+        this.title=title;
+        this.upvote=upvote;
     }
 
 
