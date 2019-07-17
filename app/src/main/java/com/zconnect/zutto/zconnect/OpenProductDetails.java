@@ -184,6 +184,7 @@ public class OpenProductDetails extends BaseActivity {
                                 intent.putExtra("store_room_message", "Hey there, I was checking out the following product:\nProduct Name: " +
                                         productName.getText().toString() + "\nProduct Category:" + productCategory + "\nPrice:" +
                                         productPrice.getText().toString());
+                                intent.putExtra("store_room_image",mImageUri);
 
                                 intent.putExtra("name", productSellerName.getText());
                                 intent.putExtra("tab", "personalChats");
@@ -425,6 +426,7 @@ public class OpenProductDetails extends BaseActivity {
                                 intent.putExtra("store_room_message", "Hey there, I was checking out the following product:\nProduct Name: " +
                                         productName.getText().toString() + "\nProduct Category:" + productCategory + "\nPrice:" +
                                         productPrice.getText().toString());
+                                intent.putExtra("store_room_image",mImageUri);
 
                                 intent.putExtra("name", productSellerName.getText());
                                 intent.putExtra("tab", "personalChats");
@@ -449,7 +451,6 @@ public class OpenProductDetails extends BaseActivity {
 
                     }
                 });
-
 
                 break;
             default:

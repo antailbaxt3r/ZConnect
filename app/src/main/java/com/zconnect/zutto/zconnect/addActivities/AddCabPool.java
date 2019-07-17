@@ -265,6 +265,32 @@ public class AddCabPool extends BaseActivity {
                                         newPost.child("to").setValue(T2);
                                         newPost.child("usersListItemFormats").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(usersListItemFormat);
                                         newPost.child("PostTimeMillis").setValue(postTimeMillis);
+
+
+
+                                        //writing to database for recent items
+                                        DatabaseReference newPost2 = homeReference.child(key);
+                                        final DatabaseReference newPost2PostedBy = newPost2.child("PostedBy");
+                                        newPost2.child("name").setValue("Cabpool to " + destination.getSelectedItem().toString());
+                                        newPost2.child("desc").setValue("Hey! a friend is asking for a cabpool from " + source.getSelectedItem().toString() + " to " + destination.getSelectedItem().toString() + " on " + calender.getText().toString() + " between " + time + ". Do you want to join?");
+                                        newPost2.child("imageurl").setValue("https://blog.grabon.in/wp-content/uploads/2016/09/Cab-Services.jpg");
+                                        newPost2.child("feature").setValue("CabPool");
+                                        newPost2.child("id").setValue(key);
+                                        newPost2.child("Key").setValue(key);
+                                        newPost2.child("desc2").setValue("");
+                                        newPost2.child("DT").setValue(s_year + s_monthOfYear + s_dayOfMonth + " " + getTime());
+                                        newPost2.child("cabpoolSource").setValue(String.valueOf(source.getSelectedItem()));
+                                        newPost2.child("cabpoolDestination").setValue(String.valueOf(destination.getSelectedItem()));
+                                        newPost2.child("cabpoolDate").setValue(calender.getText().toString());
+                                        newPost2.child("cabpoolTimeFrom").setValue(T1);
+                                        newPost2.child("cabpoolTimeTo").setValue(T2);
+                                        newPost2.child("cabpoolTime").setValue(time);
+                                        newPost2.child("cabpoolNumPeople").setValue(1);
+                                        newPost2.child("PostTimeMillis").setValue(postTimeMillis);
+                                        newPost2PostedBy.setValue(null);
+                                        newPost2PostedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+
                                         mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -272,6 +298,17 @@ public class AddCabPool extends BaseActivity {
                                                 postedBy.child("Username").setValue(dataSnapshot.child("username").getValue().toString());
                                                 //needs to be changed after image thumbnail is put
                                                 postedBy.child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());
+                                                newPost2PostedBy.child("Username").setValue(dataSnapshot.child("username").getValue().toString());
+                                                //needs to be changed after image thumbnail is put
+                                                newPost2PostedBy.child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());
+                                                UserItemFormat userData = dataSnapshot.getValue(UserItemFormat.class);
+
+                                                GlobalFunctions.createForumWithDetails("Cabpool - " + goingTime,
+                                                        key,userData,"others",
+                                                        "Cabpool:" + "From:" + String.valueOf(source.getSelectedItem()) + "\nTo:" + String.valueOf(destination.getSelectedItem()) + "\nGoing time:" + goingTime + "\nReturning Time:+" + returnTime,
+                                                        "https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/taxi_icon.png?alt=media&token=e2d26476-bc86-4bd3-a33c-b27f744a9491"
+                                                );
+
                                             }
 
                                             @Override
@@ -300,41 +337,6 @@ public class AddCabPool extends BaseActivity {
                                         CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                                         counterPush.pushValues();
 
-
-                                        //writing to database for recent items
-                                        DatabaseReference newPost2 = homeReference.child(key);
-                                        final DatabaseReference newPost2PostedBy = newPost2.child("PostedBy");
-                                        newPost2.child("name").setValue("Cabpool to " + destination.getSelectedItem().toString());
-                                        newPost2.child("desc").setValue("Hey! a friend is asking for a cabpool from " + source.getSelectedItem().toString() + " to " + destination.getSelectedItem().toString() + " on " + calender.getText().toString() + " between " + time + ". Do you want to join?");
-                                        newPost2.child("imageurl").setValue("https://blog.grabon.in/wp-content/uploads/2016/09/Cab-Services.jpg");
-                                        newPost2.child("feature").setValue("CabPool");
-                                        newPost2.child("id").setValue(key);
-                                        newPost2.child("Key").setValue(key);
-                                        newPost2.child("desc2").setValue("");
-                                        newPost2.child("DT").setValue(s_year + s_monthOfYear + s_dayOfMonth + " " + getTime());
-                                        newPost2.child("cabpoolSource").setValue(String.valueOf(source.getSelectedItem()));
-                                        newPost2.child("cabpoolDestination").setValue(String.valueOf(destination.getSelectedItem()));
-                                        newPost2.child("cabpoolDate").setValue(calender.getText().toString());
-                                        newPost2.child("cabpoolTimeFrom").setValue(T1);
-                                        newPost2.child("cabpoolTimeTo").setValue(T2);
-                                        newPost2.child("cabpoolTime").setValue(time);
-                                        newPost2.child("cabpoolNumPeople").setValue(1);
-                                        newPost2.child("PostTimeMillis").setValue(postTimeMillis);
-                                        newPost2PostedBy.setValue(null);
-                                        newPost2PostedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                        mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                newPost2PostedBy.child("Username").setValue(dataSnapshot.child("username").getValue().toString());
-                                                //needs to be changed after image thumbnail is put
-                                                newPost2PostedBy.child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());
-                                            }
-
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
-
-                                            }
-                                        });
 
                                         //writing uid of cabpool to homePosts node in Users1.uid for handling data conistency
                                         mPostedByDetails.child("homePosts").child(key).setValue(true);
@@ -380,26 +382,13 @@ public class AddCabPool extends BaseActivity {
 
                                         GlobalFunctions.addPoints(10);
 
-//                                        Intent intent = new Intent(AddCabPool.this,CabPoolAll.class);
+                                        Intent intent = new Intent(AddCabPool.this,CabPoolAll.class);
 //
-//                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                                        startActivity(intent);
-                                        Intent createForum = new Intent(AddCabPool.this, CreateForum.class);
-                                        createForum.putExtra(ForumUtilities.KEY_ACTIVITY_TYPE_STR, ForumUtilities.VALUE_CREATE_EVENT_FORUM_STR);
-                                        createForum.putExtra(ForumUtilities.KEY_REF_LOCATION, databaseReference.child(newPost.getKey()).toString());
-//                                        createForum.putExtra(ForumUtilities.KEY_FORUM_IMAGE_STR,);
-                                        createForum.putExtra(ForumUtilities.KEY_FORUM_DESC_STR, "Cabpool");
-                                        createForum.putExtra(ForumUtilities.KEY_FORUM_TAB_STR, "others");
-                                        createForum.putExtra(ForumUtilities.KEY_FORUM_IMAGE_STR,"https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/taxi_icon.png?alt=media&token=e2d26476-bc86-4bd3-a33c-b27f744a9491");
-
-                                        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
-                                        Log.d("forumID", newPost.getKey());
-                                        createForum.putExtra(ForumUtilities.KEY_MESSAGE, "Cabpool:" + "From:" + String.valueOf(source.getSelectedItem()) + "\nTo:" + String.valueOf(destination.getSelectedItem()) + "\nGoing time:" + goingTime + "\nReturning Time:+" + returnTime);
-                                        createForum.putExtra(ForumUtilities.KEY_FORUM_NAME_STR, "Cabpool - " + goingTime);
-                                        startActivity(createForum);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(intent);
 
 
-                                        //AddCabPool.this.startActivity(new Intent(AddCabPool.this, CabPoolAll.class));
+
 
                                         finish();
 

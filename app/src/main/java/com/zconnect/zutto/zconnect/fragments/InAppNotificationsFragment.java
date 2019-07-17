@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -115,9 +116,35 @@ public class InAppNotificationsFragment extends Fragment {
                             noNotif.setVisibility(View.GONE);
                             notifRecyclerView.setVisibility(View.VISIBLE);
                             inAppNotificationsAdapter.notifyDataSetChanged();
+                            boolean isUnread = false;
+                            for(InAppNotificationsItemFormat notificationsItemFormat : totalnotificationsList){
+                                try{
+                                    Log.d("NOTIFICATION",notificationsItemFormat.isSeen().get(UserUtilities.currentUser.getUserUID()).toString());
+                                    if(!notificationsItemFormat.isSeen().get(UserUtilities.currentUser.getUserUID())){
+                                        TabLayout tabs = getActivity().findViewById(R.id.navigation);
+                                        tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
+                                        isUnread = true;
+                                    }
+                                }
+                                catch (Exception e){
+                                    TabLayout tabs = getActivity().findViewById(R.id.navigation);
+                                    tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
+                                    Log.d("NOTIFICATIONERROR",e.toString());
+                                }
+                            }
+
+                            if(!isUnread){
+                                TabLayout tabs = getActivity().findViewById(R.id.navigation);
+                                tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
+
+                            }
+
+
                         } else {
                             noNotif.setVisibility(View.VISIBLE);
                             notifRecyclerView.setVisibility(View.GONE);
+                            TabLayout tabs = getActivity().findViewById(R.id.navigation);
+                            tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
                         }
 
                     }
@@ -130,5 +157,6 @@ public class InAppNotificationsFragment extends Fragment {
 
             }
         }
+
     }
 }
