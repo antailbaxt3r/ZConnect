@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
@@ -38,6 +39,7 @@ import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.custom.MentionsClickableSpan;
 import com.zconnect.zutto.zconnect.holders.EmptyRVViewHolder;
+import com.zconnect.zutto.zconnect.holders.otherForumsRVViewHolder;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
@@ -132,8 +134,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 //            return new photoViewHolder(photoContactView, parent.getContext());
 //        }
         else{
-            View emptyView = inflater.inflate(R.layout.empty, parent, false);
-            return new EmptyRVViewHolder(emptyView);
+            View update_view = inflater.inflate(R.layout.row_other_forums, parent, false);
+            return new otherForumsRVViewHolder(update_view);
         }
 
     }
@@ -656,6 +658,13 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 }
             });
 
+        }else{
+            final otherForumsRVViewHolder otherForumsRVViewHolder = (otherForumsRVViewHolder) rvHolder;
+            otherForumsRVViewHolder.itemView.setOnClickListener(v -> {
+                Intent i = new Intent(android.content.Intent.ACTION_VIEW);
+                i.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect"));
+                ctx.startActivity(i);
+            });
         }
 
 

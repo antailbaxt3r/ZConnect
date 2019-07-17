@@ -82,8 +82,8 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             return new JoinedForumsRVViewHolder(joinedContactView);
         }
         else {
-            View otherForumsView = layoutInflater.inflate(R.layout.row_other_forums, parent, false);
-            return new otherForumsRVViewHolder(otherForumsView);
+            View otherForumsView = layoutInflater.inflate(R.layout.row_blank_layout, parent, false);
+            return new ForumCategoriesRVAdapter.blankViewHolder(otherForumsView);
         }
     }
 
@@ -193,20 +193,15 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 });
             }
             else {
-                final otherForumsRVViewHolder otherForumsRVViewHolder = (otherForumsRVViewHolder) holder;
-                otherForumsRVViewHolder.itemView.setOnClickListener(v -> {
-                    Intent i = new Intent(android.content.Intent.ACTION_VIEW);
-                    i.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect"));
-                    context.startActivity(i);
-                });
+                ForumCategoriesRVAdapter.blankViewHolder blankViewHolder = (ForumCategoriesRVAdapter.blankViewHolder) holder;
                 Log.d("Setting View",Integer.toString(position));
-            holderMain.setDetailsForShare(forumCategoriesItemFormats.get(position));
+           /* holderMain.setDetailsForShare(forumCategoriesItemFormats.get(position));
             holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID()
                     , forumCategoriesItemFormats.get(position).getTabUID()
                     , forumCategoriesItemFormats.get(position).getName()
                     ,forumCategoriesItemFormats.get(position).getMessage()
                     ,forumCategoriesItemFormats.get(position).getMessageType());
-
+*/
             }
         }
     }
