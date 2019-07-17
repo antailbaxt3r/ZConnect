@@ -25,11 +25,6 @@
         android:theme="@style/AppTheme">
         <activity android:name=".fragments.UpdateAppActivity"></activity>
         <activity android:name=".OpenStatus" />
-        <activity
-            android:name=".NotificationNoImage"
-            android:label="Text Notification"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".AddMembersToForumActivity">
             <meta-data
                 android:name="android.app.searchable"

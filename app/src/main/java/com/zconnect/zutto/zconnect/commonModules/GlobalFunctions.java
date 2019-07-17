@@ -13,11 +13,20 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.PostedByDetails;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
+import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
+import java.util.Calendar;
 import java.util.HashMap;
 
 import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
@@ -126,4 +135,74 @@ public class GlobalFunctions {
             }
         }
     }
+    //ONLY TO CREATE FORUM IN OTHERS TAB
+    public static  void createForumWithDetails(final String catName,
+                                                 final String forumUID,
+                                                 final UserItemFormat userItem,
+                                                 final String tabUid,
+                                                 final String firstMessage,
+                                                 final String mImageURL)
+    {
+        final DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
+        final DatabaseReference databaseReferenceTabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tabUid);
+        long calendarTime = Calendar.getInstance().getTimeInMillis();
+
+        final DatabaseReference newPush = databaseReferenceCategories.child(forumUID);
+        DatabaseReference mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        newPush.child("name").setValue(catName);
+        Long postTimeMillis = System.currentTimeMillis();
+        newPush.child("PostTimeMillis").setValue(postTimeMillis);
+        newPush.child("UID").setValue(newPush.getKey());
+        newPush.child("tab").setValue(tabUid);
+        databaseReferenceTabsCategories.child(newPush.getKey()).child("verified").setValue(false);
+
+
+        databaseReferenceTabsCategories.child(newPush.getKey()).child("name").setValue(catName);
+        databaseReferenceTabsCategories.child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
+        databaseReferenceTabsCategories.child(newPush.getKey()).child("tabUID").setValue(tabUid);
+
+        CounterItemFormat counterItemFormat = new CounterItemFormat();
+        HashMap<String, String> meta = new HashMap<>();
+        meta.put("catID", tabUid);
+        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+        counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_FORUM_CREATED);
+        counterItemFormat.setTimestamp(System.currentTimeMillis());
+        counterItemFormat.setMeta(meta);
+        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+        counterPush.pushValues();
+
+        //ADD ADIMIN IN USERS
+        UsersListItemFormat userDetails = new UsersListItemFormat();
+        userDetails.setImageThumb(userItem.getImageURLThumbnail());
+        userDetails.setName(userItem.getUsername());
+        userDetails.setPhonenumber(userItem.getMobileNumber());
+        userDetails.setUserUID(userItem.getUserUID());
+        userDetails.setUserType(ForumsUserTypeUtilities.KEY_ADMIN);
+
+        databaseReferenceTabsCategories.child(newPush.getKey()).child("users").child(userItem.getUserUID()).setValue(userDetails);
+
+
+        newPush.child("PostedBy").child("Username").setValue(userItem.getUsername());
+        newPush.child("PostedBy").child("ImageThumb").setValue(userItem.getImageURLThumbnail());
+
+        ChatItemFormats message = new ChatItemFormats();
+        message.setTimeDate(calendarTime);
+        message.setUuid(userItem.getUserUID());
+        message.setName(userItem.getUsername());
+        message.setImageThumb(userItem.getImageURLThumbnail());
+        message.setMessage("\"" + firstMessage + "\"");
+        message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
+        newPush.child("Chat").push().setValue(message);
+
+        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tabUid).child(newPush.getKey()).child("lastMessage").setValue(message);
+
+        newPush.child("image").setValue(mImageURL);
+        newPush.child("imageThumb").setValue(mImageURL);
+        databaseReferenceTabsCategories.child(newPush.getKey()).child("imageThumb").setValue(mImageURL);
+        databaseReferenceTabsCategories.child(newPush.getKey()).child("image").setValue(mImageURL);
+
+
+    }
+
 }

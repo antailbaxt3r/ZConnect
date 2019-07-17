@@ -1,9 +1,11 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -13,11 +15,17 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.fragments.UpdateAppActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +40,16 @@ public class Shop_detail extends BaseActivity {
     private CollapsingToolbarLayout collapsingToolbarLayout;
 
     @Override
+    protected void onResume() {
+
+        super.onResume();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop_detail);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.shop_details_toolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

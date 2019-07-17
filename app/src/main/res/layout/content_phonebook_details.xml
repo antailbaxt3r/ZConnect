@@ -348,26 +348,18 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:layout_marginTop="@dimen/margin_top_between_similar_views">
                     <TextView
-                        android:layout_gravity="center"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Forums joined:"
                         android:textStyle="bold"
                         android:textColor="@color/primaryText"/>
-                    <TextView
-                        android:layout_gravity="center"
-                        android:layout_marginStart="@dimen/border_radius_5dp"
-                        android:id="@+id/contact_details_forums_joined"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:focusableInTouchMode="false"
-                        android:textColor="@color/primaryText"
-                        />
+                   <android.support.v7.widget.RecyclerView
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:id="@+id/joined_forums_rv"/>
                 </LinearLayout>
 
                 <LinearLayout

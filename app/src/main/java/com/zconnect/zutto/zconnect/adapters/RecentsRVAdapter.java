@@ -29,7 +29,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
@@ -53,6 +52,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.AdminHome;
+import com.zconnect.zutto.zconnect.BuildConfig;
 import com.zconnect.zutto.zconnect.CabPoolAll;
 import com.zconnect.zutto.zconnect.CabPoolListOfPeople;
 import com.zconnect.zutto.zconnect.ChatActivity;
@@ -76,6 +76,7 @@ import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.commonModules.NumberNotificationForFeatures;
 import com.zconnect.zutto.zconnect.commonModules.viewImage;
+import com.zconnect.zutto.zconnect.fragments.UpdateAppActivity;
 import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
@@ -99,9 +100,6 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.DateFormat;
 
 import java.util.Date;
 import java.text.ParseException;
@@ -148,18 +146,18 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public int getItemViewType(int position) {
         try {
             if (recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_ADD_STATUS_STR)) {
-                return RecentTypeUtilities.KEY_RECENT_ADD_STATUS;
+                return RecentTypeUtilities.KEY_RECENT_ADD_STATUS_INT;
             } else if (recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_FEATURES_STR)) {
-                return RecentTypeUtilities.KEY_RECENT_FEATURES;
+                return RecentTypeUtilities.KEY_RECENT_FEATURES_INT;
             } else if (recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR)) {
-                return RecentTypeUtilities.KEY_RECENT_NORMAL_POST;
+                return RecentTypeUtilities.KEY_RECENT_NORMAL_POST_INT;
             } else {
                 return -1;
             }
         } catch (NullPointerException e) {
             Log.d("Exception", "adding type");
             recentsItemFormats.get(position).setRecentType(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
-            return RecentTypeUtilities.KEY_RECENT_NORMAL_POST;
+            return RecentTypeUtilities.KEY_RECENT_NORMAL_POST_INT;
         }
     }
 
@@ -167,14 +165,14 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        if (viewType == RecentTypeUtilities.KEY_RECENT_ADD_STATUS) {
+        if (viewType == RecentTypeUtilities.KEY_RECENT_ADD_STATUS_INT) {
             View addStatusView = inflater.inflate(R.layout.recents_add_status, parent, false);
             Log.d("VIEWTYPE", String.valueOf(viewType));
             return new RecentsRVAdapter.ViewHolderStatus(addStatusView);
-        } else if (viewType == RecentTypeUtilities.KEY_RECENT_FEATURES) {
+        } else if (viewType == RecentTypeUtilities.KEY_RECENT_FEATURES_INT) {
             View featuresView = inflater.inflate(R.layout.recents_features_view, parent, false);
             return new RecentsRVAdapter.FeaturesViewHolder(featuresView);
-        } else if (viewType == RecentTypeUtilities.KEY_RECENT_NORMAL_POST) {
+        } else if (viewType == RecentTypeUtilities.KEY_RECENT_NORMAL_POST_INT) {
             View contactView = inflater.inflate(R.layout.recents_item_format, parent, false);
             return new RecentsRVAdapter.Viewholder(contactView);
         } else {
@@ -2335,6 +2333,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     storeroom.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+
                             if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
                                 resetFeaturesUnreadCount(FeatureDBName.KEY_STOREROOM, dataSnapshot);
                                 Intent intent = new Intent(context, TabStoreRoom.class);
@@ -2360,24 +2359,47 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     cabpool.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
-                                resetFeaturesUnreadCount(FeatureDBName.KEY_CABPOOL, dataSnapshot);
-                                Intent intent = new Intent(context, CabPoolAll.class);
-                                context.startActivity(intent);
-                                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                HashMap<String, String> meta = new HashMap<>();
 
-                                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                                counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_OPEN);
-                                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                                counterItemFormat.setMeta(meta);
+                            FirebaseDatabase.getInstance().getReference().child("communities").
+                                    child(communityReference).child("features").child("shops").
+                                    child("minimumClientVersion").addListenerForSingleValueEvent(
+                                    new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            Log.d("VERSIONN", dataSnapshot.getValue(Integer.class) + "");
+                                            if (dataSnapshot.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
+                                                Intent intent = new Intent(context, UpdateAppActivity.class);
+                                                intent.putExtra("feature", "shops");
+                                                context.startActivity(intent);
 
-                                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                                counterPush.pushValues();
-                            } else {
-                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Cab Pool", context);
-                            }
+                                            } else {
 
+                                                if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
+                                                    resetFeaturesUnreadCount(FeatureDBName.KEY_CABPOOL, dataSnapshot);
+                                                    Intent intent = new Intent(context, CabPoolAll.class);
+                                                    context.startActivity(intent);
+                                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                                    HashMap<String, String> meta = new HashMap<>();
+
+                                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_OPEN);
+                                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                                    counterItemFormat.setMeta(meta);
+
+                                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                                    counterPush.pushValues();
+                                                } else {
+                                                    newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Cab Pool", context);
+                                                }
+
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
                         }
                     });
 
@@ -2408,23 +2430,47 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     shops.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
-                                resetFeaturesUnreadCount(FeatureDBName.KEY_SHOPS, dataSnapshot);
-                                Intent intent = new Intent(context, PoolActivity.class);
-                                context.startActivity(intent);
-                                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                HashMap<String, String> meta = new HashMap<>();
+                            FirebaseDatabase.getInstance().getReference().child("communities").
+                                    child(communityReference).child("features").child("shops").
+                                    child("minimumClientVersion").addListenerForSingleValueEvent(
+                                    new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            Log.d("VERSIONN",dataSnapshot.getValue(Integer.class)+"");
+                                            if (dataSnapshot.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
+                                                Intent intent = new Intent(context, UpdateAppActivity.class);
+                                                intent.putExtra("feature", "shops");
+                                                context.startActivity(intent);
 
-                                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                                counterItemFormat.setUniqueID(CounterUtilities.KEY_SHOPS_OPEN);
-                                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                                counterItemFormat.setMeta(meta);
+                                            } else {
+                                                if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
+                                                    resetFeaturesUnreadCount(FeatureDBName.KEY_SHOPS, dataSnapshot);
+                                                    Intent intent = new Intent(context, PoolActivity.class);
+                                                    context.startActivity(intent);
+                                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                                    HashMap<String, String> meta = new HashMap<>();
 
-                                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                                counterPush.pushValues();
-                            } else {
-                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Storeroom", context);
-                            }
+                                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_SHOPS_OPEN);
+                                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                                    counterItemFormat.setMeta(meta);
+
+                                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                                    counterPush.pushValues();
+                                                } else {
+                                                    newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Storeroom", context);
+                                                }
+
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    }
+                            );
+
 
                         }
                     });

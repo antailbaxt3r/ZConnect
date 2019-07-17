@@ -108,6 +108,7 @@
                         android:layout_weight="0.9"
                         android:textColor="@color/secondaryText"
                         android:ellipsize="end"
+                        android:textColorLink="@color/deepPurple500"
                         style="@style/autoscroll"
                         android:maxLines="1"
                         android:textSize="14sp"/>

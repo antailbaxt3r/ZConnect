@@ -138,6 +138,7 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
                 HashMap<String,Boolean> seenmap = new HashMap<>();
                 seenmap.put(FirebaseAuth.getInstance().getCurrentUser().getUid(),true);
                 Log.d("im the log msg onclick", notificationsList.get(position).getTitle());
+
                 if (notificationsList.get(position).getScope().equals(NotificationIdentifierUtilities.KEY_PERSONAL)) {
                     {
                         seenReference = FirebaseDatabase.getInstance().getReference()

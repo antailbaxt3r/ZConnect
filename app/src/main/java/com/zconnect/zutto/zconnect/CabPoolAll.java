@@ -218,19 +218,16 @@ public class CabPoolAll extends BaseActivity {
                 vector_final.clear();
 
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
+                    if(shot.child("destination").getValue() != null && shot.child("source").getValue() != null && shot.child("PostedBy").child("ImageThumb").getValue() != null){
                     try {
                         CabItemFormat cabItemFormatShot = shot.getValue(CabItemFormat.class);
-                        if(cabItemFormatShot.getForumUID() != null) {
-                            Log.d("ForumUID", cabItemFormatShot.getForumUID());
-                        }
-                        else{
-                            Log.d("ForumUID","null");
-                        }
+
                         if (!cabItemFormatShot.getDestination().equals(null) && !cabItemFormatShot.getSource().equals(null)) {
                             vector_fetched.add(shot.getValue(CabItemFormat.class));
                         }
                     } catch (Exception e) {
                         Log.d("CHOOLO", e.getMessage());
+                    }
                     }
                 }
 
