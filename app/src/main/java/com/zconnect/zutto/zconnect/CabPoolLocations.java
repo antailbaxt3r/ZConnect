@@ -298,6 +298,8 @@ public class CabPoolLocations extends BaseActivity {
 
             }
         });
+
+        Toast.makeText(this, "Location has been added!", Toast.LENGTH_SHORT).show();
     }
 
     public void requestLocation(String location){
@@ -325,6 +327,8 @@ public class CabPoolLocations extends BaseActivity {
 
             }
         });
+
+        Toast.makeText(this, "Your request has been sent to the admins. The location will be added soon.", Toast.LENGTH_SHORT).show();
     }
 
 }

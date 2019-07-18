@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -97,6 +98,8 @@ public class RequestForumTab extends BaseActivity {
 
                         }
                     });
+
+                    Toast.makeText(RequestForumTab.this, "Your request has been sent to the admins. The forum will be added soon.", Toast.LENGTH_SHORT).show();
                     /*Log.i("chasing parties", "sending to db!");
                     String tabName = inputTabName.getText().toString();
                     String arr[] = tabName.split(" ");
