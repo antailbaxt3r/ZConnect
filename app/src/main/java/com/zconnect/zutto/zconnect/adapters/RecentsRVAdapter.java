@@ -523,6 +523,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.pollOptionA.setText(recentsItemFormats.get(position).getOptions().getOptionA());
                     holder.pollOptionB.setText(recentsItemFormats.get(position).getOptions().getOptionB());
                     holder.pollOptionC.setText(recentsItemFormats.get(position).getOptions().getOptionC());
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_outline_poll_24px));
 
                     DatabaseReference databaseReferenceGetOptionSelected = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/" + recentsItemFormats.get(position).getKey());
                     //Start a Progress Bar
