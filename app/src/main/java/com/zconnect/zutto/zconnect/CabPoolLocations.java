@@ -193,6 +193,7 @@ public class CabPoolLocations extends BaseActivity {
                     input.setInputType(InputType.TYPE_CLASS_TEXT);
                     builder.setView(input);
 
+                    builder.setTitle("Request Location");
                     builder.setPositiveButton("Request", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

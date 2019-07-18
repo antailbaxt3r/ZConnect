@@ -583,7 +583,7 @@
 
                 <ImageButton
                     android:layout_marginEnd="10dp"
-                    android:layout_width="20dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_keyboard_arrow_left_white_24dp"
                     android:tint="@color/deeppurple700"
@@ -591,7 +591,7 @@
                     android:layout_gravity="start"
                     android:visibility="gone"
                     android:layout_weight="0.1"
-                    android:backgroundTint="@color/white"/>
+                    android:backgroundTint="@color/transparent"/>
 
                 <View
                     android:layout_width="match_parent"
@@ -600,7 +600,7 @@
 
                 <ImageButton
                     android:layout_marginStart="10dp"
-                    android:layout_width="20dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_keyboard_arrow_right_white_24dp"
                     android:tint="@color/deeppurple700"
@@ -608,7 +608,7 @@
                     android:visibility="gone"
                     android:layout_weight="0.1"
                     android:layout_gravity="end"
-                    android:backgroundTint="@color/white"/>
+                    android:backgroundTint="@color/transparent"/>
             </LinearLayout>
 
         </FrameLayout>
