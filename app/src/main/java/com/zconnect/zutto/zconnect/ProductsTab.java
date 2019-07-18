@@ -222,7 +222,7 @@ public class ProductsTab extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mDatabase.addValueEventListener(mListener);
+        mDatabase.addListenerForSingleValueEvent(mListener);
     }
 
     @Override

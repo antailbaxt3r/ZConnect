@@ -309,9 +309,13 @@ public class CabPoolListOfPeople extends BaseActivity {
         final Calendar c = Calendar.getInstance();
         SimpleDateFormat output = new SimpleDateFormat("yyyyMMdd");
         Date = output.format(c.getTime());
-
-        formatted_date = getIntent().getStringExtra("date");
-
+        //DATe
+        try {
+            formatted_date = getIntent().getStringExtra("date");
+        }
+        catch (Exception e){
+            Log.d("ERROR",e.toString());
+        }
         //Setting old database or new database
 
             reference = reference_default;

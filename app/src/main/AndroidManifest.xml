@@ -558,6 +558,9 @@
             android:label="Create a Poll"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
+
+
     </application>
 
 </manifest>

@@ -1,11 +1,15 @@
 package com.zconnect.zutto.zconnect;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -72,6 +76,15 @@ public class Links extends BaseActivity {
         links.setLayoutManager(linearLayoutManager);
         linksRVAdapter=new LinksRVAdapter(LinksList,Links.this);
         links.setAdapter(linksRVAdapter);
+        findViewById(R.id.fab_add_category).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context;
+                Dialog addLink = new Dialog(Links.this);
+
+
+            }
+        });
 
     }
 
