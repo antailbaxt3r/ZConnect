@@ -13,6 +13,7 @@
             android:layout_width="210dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:visibility="invisible"
             android:text="Nothing here as of now. Check back soon!"
             android:gravity="center"
             android:textSize="16sp"/>

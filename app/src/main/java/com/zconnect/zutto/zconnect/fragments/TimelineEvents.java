@@ -10,8 +10,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,7 +36,9 @@ public class TimelineEvents extends Fragment {
     private EventsAdapter eventsAdapter;
     private Vector<Event> eventsVector = new Vector<Event>();
     private ValueEventListener mListener;
+    private RelativeLayout relativeLayout;
     private View lineView;
+    private ShimmerFrameLayout shimmerFrameLayout;
     private TextView noevents;
     private FloatingActionButton fab;
 
@@ -103,8 +107,15 @@ public class TimelineEvents extends Fragment {
         queryRef.keepSynced(true);
 
         noevents = (TextView) view.findViewById(R.id.noevents);
+        relativeLayout = view.findViewById(R.id.relativeLayoutTimeline);
+        shimmerFrameLayout = view.findViewById(R.id.shimmer_view_container_timeline_events);
         lineView = (View) view.findViewById(R.id.line_view);
         fab = (FloatingActionButton) view.findViewById(R.id.fab_timeline_events);
+        mEventList = (RecyclerView) view.findViewById(R.id.eventList);
+
+        shimmerFrameLayout.setVisibility(View.VISIBLE);
+        shimmerFrameLayout.startShimmerAnimation();
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,6 +150,11 @@ public class TimelineEvents extends Fragment {
                     noevents.setVisibility(View.VISIBLE);
                     lineView.setVisibility(View.GONE);
                 }
+
+                mEventList.setVisibility(View.VISIBLE);
+                relativeLayout.setVisibility(View.VISIBLE);
+                shimmerFrameLayout.stopShimmerAnimation();
+                shimmerFrameLayout.setVisibility(View.GONE);
             }
 
             @Override
@@ -147,7 +163,7 @@ public class TimelineEvents extends Fragment {
             }
         };
 
-        mEventList = (RecyclerView) view.findViewById(R.id.eventList);
+
         mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(mlinearmanager);
 

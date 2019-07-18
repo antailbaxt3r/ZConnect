@@ -59,6 +59,9 @@ public class NewRequestRVAdapter extends RecyclerView.Adapter<newRequestViewHold
         else if(newRequestItemFormats.get(position).getType().equals(RequestTypeUtilities.TYPE_FORUM_TAB))
             holder.newRequestName.setText("Requested ForumTab name: "+newRequestItemFormats.get(position).getName());
 
+        holder.postedByImageLocation.setImageURI(newRequestItemFormats.get(position).getPostedBy().getImageThumb());
+        holder.postedByNameInLocation.setText(newRequestItemFormats.get(position).getPostedBy().getUsername());
+
         if (newRequestItemFormats.get(position).getType().equals(RequestTypeUtilities.TYPE_CABPOOL_LOCATION)) {
             Log.d(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(), "onBindViewHolder: ");
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
