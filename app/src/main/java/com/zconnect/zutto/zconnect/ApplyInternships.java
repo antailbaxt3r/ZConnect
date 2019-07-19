@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,13 +25,16 @@ import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import java.util.HashMap;
 
 public class ApplyInternships extends BaseActivity {
-    Intent callingActivityIntent;
+    Intent callingActivityIntent,intent;
     String orgID,internshipID,internshipQuestion,nameOfUserString;
     DatabaseReference databaseReference,databaseReferenceUsers1;
-    EditText branch,proficiency,answer,gender;
+    EditText branch,proficiency,answer;
     TextView nameOfUser;
     TextView question;
     Button done;
+    RadioButton male,female,others;
+    RadioGroup radioGroup;
+    String gender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +46,18 @@ public class ApplyInternships extends BaseActivity {
         answer = findViewById(R.id.answer);
 
         nameOfUser = findViewById(R.id.name);
-        gender = findViewById(R.id.gender);
         question = findViewById(R.id.question);
 
         done = findViewById(R.id.done);
+        male = findViewById(R.id.radioButton1);
+        female = findViewById(R.id.radioButton2);
+        others = findViewById(R.id.radioButton3);
+        radioGroup = findViewById(R.id.radiogroup);
 
         callingActivityIntent = getIntent();
+
+        intent = new Intent(this,Internships.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         orgID = callingActivityIntent.getStringExtra("organizationID");
         internshipID = callingActivityIntent.getStringExtra("internshipID");
@@ -64,7 +75,15 @@ public class ApplyInternships extends BaseActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChild("gender"))
-                    gender.setText(dataSnapshot.child("gender").getValue().toString());
+                {
+                    if (dataSnapshot.child("gender").getValue().toString().equalsIgnoreCase("male"))
+                        male.setChecked(true);
+                    else if (dataSnapshot.child("gender").getValue().toString().equalsIgnoreCase("female"))
+                        female.setChecked(true);
+                    else
+                        others.setChecked(true);
+
+                }
                 if (dataSnapshot.hasChild("branch"))
                     branch.setText(dataSnapshot.child("branch").getValue().toString());
                 if (dataSnapshot.hasChild("proficiency"))
@@ -86,13 +105,16 @@ public class ApplyInternships extends BaseActivity {
 
                 HashMap<String, Object> internshipMap = new HashMap<>();
                 internshipMap.put("name",nameOfUserString);
-                internshipMap.put("gender",gender.getText().toString());
+                internshipMap.put("gender",gender);
                 internshipMap.put("branch",branch.getText().toString());
                 internshipMap.put("proficiency",proficiency.getText().toString());
                 internshipMap.put("answer",answer.getText().toString());
 
                 HashMap<String, Object> deatilsMap = new HashMap<>();
-                deatilsMap.put("gender",gender.getText().toString());
+
+                gender = ((RadioButton)findViewById(radioGroup.getCheckedRadioButtonId())).getText().toString();
+
+                deatilsMap.put("gender",gender);
                 deatilsMap.put("branch",branch.getText().toString());
                 deatilsMap.put("proficiency",proficiency.getText().toString());
 
@@ -104,6 +126,7 @@ public class ApplyInternships extends BaseActivity {
                 databaseReference.child("branch").setValue(branch.getText().toString());
                 databaseReference.child("proficiency").setValue(proficiency.getText().toString());
                 databaseReference.child("answer").setValue(answer.getText().toString());*/
+                startActivity(intent);
                 finish();
             }
         });
