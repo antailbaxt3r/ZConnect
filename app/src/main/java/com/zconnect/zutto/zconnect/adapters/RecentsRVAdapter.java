@@ -1128,7 +1128,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
 
         LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails, noticesRecentItem,pollLinearLayout,
-                pollAYes, pollANo, pollBYes, pollBNo, pollCYes, pollCNo, pollAResult, pollBResult, pollCResult;
+                pollAYes, pollANo, pollBYes, pollBNo, pollCYes, pollCNo, pollAResult, pollBResult, pollCResult, youtubeLink;
 
         FrameLayout layoutFeatureIcon, bannerLinkLayout, optionALayout, optionBLayout, optionCLayout;
         //

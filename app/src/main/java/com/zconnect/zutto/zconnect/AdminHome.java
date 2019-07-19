@@ -140,8 +140,8 @@ public class AdminHome extends BaseActivity {
         switch(id) {
             //noinspection SimplifiableIfStatement
             case R.id.action_notifications:
-                Intent intent=new Intent(getApplicationContext(),NotificationAdmin.class);
-                startActivity(intent);
+//                Intent intent=new Intent(getApplicationContext(),NotificationAdmin.class);
+//                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
