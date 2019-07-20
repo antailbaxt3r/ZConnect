@@ -559,3 +559,29 @@ exports.deleteEventsInAppNotif = functions.database.ref('communities/{communityI
     });
   });
 });
+
+exports.syncCabChatsWithCabForums = functions.database.ref('communities/{communityID}/features/cabPool/allCabs/{cabID}/Chat/{messageID}/')
+.onCreate((snapshot, context) => {
+  const { communityID, cabID, messageID } = context.params;
+  const chatForumRef = snapshot.ref.root.child(`communities/${communityID}/features/forums/categories/${cabID}/Chat`);
+  return chatForumRef.once('value', chatSnapshot => {
+    if(chatSnapshot.hasChild(messageID))
+      return console.log("Already synced this message: ", snapshot.child('message').val());
+    return chatForumRef.child(messageID).set(snapshot.val());
+  });
+});
+
+exports.syncCabForumsWithCabChats = functions.database.ref('communities/{communityID}/features/forums/categories/{cabID}/Chat/{messageID}/')
+.onWrite((change, context) => {
+  const { communityID, cabID, messageID } = context.params;
+  return change.after.ref.parent.parent.child('tab').once('value', tabSnapShot => {
+    if(tabSnapShot.val()!=="cabPool")
+      return;
+      const cabChatRef = change.before.ref.root.child(`communities/${communityID}/features/cabPool/allCabs/${cabID}/Chat`);
+      return cabChatRef.once('value', chatSnapshot => {
+        if(chatSnapshot.hasChild(messageID))
+          return console.log("Already synced this message: ", change.after.child('message').val());
+        return cabChatRef.child(messageID).set(change.after.val())
+    });
+  });
+});
