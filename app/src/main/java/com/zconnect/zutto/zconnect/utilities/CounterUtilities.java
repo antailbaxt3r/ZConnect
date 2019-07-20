@@ -24,6 +24,9 @@ public class CounterUtilities {
     //checked
     public static final String KEY_INFONE_VALIDATE = "infoneValidate";
 
+
+    public static final String KEY_INTERNSHIPS_OPEN = "internshipsOpen";
+
     //cabPool
     //checked
     public static final String KEY_CABPOOL_OPEN = "cabpoolOpen";

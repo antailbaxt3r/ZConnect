@@ -682,8 +682,8 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                     }
                 }
                 adapter.notifyDataSetChanged();
-                if (!type.equals("forums"))
-                    chatView.scrollToPosition(messages.size() - 1);
+                if(type.equals("forums"))
+                    chatView.scrollToPosition(messages.size()-1);
                 progressBar.setVisibility(View.GONE);
                 chatView.setVisibility(View.VISIBLE);
             }
