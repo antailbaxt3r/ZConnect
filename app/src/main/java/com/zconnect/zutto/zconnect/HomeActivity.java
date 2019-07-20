@@ -1,11 +1,13 @@
 package com.zconnect.zutto.zconnect;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,6 +41,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.webkit.URLUtil;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -339,10 +342,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         if(isFirstRun){
             showAppTour();
+            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit()
+                    .putBoolean("isFirstRun", false).commit();
         }
 
-        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit()
-                .putBoolean("isFirstRun", false).commit();
+
     /////////////////////////////////////////////////////////////////////////////////////
 
 //        Log.d("USEROBJECT",UserUtilities.currentUser.toString());
@@ -1102,7 +1106,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             FirebaseDatabase.getInstance().getReference().child("minimumClientVersion").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.getValue(Integer.class)>BuildConfig.VERSION_CODE){
+                    if(dataSnapshot.child("global").getValue(Integer.class)>BuildConfig.VERSION_CODE){
                         Intent intent = new Intent(HomeActivity.this, UpdateAppActivity.class);
                         startActivity(intent);
                         finish();
@@ -1385,32 +1389,48 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
             }
             case R.id.bugReport: {
-                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(HomeActivity.this);
-                // 2. Chain together various setter methods to set the dialog characteristics
-                builder.setMessage("Send a bug report or a feedback to: \nzconnectinc@gmail.com");
 
-                builder.setPositiveButton("Bug Report", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+                Dialog bugReportDialog = new Dialog(HomeActivity.this);
+                bugReportDialog.setContentView(R.layout.new_dialog_box);
+                bugReportDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                bugReportDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(HomeActivity.this,R.drawable.ic_message_white_24dp));
+                TextView heading =  bugReportDialog.findViewById(R.id.dialog_box_heading);
+                heading.setText("Report/Feedback");
+                TextView body = bugReportDialog.findViewById(R.id.dialog_box_body);
+                body.setText("Send a bug report or a feedback to: \nzconnectinc@gmail.com");
+                Button positiveButton = bugReportDialog.findViewById(R.id.dialog_box_positive_button);
+                positiveButton.setText("Bug Report");
+                positiveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                                 "mailto", "zconnectinc@gmail.com", null));
                         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Bug Report");
                         // emailIntent.putExtra(Intent.EXTRA_TEXT, "Body");
                         startActivity(Intent.createChooser(emailIntent, "Send uid..."));
+                        bugReportDialog.dismiss();
+
                     }
                 });
-                builder.setNegativeButton("Feedback", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+                Button negativeButton = bugReportDialog.findViewById(R.id.dialog_box_negative_button);
+                negativeButton.setText("Feedback");
+                negativeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                                 "mailto", "zconnectinc@gmail.com", null));
                         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
                         // emailIntent.putExtra(Intent.EXTRA_TEXT, "Body");
                         startActivity(Intent.createChooser(emailIntent, "Send uid..."));
+                        bugReportDialog.dismiss();
                     }
                 });
-                android.app.AlertDialog dialog = builder.create();
-                dialog.show();
-                dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorHighlight));
-                dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorHighlight));
+
+                bugReportDialog.show();
+
+
+
+
                 break;
             }
             case R.id.share: {

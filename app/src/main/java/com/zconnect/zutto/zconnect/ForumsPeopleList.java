@@ -1,8 +1,12 @@
 package com.zconnect.zutto.zconnect;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -13,6 +17,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -168,40 +173,50 @@ public class ForumsPeopleList extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (flag) {
+                    Dialog leaveForumDialog = new Dialog(ForumsPeopleList.this);
+                    leaveForumDialog.setContentView(R.layout.new_dialog_box);
+                    leaveForumDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    leaveForumDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(ForumsPeopleList.this,R.drawable.ic_message_white_24dp));
+                    TextView heading =  leaveForumDialog.findViewById(R.id.dialog_box_heading);
+                    heading.setText("Leave Forum");
+                    TextView body = leaveForumDialog.findViewById(R.id.dialog_box_body);
+                    body.setText("Are you sure you want to leave this forum?");
+                    Button positiveButton = leaveForumDialog.findViewById(R.id.dialog_box_positive_button);
+                    positiveButton.setText("Confirm");
+                    positiveButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            forumMembersList.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
+                            FirebaseMessaging.getInstance().unsubscribeFromTopic(key);
 
-                    final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ForumsPeopleList.this);
-                    builder.setMessage("Please confirm to leave forum!")
-                            .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
+                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                            HashMap<String, String> meta= new HashMap<>();
+                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                            counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_LEAVE);
+                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                            meta.put("catUID",tab);
+                            meta.put("channelID",key);
+                            counterItemFormat.setMeta(meta);
+                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                            counterPush.pushValues();
+                            leaveForumDialog.dismiss();
 
-                                    forumMembersList.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
-                                    FirebaseMessaging.getInstance().unsubscribeFromTopic(key);
+                        }
+                    });
+                    Button negativeButton = leaveForumDialog.findViewById(R.id.dialog_box_negative_button);
+                    negativeButton.setText("Skip");
+                    negativeButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            leaveForumDialog.dismiss();
+                        }
+                    });
 
-                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                    HashMap<String, String> meta= new HashMap<>();
-                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_LEAVE);
-                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
-                                    meta.put("catUID",tab);
-                                    meta.put("channelID",key);
-                                    counterItemFormat.setMeta(meta);
-                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                                    counterPush.pushValues();
+                    leaveForumDialog.show();
 
-                                }
-                            })
-                            .setNegativeButton("Skip", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
 
-                                }
-                            });
 
-                    final android.app.AlertDialog dialog = builder.create();
-                    dialog.setCancelable(false);
-                    dialog.show();
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorHighlight));
+
                 } else {
                     FirebaseMessaging.getInstance().subscribeToTopic(key);
                     final UsersListItemFormat userDetails = new UsersListItemFormat();

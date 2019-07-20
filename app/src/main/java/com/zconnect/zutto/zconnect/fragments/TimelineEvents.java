@@ -180,7 +180,7 @@ public class TimelineEvents extends Fragment {
     public void onStart() {
         super.onStart();
 
-        queryRef.addValueEventListener(mListener);
+        queryRef.addListenerForSingleValueEvent(mListener);
 
 //        FirebaseRecyclerAdapter<Event, EventViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Event, EventViewHolder>(
 //                Event.class,

@@ -276,7 +276,9 @@ public class AdminHome extends BaseActivity {
                             NewRequestItemFormat newRequest = shot.getValue(NewRequestItemFormat.class);
                             newRequestItemFormats.add(newRequest);
                         }
-                        catch (Exception e) { }
+                        catch (Exception e) {
+                            Log.d("Admin Home", e.toString());
+                        }
                     }
                     if (newRequestItemFormats.isEmpty())
                         noRequestMessage.setVisibility(View.VISIBLE);

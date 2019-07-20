@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.BuildConfig;
 import com.zconnect.zutto.zconnect.HomeActivity;
 import com.zconnect.zutto.zconnect.InfoneActivity;
 import com.zconnect.zutto.zconnect.addActivities.AddEvent;
@@ -152,42 +153,62 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                 } catch (Throwable throwable) {
                     throwable.printStackTrace();
                 }
-
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
-
-                meta.put("type","fromRecents");
-
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_PRODUCT_ADD_OPEN);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
-
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
-                //TODO app crashes on line 163/171
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mHomeActivity);
-                alertBuilder.setTitle("Add/Ask")
-                        .setMessage("Do you want to add a product or ask for a product?")
-                        .setPositiveButton("Ask", new DialogInterface.OnClickListener() {
+                FirebaseDatabase.getInstance().getReference().child("minimumClientVersion")
+                        .child("storeroom").addListenerForSingleValueEvent(
+                        new ValueEventListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(mHomeActivity, AddProduct.class);
-                                intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
-                                mHomeActivity.startActivity(intent);
-                            }
-                        })
-                        .setNegativeButton("Add", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(mHomeActivity, AddProduct.class);
-                                intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
-                                mHomeActivity.startActivity(intent);
-                            }
-                        })
-                        .show();
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                Log.d("VERSIONN", dataSnapshot.getValue(Integer.class) + "");
+                                if (dataSnapshot.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
+                                    Intent intent = new Intent(getContext(), UpdateAppActivity.class);
+                                    intent.putExtra("feature", "shops");
+                                    getContext().startActivity(intent);
 
-            }
+                                } else {
+
+                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                    HashMap<String, String> meta = new HashMap<>();
+
+                                    meta.put("type", "fromRecents");
+
+                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_PRODUCT_ADD_OPEN);
+                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                    counterItemFormat.setMeta(meta);
+
+                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                    counterPush.pushValues();
+                                    //TODO app crashes on line 163/171
+                                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mHomeActivity);
+                                    alertBuilder.setTitle("Add/Ask")
+                                            .setMessage("Do you want to add a product or ask for a product?")
+                                            .setPositiveButton("Ask", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    Intent intent = new Intent(mHomeActivity, AddProduct.class);
+                                                    intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
+                                                    mHomeActivity.startActivity(intent);
+                                                }
+                                            })
+                                            .setNegativeButton("Add", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    Intent intent = new Intent(mHomeActivity, AddProduct.class);
+                                                    intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
+                                                    mHomeActivity.startActivity(intent);
+                                                }
+                                            })
+                                            .show();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                                 });
+
+        }
         };
 
         View.OnClickListener addMessageListener = new View.OnClickListener() {
@@ -241,25 +262,44 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                 } catch (Throwable throwable) {
                     throwable.printStackTrace();
                 }
+                FirebaseDatabase.getInstance().getReference().child("minimumClientVersion")
+                        .child("cabpool").addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                Log.d("VERSIONN", dataSnapshot.getValue(Integer.class) + "");
+                                if (dataSnapshot.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
+                                    Intent intent = new Intent(getContext(), UpdateAppActivity.class);
+                                    intent.putExtra("feature", "shops");
+                                    getContext().startActivity(intent);
 
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
+                                } else {
 
-                meta.put("type","fromRecents");
+                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                    HashMap<String, String> meta = new HashMap<>();
+
+                                    meta.put("type", "fromRecents");
 
 
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_SEARCH_POOL_OPEN);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
+                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_SEARCH_POOL_OPEN);
+                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                    counterItemFormat.setMeta(meta);
 
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
-                Intent intent;
-                intent = new Intent(getContext(), CabPooling.class);
-                startActivity(intent);
-            }
-        };
+                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                    counterPush.pushValues();
+                                    Intent intent;
+                                    intent = new Intent(getContext(), CabPooling.class);
+                                    startActivity(intent);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+        }};
 
         View.OnClickListener noticesListener = new View.OnClickListener() {
             @Override
