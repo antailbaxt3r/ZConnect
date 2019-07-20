@@ -27,6 +27,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.InfoneContactListActivity;
 import com.zconnect.zutto.zconnect.ZConnectDetails;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.holders.InfoneContactsRVViewHolder;
 import com.zconnect.zutto.zconnect.InfoneProfileActivity;
@@ -169,14 +170,34 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
             final DatabaseReference databaseReferenceContact = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB)
                     .child(communityReference).child(ZConnectDetails.INFONE_DB_NEW).child("numbers").child(infoneContactsRVItems.get(position).getInfoneUserId());
 
-            holder.dialogVerifyYesbtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    databaseReferenceInfone.child("numbers").child(infoneContactsRVItems.get(position).getInfoneUserId()).child("invalid").child(mAuth.getCurrentUser().getUid()).removeValue();
-                    databaseReferenceInfone.child("numbers").child(infoneContactsRVItems.get(position).getInfoneUserId()).child("valid").child(mAuth.getCurrentUser().getUid()).setValue("true");
-                    long postTimeMillis = System.currentTimeMillis();
-                    databaseReferenceContact.child("verifiedDate").setValue(postTimeMillis);
-                    holder.verifyDialog.dismiss();
+        holder.dialogVerifyYesbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                databaseReferenceInfone.child("numbers").child(infoneContactsRVItems.get(position).getInfoneUserId()).child("invalid").child(mAuth.getCurrentUser().getUid()).removeValue();
+                databaseReferenceInfone.child("numbers").child(infoneContactsRVItems.get(position).getInfoneUserId()).child("valid").child(mAuth.getCurrentUser().getUid()).setValue("true");
+                long postTimeMillis = System.currentTimeMillis();
+                databaseReferenceContact.child("verifiedDate").setValue(postTimeMillis);
+
+                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        UserItemFormat userItemFormat = new UserItemFormat();
+                        HashMap<String,Object> metadata = new HashMap<>();
+                        userItemFormat.setUsername((String) dataSnapshot.child("username").getValue());
+                        userItemFormat.setUserUID((String) dataSnapshot.child("userUID").getValue());
+                        userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
+                        metadata.put("catID",catId);
+                        GlobalFunctions.inAppNotifications("has validated your phone number",phoneNums.get(0),userItemFormat,false,"infonevalidate",metadata,infoneContactsRVItems.get(position).getInfoneUserId());
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+                holder.verifyDialog.dismiss();
 
                 }
             });
@@ -187,7 +208,26 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
                     databaseReferenceInfone.child("numbers").child(infoneContactsRVItems.get(position).getInfoneUserId()).child("invalid").child(mAuth.getCurrentUser().getUid()).setValue("true");
                     long postTimeMillis = System.currentTimeMillis();
                     databaseReferenceContact.child("verifiedDate").setValue(postTimeMillis);
-                    holder.verifyDialog.dismiss();
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        UserItemFormat userItemFormat = new UserItemFormat();
+                        HashMap<String,Object> metadata = new HashMap<>();
+                        userItemFormat.setUsername((String) dataSnapshot.child("username").getValue());
+                        userItemFormat.setUserUID((String) dataSnapshot.child("userUID").getValue());
+                        userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
+                        metadata.put("catID",catId);
+                        GlobalFunctions.inAppNotifications("has invalidated your phone number",phoneNums.get(0),userItemFormat,false,"infoneinvalidate",metadata,infoneContactsRVItems.get(position).getInfoneUserId());
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+                holder.verifyDialog.dismiss();
 
                 }
             });
@@ -345,7 +385,7 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
                 requestCallNotification.setUserImage(userItemFormat.getImageURLThumbnail());
                 requestCallNotification.setUserName(userItemFormat.getUsername());
                 requestCallNotification.setCommunityName(communityTitle);
-
+                GlobalFunctions.inAppNotifications("tried contacting you"," call him back!",userItemFormat,false,"requestcallback",null,itemUID);
                 notificationSender.execute(requestCallNotification);
             }
 

@@ -650,11 +650,11 @@ public class AddEvent extends BaseActivity {
 
                             mProgress.dismiss();
                             if (!flag) {
-                                Snackbar snack = Snackbar.make(mEventDescription, "Event sent for verification !!", Snackbar.LENGTH_LONG);
+                               /* Snackbar snack = Snackbar.make(mEventDescription, "Event sent for verification !!", Snackbar.LENGTH_LONG);
                                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                                 snackBarText.setTextColor(Color.WHITE);
                                 snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
-                                snack.show();
+                                snack.show();*/
                             }
 //                        Intent intent = new Intent(AddEvent.this, TabbedEvents.class);
 //                        if (!flag) {

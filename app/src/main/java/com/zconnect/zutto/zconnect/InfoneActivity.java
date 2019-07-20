@@ -47,6 +47,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.zconnect.zutto.zconnect.R.layout.activity_infone2;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class InfoneActivity extends Fragment {
@@ -63,6 +64,7 @@ public class InfoneActivity extends Fragment {
     public String communityReference;
     private ShimmerFrameLayout shimmerFrameLayout;
     Toolbar toolbar;
+    public boolean isAdmin = false;
 
     public InfoneActivity() {
         // Required empty public constructor
@@ -72,6 +74,7 @@ public class InfoneActivity extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setHasOptionsMenu(true);
+
     }
 
 
@@ -79,11 +82,12 @@ public class InfoneActivity extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.activity_infone2, container, false);
+        View view = inflater.inflate(activity_infone2, container, false);
 
         recyclerViewCat = (RecyclerView) view.findViewById(R.id.rv_cat_infone);
         recyclerViewCat.setVisibility(View.GONE);
-        fabCatAdd = (FloatingActionButton) view.findViewById(R.id.fab_cat_infone);
+        fabCatAdd = getActivity().findViewById(R.id.fab_cat_infone);
+//        fabCatAdd.setVisibility(View.VISIBLE);
         shimmerFrameLayout = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_view_container_infone_cat);
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
@@ -97,6 +101,15 @@ public class InfoneActivity extends Fragment {
         listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+//                if(isAdmin){
+//                    fabCatAdd.setVisibility(View.VISIBLE);
+//
+//                }
+//                else{
+//                    fabCatAdd.setVisibility(View.GONE);
+//
+//                }
 
                 categoriesList = new ArrayList<>();
                 for (DataSnapshot childSnapShot :
@@ -129,7 +142,11 @@ public class InfoneActivity extends Fragment {
                         return cat1.getName().trim().compareToIgnoreCase(cat2.getName().trim());
                     }
                 });
+                if(categoriesList.isEmpty()){
 
+                }else{
+
+                }
                 infoneCategoriesRVAdapter = new InfoneCategoriesRVAdapter(categoriesList, getContext());
                 recyclerViewCat.setAdapter(infoneCategoriesRVAdapter);
 
@@ -144,22 +161,10 @@ public class InfoneActivity extends Fragment {
                 Toast.makeText(getActivity().getApplicationContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
             }
         };
+
+
         databaseReferenceCat.addValueEventListener(listener);
 
-        mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
-                if(userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)){
-                    fabCatAdd.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
         fabCatAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

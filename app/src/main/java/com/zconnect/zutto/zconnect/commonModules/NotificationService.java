@@ -46,6 +46,7 @@ import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.ShortlistedPeopleList;
 import com.zconnect.zutto.zconnect.VerificationPage;
+import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 
@@ -330,6 +331,9 @@ public class NotificationService extends FirebaseMessagingService {
         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
         style.setBigContentTitle(communityName).bigText("Your profile is rejected, please again add your details.");
 
+
+
+
         if (appLogo!=null){
             mBuilder.setLargeIcon(appLogo);
         }
@@ -368,6 +372,9 @@ public class NotificationService extends FirebaseMessagingService {
 
         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
         style.setBigContentTitle(communityName).bigText("Your profile is approved, you can enjoy access to all features.");
+
+
+
 
         if (appLogo!=null){
             mBuilder.setLargeIcon(appLogo);

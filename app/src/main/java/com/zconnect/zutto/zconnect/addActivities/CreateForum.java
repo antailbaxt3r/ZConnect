@@ -43,12 +43,14 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.AddMembersToForumActivity;
 import com.zconnect.zutto.zconnect.ChatActivity;
+import com.zconnect.zutto.zconnect.HomeActivity;
 import com.zconnect.zutto.zconnect.InfoneContactListActivity;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.CustomSpinner;
 import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
+import com.zconnect.zutto.zconnect.fragments.JoinedForums;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
@@ -92,6 +94,7 @@ public class CreateForum extends BaseActivity {
     }
     String mtabName, uid;
     boolean editForumFlag;
+    String featurePID;
     FrameLayout addForumIcon, done;
     MaterialEditText addForumName, firstMessage;
     IntentHandle intentHandle;
@@ -134,6 +137,7 @@ public class CreateForum extends BaseActivity {
             String tab = callingActivityIntent.getStringExtra(ForumUtilities.KEY_FORUM_TAB_STR);
             final DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
             final DatabaseReference databaseReferenceTabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab);
+
             forumIDSaveLocation.child("forumUID").setValue(createForumWithDetails(name,
                     databaseReferenceCategories,
                     databaseReferenceTabsCategories,
@@ -146,6 +150,7 @@ public class CreateForum extends BaseActivity {
                     null,
                     imageUri,
                     false
+
             ));
             return;
 
@@ -375,7 +380,10 @@ public class CreateForum extends BaseActivity {
                     categoriesRef.removeValue();
                     tabsCategoriesRef.removeValue();
                     Toast.makeText(CreateForum.this, "Forum successfully deleted", Toast.LENGTH_LONG).show();
-                    finish();
+                    Intent intent = new Intent(CreateForum.this, HomeActivity.class);
+                    intent.putExtra("tab",1);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                 }
             });
 
@@ -629,6 +637,7 @@ public class CreateForum extends BaseActivity {
             newPush.child("PostTimeMillis").setValue(postTimeMillis);
             newPush.child("UID").setValue(newPush.getKey());
             newPush.child("tab").setValue(tabUid);
+            featurePID = newPush.getKey();
 
             final DatabaseReference userDataRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
             userDataRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -672,14 +681,24 @@ public class CreateForum extends BaseActivity {
 
             //Home
         if(databaseReferenceHome!=null) {
-            databaseReferenceHome.child(newPush.getKey()).child("feature").setValue("Forums");
-            databaseReferenceHome.child(newPush.getKey()).child("name").setValue(catName);
-            databaseReferenceHome.child(newPush.getKey()).child("id").setValue(tabUid);
-            databaseReferenceHome.child(newPush.getKey()).child("desc").setValue(mtabName);
-            databaseReferenceHome.child(newPush.getKey()).child("Key").setValue(newPush.getKey());
-            databaseReferenceHome.child(newPush.getKey()).child("PostTimeMillis").setValue(postTimeMillis);
+            FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-            databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    UserItemFormat userItemFormat = new UserItemFormat();
+                    HashMap<String,Object> metadata = new HashMap<>();
+                    metadata.put("featurePID",featurePID);
+                    userItemFormat.setUsername(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("username").getValue()));
+                    userItemFormat.setImageURL(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("imageURL").getValue()));
+                    userItemFormat.setUserUID(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("userUID").getValue()));
+                    GlobalFunctions.inAppNotifications("added a forum",catName,userItemFormat,true,"addforum",metadata,null);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
 
             mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {

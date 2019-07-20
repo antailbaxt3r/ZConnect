@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,6 +49,9 @@ public class AddMembersToForumActivity extends BaseActivity {
     RecyclerView recyclerViewContacts;
     ArrayList<String> addedUserIds = new ArrayList<>();
     SearchView searchView;
+    Toolbar toolbar;
+    TextView members;
+
 
 
 
@@ -56,7 +61,10 @@ public class AddMembersToForumActivity extends BaseActivity {
         setContentView(R.layout.activity_add_members_to_forum);
         recyclerViewContacts = findViewById(R.id.members_rv);
         recyclerViewContacts.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
+        toolbar = findViewById(R.id.toolbar_add_members);
+        setSupportActionBar(toolbar);
+        setActionBarTitle("Add Users");
+        members = findViewById(R.id.add_members_tv);
         listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -122,7 +130,7 @@ public class AddMembersToForumActivity extends BaseActivity {
 
                             addedUserIds.add(item.getInfoneUserId());
                             Log.d("Hoi",addedUserIds.toString());
-                            setActionBarTitle("Add users "+Integer.toString(20-addedUserIds.size())+" Remaining");
+                            members.setText(20-addedUserIds.size()+" Remaining");
                             return true;
                         }
                         return false;
@@ -134,7 +142,7 @@ public class AddMembersToForumActivity extends BaseActivity {
                         if(addedUserIds.size()>0){
                             Log.d("Hoi",item.getInfoneUserId());
                             addedUserIds.remove(item.getInfoneUserId());
-                            setActionBarTitle("Add users "+Integer.toString(20-addedUserIds.size())+" Remaining");
+                            members.setText(20-addedUserIds.size()+" Remaining");
                             return true;
                         }
                         return false;
@@ -154,7 +162,7 @@ public class AddMembersToForumActivity extends BaseActivity {
                 Toast.makeText(getApplicationContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
             }
         };
-    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").addListenerForSingleValueEvent(listener);
+        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").addListenerForSingleValueEvent(listener);
 
 
 
@@ -220,6 +228,7 @@ public class AddMembersToForumActivity extends BaseActivity {
         searchView.setSearchableInfo(searchManager
                 .getSearchableInfo(getComponentName()));
         searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setDrawingCacheBackgroundColor(getResources().getColor(R.color.black));
 
         // listening to search query text change
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -244,5 +253,4 @@ public class AddMembersToForumActivity extends BaseActivity {
 
     }
 
-    }
-
+}

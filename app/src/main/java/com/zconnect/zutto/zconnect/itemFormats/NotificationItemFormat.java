@@ -24,16 +24,30 @@ public class NotificationItemFormat {
     private String itemCategoryAdmin;
 
     private String itemMessage;
-
+    private String recieverKey;
     private long itemLikeCount;
 
 
 
     private String itemURL;
-
+    private int dummy;
     private String itemTitle;
 
+    public NotificationItemFormat(){}
 
+
+    public NotificationItemFormat(String notificationIdentifier,String userKey,String recieverKey,int dummy) {
+        this.notificationIdentifier = notificationIdentifier;
+        this.userKey = userKey;
+        this.dummy=dummy;
+        this.recieverKey=recieverKey;
+    }
+
+    public NotificationItemFormat(String userKey, String userName, String userImage) {
+    this.userImage=userImage;
+    this.userName=userName;
+    this.userKey=userKey;
+    }
     public NotificationItemFormat(String notificationIdentifier, String userKey){
         this.notificationIdentifier = notificationIdentifier;
         this.userKey = userKey;
@@ -42,11 +56,18 @@ public class NotificationItemFormat {
     public String getUserName() {
         return userName;
     }
+    public String getRecieverKey() {
+        return recieverKey;
+    }
 
     public void setUserName(String userName) {
         this.userName = userName;
     }
 
+
+    public void setRecieverKey(String recieverKey) {
+        this.recieverKey = recieverKey;
+    }
     public String getNotificationIdentifier() {
         return notificationIdentifier;
     }

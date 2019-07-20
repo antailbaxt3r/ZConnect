@@ -21,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
@@ -198,14 +199,14 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                                         StoreRoom.child(key).child("UsersReserved").child(userItemFormat.getUserUID()).setValue(userDetails);
 
                                         NotificationSender notificationSender = new NotificationSender(itemView.getContext(),userItemFormat.getUserUID());
-                                        NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST,userItemFormat.getUserUID());
+                                        NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST,userItemFormat.getUserUID(), (String) dataSnapshot.child("PostedBy").child("UID").getValue(),1);
                                         productShortlistNotification.setCommunityName(communityTitle);
                                         productShortlistNotification.setItemKey(key);
                                         productShortlistNotification.setItemName(dataSnapshot.child(key).child("ProductName").getValue().toString());
                                         productShortlistNotification.setUserName(userItemFormat.getUsername());
                                         productShortlistNotification.setUserMobileNumber(userItemFormat.getMobileNumber());
                                         productShortlistNotification.setUserImage(userItemFormat.getImageURLThumbnail());
-
+                                        productShortlistNotification.setRecieverKey(dataSnapshot.child(key).child("PostedBy").child("UID").getValue().toString());
                                         notificationSender.execute(productShortlistNotification);
 
                                     }

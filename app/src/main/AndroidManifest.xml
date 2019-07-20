@@ -23,8 +23,8 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".OpenStatus"></activity>
-
+        <activity android:name=".fragments.UpdateAppActivity"></activity>
+        <activity android:name=".OpenStatus" />
         <activity android:name=".AddMembersToForumActivity">
             <meta-data
                 android:name="android.app.searchable"
@@ -253,7 +253,7 @@
         <activity
             android:name=".GalleryActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver android:name=".InfoneSearchWidget">
             <intent-filter>
@@ -419,7 +419,6 @@
             android:label="@string/title_activity_cab_pool_locations"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".MakeAdmin"
             android:label="@string/title_activity_cab_pool_locations"
@@ -476,6 +475,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".WebViewActivity"
+            android:label="@string/title_activity_admin_home"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".addActivities.CreateForum"
             android:label="Create Forum"
             android:screenOrientation="portrait"
@@ -486,13 +490,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".NotificationNoImage"
-            android:label="Text Notification"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".NotificationImage"
-            android:label="Image Notification"
+            android:label="Send Notification"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Links" />
@@ -561,7 +560,6 @@
             android:label="Add a Forums Tab"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".addActivities.RequestForumTab"
             android:label="Request a Forums Tab"
@@ -572,7 +570,6 @@
             android:label="Create a Poll"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
     </application>
 
 </manifest>

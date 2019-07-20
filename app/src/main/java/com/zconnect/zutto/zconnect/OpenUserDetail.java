@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -34,10 +36,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.zconnect.zutto.zconnect.adapters.UserDetailsJoinedForumsAdapter;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
@@ -48,7 +53,10 @@ import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import mabbas007.tagsedittext.TagsEditText;
@@ -81,7 +89,9 @@ public class OpenUserDetail extends BaseActivity {
     private Menu menu;
     private Toolbar toolbar;
     private Button userTypeText, requestContact;
-    private TextView forumsJoined;
+    private RecyclerView forumsJoined;
+    UserDetailsJoinedForumsAdapter adapter;
+    private ArrayList<ForumCategoriesItemFormat> joinedForumsList = new ArrayList<>();
 
     private Button chatButton;
     String userImageURL;
@@ -103,7 +113,7 @@ public class OpenUserDetail extends BaseActivity {
         editTextNumber = (TextView) findViewById(R.id.contact_details_number_editText);
         editTextSkills = (TagsEditText) findViewById(R.id.contact_details_editText_skills);
         whatsAppNumberText = (TextView) findViewById(R.id.whatsapp_number);
-        forumsJoined = findViewById(R.id.contact_details_forums_joined);
+        forumsJoined = findViewById(R.id.joined_forums_rv);
         chatButton = findViewById(R.id.chat_button);
 
         btn_like = (ImageButton) findViewById(R.id.btn_like);
@@ -154,13 +164,46 @@ public class OpenUserDetail extends BaseActivity {
 //        skills=getIntent().getStringExtra("skills");
 //        category=getIntent().getStringExtra("category");
         Uid=getIntent().getStringExtra("Uid");
+        adapter = new UserDetailsJoinedForumsAdapter(joinedForumsList);
+        forumsJoined.setLayoutManager(new LinearLayoutManager(OpenUserDetail.this,LinearLayoutManager.HORIZONTAL,false));
+        forumsJoined.setAdapter(adapter);
 
-        final DatabaseReference userForums = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("userForums").child(Uid).child("totalJoinedForums");
+        final DatabaseReference userForums = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("userForums").child(Uid).child("joinedForums");
 
         userForums.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                forumsJoined.setText(dataSnapshot.getValue().toString());
+                for(DataSnapshot shot2: dataSnapshot.getChildren()) {
+                    try {
+                        String name = null;
+                        String imageURL = null;
+                        Log.d("Try",shot2.toString());
+                        ForumCategoriesItemFormat temp = new ForumCategoriesItemFormat();
+                        try{
+                            temp = shot2.getValue(ForumCategoriesItemFormat.class);
+                        }
+                        catch (Exception e){
+                            Log.d("Try:ErrorFormat", e.toString());
+
+                        }
+                        if(temp==null) {
+                            temp.setTabUID(shot2.child("tabUID").getValue().toString());
+                            temp.setCatUID(shot2.child("catUID").getValue().toString());
+                        }
+
+
+
+                        if(shot2.child("tabUID").toString().equals("personalChats") || shot2.child("tabUID").toString().equals("others")){
+                            continue;
+                        }
+                       joinedForumsList.add(temp);
+                    }catch (Exception e){Log.e("Try:Outside Error",e.toString());}
+                }
+
+
+
+
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -184,6 +227,8 @@ public class OpenUserDetail extends BaseActivity {
                     userDetails.setName(userProfile.getUsername());
                     userDetails.setImageThumb(userProfile.getImageURLThumbnail());
                     userDetails.setUserType(ForumsUserTypeUtilities.KEY_ADMIN);
+//                    forumsJoined.setText(dataSnapshot.getValue().toString());
+
                     setUserDetails(currentUser);
 
                     progressBar.setVisibility(View.GONE);
@@ -317,12 +362,13 @@ public class OpenUserDetail extends BaseActivity {
                             NotificationSender notificationSender = new NotificationSender(OpenUserDetail.this, userItemFormat.getUserUID());
 
                             NotificationItemFormat infoneLikeNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_LIKE,userItemFormat.getUserUID());
-
+                            Log.d(userProfile.getUsername(), "editprolike");
+                            Log.d(userItemFormat.getUsername(), "editprolike");
                             infoneLikeNotification.setItemKey(userProfile.getUserUID());
                             infoneLikeNotification.setUserImage(userItemFormat.getImageURLThumbnail());
                             infoneLikeNotification.setUserName(userItemFormat.getUsername());
                             infoneLikeNotification.setCommunityName(communityTitle);
-
+                            GlobalFunctions.inAppNotifications("has liked your profile","Your profile is liked",userItemFormat,false,"status",null,userProfile.getUserUID());
                             notificationSender.execute(infoneLikeNotification);
                         }
 
@@ -367,8 +413,9 @@ public class OpenUserDetail extends BaseActivity {
                             infoneLoveNotification.setUserImage(userItemFormat.getImageURLThumbnail());
                             infoneLoveNotification.setUserName(userItemFormat.getUsername());
                             infoneLoveNotification.setCommunityName(communityTitle);
-
+                            GlobalFunctions.inAppNotifications("has loved your profile","Your profile is loved",userItemFormat,false,"status",null,userProfile.getUserUID());
                             notificationSender.execute(infoneLoveNotification);
+
                         }
 
                         @Override
@@ -529,15 +576,18 @@ public class OpenUserDetail extends BaseActivity {
         currentUser.setUserUID(UserUtilities.currentUser.getUserUID());
         currentUser.setUserType(UserUtilities.currentUser.getUserType());
         userList.put(uid,currentUser);
-        databaseReferenceTabsCategories.child(newPush.getKey()).child("users").setValue(userList);
+
+        HashMap<String,Object> forumTabs = new HashMap<>();
+        forumTabs.put("name",false);
+        forumTabs.put("catUID",newPush.getKey());
+        forumTabs.put("tabUID","personalChats");
+        forumTabs.put("lastMessage","Null");
+        forumTabs.put("users",userList);
+        databaseReferenceTabsCategories.child(newPush.getKey()).setValue(forumTabs);
 
 
         databaseReferenceUser.child("userChats").child(infoneUserUID).setValue(newPush.getKey());
         databaseReferenceInfoneUser.child("userChats").child(uid).setValue(newPush.getKey());
-        databaseReferenceTabsCategories.child(newPush.getKey()).child("name").setValue(false);
-        databaseReferenceTabsCategories.child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
-        databaseReferenceTabsCategories.child(newPush.getKey()).child("tabUID").setValue("personalChats");
-        databaseReferenceTabsCategories.child(newPush.getKey()).child("lastMessage").setValue("Null");
 
 
 
@@ -805,6 +855,7 @@ public class OpenUserDetail extends BaseActivity {
                     requestCallNotification.setUserName(userItemFormat.getUsername());
                     requestCallNotification.setCommunityName(communityTitle);
 
+                    GlobalFunctions.inAppNotifications("tried contacting you"," call him back!",userItemFormat,false,"requestcallback",null,Uid);
                     notificationSender.execute(requestCallNotification);
                 }
 

@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -24,6 +25,7 @@ import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.utilities.FeatureNamesUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -35,6 +37,29 @@ public class ShortlistedPeopleList extends BaseActivity {
     private String pName, pPrice, pDescription, pImage;
     private TextView productName, productDescription, productPrice;
     private ImageView productImage;
+     DatabaseReference productRef;
+    ValueEventListener listener;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(productRef!=null && listener!= null) {
+            productRef.addValueEventListener(listener);
+        }
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        productRef.removeEventListener(listener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        productRef.removeEventListener(listener);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,29 +115,37 @@ public class ShortlistedPeopleList extends BaseActivity {
 
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
                 .child("features").child("storeroom").child("products").child(key).child("UsersReserved");
-        final DatabaseReference productRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
+        productRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
                 .child("features").child("storeroom").child("products").child(key);
 
-        productRef.addValueEventListener(new ValueEventListener() {
+
+        listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                pName = dataSnapshot.child("ProductName").getValue().toString();
-                pDescription = dataSnapshot.child("ProductDescription").getValue().toString();
-                pPrice = dataSnapshot.child("Price").getValue().toString();
-                pImage = dataSnapshot.child("Image").getValue().toString();
+                try {
+                    pName = dataSnapshot.child("ProductName").getValue().toString();
+                    pDescription = dataSnapshot.child("ProductDescription").getValue().toString();
+                    pImage = dataSnapshot.child("Image").getValue().toString();
 
-                Picasso.with(getApplicationContext()).load(pImage).into(productImage);
+                    Picasso.with(getApplicationContext()).load(pImage).into(productImage);
+                    productName.setText(pName);
+                    productDescription.setText(pDescription);
+                    if (!dataSnapshot.child("type").getValue(String.class).equals(ProductUtilities.TYPE_ASK_STR)) {
+                        pPrice = dataSnapshot.child("Price").getValue().toString();
+                        productPrice.setText("₹" + pPrice);
 
-                productPrice.setText("₹" + pPrice);
-                productName.setText(pName);
-                productDescription.setText(pDescription);
+                    }
+                }
+                catch (Exception e){
+                    Log.d("ShortlistedPeopleList","Product deleted but listener still intact: "+e.toString());
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        };
 
 
 

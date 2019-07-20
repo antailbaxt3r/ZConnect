@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="64dp"
+    android:layout_margin="4dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:background="@drawable/forum_circle"
+            app:actualImageScaleType="centerCrop"
+            app:roundAsCircle="true"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:id="@+id/forum_image"/>
+    <ImageView
+        android:id="@+id/default_forums_group_icon_row_forums_sub_categories_joined"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:visibility="visible"
+        android:src="@drawable/baseline_people_white_36"
+        android:layout_gravity="center"/>
+
+    </FrameLayout>
+    <TextView
+        android:layout_marginTop="@dimen/placeholder_text_height"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:id="@+id/forum_name"/>
+
+</LinearLayout>

@@ -65,6 +65,7 @@ import com.zconnect.zutto.zconnect.fragments.ForumsFragment;
 import com.zconnect.zutto.zconnect.fragments.JoinedForums;
 import com.zconnect.zutto.zconnect.fragments.MyProfileFragment;
 import com.zconnect.zutto.zconnect.fragments.InAppNotificationsFragment;
+import com.zconnect.zutto.zconnect.fragments.UpdateAppActivity;
 import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
@@ -313,6 +314,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         navigationView.setNavigationItemSelectedListener(this);
         editProfileItem = navigationView.getMenu().findItem(R.id.edit_profile);
+        findViewById(R.id.fab_cat_infone).setVisibility(View.GONE);
+
 
 
 
@@ -580,11 +583,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         tabImage[3].setImageResource(R.drawable.ic_phone_outline_24dp);
                         tabImage[4].setImageResource(R.drawable.ic_notifications_outline_24dp);
 
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
 
                         fm.beginTransaction().hide(active).show(recent).commit();
                         active = recent;
-                        //getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
                         break;
                     }
                     case 1: {
@@ -614,7 +615,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                             fm.beginTransaction().hide(active).show(forums).commit();
                             active = forums;
-                            getSupportFragmentManager().beginTransaction().replace(R.id.container, forums).commit();
                         }
                         break;
                     }
@@ -666,7 +666,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                             fm.beginTransaction().hide(active).show(infone).commit();
                             active = infone;
-                            getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
                         }
                         break;
                     }
@@ -700,8 +699,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                         fm.beginTransaction().hide(active).show(notifications).commit();
                         active = notifications;
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, notifications).commit();
-                        //getSupportFragmentManager().beginTransaction().replace(R.id.container, myProfile).commit();
                         break;
                     }
                 }
@@ -719,6 +716,14 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             public void onTabReselected(TabLayout.Tab tab) {
 
                 int pos = tab.getPosition();
+                if(pos!=3) {
+                    findViewById(R.id.fab_cat_infone).setVisibility(View.GONE);
+                }
+                else{
+                    findViewById(R.id.fab_cat_infone).setVisibility(View.VISIBLE);
+
+                }
+
 
 
 
@@ -739,6 +744,18 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
             }
         });
+
+        if(getIntent().getIntExtra("tab",0) != 0){
+            tabs.getTabAt(getIntent().getIntExtra("tab",0)).select();
+//            fm = getSupportFragmentManager();
+//            recent = new Recents();
+//            forums = new JoinedForums();
+//            active = recent;
+//
+//
+//            fm.beginTransaction().hide(active).show(forums).commit();
+//            active = forums;
+        }
     }
 
     //Setting contents in the different tabs
@@ -997,7 +1014,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     });
                 } else {
                     DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mAuth.getCurrentUser().getUid());
-                    userReference.addValueEventListener(new ValueEventListener() {
+                    userReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             UserUtilities.currentUser = dataSnapshot.getValue(UserItemFormat.class);
@@ -1016,12 +1033,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                                 fm = getSupportFragmentManager();
                                 active = recent;
 
+
                                 fm.beginTransaction().add(R.id.container, notifications, "4").hide(notifications).commit();
                                 fm.beginTransaction().add(R.id.container, infone, "3").hide(infone).commit();
                                 fm.beginTransaction().add(R.id.container, forums, "2").hide(forums).commit();
                                 fm.beginTransaction().add(R.id.container,recent, "1").commit();
 
-                                //getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
 
                                 //tabImage[4].setImageURI(UserUtilities.currentUser.getImageURLThumbnail());
                                 setTabListener();
@@ -1053,6 +1070,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @SuppressLint("ApplySharedPref")
     private void launchRelevantActivitiesIfNeeded() {
 
+
         //Check authentication
         if (mUser == null) {
             editProfileItem.setVisible(false);
@@ -1080,6 +1098,24 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             intent.putExtra("referredBy", getSharedPreferences(getResources().getString(R.string.referredAnonymousUser), Context.MODE_PRIVATE).getString("referredBy", null));
             startActivity(intent);
         } else if (mUser != null) {
+
+            FirebaseDatabase.getInstance().getReference().child("minimumClientVersion").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.getValue(Integer.class)>BuildConfig.VERSION_CODE){
+                        Intent intent = new Intent(HomeActivity.this, UpdateAppActivity.class);
+                        startActivity(intent);
+                        finish();
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
 
             FirebaseMessaging.getInstance().subscribeToTopic(mUser.getUid());
 
@@ -1402,6 +1438,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
             case R.id.app_tour_btn:
                 drawer.closeDrawer(GravityCompat.START);
+               tabs.getTabAt(0).select();
                 showAppTour();
         }
         drawer.closeDrawer(GravityCompat.START);
@@ -1418,7 +1455,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onResume() {
         super.onResume();
         mUser = mAuth.getCurrentUser();
-
         launchRelevantActivitiesIfNeeded();
 
         if (communityReference != null) {
@@ -1429,6 +1465,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
             mDatabasePopUps.addValueEventListener(popupsListener);
         }
+
+
+
     }
 
     @Override

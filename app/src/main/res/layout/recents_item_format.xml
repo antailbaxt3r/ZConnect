@@ -133,6 +133,8 @@
             </LinearLayout>
 
         </LinearLayout>
+
+
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical"
@@ -178,7 +180,7 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@drawable/left_rounded_corner_full_purple_border"
+                            android:background="@drawable/rounded_corner_purple_border"
                             android:id="@+id/optionA_result_success"
                             android:layout_weight="0.5"
                             android:orientation="horizontal"/>
@@ -187,7 +189,7 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@drawable/right_rounded_corner_purple_border"
+                            android:background="@color/white"
                             android:id="@+id/optionA_result_failure"
                             android:layout_weight="0.5"
                             android:orientation="horizontal"/>
@@ -204,12 +206,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="A."
-                            android:textStyle="bold"
                             android:textColor="@color/secondaryText"
                             android:textSize="20sp"
-                            android:layout_marginTop="7dp"
-                            android:layout_marginBottom="2dp"
-                            android:layout_marginStart="10dp"
+                            android:layout_margin="2dp"
+                            android:layout_marginStart="5dp"
                             android:id="@+id/optionA_placeHolder"
                             android:layout_weight="9"/>
                         <TextView
@@ -218,7 +218,7 @@
                             android:text="Option A"
                             android:textColor="@color/secondaryText"
                             android:textSize="20sp"
-                            android:layout_margin="7dp"
+                            android:layout_margin="2dp"
                             android:id="@+id/optionA_option_text"
                             android:layout_weight="1"/>
                     </LinearLayout>
@@ -246,7 +246,7 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@drawable/left_rounded_corner_full_purple_border"
+                            android:background="@drawable/rounded_corner_purple_border"
                             android:id="@+id/optionB_result_success"
                             android:layout_weight="0.5"
                             android:orientation="horizontal"/>
@@ -255,7 +255,7 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@drawable/right_rounded_corner_purple_border"
+                            android:background="@color/white"
                             android:id="@+id/optionB_result_failure"
                             android:layout_weight="0.5"
                             android:orientation="horizontal"/>
@@ -273,12 +273,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="B."
-                            android:textStyle="bold"
                             android:textColor="@color/secondaryText"
                             android:textSize="20sp"
-                            android:layout_marginTop="7dp"
-                            android:layout_marginBottom="2dp"
-                            android:layout_marginStart="10dp"
+                            android:layout_margin="2dp"
+                            android:layout_marginStart="5dp"
                             android:id="@+id/optionB_placeHolder"
                             android:layout_weight="9"/>
                         <TextView
@@ -287,7 +285,7 @@
                             android:text="Option B"
                             android:textColor="@color/secondaryText"
                             android:textSize="20sp"
-                            android:layout_margin="7dp"
+                            android:layout_margin="2dp"
                             android:id="@+id/optionB_option_text"
                             android:layout_weight="1"/>
                     </LinearLayout>
@@ -315,7 +313,7 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@drawable/left_rounded_corner_full_purple_border"
+                            android:background="@drawable/rounded_corner_purple_border"
                             android:id="@+id/optionC_result_success"
                             android:layout_weight="0.5"
                             android:orientation="horizontal"/>
@@ -324,7 +322,7 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@drawable/right_rounded_corner_purple_border"
+                            android:background="@color/white"
                             android:id="@+id/optionC_result_failure"
                             android:layout_weight="0.5"
                             android:orientation="horizontal"/>
@@ -341,19 +339,17 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="C."
-                            android:textStyle="bold"
                             android:textColor="@color/secondaryText"
                             android:textSize="20sp"
-                            android:layout_marginTop="7dp"
-                            android:layout_marginBottom="7dp"
-                            android:layout_marginStart="10dp"
+                            android:layout_margin="2dp"
+                            android:layout_marginStart="5dp"
                             android:id="@+id/optionC_placeHolder"
                             android:layout_weight="9"/>
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Option C"
-                            android:layout_margin="7dp"
+                            android:layout_margin="2dp"
                             android:textColor="@color/secondaryText"
                             android:textSize="20sp"
                             android:id="@+id/optionC_option_text"
@@ -362,6 +358,7 @@
                 </FrameLayout>
             </LinearLayout>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

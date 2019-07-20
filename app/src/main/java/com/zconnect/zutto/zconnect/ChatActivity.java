@@ -1,6 +1,8 @@
 package com.zconnect.zutto.zconnect;
 
 import android.Manifest;
+import android.accessibilityservice.GestureDescription;
+import android.app.AlertDialog;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -114,6 +116,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -126,6 +131,7 @@ import java.util.TreeMap;
 public class ChatActivity extends BaseActivity implements QueryTokenReceiver, SuggestionsResultListener, SuggestionsVisibilityManager {
 
     private String TAG = ChatActivity.class.getSimpleName();
+    NotificationItemFormat notificationItemFormat;
     private static final String BUCKET = "people-network";
 
 
@@ -146,6 +152,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
     private DatabaseReference mUserReference;
     private FirebaseAuth mAuth;
     private static boolean unseenFlag, unseenFlag2;
+    private String recieverKey;
     private boolean isAnonymousEnabled = false;
     private final char DELIMIETER =(char)1;
 
@@ -163,11 +170,13 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
     //For Storeroom message
     String storeRoomMessage;
+    String storeRoomImage;
     private AppBarLayout appBarLayout;
     private FrameLayout chatFrameLayout;
 
     //UI elements
     MentionsEditText typer;
+    ImageView anonymousSendBtn;
 
 
     //User Mentions
@@ -189,6 +198,24 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         setContentView(R.layout.activity_chat);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+        try {
+            Class aClass = Class.forName("android.content.pm.PackageParser$Package");
+            Constructor declaredConstructor = aClass.getDeclaredConstructor(String.class);
+            declaredConstructor.setAccessible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Class cls = Class.forName("android.app.ActivityThread");
+            Method declaredMethod = cls.getDeclaredMethod("currentActivityThread");
+            declaredMethod.setAccessible(true);
+            Object activityThread = declaredMethod.invoke(null);
+            Field mHiddenApiWarningShown = cls.getDeclaredField("mHiddenApiWarningShown");
+            mHiddenApiWarningShown.setAccessible(true);
+            mHiddenApiWarningShown.setBoolean(activityThread, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
 
@@ -196,6 +223,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         mentionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MentionsAdapter(new ArrayList<UserMentionsFormat>());
         mentionsRecyclerView.setAdapter(adapter);
+        anonymousSendBtn = findViewById(R.id.sendAnonymousButton);
 
         typer = ((MentionsEditText) findViewById(R.id.typer));
 
@@ -207,6 +235,10 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
 //        setTitle("List of people");
+        setToolbar();
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -216,19 +248,18 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
             });
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-//        Log.d("name",getIntent().getStringExtra("name"));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
 
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
-            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+
 //            getWindow().setStatusBarColor(colorDarkPrimary);
 //            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-        showBackButton();
 
         mAuth = FirebaseAuth.getInstance();
         appBarLayout = findViewById(R.id.appBarLayout);
@@ -239,57 +270,6 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         unseenFlag = true;
         unseenFlag2 = false;
 
-//        Mentions mentions = new Mentions.Builder(ChatActivity.this, typer)
-//                .highlightColor(R.color.colorPrimary)
-//                .maxCharacters(5)
-//                .queryListener(new QueryListener() {
-//                    public void onQueryReceived(final String query) {
-//                        // Get and display results for query.
-//                    }
-//                })
-//                .suggestionsListener(new SuggestionsListener() {
-//                    public void displaySuggestions(final boolean display) {
-//                        // Hint that can be used to show or hide your list of @mentions".
-//                    }
-//                })
-//                .build();
-//
-//        final Mentionable mention = new Mentionable() {
-//
-//            @Override
-//            public int getMentionOffset() {
-//                return 0;
-//            }
-//
-//            @Override
-//            public void setMentionOffset(int i) {
-//
-//            }
-//
-//            @Override
-//            public int getMentionLength() {
-//                return 4;
-//            }
-//
-//            @Override
-//            public void setMentionLength(int i) {
-//
-//            }
-//
-//            @Override
-//            public String getMentionName() {
-//                return "AAAAA";
-//            }
-//
-//            @Override
-//            public void setMentionName(String s) {
-//
-//            }
-//
-//        };
-//        mention.setMentionName(user.getDisplayName());
-//        mentions.insertMention(mention);
-//
 
         SharedPreferences communitySP;
         final String communityReference;
@@ -302,6 +282,12 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         }
         if (callingActivityIntent.getStringExtra("store_room_message") != null) {
             storeRoomMessage = callingActivityIntent.getStringExtra("store_room_message");
+            if(callingActivityIntent.getStringExtra("store_room_image") != null){
+                storeRoomImage = callingActivityIntent.getStringExtra("store_room_image");
+            }
+            else{
+                storeRoomImage = "";
+            }
         }
         mUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         if (getIntent() != null && !TextUtils.isEmpty(getIntent().getStringExtra("ref"))) {
@@ -333,17 +319,20 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         }
 
         if (type.equals("forums")) {
+            toolbar.setTitle(getIntent().getStringExtra("name"));
             setActionBarTitle(getIntent().getStringExtra("name"));
+            Log.d("Setting it to: ",getIntent().getStringExtra("name"));
         } else if (type.equals("cabPool")) {
-            setActionBarTitle("Discussion");
+            toolbar.setTitle("Discussion");
+
         } else if (type.equals("events")) {
-            setActionBarTitle("Discussion");
+            toolbar.setTitle("Discussion");
         } else if (type.equals("messages")) {
-            setActionBarTitle("Comments");
+            toolbar.setTitle("Comments");
         } else if (type.equals("storeroom")) {
-            setActionBarTitle("Chat with seller");
+            toolbar.setTitle("Chat with seller");
         } else if (type.equals("post")) {
-            setActionBarTitle("Comments");
+            toolbar.setTitle("Comments");
         } else if (type.equals("personalChats")) {
             Log.d("Setting it to:", getIntent().getStringExtra("name"));
 //            setActionBarTitle(getIntent().getStringExtra("name"));
@@ -356,11 +345,12 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 databaseReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-
+                        recieverKey = (String) dataSnapshot.child("PostedBy").child("UID").getValue();
                         if (!dataSnapshot.child("usersListItemFormats").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             joinButton.setVisibility(View.VISIBLE);
                             joinLayout.setVisibility(View.VISIBLE);
                             chatLayout.setVisibility(View.GONE);
+
 
                             joinButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -379,11 +369,13 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                                             databaseReference.child("usersListItemFormats").child(userItemFormat.getUserUID()).setValue(userDetails);
 
                                             NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItemFormat.getUserUID());
-                                            NotificationItemFormat cabPoolJoinNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN, userItemFormat.getUserUID());
+                                            NotificationItemFormat cabPoolJoinNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN, userItemFormat.getUserUID(),recieverKey,1);
                                             cabPoolJoinNotification.setCommunityName(communityTitle);
                                             cabPoolJoinNotification.setItemKey(getIntent().getStringExtra("key"));
                                             cabPoolJoinNotification.setUserName(userItemFormat.getUsername());
                                             cabPoolJoinNotification.setUserImage(userItemFormat.getImageURLThumbnail());
+                                            cabPoolJoinNotification.setRecieverKey(recieverKey);
+                                            Log.d(recieverKey, "reciverkey");
                                             notificationSender.execute(cabPoolJoinNotification);
 
                                             CounterItemFormat counterItemFormat = new CounterItemFormat();
@@ -428,6 +420,10 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 tab = getIntent().getStringExtra("tab");
                 forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab).child(key);
                 //TODO usersReference IS HARDCODED
+                setActionBarTitle(getIntent().getStringExtra("name"));
+                toolbar.setTitle(getIntent().getStringExtra("name"));
+
+
 
 
                 forumCategory.addValueEventListener(new ValueEventListener() {
@@ -523,7 +519,18 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         }
         calendar = Calendar.getInstance();
         chatView = (RecyclerView) findViewById(R.id.chatList);
-        adapter = new ChatRVAdapter(messages, databaseReference, forumCategory, this, ForumUtilities.VALUE_NORMAL_FORUM);
+        if(getIntent().getStringExtra("forumType") != null) {
+            if (getIntent().getStringExtra("forumType").equals(ForumUtilities.VALUE_COMMENTS)) {
+                adapter = new ChatRVAdapter(messages, databaseReference, forumCategory, this, ForumUtilities.VALUE_COMMENTS);
+            } else {
+                adapter = new ChatRVAdapter(messages, databaseReference, forumCategory, this, ForumUtilities.VALUE_NORMAL_FORUM);
+
+            }
+        }
+        else{
+            adapter = new ChatRVAdapter(messages, databaseReference, forumCategory, this, ForumUtilities.VALUE_NORMAL_FORUM);
+
+        }
         progressBar = (ProgressBar) findViewById(R.id.activity_chat_progress_circle);
         progressBar.setVisibility(View.VISIBLE);
         chatView.setVisibility(View.GONE);
@@ -548,10 +555,40 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                                 newUserVerificationAlert.buildAlertCheckNewUser(userItemFormat.getUserType(), "Chat", ChatActivity.this);
                             } else {
 
-                                postMessage();
+                                postMessage(false);
                             }
                         } else {
-                            postMessage();
+                            postMessage(false);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+        });
+
+        anonymousSendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                user.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                        if (dataSnapshot.hasChild("userType")) {
+                            if (userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
+                                newUserVerificationAlert.buildAlertCheckNewUser(userItemFormat.getUserType(), "Chat", ChatActivity.this);
+                            } else {
+
+                                postMessage(true);
+                            }
+                        } else {
+                            postMessage(true);
                         }
                     }
 
@@ -584,11 +621,8 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                         if (!snapshot.hasChild("anonymous") || snapshot.child("anonymous").getValue().toString().equals("false")) {
                             messages.add(temp);
                         } else {
-                            ChatItemFormats anonMessage = new ChatItemFormats();
-                            anonMessage.setMessageType(MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE_STR);
-                            anonMessage.setUuid(temp.getUuid());
-                            anonMessage.setTimeDate(temp.getTimeDate());
-                            messages.add(anonMessage);
+                            temp.setMessageType(MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE_STR);
+                            messages.add(temp);
                         }
                     }
                 }
@@ -596,6 +630,9 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
                 if (type.equals("forums") || type.equals("others") || type.equals("personalChats")) {
                     DBHelper mydb = new DBHelper(ChatActivity.this);
+                    setActionBarTitle(getIntent().getStringExtra("name"));
+                    toolbar.setTitle(getIntent().getStringExtra("name"));
+
 
                     String key, tab, name;
                     int unseen_num;
@@ -618,8 +655,8 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                     }
                 }
                 adapter.notifyDataSetChanged();
-                if (!type.equals("forums"))
-                    chatView.scrollToPosition(messages.size() - 1);
+                if(type.equals("forums"))
+                    chatView.scrollToPosition(messages.size()-1);
                 progressBar.setVisibility(View.GONE);
                 chatView.setVisibility(View.VISIBLE);
             }
@@ -672,7 +709,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         if (shareMessageType != null) {
             if (shareMessageType.equals(ForumUtilities.VALUE_MESSAGE_TEXT_MESSAGE)) {
                 typer.setText(shareMessage);
-                postMessage();
+                postMessage(false);
             }
             if (shareMessageType.equals(ForumUtilities.VALUE_MESSAGE_IMAGE)) {
                 mImageUri = Uri.parse(shareMessage);
@@ -682,7 +719,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
     }
 
-    private void postMessage() {
+    private void postMessage(boolean anonymous) {
 
 //        final EditText typer = ((EditText) findViewById(R.id.typer));
         final String text;
@@ -693,8 +730,63 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         String messagePushID = databaseReference.child("Chat").push().getKey();
 
         if (storeRoomMessage != null) {
-            text = storeRoomMessage + "\n" + typer.getText().toString().trim();
+            text = storeRoomMessage + "\n\n" + typer.getText().toString().trim();
             storeRoomMessage = null;
+            if(storeRoomImage != "" && storeRoomImage != null){
+                mImageUri = Uri.parse(storeRoomImage);
+                mUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
+                        ChatItemFormats message = new ChatItemFormats();
+                        message.setUuid(userItem.getUserUID());
+                        message.setName(userItem.getUsername());
+                        message.setPhotoURL(storeRoomImage);
+                        message.setTimeDate(calendar.getTimeInMillis());
+                        message.setImageThumb(userItem.getImageURLThumbnail());
+                        message.setMessage(" \uD83D\uDCF7 Image ");
+                        message.setMessageType(MessageTypeUtilities.KEY_PHOTO_STR);
+                        GlobalFunctions.addPoints(5);
+                        String messagePushID = databaseReference.child("Chat").push().getKey();
+                        message.setKey(messagePushID);
+                        databaseReference.child("Chat").child(messagePushID).setValue(message);
+                            NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItem.getUserUID());
+
+                            NotificationItemFormat forumChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_FORUM, userItem.getUserUID());
+
+                            forumChatNotification.setItemMessage(" \uD83D\uDCF7 Image ");
+                            forumChatNotification.setItemCategoryUID(getIntent().getStringExtra("tab"));
+                            forumChatNotification.setItemName(getIntent().getStringExtra("name"));
+                            forumChatNotification.setItemKey(getIntent().getStringExtra("key"));
+
+                            forumChatNotification.setUserImage(userItem.getImageURLThumbnail());
+                            forumChatNotification.setUserName(userItem.getUsername());
+                            forumChatNotification.setCommunityName(communityTitle);
+
+                            notificationSender.execute(forumChatNotification);
+
+                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(dataSnapshot.child("tab").getValue().toString()).child(getIntent().getStringExtra("key")).child("lastMessage").setValue(message);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
         } else {
             String text1 = typer.getText().toString().trim();
             String textCopy = text1;
@@ -733,10 +825,15 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 }
                 message.setImageThumb(userItem.getImageURLThumbnail());
                 message.setMessage("\"" + text + "\"");
-                message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
                 GlobalFunctions.addPoints(2);
                 message.setKey(messagePushID);
-                message.setAnonymous(isAnonymousEnabled);
+                if(anonymous){
+                    message.setMessageType(MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE_STR);
+                }
+                else{
+                    message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
+
+                }
 
                 databaseReference.child("Chat").child(messagePushID).setValue(message);
 //                messages.add(message);
@@ -792,16 +889,18 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
                 } else if (type.equals("post")) {
                     NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItem.getUserUID());
-
+                    HashMap<String,Object> metadata = new HashMap<>();
                     NotificationItemFormat postChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_POST, userItem.getUserUID());
-
                     postChatNotification.setItemMessage(text);
                     postChatNotification.setItemKey(getIntent().getStringExtra("key"));
-
                     postChatNotification.setUserImage(userItem.getImageURLThumbnail());
                     postChatNotification.setUserName(userItem.getUsername());
                     postChatNotification.setCommunityName(communityTitle);
-
+                    metadata.put("key",getIntent().getStringExtra("key"));
+                    metadata.put("ref",getIntent().getStringExtra("ref"));
+                    metadata.put("type",getIntent().getStringExtra("type"));
+                    metadata.put("uid",getIntent().getStringExtra("uid"));
+                    GlobalFunctions.inAppNotifications("commented on your status","Comment: "+text,userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
                     notificationSender.execute(postChatNotification);
 
                 } else if (type.equals("messages")) {
@@ -872,19 +971,6 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         message.setTimeDate(calendar.getTimeInMillis());
 
         if (mImageUri != null) {
-            Log.d("L", Integer.toString(messages.size()));
-            messageTemp.setUuid(mAuth.getCurrentUser().getUid());
-            messageTemp.setName(mAuth.getCurrentUser().getDisplayName());
-            messageTemp.setPhotoURL(mImageUri != null ? mImageUri.toString() : null);
-            messageTemp.setImageThumb(mImageUri.toString());
-            messageTemp.setMessage(" \uD83D\uDCF7 Image ");
-            messageTemp.setMessageType(MessageTypeUtilities.KEY_PHOTO_STR);
-            messages.add(messageTemp);
-//            messages.add()
-            messages.add(messages.get(0));
-            Log.d("L", Integer.toString(messages.size()));
-            adapter.notifyDataSetChanged();
-
 
             final StorageReference filePath = mStorage.child(communityReference).child("features").child(type).child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
             UploadTask uploadTask = filePath.putFile(mImageUri);
@@ -911,7 +997,6 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                                 message.setImageThumb(userItem.getImageURLThumbnail());
                                 message.setMessage(" \uD83D\uDCF7 Image ");
                                 message.setMessageType(MessageTypeUtilities.KEY_PHOTO_STR);
-                                message.setAnonymous(isAnonymousEnabled);
                                 GlobalFunctions.addPoints(5);
                                 String messagePushID = databaseReference.child("Chat").push().getKey();
                                 message.setKey(messagePushID);
@@ -1148,137 +1233,9 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
         }
 
-        if (item.getItemId() == R.id.action_anonymous_forum) {
-            if (isAnonymousEnabled) {
-                setNormalChat();
 
-            } else {
-
-                final Dialog anonymousModeDialog = new Dialog(this);
-                anonymousModeDialog.setContentView(R.layout.dialog_confirm_anonymous_mode);
-                anonymousModeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-                Button cancelButton = anonymousModeDialog.findViewById(R.id.anonymous_cancel_button);
-                cancelButton.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        anonymousModeDialog.dismiss();
-                        return false;
-                    }
-                });
-                CheckBox checkBox = anonymousModeDialog.findViewById(R.id.anonymous_show_again_cb);
-                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                        SharedPreferences.Editor editor = preferences.edit();
-                        if (isChecked) {
-                            editor.putBoolean("AnonymousDialog", false);
-                        } else {
-                            editor.putBoolean("AnonymousDialog", true);
-                        }
-                        editor.apply();
-
-                    }
-                });
-                Button enterButton = anonymousModeDialog.findViewById(R.id.anonymous_enter_button);
-                final EditText usernameEt = anonymousModeDialog.findViewById(R.id.anonymous_username_et);
-
-                enterButton.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        if (usernameEt.getText().toString().trim().equals("")) {
-                            Toast.makeText(ChatActivity.this, "Enter username", Toast.LENGTH_SHORT).show();
-                            return false;
-                        }
-                        mUserReference.child("anonymousUsername").setValue(usernameEt.getText().toString().trim());
-                        setAnonymousChat();
-                        anonymousModeDialog.dismiss();
-
-                        return false;
-                    }
-                });
-
-
-                mUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        String username = "newUser";
-
-                        if (dataSnapshot.hasChild("anonymousUsername")) {
-                            username = dataSnapshot.child("anonymousUsername").getValue().toString();
-                            usernameEt.setText(dataSnapshot.child("anonymousUsername").getValue().toString());
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-                boolean setDialog = preferences.getBoolean("AnonymousDialog", true);
-                if (setDialog) {
-                    anonymousModeDialog.show();
-                } else {
-                    setAnonymousChat();
-                }
-
-            }
-        }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void setNormalChat() {
-        isAnonymousEnabled = false;
-        chatView = (RecyclerView) findViewById(R.id.chatList);
-        chatView.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
-        appBarLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
-        chatFrameLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
-        chatLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
-
-        typer.setTextColor(ContextCompat.getColor(this,R.color.black));
-
-
-        adapter = new ChatRVAdapter(messages, databaseReference, forumCategory, this, ForumUtilities.VALUE_NORMAL_FORUM);
-        progressBar = (ProgressBar) findViewById(R.id.activity_chat_progress_circle);
-        progressBar.setVisibility(View.VISIBLE);
-        chatView.setVisibility(View.GONE);
-        databaseReference.child("Chat").addValueEventListener(loadMessagesListener);
-        adapter = new ChatRVAdapter(messages, databaseReference, forumCategory, this, ForumUtilities.VALUE_NORMAL_FORUM);
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setReverseLayout(false);
-        linearLayoutManager.setStackFromEnd(true);
-        chatView.setLayoutManager(linearLayoutManager);
-        chatView.setAdapter(adapter);
-    }
-
-    private void setAnonymousChat() {
-        isAnonymousEnabled = true;
-
-        chatView = (RecyclerView) findViewById(R.id.chatList);
-        chatView.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_theme_surface));
-        appBarLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.title_bar_dark));
-        chatFrameLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_theme_surface));
-        chatLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_theme_chat_layout));
-        typer.setTextColor(ContextCompat.getColor(this,R.color.white));
-
-
-        adapter = new ChatRVAdapter(messages, databaseReference, forumCategory, this, ForumUtilities.VALUE_ANONYMOUS_FORUM);
-        progressBar = (ProgressBar) findViewById(R.id.activity_chat_progress_circle);
-        progressBar.setVisibility(View.VISIBLE);
-        chatView.setVisibility(View.GONE);
-        databaseReference.child("Chat").addValueEventListener(loadMessagesListener);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setReverseLayout(false);
-        linearLayoutManager.setStackFromEnd(true);
-        chatView.setLayoutManager(linearLayoutManager);
-        chatView.setAdapter(adapter);
-
     }
 
 
@@ -1295,15 +1252,18 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
             menu.findItem(R.id.action_edit_forum).setVisible(false);
         } else {
             final String tabuid = getIntent().getStringExtra("tab");
-            if (tabuid.equals("shopPools") || tabuid.equals("otherChats")) {
+            if (tabuid.equals("shopPools") ) {
 
                 menu.findItem(R.id.action_edit_forum).setVisible(false);
             }
             if (tabuid.equals("personalChats")) {
+                anonymousSendBtn.setVisibility(View.GONE);
                 menu.findItem(R.id.action_edit_forum).setVisible(false);
                 menu.findItem(R.id.action_list_people).setVisible(false);
                 Log.d("Menu Setting", getIntent().getStringExtra("name"));
                 setActionBarTitle(getIntent().getStringExtra("name"));
+                toolbar.setTitle(getIntent().getStringExtra("name"));
+
             }
         }
         return super.onPrepareOptionsMenu(menu);

@@ -131,6 +131,8 @@ public class Recents extends Fragment {
         swipeContainer.setColorSchemeResources(R.color.black, R.color.deepPurple500, R.color.colorHighlight);
 
         progressBar.setVisibility(VISIBLE);
+        getActivity().findViewById(R.id.fab_cat_infone).setVisibility(View.GONE);
+
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

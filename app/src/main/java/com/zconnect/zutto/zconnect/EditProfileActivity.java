@@ -126,8 +126,6 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-        ButterKnife.bind(this);
-
         toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);

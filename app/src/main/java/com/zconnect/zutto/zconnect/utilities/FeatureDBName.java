@@ -4,6 +4,7 @@ public class FeatureDBName {
 //    public static final String KEY_FORUMS = "forums";
 //    public static final String KEY_INFONE = "infone";
     public static final String KEY_STOREROOM = "storeroom";
+    public static final String KEY_LINKS = "links";
     public static final String KEY_CABPOOL = "cabPool";
     public static final String KEY_INTERNSHIPS = "internships";
     public static final String KEY_EVENTS = "events";

@@ -127,8 +127,7 @@ public class AdminHome extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_admin_home, menu);
-        return true;
+        return false;
     }
 
     @Override
@@ -136,16 +135,7 @@ public class AdminHome extends BaseActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        switch(id) {
-            //noinspection SimplifiableIfStatement
-            case R.id.action_notifications:
-//                Intent intent=new Intent(getApplicationContext(),NotificationAdmin.class);
-//                startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        return false;
     }
 
 
@@ -185,7 +175,7 @@ public class AdminHome extends BaseActivity {
 
 
         //for admin functionalities
-        private TextView adminFuncTV0, adminFuncTV1,adminFuncTV2;
+        private TextView adminFuncTV0, adminFuncTV1,adminFuncTV2,adminFuncTV3;
         public PlaceholderFragment() {
         }
 
@@ -231,6 +221,7 @@ public class AdminHome extends BaseActivity {
             adminFuncTV0 = rootView.findViewById(R.id.admin_func_0);
             adminFuncTV1 = rootView.findViewById(R.id.admin_func_1);
             adminFuncTV2 = rootView.findViewById(R.id.admin_func_2);
+            adminFuncTV3 = rootView.findViewById(R.id.admin_func_3);
             View.OnClickListener listener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -245,6 +236,10 @@ public class AdminHome extends BaseActivity {
                             break;
                         case 2:
                             startActivity(new Intent(getContext(),MakeAdmin.class));
+                            break;
+                        case 3:
+                            startActivity(new Intent(getContext(),NotificationImage.class));
+                            break;
                         default:
                             break;
                     }
@@ -254,6 +249,7 @@ public class AdminHome extends BaseActivity {
             adminFuncTV0.setOnClickListener(listener);
             adminFuncTV1.setOnClickListener(listener);
             adminFuncTV2.setOnClickListener(listener);
+            adminFuncTV3.setOnClickListener(listener);
 
             return rootView;
         }

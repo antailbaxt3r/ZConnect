@@ -72,11 +72,11 @@ public class JoinedForums extends Fragment {
     private Map<String,Integer> allForumsSeenMessages = new HashMap();
 
     private FirebaseAuth mAuth;
-    private ProgressBar progressBar;
+//    private ProgressBar progressBar;
 
     //New Forums
     private DatabaseReference userForumsRef;
-    private ValueEventListener forumEventListener;
+//    private ValueEventListener forumEventListener;.
 
     //Share Forums
     boolean isShare =false;
@@ -199,6 +199,7 @@ public class JoinedForums extends Fragment {
                             }
                         }
                         else {
+                            if(shot2.child("forumType").getValue()==null)
                             temp.setForumType(ForumTypeUtilities.KEY_JOINED_STR);
                         }
                         if(name!=null){
@@ -296,41 +297,45 @@ public class JoinedForums extends Fragment {
 //                joinedForumsRV.setLayoutManager(linearLayoutManager);
 //                joinedForumsRV.setAdapter(adapter);
 //                adapter.notifyDataSetChanged();
-                if(adapter == null ) {
+//                if(adapter == null ) {
                     Log.d("TryHere","Setting Adapter");
                     adapter = new JoinedForumsAdapter(forumCategoriesItemFormats, getActivity());
                     joinedForumsRV.setLayoutManager(linearLayoutManager);
                     joinedForumsRV.setAdapter(adapter);
+                    if(joinedForumsRV != null && recyclerViewState != null) {
+                        joinedForumsRV.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+                    }
 
-                }
-                else{
-//                    adapter.updateArrayListItems(new ArrayList<>(forumCategoriesItemFormats));
+//                }
+//                else{
                     adapter.notifyDataSetChanged();
 
-                }
+//                }
+                try {
+                    if (!isUnread) {
+                        if (activityType == null) {
+                            TabLayout tabs = getActivity().findViewById(R.id.navigation);
+                            tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
+                        }
+                    } else {
+                        if (activityType == null) {
 
-                if(!isUnread){
-                    if(activityType == null) {
-                        TabLayout tabs = getActivity().findViewById(R.id.navigation);
-                        tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
+                            TabLayout tabs = getActivity().findViewById(R.id.navigation);
+                            tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
+                            isUnread = false;
+                        }
                     }
                 }
-                else {
-                    if (activityType == null) {
-
-                        TabLayout tabs = getActivity().findViewById(R.id.navigation);
-                        tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
-                        isUnread = false;
-                    }
+                catch (Exception e){
+                    Log.d("JoinedForumDot",e.toString());
                 }
-
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
 
                         shimmerFrameLayout.stopShimmerAnimation();
-                        shimmerFrameLayout.setVisibility(View.INVISIBLE);
+                        shimmerFrameLayout.setVisibility(View.GONE);
                         joinedForumsRV.setVisibility(View.VISIBLE);
 
                     }
@@ -361,12 +366,11 @@ public class JoinedForums extends Fragment {
 
                 adapter = new JoinedForumsAdapter(searchForumCategoriesItemFormats,getContext());
                 joinedForumsRV.setAdapter(adapter);
-                progressBar.setVisibility(View.GONE);
+//                progressBar.setVisibility(View.GONE);
                 joinedForumsRV.setVisibility(View.VISIBLE);
             }else {
                 adapter = new JoinedForumsAdapter(forumCategoriesItemFormats,getContext());
                 joinedForumsRV.setAdapter(adapter);
-                progressBar.setVisibility(View.GONE);
                 joinedForumsRV.setVisibility(View.VISIBLE);
             }
 
@@ -385,6 +389,7 @@ public class JoinedForums extends Fragment {
         MenuItem item = menu.findItem(R.id.action_search);
 
         SearchView searchView = new SearchView(((BaseActivity)getActivity()).getSupportActionBar().getThemedContext());
+        searchView.setVisibility(View.VISIBLE);
         MenuItemCompat.setShowAsAction(item,MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
         MenuItemCompat.setActionView(item,searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

@@ -171,6 +171,9 @@ public class CounterUtilities {
 
     public static final String KEY_NOTICES_DELETE_NOTICE = "deleteNotice";
 
+    //Links
+    public static final String KEY_LINKS_OPEN = "linksOpen";
+
 
     //Shops
     public static final String KEY_SHOPS_OPEN = "shopsOpen";

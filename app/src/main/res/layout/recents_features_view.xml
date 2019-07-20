@@ -446,6 +446,64 @@
                             android:textSize="10sp"/>
                     </RelativeLayout>
                 </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <RelativeLayout
+                        android:id="@+id/links_recents_features_view"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="15dp">
+                        <FrameLayout
+                            android:id="@+id/links_recents_features_view_fl"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:duplicateParentState="true"
+                            android:layout_centerHorizontal="true">
+                            <ImageView
+                                android:duplicateParentState="true"
+                                android:id="@+id/links_circle_recents_feature_item"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:src="@drawable/ic_outline_store_36"
+                                android:tint="@color/deepPurple500" />
+                            <FrameLayout
+                                android:id="@+id/links_unread_count_fl_recents_feature_item"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:layout_gravity="end"
+                                android:visibility="gone">
+                                <com.facebook.drawee.view.SimpleDraweeView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/avatar_circle_24dp"
+                                    android:backgroundTint="@color/colorHighlight"
+                                    android:layout_gravity="center"/>
+                                <TextView
+                                    android:id="@+id/links_unread_count_text_recents_feature_item"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="8sp"
+                                    android:textColor="@color/white"
+                                    android:layout_gravity="center"/>
+                            </FrameLayout>
+                        </FrameLayout>
+                        <TextView
+                            android:id="@+id/links_text_recents_feature_item"
+                            android:duplicateParentState="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Links"
+                            android:layout_below="@+id/links_recents_features_view_fl"
+                            android:layout_centerHorizontal="true"
+                            android:textColor="@color/black"
+                            android:layout_marginTop="5dp"
+                            android:textSize="10sp"/>
+                    </RelativeLayout>
+                </LinearLayout>
                 <!--<LinearLayout-->
                     <!--android:layout_width="wrap_content"-->
                     <!--android:layout_height="wrap_content"-->
