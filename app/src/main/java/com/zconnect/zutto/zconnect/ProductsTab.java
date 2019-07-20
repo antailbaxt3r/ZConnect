@@ -3,19 +3,24 @@ package com.zconnect.zutto.zconnect;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -105,27 +110,37 @@ public class ProductsTab extends Fragment {
 
                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                 counterPush.pushValues();
+                Context context;
+                Dialog addAskDialog = new Dialog(getContext());
+                addAskDialog.setContentView(R.layout.new_dialog_box);
+                addAskDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                addAskDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(getContext(),R.drawable.ic_outline_store_24px));
+                TextView heading =  addAskDialog.findViewById(R.id.dialog_box_heading);
+                heading.setText("Add/Ask");
+                TextView body = addAskDialog.findViewById(R.id.dialog_box_body);
+                body.setText("Do you want to add a product or ask for a product?");
+                Button addButton = addAskDialog.findViewById(R.id.dialog_box_positive_button);
+                addButton.setText("Add");
+                addButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), AddProduct.class);
+                        intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
+                        getContext().startActivity(intent);
+                    }
+                });
+                Button askButton = addAskDialog.findViewById(R.id.dialog_box_negative_button);
+                askButton.setText("Ask");
+                askButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), AddProduct.class);
+                        intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
+                        getContext().startActivity(intent);
+                    }
+                });
 
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
-                alertBuilder.setTitle("Add/Ask")
-                        .setMessage("Do you want to add a product or ask for a product?")
-                        .setPositiveButton("Ask", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(getContext(), AddProduct.class);
-                                intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
-                                getContext().startActivity(intent);
-                            }
-                        })
-                        .setNegativeButton("Add", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(getContext(), AddProduct.class);
-                                intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
-                                getContext().startActivity(intent);
-                            }
-                        })
-                        .show();
+              addAskDialog.show();
 
             }
         });
@@ -222,7 +237,7 @@ public class ProductsTab extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mDatabase.addValueEventListener(mListener);
+        mDatabase.addListenerForSingleValueEvent(mListener);
     }
 
     @Override

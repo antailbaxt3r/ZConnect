@@ -4,15 +4,18 @@
 
     <item android:id="@+id/search"
         android:title="@string/search_title"
-        android:icon="@drawable/ic_search_white_24dp"
-        app:showAsAction="collapseActionView|ifRoom"
+        android:icon="@drawable/ic_search_black_24dp"
+        app:showAsAction="collapseActionView|always"
+        android:orderInCategory="0"
+        android:iconTint="@color/black"
         app:actionViewClass="android.support.v7.widget.SearchView" />
 
     <item
+        android:iconTint="@color/black"
         android:id="@+id/action_filter_products"
         android:icon="@drawable/ic_filter_list_black_24dp"
         android:title="Filter"
-        android:orderInCategory="0"
+        android:orderInCategory="1"
         app:showAsAction="always"/>
     <item
         android:title="My Products"
