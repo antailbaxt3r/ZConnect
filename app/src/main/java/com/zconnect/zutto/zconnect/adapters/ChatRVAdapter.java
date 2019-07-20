@@ -2,12 +2,14 @@ package com.zconnect.zutto.zconnect.adapters;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -23,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -819,10 +822,37 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             }
                         };
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-//                        TODO internet connectivity check required for delete message
-                        builder.setMessage("Delete message?").setPositiveButton("Yes", dialogClickListener)
-                                .setNegativeButton("No", dialogClickListener).show();
+                        Dialog deletePostDialog = new Dialog(context);
+                        deletePostDialog.setContentView(R.layout.new_dialog_box);
+                        deletePostDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        deletePostDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(context,R.drawable.ic_message_white_24dp));
+                        TextView heading =  deletePostDialog.findViewById(R.id.dialog_box_heading);
+                        heading.setText("Confirm");
+                        TextView body = deletePostDialog.findViewById(R.id.dialog_box_body);
+                        body.setText("Are you sure you want to delete this message?");
+                        Button positiveButton = deletePostDialog.findViewById(R.id.dialog_box_positive_button);
+                        positiveButton.setText("CONFIRM");
+                        positiveButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                        databaseref.child("deletedChat").push().setValue(delMessage);
+                                        deleteFromDatabase(delMessage);
+                                deletePostDialog.dismiss();
+
+
+
+                            }
+                        });
+                        Button negativeButton = deletePostDialog.findViewById(R.id.dialog_box_negative_button);
+                        negativeButton.setText("CANCEL");
+                        negativeButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                deletePostDialog.dismiss();
+                            }
+                        });
+                        deletePostDialog.show();
+
                     }
 
                     return true;

@@ -6,6 +6,16 @@ public class NewRequestItemFormat {
     private Long PostTimeMillis;
     private PostedByDetails PostedBy;
 
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    private String link;
+
     public NewRequestItemFormat()
     {
 

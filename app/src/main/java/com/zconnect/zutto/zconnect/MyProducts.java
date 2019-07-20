@@ -1,10 +1,13 @@
 package com.zconnect.zutto.zconnect;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -206,45 +209,57 @@ public class MyProducts extends BaseActivity {
                 @Override
                 public void onClick(View v) {
 
-                    final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(itemView.getContext());
-                    builder.setMessage("Are you sure you want to delete " + productName)
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    Dialog removeProductDialog = new Dialog(itemView.getContext());
+                    removeProductDialog.setContentView(R.layout.new_dialog_box);
+                    removeProductDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    removeProductDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(itemView.getContext(),R.drawable.ic_message_white_24dp));
+                    TextView heading =  removeProductDialog.findViewById(R.id.dialog_box_heading);
+                    heading.setText("Delete product");
+                    TextView body = removeProductDialog.findViewById(R.id.dialog_box_body);
+                    body.setText("Are you sure you want to delete?");
+                    Button positiveButton = removeProductDialog.findViewById(R.id.dialog_box_positive_button);
+                    positiveButton.setText("Confirm");
+                    positiveButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            flag=false;
+                            ReserveReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
-                                public void onClick(DialogInterface dialog, int which) {
+                                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                    flag=false;
-                                    ReserveReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if(!flag) {
+                                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("archiveProducts").child(product_key).setValue(dataSnapshot.getValue());
+                                        flag= true;
+                                        ReserveReference.removeValue();
+                                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(product_key).removeValue();
+                                    }
 
-                                            if(!flag) {
-                                                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("archiveProducts").child(product_key).setValue(dataSnapshot.getValue());
-                                                flag= true;
-                                                ReserveReference.removeValue();
-                                                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(product_key).removeValue();
-                                            }
-
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-
-                                        }
-                                    });
                                 }
-                            })
-                            .setNegativeButton("Skip", new DialogInterface.OnClickListener() {
+
                                 @Override
-                                public void onClick(DialogInterface dialog, int which) {
+                                public void onCancelled(DatabaseError databaseError) {
 
                                 }
                             });
 
-                    final android.app.AlertDialog dialog = builder.create();
+                            removeProductDialog.dismiss();
 
-                    dialog.setCancelable(false);
-                    dialog.show();
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(itemView.getContext().getResources().getColor(R.color.colorHighlight));
+                        }
+                    });
+                    Button negativeButton = removeProductDialog.findViewById(R.id.dialog_box_negative_button);
+                    negativeButton.setText("Skip");
+                    negativeButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            removeProductDialog.dismiss();
+                        }
+                    });
+
+                    removeProductDialog.show();
+
+
+
+
 
                 }
             });

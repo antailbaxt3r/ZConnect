@@ -172,7 +172,6 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                 StoreRoom.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(final DataSnapshot dataSnapshot) {
-                        if (flag) {
 
                             if (dataSnapshot.child(key).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
                                 StoreRoom.child(key).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
@@ -221,7 +220,7 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                                 productShortList.setImageResource(R.drawable.ic_bookmark_border_white_24dp);
                             }
                         }
-                    }
+
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {

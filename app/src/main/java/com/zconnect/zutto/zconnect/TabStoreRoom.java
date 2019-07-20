@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,6 +31,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -219,26 +222,37 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                 counterPush.pushValues();
 
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(TabStoreRoom.this);
-                alertBuilder.setTitle("Add/Ask")
-                        .setMessage("Do you want to add a product or ask for a product?")
-                        .setPositiveButton("Ask", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(TabStoreRoom.this, AddProduct.class);
-                                intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
-                                startActivity(intent);
-                            }
-                        })
-                        .setNegativeButton("Add", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(TabStoreRoom.this, AddProduct.class);
-                                intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
-                                startActivity(intent);
-                            }
-                        })
-                        .show();
+                Dialog addAskDialog = new Dialog(TabStoreRoom.this);
+                addAskDialog.setContentView(R.layout.new_dialog_box);
+                addAskDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                addAskDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(TabStoreRoom.this,R.drawable.ic_outline_store_36));
+                TextView heading =  addAskDialog.findViewById(R.id.dialog_box_heading);
+                heading.setText("Add/Ask");
+                TextView body = addAskDialog.findViewById(R.id.dialog_box_body);
+                body.setText("Do you want to add a product or ask for a product?");
+                Button addButton = addAskDialog.findViewById(R.id.dialog_box_positive_button);
+                addButton.setText("Add");
+                addButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(TabStoreRoom.this, AddProduct.class);
+                        intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
+                        startActivity(intent);
+                    }
+                });
+                Button askButton = addAskDialog.findViewById(R.id.dialog_box_negative_button);
+                askButton.setText("Ask");
+                askButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(TabStoreRoom.this, AddProduct.class);
+                        intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
+                        startActivity(intent);
+                    }
+                });
+
+                addAskDialog.show();
+
 
             }
         });

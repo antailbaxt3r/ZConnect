@@ -1,0 +1,74 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="30dp"
+    android:background="@drawable/round_button_primary"
+    android:backgroundTint="@color/white"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+
+
+    <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/dialog_box_image_sdv"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:backgroundTint="@color/deepPurple500"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/ic_outline_store_36"
+        fresco:actualImageScaleType="centerCrop"
+        fresco:roundAsCircle="true" />
+
+    <TextView
+        android:layout_marginTop="@dimen/padding_10"
+        android:id="@+id/dialog_box_heading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Main heading"
+        android:textSize="21sp"
+        android:gravity="center"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/deepPurple500"/>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Secondary Details text"
+        android:textSize="14sp"
+        android:id="@+id/dialog_box_body"
+        android:gravity="center"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/primaryText"/>
+
+    <LinearLayout
+        android:layout_marginTop="@dimen/padding_10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:background="@drawable/round_button_primary"
+            android:layout_marginHorizontal="5dp"
+            android:textColor="@color/white"
+            android:padding="@dimen/margin_small8dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/dialog_box_positive_button"
+            android:text="Option 1"
+            android:layout_alignParentStart="true" />
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/dialog_box_negative_button"
+            android:textColor="@color/deepPurple500"
+            style="@style/Widget.AppCompat.Button.Borderless"            android:layout_alignParentEnd="true"
+            android:text="Option 2" />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
+

@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect.adapters;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,9 +11,11 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -29,6 +32,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
@@ -1378,40 +1382,45 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Dialog deletePostDialog = new Dialog(context);
+                    deletePostDialog.setContentView(R.layout.new_dialog_box);
+                    deletePostDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    deletePostDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(context,R.drawable.ic_message_white_24dp));
+                    TextView heading =  deletePostDialog.findViewById(R.id.dialog_box_heading);
+                    heading.setText("Confirm");
+                    TextView body = deletePostDialog.findViewById(R.id.dialog_box_body);
+                    body.setText("Please confirm to delete this post!");
+                    Button positiveButton = deletePostDialog.findViewById(R.id.dialog_box_positive_button);
+                    positiveButton.setText("CONFIRM");
+                    positiveButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                            HashMap<String, String> meta = new HashMap<>();
+                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                            counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_DELETE_POST);
+                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                            counterItemFormat.setMeta(meta);
+                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                            counterPush.pushValues();
 
-                    final android.app.AlertDialog.Builder builder2 = new android.app.AlertDialog.Builder(context);
-                    builder2.setMessage("Please confirm to delete this post!")
-                            .setCancelable(false)
-                            .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
+                            FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(postID).removeValue();
+                            recentsItemFormats.remove(getAdapterPosition());
+                            notifyDataSetChanged();
+                            deletePostDialog.dismiss();
 
-                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                    HashMap<String, String> meta = new HashMap<>();
-                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_DELETE_POST);
-                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
-                                    counterItemFormat.setMeta(meta);
-                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                                    counterPush.pushValues();
-
-                                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(postID).removeValue();
-                                    recentsItemFormats.remove(getAdapterPosition());
-                                    notifyDataSetChanged();
-
-                                }
+                        }
+                    });
+                    Button negativeButton = deletePostDialog.findViewById(R.id.dialog_box_negative_button);
+                    negativeButton.setText("CANCEL");
+                    negativeButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            deletePostDialog.dismiss();
+                        }
+                    });
 
 
-                            })
-                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
-                            });
-
-                    final android.app.AlertDialog dialog2 = builder2.create();
-                    dialog2.setCancelable(false);
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
@@ -1421,8 +1430,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
                                 case 0:
-                                    dialog2.show();
-                                    dialog2.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.colorHighlight));
+                                    deletePostDialog.show();
                             }
                         }
                     });
