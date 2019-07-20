@@ -1106,7 +1106,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             FirebaseDatabase.getInstance().getReference().child("minimumClientVersion").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.getValue(Integer.class)>BuildConfig.VERSION_CODE){
+                    if(dataSnapshot.child("global").getValue(Integer.class)>BuildConfig.VERSION_CODE){
                         Intent intent = new Intent(HomeActivity.this, UpdateAppActivity.class);
                         startActivity(intent);
                         finish();
