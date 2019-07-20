@@ -188,7 +188,7 @@ public class TrendingEvents extends Fragment {
     public void onStart() {
         super.onStart();
 
-        queryRef.addValueEventListener(mListener);
+        queryRef.addListenerForSingleValueEvent(mListener);
 
 //        final FirebaseRecyclerAdapter<Event, EventViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Event, TrendingEvents.EventViewHolder>(
 //                Event.class,

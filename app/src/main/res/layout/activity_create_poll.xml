@@ -27,8 +27,7 @@
         android:layout_below="@id/appbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scrollView_poll"
-        >
+        android:id="@+id/scrollView_poll">
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
@@ -55,13 +54,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
-                    android:textSize="25sp"
+                    android:textSize="16sp"
                     android:hint="Write you question here..."
                     android:id="@+id/poll_add_question"/>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:layout_marginBottom="10dp"
                     android:background="@color/horizontalLine"/>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -79,7 +79,7 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="25sp"
+                        android:textSize="16sp"
                         android:hint="Option A"
                         android:id="@+id/poll_add_optionA"/>
                     <TextView
@@ -92,7 +92,7 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="25sp"
+                        android:textSize="16sp"
                         android:hint="Option B"
                         android:id="@+id/poll_add_optionB"/>
                     <TextView
@@ -105,7 +105,7 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="25sp"
+                        android:textSize="16sp"
                         android:hint="Option C"
                         android:id="@+id/poll_add_optionC"/>
                 </LinearLayout>

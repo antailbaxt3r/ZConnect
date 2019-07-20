@@ -58,9 +58,11 @@ public class NewRequestRVAdapter extends RecyclerView.Adapter<newRequestViewHold
             holder.newRequestName.setText("Requested Location name: "+newRequestItemFormats.get(position).getName());
         else if(newRequestItemFormats.get(position).getType().equals(RequestTypeUtilities.TYPE_FORUM_TAB))
             holder.newRequestName.setText("Requested ForumTab name: "+newRequestItemFormats.get(position).getName());
+        else if(newRequestItemFormats.get(position).getType().equals(RequestTypeUtilities.TYPE_LINKS))
+            holder.newRequestName.setText("Requested Links name: "+newRequestItemFormats.get(position).getName());
+        holder.postedByNameInLocation.setText(newRequestItemFormats.get(position).getPostedBy().getUsername());
 
         holder.postedByImageLocation.setImageURI(newRequestItemFormats.get(position).getPostedBy().getImageThumb());
-        holder.postedByNameInLocation.setText(newRequestItemFormats.get(position).getPostedBy().getUsername());
 
         if (newRequestItemFormats.get(position).getType().equals(RequestTypeUtilities.TYPE_CABPOOL_LOCATION)) {
             Log.d(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(), "onBindViewHolder: ");
@@ -103,6 +105,27 @@ public class NewRequestRVAdapter extends RecyclerView.Adapter<newRequestViewHold
 
                 }
             });
+        }
+        else if(newRequestItemFormats.get(position).getType().equals(RequestTypeUtilities.TYPE_LINKS)){
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot childsnap: dataSnapshot.getChildren()){
+                        if(childsnap.getKey().equals(FirebaseAuth.getInstance().getUid())){
+                            userItemFormat.setUserUID(FirebaseAuth.getInstance().getUid());
+                            userItemFormat.setUsername((String) childsnap.child("username").getValue());
+                            userItemFormat.setImageURL((String) childsnap.child("imageURL").getValue());
+                        }
+                    }
+                    holder.setAcceptDeclineButtonForLinks(newRequestItemFormats.get(position).getKey(), newRequestItemFormats.get(position).getPostedBy().getUID(),userItemFormat);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
         }
     }
 

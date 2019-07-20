@@ -154,7 +154,7 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
         mListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                flag = true;
+//                flag = true;
 
                 CounterItemFormat counterItemFormat = new CounterItemFormat();
                 HashMap<String, String> meta= new HashMap<>();
@@ -172,7 +172,6 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                 StoreRoom.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(final DataSnapshot dataSnapshot) {
-                        if (flag) {
 
                             if (dataSnapshot.child(key).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
                                 StoreRoom.child(key).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
@@ -196,13 +195,14 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                                         userDetails.setName(userItemFormat.getUsername());
                                         userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                                         userDetails.setUserUID(userItemFormat.getUserUID());
+
                                         StoreRoom.child(key).child("UsersReserved").child(userItemFormat.getUserUID()).setValue(userDetails);
 
                                         NotificationSender notificationSender = new NotificationSender(itemView.getContext(),userItemFormat.getUserUID());
                                         NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST,userItemFormat.getUserUID(), (String) dataSnapshot.child("PostedBy").child("UID").getValue(),1);
                                         productShortlistNotification.setCommunityName(communityTitle);
                                         productShortlistNotification.setItemKey(key);
-                                        productShortlistNotification.setItemName(dataSnapshot.child(key).child("ProductName").getValue().toString());
+                                        productShortlistNotification.setItemName(productName);
                                         productShortlistNotification.setUserName(userItemFormat.getUsername());
                                         productShortlistNotification.setUserMobileNumber(userItemFormat.getMobileNumber());
                                         productShortlistNotification.setUserImage(userItemFormat.getImageURLThumbnail());
@@ -220,7 +220,7 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                                 productShortList.setImageResource(R.drawable.ic_bookmark_border_white_24dp);
                             }
                         }
-                    }
+
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
@@ -246,11 +246,13 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                 productShortList.setOnClickListener(null);
                 if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
                     productShortList.setImageResource(R.drawable.ic_bookmark_white_24dp);
+                    flag = true;
 //                    productShortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
 //                    productShortList.setText("ShortlistedPeopleList");
 //                    Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
 //                    productShortList.setTypeface(customfont);
                 } else {
+                    flag = false;
                     productShortList.setImageResource(R.drawable.ic_bookmark_border_white_24dp);
 //                    productShortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton_sr));
 //                    productShortList.setText("Shortlist");

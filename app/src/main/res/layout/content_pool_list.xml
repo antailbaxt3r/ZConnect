@@ -16,7 +16,7 @@
         android:layout_margin="10dp"
         android:gravity="center"
         android:text="No pools.Add one for yourself!"
-        android:textSize="25sp" />
+        android:textSize="21sp" />
 
     <ProgressBar
         android:id="@+id/content_pool_progress"

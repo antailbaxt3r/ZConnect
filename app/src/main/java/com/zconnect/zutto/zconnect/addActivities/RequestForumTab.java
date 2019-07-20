@@ -36,6 +36,7 @@ public class RequestForumTab extends BaseActivity {
         setContentView(R.layout.activity_request_forum_tab);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
 
         if (toolbar != null) {
