@@ -57,6 +57,7 @@ import com.zconnect.zutto.zconnect.CabPoolListOfPeople;
 import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.HomeActivity;
 import com.zconnect.zutto.zconnect.InfoneProfileActivity;
+import com.zconnect.zutto.zconnect.Internships;
 import com.zconnect.zutto.zconnect.LeaderBoard;
 import com.zconnect.zutto.zconnect.Links;
 import com.zconnect.zutto.zconnect.LoginActivity;
@@ -1124,8 +1125,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         ImageButton deleteButton;
 
 
-        LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails, noticesRecentItem,youtubeLink,pollLinearLayout,
-                pollAYes, pollANo, pollBYes, pollBNo, pollCYes, pollCNo, pollAResult, pollBResult, pollCResult;
+        LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails, noticesRecentItem,pollLinearLayout,
+                pollAYes, pollANo, pollBYes, pollBNo, pollCYes, pollCNo, pollAResult, pollBResult, pollCResult, youtubeLink;
 
         FrameLayout layoutFeatureIcon, bannerLinkLayout, optionALayout, optionBLayout, optionCLayout;
         //
@@ -2042,9 +2043,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         HorizontalScrollView hsv;
         LinearLayout linearLayout;
-        RelativeLayout notices, events, cabpool, storeroom, shops, admin, links;
-        FrameLayout unreadCountLinksFL,unreadCountStoreroomFL, unreadCountEventsFL, unreadCountShopsFL, unreadCountCabpoolFL, unreadCountAdminPanelFL, unreadCountNoticesFL;
-        TextView unreadCountLinksTV,unreadCountStoreroomTV, unreadCountEventsTV, unreadCountShopsTV, unreadCountCabpoolTV, unreadCountAdminPanelTV, unreadCountNoticesTV;
+        RelativeLayout notices, events, cabpool, storeroom, shops, admin,internships, links;
+        FrameLayout unreadCountStoreroomFL, unreadCountEventsFL, unreadCountShopsFL, unreadCountCabpoolFL, unreadCountAdminPanelFL, unreadCountNoticesFL,unreadCountInternshipsFL, unreadCountLinksFL;
+        TextView unreadCountStoreroomTV, unreadCountEventsTV, unreadCountShopsTV, unreadCountCabpoolTV, unreadCountAdminPanelTV, unreadCountNoticesTV,unreadCountInternshipsTV, unreadCountLinksTV;
         Query mOtherFeatures;
 
         //for other features
@@ -2063,6 +2064,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             notices = itemView.findViewById(R.id.notices_recents_features_view);
             storeroom = (RelativeLayout) itemView.findViewById(R.id.storeroom_recents_features_view);
             cabpool = (RelativeLayout) itemView.findViewById(R.id.cabpool_recents_features_view);
+            internships = itemView.findViewById(R.id.internships_recents_features_view);
             admin = (RelativeLayout) itemView.findViewById(R.id.admin_recents_features_view);
             shops = (RelativeLayout) itemView.findViewById(R.id.shops_recents_features_view);
             links = (RelativeLayout) itemView.findViewById(R.id.links_recents_features_view);
@@ -2081,6 +2083,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             unreadCountCabpoolFL = (FrameLayout) itemView.findViewById(R.id.cabpool_unread_count_fl_recents_feature_item);
             unreadCountCabpoolTV = (TextView) itemView.findViewById(R.id.cabpool_unread_count_text_recents_feature_item);
+
+            unreadCountInternshipsFL = (FrameLayout) itemView.findViewById(R.id.internships_unread_count_fl_recents_feature_item);
+            unreadCountInternshipsTV = (TextView) itemView.findViewById(R.id.internships_unread_count_text_recents_feature_item);
 
             unreadCountAdminPanelFL = (FrameLayout) itemView.findViewById(R.id.admin_unread_count_fl_recents_feature_item);
             unreadCountAdminPanelTV = (TextView) itemView.findViewById(R.id.admin_unread_count_text_recents_feature_item);
@@ -2378,6 +2383,30 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }
                     });
 
+                    internships.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
+                                resetFeaturesUnreadCount(FeatureDBName.KEY_INTERNSHIPS, dataSnapshot);
+                                Intent intent = new Intent(context, Internships.class);
+                                context.startActivity(intent);
+                                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                HashMap<String, String> meta = new HashMap<>();
+
+                                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                counterItemFormat.setUniqueID(CounterUtilities.KEY_INTERNSHIPS_OPEN);
+                                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                counterItemFormat.setMeta(meta);
+
+                                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                counterPush.pushValues();
+                            } else {
+                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Internships", context);
+                            }
+
+                        }
+                    });
+
                     notices.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -2530,6 +2559,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     cabpool.setVisibility(View.VISIBLE);
                 } else {
                     cabpool.setVisibility(View.GONE);
+                }
+
+                if (communityFeatures.getInternships().equals("true")) {
+                    internships.setVisibility(View.VISIBLE);
+                } else {
+                    internships.setVisibility(View.GONE);
                 }
 
 
