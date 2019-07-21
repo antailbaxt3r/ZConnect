@@ -64,12 +64,11 @@ public class InternshipsRVAdapter extends RecyclerView.Adapter<InternshipsRVAdap
             });
         } catch (Exception e){ }
 
-        holder.description.setText("Description : "+internshipsList.get(position).getDescription());
-        holder.duration.setText("Duration : "+internshipsList.get(position).getDuration());
-        holder.question.setText("Question : "+internshipsList.get(position).getQuestion());
-        holder.role.setText("Role : "+internshipsList.get(position).getRole());
-        holder.organisaton.setText("Organization : "+internshipsList.get(position).getOrganization());
-        holder.stipend.setText("Stipend : "+internshipsList.get(position).getStipend().toString());
+        holder.description.setText(internshipsList.get(position).getDescription());
+        holder.duration.setText(internshipsList.get(position).getDuration());
+        holder.role.setText(internshipsList.get(position).getRole());
+        holder.organisaton.setText(internshipsList.get(position).getOrganization());
+        holder.stipend.setText("₹" + internshipsList.get(position).getStipend().toString());
         holder.pos = position;
     }
 
@@ -79,7 +78,7 @@ public class InternshipsRVAdapter extends RecyclerView.Adapter<InternshipsRVAdap
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView description,duration,question,role,stipend,organisaton;
+        TextView description,duration,role,stipend,organisaton;
         int pos;
         Button apply;
 
@@ -88,7 +87,6 @@ public class InternshipsRVAdapter extends RecyclerView.Adapter<InternshipsRVAdap
 
             description = itemView.findViewById(R.id.internships_description);
             duration = itemView.findViewById(R.id.internships_duration);
-            question = itemView.findViewById(R.id.internships_question);
             role = itemView.findViewById(R.id.internships_role);
             stipend = itemView.findViewById(R.id.internships_stipend);
             organisaton = itemView.findViewById(R.id.internships_organisation);

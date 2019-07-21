@@ -15,15 +15,17 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_10">
 
-            <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+            <com.facebook.drawee.view.SimpleDraweeView
+                xmlns:fresco="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/admin_image"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:layout_weight="0.75"
-                fresco:actualImageScaleType="centerCrop"
+                android:layout_width="100dp"
+                android:layout_gravity="center"
+                android:layout_height="100dp"
+                fresco:actualImageScaleType="none"
                 fresco:roundAsCircle="true"/>
 
 
@@ -32,20 +34,20 @@
                 android:id="@+id/admin_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.10"
-                android:paddingLeft="5dp"
                 android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:textAlignment="center"
                 android:textColor="@color/primaryText"
                 android:textStyle="bold"
                 tools:text="Product Name" />
             <Button
-                android:layout_height="wrap_content"
+                android:layout_height="25dp"
                 android:layout_width="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="CHAT"
                 android:id="@+id/admin_chat_button"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/deepPurple500"
+                android:background="@drawable/rounded_corner_purple_border"
                 style="@style/Widget.AppCompat.Button.Borderless"/>
 
 

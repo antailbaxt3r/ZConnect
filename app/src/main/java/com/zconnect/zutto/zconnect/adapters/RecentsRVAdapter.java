@@ -13,6 +13,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
@@ -132,6 +133,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     LinearLayoutManager linearLayoutManager;
     RecyclerView recyclerView;
     String videoId;
+    private ImageButton leftArrow, rightArrow;
     private Long count;
     private boolean hasNotSelected = false;
 
@@ -301,6 +303,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.noticesRecentItem.setVisibility(View.GONE);
                     holder.bannerRecentItem.setVisibility(View.VISIBLE);
                     holder.youtubeLink.setVisibility(View.GONE);
+                    holder.pollLinearLayout.setVisibility(View.GONE);
 
                     Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.bannerImage);
 //                    holder.bannerImage.setImageURI(recentsItemFormats.get(position).getImageurl());
@@ -362,6 +365,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
                     holder.youtubeLink.setVisibility(View.GONE);
+                    holder.pollLinearLayout.setVisibility(View.GONE);
 
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_people_white_24dp));
@@ -415,6 +419,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
                     holder.youtubeLink.setVisibility(View.GONE);
+                    holder.pollLinearLayout.setVisibility(View.GONE);
 
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_event_white_24dp));
@@ -581,9 +586,11 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.pollOptionA.setText(recentsItemFormats.get(position).getOptions().getOptionA());
                     holder.pollOptionB.setText(recentsItemFormats.get(position).getOptions().getOptionB());
                     holder.pollOptionC.setText(recentsItemFormats.get(position).getOptions().getOptionC());
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_outline_poll_24px));
 
                     DatabaseReference databaseReferenceGetOptionSelected = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/" + recentsItemFormats.get(position).getKey());
-                    //Start a Progress Bar
+
                     databaseReferenceGetOptionSelected.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -610,7 +617,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                         }
                     });
-                    //End the Progress Bar
                 }
                 else if (recentsItemFormats.get(position).getFeature().equals("StoreRoom"))
                 {
@@ -626,6 +632,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
                     holder.youtubeLink.setVisibility(View.GONE);
+                    holder.pollLinearLayout.setVisibility(View.GONE);
 
 //            Drawable[] layers = new Drawable[2];
 //            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
@@ -810,6 +817,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
                     holder.youtubeLink.setVisibility(View.GONE);
+                    holder.pollLinearLayout.setVisibility(View.GONE);
 
                     holder.postConjunction.setText(" started a ");
                     holder.post.setText(recentsItemFormats.get(position).getFeature());
@@ -982,6 +990,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
                     holder.youtubeLink.setVisibility(View.GONE);
+                    holder.pollLinearLayout.setVisibility(View.GONE);
 
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_store_white_24dp));
@@ -1003,6 +1012,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.messagesRecentItem.setVisibility(View.VISIBLE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
+                    holder.pollLinearLayout.setVisibility(View.GONE);
                     holder.setLike(recentsItemFormats.get(position).getKey());
                     if (recentsItemFormats.get(position).getDesc().length() <= 0)
                         holder.messagesMessage.setVisibility(View.GONE);
@@ -1089,8 +1099,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     }
 
                     //youtube Link code
-                    if(recentsItemFormats.get(position).getDesc().length()>25) {
-                        if ((recentsItemFormats.get(position).getDesc().substring(0, 17).equals("https://youtu.be/")) || (recentsItemFormats.get(position).getDesc().substring(0,22).equals("https://m.youtube.com/"))) {
+                    if(recentsItemFormats.get(position).getDesc().length()>16) {
+                        if ((recentsItemFormats.get(position).getDesc().substring(0, 17).equals("https://youtu.be/")) || (recentsItemFormats.get(position).getDesc().length() > 21 && recentsItemFormats.get(position).getDesc().substring(0,22).equals("https://m.youtube.com/"))) {
                             holder.youtubeLink.setVisibility(View.VISIBLE);
                             try {
                                 videoId = recentsItemFormats.get(position).getDesc().substring(0, 17).equals("https://youtu.be/") ? recentsItemFormats.get(position).getDesc().substring(17) : recentsItemFormats.get(position).getDesc().substring(30);
@@ -1126,6 +1136,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.VISIBLE);
                     holder.youtubeLink.setVisibility(View.GONE);
+                    holder.pollLinearLayout.setVisibility(View.GONE);
 
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.baseline_insert_photo_white_24));
@@ -1215,6 +1226,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
                     holder.youtubeLink.setVisibility(View.GONE);
+                    holder.pollLinearLayout.setVisibility(View.GONE);
 
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_forum_white_24dp));
@@ -2307,6 +2319,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         private String TAG = FeaturesViewHolder.class.getSimpleName();
 
         HorizontalScrollView hsv;
+        ImageButton leftArrow, rightArrow;
         LinearLayout linearLayout;
         RelativeLayout notices, events, cabpool, storeroom, shops, admin,internships, links;
         FrameLayout unreadCountStoreroomFL, unreadCountEventsFL, unreadCountShopsFL, unreadCountCabpoolFL, unreadCountAdminPanelFL, unreadCountNoticesFL,unreadCountInternshipsFL, unreadCountLinksFL;
@@ -2333,6 +2346,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             admin = (RelativeLayout) itemView.findViewById(R.id.admin_recents_features_view);
             shops = (RelativeLayout) itemView.findViewById(R.id.shops_recents_features_view);
             links = (RelativeLayout) itemView.findViewById(R.id.links_recents_features_view);
+            leftArrow = itemView.findViewById(R.id.leftArrow);
+            rightArrow = itemView.findViewById(R.id.rightArrow);
 
             unreadCountLinksFL = (FrameLayout) itemView.findViewById(R.id.links_unread_count_fl_recents_feature_item);
             unreadCountLinksTV = (TextView) itemView.findViewById(R.id.links_unread_count_text_recents_feature_item);
@@ -2360,6 +2375,26 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             mOtherFeatures = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("otherFeatures").orderByChild("pos");
             mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+            rightArrow.setVisibility(View.VISIBLE);
+
+            rightArrow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    hsv.fullScroll(View.FOCUS_RIGHT);
+                    leftArrow.setVisibility(View.VISIBLE);
+                    rightArrow.setVisibility(View.GONE);
+                }
+            });
+
+            leftArrow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    hsv.fullScroll(View.FOCUS_LEFT);
+                    rightArrow.setVisibility(View.VISIBLE);
+                    leftArrow.setVisibility(View.GONE);
+                }
+            });
 
             mUserDetails.addValueEventListener(new ValueEventListener() {
                 @Override

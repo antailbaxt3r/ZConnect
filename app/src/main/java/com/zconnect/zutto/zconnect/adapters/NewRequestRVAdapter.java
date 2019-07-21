@@ -62,7 +62,8 @@ public class NewRequestRVAdapter extends RecyclerView.Adapter<newRequestViewHold
             holder.newRequestName.setText("Requested Links name: "+newRequestItemFormats.get(position).getName());
         holder.postedByNameInLocation.setText(newRequestItemFormats.get(position).getPostedBy().getUsername());
 
-        holder.postedByImageLocation.setImageURI(Uri.parse(newRequestItemFormats.get(position).getPostedBy().getImageThumb()));
+        holder.postedByImageLocation.setImageURI(newRequestItemFormats.get(position).getPostedBy().getImageThumb());
+
         if (newRequestItemFormats.get(position).getType().equals(RequestTypeUtilities.TYPE_CABPOOL_LOCATION)) {
             Log.d(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(), "onBindViewHolder: ");
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
