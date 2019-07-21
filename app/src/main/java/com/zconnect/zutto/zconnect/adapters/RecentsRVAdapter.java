@@ -900,7 +900,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                     //youtube Link code
                     if(recentsItemFormats.get(position).getDesc().length()>16) {
-                        if ((recentsItemFormats.get(position).getDesc().substring(0, 17).equals("https://youtu.be/")) || (recentsItemFormats.get(position).getDesc().substring(0,22).equals("https://m.youtube.com/"))) {
+                        if ((recentsItemFormats.get(position).getDesc().substring(0, 17).equals("https://youtu.be/")) || (recentsItemFormats.get(position).getDesc().length() > 21 && recentsItemFormats.get(position).getDesc().substring(0,22).equals("https://m.youtube.com/"))) {
                             holder.youtubeLink.setVisibility(View.VISIBLE);
                             try {
                                 videoId = recentsItemFormats.get(position).getDesc().substring(0, 17).equals("https://youtu.be/") ? recentsItemFormats.get(position).getDesc().substring(17) : recentsItemFormats.get(position).getDesc().substring(30);
