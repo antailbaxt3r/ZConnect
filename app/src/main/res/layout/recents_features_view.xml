@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/recentView">
     <LinearLayout
@@ -10,21 +11,26 @@
         android:gravity="center"
         android:padding="5dp"
         android:background="@color/white">
-
-        <HorizontalScrollView
-            android:id="@+id/hsv_recents_features_view"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fillViewport="true"
-            android:measureAllChildren="false"
-            android:scrollbars="none">
+            android:layout_height="match_parent">
 
-            <LinearLayout
-                android:id="@+id/linearLayout_recents_features_view"
-                android:layout_width="wrap_content"
+            <HorizontalScrollView
+                android:id="@+id/hsv_recents_features_view"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="start"
-                android:orientation="horizontal">
+                android:fillViewport="true"
+                android:measureAllChildren="false"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:id="@+id/linearLayout_recents_features_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -321,7 +327,75 @@
                             android:textSize="10sp"/>
                     </RelativeLayout>
                 </LinearLayout>
-                <LinearLayout
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical">
+                        <RelativeLayout
+                            android:id="@+id/internships_recents_features_view"
+                            android:visibility="gone"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="15dp">
+
+                            <!--below frame layout is not linked -->
+                            <FrameLayout
+                                android:id="@+id/internships_circle_recents_feature_item_fl"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:duplicateParentState="true"
+                                android:layout_centerHorizontal="true">
+
+                                <!--below imageview not linked -->
+                                <ImageView
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:duplicateParentState="true"
+                                    android:id="@+id/internships_circle_recents_feature_item"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/ic_outline_work_outline_24px"
+                                    android:tint="@color/deepPurple500" />
+                                <FrameLayout
+                                    android:id="@+id/internships_unread_count_fl_recents_feature_item"
+                                    android:layout_width="15dp"
+                                    android:layout_height="15dp"
+                                    android:layout_gravity="end"
+                                    android:visibility="gone">
+                                    <com.facebook.drawee.view.SimpleDraweeView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/avatar_circle_24dp"
+                                        android:backgroundTint="@color/colorHighlight"
+                                        android:layout_gravity="center"/>
+                                    <TextView
+                                        android:id="@+id/internships_unread_count_text_recents_feature_item"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textSize="8sp"
+                                        android:textColor="@color/white"
+                                        android:layout_gravity="center"/>
+                                </FrameLayout>
+                            </FrameLayout>
+                            <!--below textview not linked -->
+                            <TextView
+                                android:id="@+id/internships_text_recents_feature_item"
+                                android:duplicateParentState="true"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Internships"
+                                android:layout_below="@+id/internships_circle_recents_feature_item_fl"
+                                android:layout_centerHorizontal="true"
+                                android:textColor="@color/black"
+                                android:layout_marginTop="5dp"
+                                android:textSize="10sp"/>
+                        </RelativeLayout>
+                    </LinearLayout>
+
+
+                    <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -567,7 +641,44 @@
                     <!--</RelativeLayout>-->
                 <!--</LinearLayout>-->
 
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:layout_marginEnd="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_keyboard_arrow_left_white_24dp"
+                    android:tint="@color/deeppurple700"
+                    android:id="@+id/leftArrow"
+                    android:layout_gravity="start"
+                    android:visibility="gone"
+                    android:layout_weight="0.1"
+                    android:backgroundTint="@color/transparent"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"/>
+
+                <ImageButton
+                    android:layout_marginStart="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_keyboard_arrow_right_white_24dp"
+                    android:tint="@color/deeppurple700"
+                    android:id="@+id/rightArrow"
+                    android:visibility="gone"
+                    android:layout_weight="0.1"
+                    android:layout_gravity="end"
+                    android:backgroundTint="@color/transparent"/>
             </LinearLayout>
-        </HorizontalScrollView>
+
+        </FrameLayout>
     </LinearLayout>
 </LinearLayout>

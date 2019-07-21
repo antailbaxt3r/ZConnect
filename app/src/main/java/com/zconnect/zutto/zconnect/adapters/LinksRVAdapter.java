@@ -3,21 +3,18 @@ package com.zconnect.zutto.zconnect.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.customtabs.CustomTabsIntent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.TextView;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.zconnect.zutto.zconnect.Links;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.WebViewActivity;
 import com.zconnect.zutto.zconnect.itemFormats.ListItem;
 
-import java.util.ArrayList;
 import java.util.Vector;
 
 public class LinksRVAdapter extends RecyclerView.Adapter<LinksRVAdapter.ProgrammingViewHolder>{
@@ -46,11 +43,22 @@ public class LinksRVAdapter extends RecyclerView.Adapter<LinksRVAdapter.Programm
         holder.title.setText(title);
         holder.link.setOnClickListener(view -> {
             Intent intent = new Intent(context, WebViewActivity.class);
-            intent.putExtra("url",LinksList.get(position).getLinkURL());
-            intent.putExtra("title",LinksList.get(position).getTitle());
-            context.startActivity(intent);
+            CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
+            intentBuilder.setToolbarColor(ContextCompat.getColor(context, R.color.colorPrimary));
+            intentBuilder.setSecondaryToolbarColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
+//            intentBuilder.setStartAnimations(context, R.anim.slide_in_right, R.anim.slide_out_left);
+            intentBuilder.setExitAnimations(context, android.R.anim.slide_in_left,
+                    android.R.anim.slide_out_right);
+            CustomTabsIntent customTabsIntent = intentBuilder.build();
+            customTabsIntent.launchUrl(context, Uri.parse(LinksList.get(position).getLinkURL()));
+//            intent.putExtra("url",LinksList.get(position).getLinkURL());
+//            intent.putExtra("title",LinksList.get(position).getTitle());
+//            context.startActivity(intent);
         });
     }
+
+
+
 
     @Override
     public int getItemCount() {

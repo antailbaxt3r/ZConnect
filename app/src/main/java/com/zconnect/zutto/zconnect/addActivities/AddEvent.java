@@ -137,6 +137,7 @@ public class AddEvent extends BaseActivity {
             dateTime.setText(dateTimeText);
 
         }
+
     };
 
     ArrayList<String> venueOptions = new ArrayList<>();
@@ -247,6 +248,7 @@ public class AddEvent extends BaseActivity {
                         .setListener(listener)
                         .setInitialDate(new Date())
                         .setIs24HourTime(true)
+                        .setMinDate(new Date(System.currentTimeMillis()))
                         .build()
                         .show();
 

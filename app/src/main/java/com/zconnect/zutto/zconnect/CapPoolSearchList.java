@@ -1,10 +1,12 @@
 package com.zconnect.zutto.zconnect;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -267,12 +270,19 @@ public class CapPoolSearchList extends BaseActivity {
                     defaultmsg.setVisibility(View.VISIBLE);
                     poolrv.setVisibility(View.INVISIBLE);
                     progressBar.setVisibility(View.INVISIBLE);
-                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(CapPoolSearchList.this);
-                    // 2. Chain together various setter methods to set the dialog characteristics
-                    builder.setMessage("No Cab pools found. \n Would you like to add one ?");
-
-                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
+                    Dialog noCabPoolsDialog = new Dialog(CapPoolSearchList.this);
+                    noCabPoolsDialog.setContentView(R.layout.new_dialog_box);
+                    noCabPoolsDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    noCabPoolsDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(CapPoolSearchList.this,R.drawable.ic_directions_car_white_24dp));
+                    TextView heading =  noCabPoolsDialog.findViewById(R.id.dialog_box_heading);
+                    heading.setText("No Cab pools found");
+                    TextView body = noCabPoolsDialog.findViewById(R.id.dialog_box_body);
+                    body.setText("Would you like to add one?");
+                    Button addButton = noCabPoolsDialog.findViewById(R.id.dialog_box_positive_button);
+                    addButton.setText("Add");
+                    addButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
                             if (isNetworkAvailable(getApplicationContext())) {
                                 if (name != null && number != null) {
 
@@ -318,15 +328,18 @@ public class CapPoolSearchList extends BaseActivity {
                             }
                         }
                     });
-                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-
+                    Button cancelButton = noCabPoolsDialog.findViewById(R.id.dialog_box_negative_button);
+                    cancelButton.setText("Cancel");
+                    cancelButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                           noCabPoolsDialog.dismiss();
                         }
                     });
-                    android.app.AlertDialog dialog = builder.create();
-                    dialog.setCancelable(false);
-                    dialog.show();
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorHighlight));
+                    noCabPoolsDialog.setCancelable(false);
+                    noCabPoolsDialog.show();
+
+
 
                 } else {
                     progressBar.setVisibility(View.INVISIBLE);

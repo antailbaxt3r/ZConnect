@@ -181,7 +181,7 @@ public class LogoFlashActivity extends BaseActivity {
                                     else if(path.equals("/cabpooling/"))
                                     {
                                         Log.d(TAG,"abc1 " + deepLink.getQueryParameter("key"));
-                                        Intent intent = new Intent(LogoFlashActivity.this, CabPoolAll.class);
+                                        Intent intent = new Intent(LogoFlashActivity.this, CabPoolListOfPeople.class);
                                         intent.putExtra("key", deepLink.getQueryParameter("key"));
                                         startActivity(intent);
                                         flag = true;

@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -275,7 +276,9 @@ public class AdminHome extends BaseActivity {
                             NewRequestItemFormat newRequest = shot.getValue(NewRequestItemFormat.class);
                             newRequestItemFormats.add(newRequest);
                         }
-                        catch (Exception e) { }
+                        catch (Exception e) {
+                            Log.d("Admin Home", e.toString());
+                        }
                     }
                     if (newRequestItemFormats.isEmpty())
                         noRequestMessage.setVisibility(View.VISIBLE);
@@ -314,6 +317,7 @@ public class AdminHome extends BaseActivity {
             noUserMessage = rootView.findViewById(R.id.section_label);
             progressBar = rootView.findViewById(R.id.progress_bar);
             progressBar.setVisibility(View.VISIBLE);
+            noUserMessage.setVisibility(View.INVISIBLE);
             usersDatalistener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -351,10 +355,14 @@ public class AdminHome extends BaseActivity {
                             flag = true;
                         }catch (Exception e){}
                     }
-                    progressBar.setVisibility(View.GONE);
-                    if(flag) {
-                        noUserMessage.setVisibility(View.VISIBLE);
-                    }
+
+                    new Handler().postDelayed(() -> {
+                        progressBar.setVisibility(View.GONE);
+                        if(flag) {
+                            noUserMessage.setVisibility(View.VISIBLE);
+                        }
+                    }, 500);
+
                     adapter.notifyDataSetChanged();
                 }
 

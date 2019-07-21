@@ -303,7 +303,7 @@ public class AddCabPool extends BaseActivity {
                                                 newPost2PostedBy.child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());
                                                 UserItemFormat userData = dataSnapshot.getValue(UserItemFormat.class);
 
-                                                GlobalFunctions.createForumWithDetails("Cabpool - " + goingTime,
+                                                GlobalFunctions.createForumWithDetails("Cabpool - " + goingTime +" "+ s_dayOfMonth+"/"+s_monthOfYear,
                                                         key,userData,"others",
                                                         "Cabpool:" + "From:" + String.valueOf(source.getSelectedItem()) + "\nTo:" + String.valueOf(destination.getSelectedItem()) + "\nGoing time:" + goingTime + "\nReturning Time:+" + returnTime,
                                                         "https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/taxi_icon.png?alt=media&token=e2d26476-bc86-4bd3-a33c-b27f744a9491"
