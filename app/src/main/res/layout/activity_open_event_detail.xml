@@ -119,7 +119,7 @@
                             android:layout_marginEnd="@dimen/margin_small"
                             android:layout_height="wrap_content"
                             android:text="Boost"
-                            android:background="@drawable/round_button_google"
+                            android:background="@drawable/round_button_simple"
                             android:textColor="@color/black"
                             style="?android:attr/borderlessButtonStyle"/>
                         <Button

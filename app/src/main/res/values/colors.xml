@@ -82,6 +82,7 @@
     <color name="seventyBlack">#32000000</color>
     <color name="black_transparent">#48000000</color>
     <color name="transparentGray">#99000000</color>
+    <color name="transparentPurple">#99b39ddb</color>
 
     <color name="lightgreen800">#558b2f</color>
     <color name="indigo800">#283593</color>

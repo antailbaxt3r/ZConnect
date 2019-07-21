@@ -13,6 +13,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
@@ -132,6 +133,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     LinearLayoutManager linearLayoutManager;
     RecyclerView recyclerView;
     String videoId;
+    private ImageButton leftArrow, rightArrow;
     private Long count;
     private boolean hasNotSelected = false;
 
@@ -581,6 +583,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.pollOptionA.setText(recentsItemFormats.get(position).getOptions().getOptionA());
                     holder.pollOptionB.setText(recentsItemFormats.get(position).getOptions().getOptionB());
                     holder.pollOptionC.setText(recentsItemFormats.get(position).getOptions().getOptionC());
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_outline_poll_24px));
 
                     DatabaseReference databaseReferenceGetOptionSelected = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/" + recentsItemFormats.get(position).getKey());
                     //Start a Progress Bar
@@ -2307,6 +2311,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         private String TAG = FeaturesViewHolder.class.getSimpleName();
 
         HorizontalScrollView hsv;
+        ImageButton leftArrow, rightArrow;
         LinearLayout linearLayout;
         RelativeLayout notices, events, cabpool, storeroom, shops, admin,internships, links;
         FrameLayout unreadCountStoreroomFL, unreadCountEventsFL, unreadCountShopsFL, unreadCountCabpoolFL, unreadCountAdminPanelFL, unreadCountNoticesFL,unreadCountInternshipsFL, unreadCountLinksFL;
@@ -2333,6 +2338,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             admin = (RelativeLayout) itemView.findViewById(R.id.admin_recents_features_view);
             shops = (RelativeLayout) itemView.findViewById(R.id.shops_recents_features_view);
             links = (RelativeLayout) itemView.findViewById(R.id.links_recents_features_view);
+            leftArrow = itemView.findViewById(R.id.leftArrow);
+            rightArrow = itemView.findViewById(R.id.rightArrow);
 
             unreadCountLinksFL = (FrameLayout) itemView.findViewById(R.id.links_unread_count_fl_recents_feature_item);
             unreadCountLinksTV = (TextView) itemView.findViewById(R.id.links_unread_count_text_recents_feature_item);
@@ -2360,6 +2367,26 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             mOtherFeatures = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("otherFeatures").orderByChild("pos");
             mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+            rightArrow.setVisibility(View.VISIBLE);
+
+            rightArrow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    hsv.fullScroll(View.FOCUS_RIGHT);
+                    leftArrow.setVisibility(View.VISIBLE);
+                    rightArrow.setVisibility(View.GONE);
+                }
+            });
+
+            leftArrow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    hsv.fullScroll(View.FOCUS_LEFT);
+                    rightArrow.setVisibility(View.VISIBLE);
+                    leftArrow.setVisibility(View.GONE);
+                }
+            });
 
             mUserDetails.addValueEventListener(new ValueEventListener() {
                 @Override
