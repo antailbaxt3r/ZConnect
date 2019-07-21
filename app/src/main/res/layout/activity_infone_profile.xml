@@ -342,7 +342,25 @@
 
                 </RelativeLayout>
 
-
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center_horizontal">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Infone Category   :   "
+                        android:textSize="18sp"
+                        android:textColor="@color/black"/>
+                    <TextView
+                        android:id="@+id/infonecategory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Category Name"
+                        android:textSize="18sp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
                 <Button
                     android:id="@+id/viewProfileButton"
                     android:layout_width="wrap_content"
@@ -354,24 +372,6 @@
                     android:padding="16dp"
                     android:text="View Profile"
                     android:textColor="@color/white" />
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_gravity="center_horizontal">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Infone Category"
-                    android:textSize="18sp"/>
-                <TextView
-                    android:id="@+id/infonecategory"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Category Name"
-                    android:textSize="18sp"
-                    android:textColor="@color/colorPrimary"/>
-                </LinearLayout>
             </LinearLayout>
     </ScrollView>
         </LinearLayout>
