@@ -655,7 +655,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 }
 
 
-                if (type.equals("forums") || type.equals("others") || type.equals("personalChats")) {
+                if (type.equals("forums") || type.equals("others") || type.equals("personalChats") || type.equals("cabpools")) {
                     DBHelper mydb = new DBHelper(ChatActivity.this);
                     setActionBarTitle(getIntent().getStringExtra("name"));
                     toolbar.setTitle(getIntent().getStringExtra("name"));

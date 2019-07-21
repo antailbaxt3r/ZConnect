@@ -2,17 +2,22 @@ package com.zconnect.zutto.zconnect;
 
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -50,26 +55,37 @@ public class CategoriesTab extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
-                alertBuilder.setTitle("Add/Ask")
-                        .setMessage("Do you want to add a product or ask for a product?")
-                        .setPositiveButton("Ask", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(getContext(), AddProduct.class);
-                                intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
-                                getContext().startActivity(intent);
-                            }
-                        })
-                        .setNegativeButton("Add", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(getContext(), AddProduct.class);
-                                intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
-                                getContext().startActivity(intent);
-                            }
-                        })
-                        .show();
+                Dialog addAskDialog = new Dialog(getContext());
+                addAskDialog.setContentView(R.layout.new_dialog_box);
+                addAskDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                addAskDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(getContext(),R.drawable.ic_outline_store_24px));
+                TextView heading =  addAskDialog.findViewById(R.id.dialog_box_heading);
+                heading.setText("Sell/Ask");
+                TextView body = addAskDialog.findViewById(R.id.dialog_box_body);
+                body.setText("Do you want to sell a product or ask for a product?");
+                Button addButton = addAskDialog.findViewById(R.id.dialog_box_positive_button);
+                addButton.setText("Sell");
+                addButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), AddProduct.class);
+                        intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
+                        getContext().startActivity(intent);
+                    }
+                });
+                Button askButton = addAskDialog.findViewById(R.id.dialog_box_negative_button);
+                askButton.setText("Ask");
+                askButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), AddProduct.class);
+                        intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
+                        getContext().startActivity(intent);
+                    }
+                });
+
+                addAskDialog.show();
+
             }
         });
         return view;

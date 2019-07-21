@@ -116,11 +116,11 @@ public class ProductsTab extends Fragment {
                 addAskDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 addAskDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(getContext(),R.drawable.ic_outline_store_24px));
                 TextView heading =  addAskDialog.findViewById(R.id.dialog_box_heading);
-                heading.setText("Add/Ask");
+                heading.setText("Sell/Ask");
                 TextView body = addAskDialog.findViewById(R.id.dialog_box_body);
-                body.setText("Do you want to add a product or ask for a product?");
+                body.setText("Do you want to sell a product or ask for a product?");
                 Button addButton = addAskDialog.findViewById(R.id.dialog_box_positive_button);
-                addButton.setText("Add");
+                addButton.setText("Sell");
                 addButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
