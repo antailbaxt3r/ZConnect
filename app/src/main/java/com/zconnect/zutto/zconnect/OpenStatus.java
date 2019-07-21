@@ -135,6 +135,7 @@ public class OpenStatus extends BaseActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
         anonymousSendBtn = findViewById(R.id.sendAnonymousButton);
         currentUserID = user.getUid();
+        intentHandle = new IntentHandle();
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {

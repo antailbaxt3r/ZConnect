@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.Manifest;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -16,6 +17,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -59,7 +61,10 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.adapters.CommunitiesAroundAdapter;
 import com.zconnect.zutto.zconnect.addActivities.CreateCommunity;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.fragments.CommunitiesFragment;
 import com.zconnect.zutto.zconnect.itemFormats.CommunitiesItemFormat;
+
+import org.apache.commons.text.TextStringBuilder;
 
 import java.util.Vector;
 
@@ -74,13 +79,13 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
     Vector<CommunitiesItemFormat> communitiesJoinedList = new Vector<>();
     CommunitiesItemFormat titleCommunitiesJoined = new CommunitiesItemFormat();
     CommunitiesItemFormat titleCoummunitiesNearby = new CommunitiesItemFormat();
-    RecyclerView communitiesRecycler;
+//    RecyclerView communitiesRecycler;
     DatabaseReference communitiesReference;
     DatabaseReference userCommunitiesReference;
     LocationManager locationManager;
     LocationListener locationListener;
     private ProgressDialog progressDialog;
-    private RelativeLayout noCommunitiesLayout;
+//    private RelativeLayout noCommunitiesLayout;
     private Button turnOnGPS;
     private FirebaseAuth mAuth;
     private GoogleApiClient mGoogleApiClient;
@@ -106,6 +111,8 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
     Location lastLocation = null;
     Location currentLocation = null;
     private LocationCallback locationCallback;
+    TabLayout tablayout;
+    CommunitiesFragment f1,f2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +130,39 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
 
         progressDialog.setMessage("Searching Communities");
         progressDialog.show();
+        progressDialog.setCancelable(false);
+        tablayout = findViewById(R.id.communities_tab_layout);
+
+        tablayout.addTab(tablayout.newTab().setText("Communities Around"));
+        tablayout.addTab(tablayout.newTab().setText("Communities Joined"));
+        tablayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int position = tab.getPosition();
+                switch(position){
+                    case 0:
+                        if(f1 != null){
+                            getSupportFragmentManager().beginTransaction().replace(R.id.communities_container,f1).commit();
+                        }
+                        break;
+                    case 1:
+                        if(f2!=null){
+                            getSupportFragmentManager().beginTransaction().replace(R.id.communities_container,f2).commit();
+                        }
+
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -157,19 +197,19 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
 
         communitiesReference = FirebaseDatabase.getInstance().getReference().child("communitiesInfo");
         userCommunitiesReference = FirebaseDatabase.getInstance().getReference().child("userCommunities").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("communitiesJoined");
-        communitiesRecycler = (RecyclerView) findViewById(R.id.all_communities);
-        communitiesRecycler.setLayoutManager(new LinearLayoutManager(this));
-        noCommunitiesLayout = (RelativeLayout) findViewById(R.id.no_communities_layout);
+//        communitiesRecycler = (RecyclerView) findViewById(R.id.all_communities);
+//        communitiesRecycler.setLayoutManager(new LinearLayoutManager(this));
+//        noCommunitiesLayout = (RelativeLayout) findViewById(R.id.no_communities_layout);
 
-        noCommunitiesLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(CommunitiesAround.this, CreateCommunity.class);
-                i.putExtra("lat",lat);
-                i.putExtra("lon",lon);
-                startActivity(i);
-            }
-        });
+//        noCommunitiesLayout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent i = new Intent(CommunitiesAround.this, CreateCommunity.class);
+//                i.putExtra("lat",lat);
+//                i.putExtra("lon",lon);
+//                startActivity(i);
+//            }
+//        });
 
         turnOnGPS = (Button) findViewById(R.id.turn_on_gps);
 
@@ -194,9 +234,9 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
             }
         });
 
-        adapter = new CommunitiesAroundAdapter(this, totalCommunitiesList);
-        communitiesRecycler.setAdapter(adapter);
-        communitiesReference.keepSynced(true);
+//        adapter = new CommunitiesAroundAdapter(this, totalCommunitiesList);
+//        communitiesRecycler.setAdapter(adapter);
+//        communitiesReference.keepSynced(true);
 
         locationRequest = new LocationRequest();
         locationRequest.setInterval(7500); //use a value fo about 10 to 15s for a real app
@@ -211,7 +251,25 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 for (Location location : locationResult.getLocations()) {
-                    loadCommunities(location.getLongitude(), location.getLatitude());
+                    progressDialog.dismiss();
+                    f1 = new CommunitiesFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("type","nearby");
+                    bundle.putDouble("lat",location.getLatitude());
+                    bundle.putDouble("lon",location.getLongitude());
+                    f1.setArguments(bundle);
+
+                    f2 = new CommunitiesFragment();
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putString("type","joined");
+                    bundle1.putDouble("lat",location.getLatitude());
+                    bundle1.putDouble("lon",location.getLongitude());
+                    f2.setArguments(bundle1);
+                    tablayout.getTabAt(0).select();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.communities_container,f1).commit();
+
+
+//                    loadCommunities(location.getLongitude(), location.getLatitude());
                 }
             }
         };
@@ -251,7 +309,26 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
                 @Override
                 public void onSuccess(Location location) {
                     if (location != null) {
-                        loadCommunities(location.getLongitude(), location.getLatitude());
+//                        loadCommunities(location.getLongitude(), location.getLatitude());
+                        progressDialog.dismiss();
+                        f1 = new CommunitiesFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("type","nearby");
+                        bundle.putDouble("lat",location.getLatitude());
+                        bundle.putDouble("lon",location.getLongitude());
+                        f1.setArguments(bundle);
+
+                        f2 = new CommunitiesFragment();
+                        Bundle bundle1 = new Bundle();
+                        bundle1.putString("type","joined");
+                        bundle1.putDouble("lat",location.getLatitude());
+                        bundle1.putDouble("lon",location.getLongitude());
+                        f2.setArguments(bundle1);
+                        tablayout.getTabAt(0).select();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.communities_container,f1).commit();
+
+
+
                     }
                 }
             });
@@ -414,12 +491,12 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
                         totalCommunitiesList.addAll(communitiesList);
                         totalCommunitiesList.add(titleCommunitiesJoined);
                         totalCommunitiesList.addAll(communitiesJoinedList);
-
-                        if(finalFlagNoCommunity && noJoinedCommunities){
-                            noCommunitiesLayout.setVisibility(View.VISIBLE);
-                        }else{
-                            noCommunitiesLayout.setVisibility(View.GONE);
-                        }
+//
+//                        if(finalFlagNoCommunity && noJoinedCommunities){
+//                            noCommunitiesLayout.setVisibility(View.VISIBLE);
+//                        }else{
+//                            noCommunitiesLayout.setVisibility(View.GONE);
+//                        }
                         progressDialog.dismiss();
                         adapter.notifyDataSetChanged();
                     }
@@ -480,7 +557,7 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
 
         if(id == R.id.menu_sign_out){
             if (!isNetworkAvailable(getApplicationContext())) {
-                Snackbar snack = Snackbar.make(communitiesRecycler, "No Internet. Can't Log Out.", Snackbar.LENGTH_LONG);
+//                Snackbar snack = Snackbar.make(communitiesRecycler, "No Internet. Can't Log Out.", Snackbar.LENGTH_LONG);
                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                 snackBarText.setTextColor(Color.WHITE);
                 snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
