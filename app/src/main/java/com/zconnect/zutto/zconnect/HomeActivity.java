@@ -338,14 +338,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         initListeners();
         tabs();
     /////////////////////////////////////////////////////////////////////////////////////
-        boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
-                .getBoolean("isFirstRun", true);
-
-        if(isFirstRun){
-            showAppTour();
-            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit()
-                    .putBoolean("isFirstRun", false).commit();
-        }
 
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -1246,6 +1238,17 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 startActivity(i);
                 finish();
             }
+            boolean isFirstRun = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("isFirstRun",true);
+
+            if(isFirstRun){
+                showAppTour();
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("isFirstRun",false);
+                editor.apply();
+            }
+
+
         }
 
     }
