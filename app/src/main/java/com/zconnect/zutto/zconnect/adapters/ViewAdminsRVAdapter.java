@@ -106,7 +106,7 @@ public class ViewAdminsRVAdapter extends RecyclerView.Adapter<ViewAdminsRVAdapte
                                     String key = dataSnapshot.getValue().toString();
                                     Intent intent = new Intent(holder.itemView.getContext(), ChatActivity.class);
                                     intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
-                                    intent.putExtra("type", "personalChats");
+                                    intent.putExtra("type", "forums");
                                     intent.putExtra("name", admname.get(position));
                                     intent.putExtra("tab", "personalChats");
                                     intent.putExtra("key", key);

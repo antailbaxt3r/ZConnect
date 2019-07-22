@@ -101,6 +101,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             return MessageTypeUtilities.KEY_SHOP_PHOTO;
         }else if(chatFormats.get(position).getMessageType().equals(MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE_STR)){
             return MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE;
+        }else if(chatFormats.get(position).getMessageType().equals(MessageTypeUtilities.KEY_MATCHED_MESSAGE_STR)){
+            return MessageTypeUtilities.KEY_MATCHED_MESSAGE;
         }
 //        else if(chatFormats.get(position).getMessageType().equals(MessageTypeUtilities.KEY_PHOTO_SENDING_STR)){
 //            return MessageTypeUtilities.KEY_PHOTO_SENDING;
@@ -130,7 +132,9 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         } else if(viewType == MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE){
             View messageContactView = inflater.inflate(R.layout.chat_message_format, parent, false);
             return new messageViewHolder(messageContactView, parent.getContext());
-
+        } else if(viewType == MessageTypeUtilities.KEY_MATCHED_MESSAGE){
+            View messageContactView = inflater.inflate(R.layout.chat_message_format, parent, false);
+            return new messageViewHolder(messageContactView, parent.getContext());
         }
 //        else if(viewType == MessageTypeUtilities.KEY_PHOTO_SENDING){
 //            View photoContactView = inflater.inflate(R.layout.chat_photo_format, parent, false);
@@ -152,7 +156,10 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if(message.getMessageType().equals("message")){
             ((messageViewHolder) rvHolder).anonymousImage.setVisibility(View.GONE);
 
+
             messageViewHolder holder = (messageViewHolder) rvHolder;
+            holder.usernameLayout.setVisibility(View.VISIBLE);
+            holder.messageBubble.setVisibility(View.VISIBLE);
             long previousTs = 0;
             if(position>=1){
                 ChatItemFormats pm = chatFormats.get(position-1);
@@ -398,6 +405,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 previousTs = pm.getTimeDate();
             }
             holder.message.setTypeface(holder.message.getTypeface(),Typeface.NORMAL);
+            holder.messageBubble.setVisibility(View.VISIBLE);
 
             setTimeTextVisibility(message.getTimeDate(), previousTs, holder.timeGroupText);
             if(message.getUuid()!=null)
@@ -539,6 +547,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
         else if(message.getMessageType().equals(MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE_STR)){
             messageViewHolder holder = (messageViewHolder) rvHolder;
+            holder.usernameLayout.setVisibility(View.VISIBLE);
+            holder.messageBubble.setVisibility(View.VISIBLE);
             long previousTs = 0;
             if(position>=1){
                 ChatItemFormats pm = chatFormats.get(position-1);
@@ -746,7 +756,38 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 }
             });
 
-        }else{
+        }
+        else if(message.getMessageType().equals(MessageTypeUtilities.KEY_MATCHED_MESSAGE_STR)){
+            ((messageViewHolder) rvHolder).anonymousImage.setVisibility(View.GONE);
+
+            messageViewHolder holder = (messageViewHolder) rvHolder;
+            long previousTs = 0;
+
+            holder.time.setVisibility(View.GONE);
+            holder.timeGroupText.setText(message.getMessage());
+            holder.timeGroupText.setVisibility(View.VISIBLE);
+            holder.usernameLayout.setVisibility(View.GONE);
+            holder.messageBubble.setVisibility(View.GONE);
+            holder.message.setTypeface(Typeface.DEFAULT,Typeface.NORMAL);
+            holder.chatContainer.setVisibility(View.GONE);
+
+
+            if(forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                holder.message.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+//                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box_dark_mode));
+            }
+            else{
+                holder.message.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+//                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box));
+
+            }
+
+        }
+        else{
             final otherForumsRVViewHolder otherForumsRVViewHolder = (otherForumsRVViewHolder) rvHolder;
             otherForumsRVViewHolder.itemView.setOnClickListener(v -> {
                 Intent i = new Intent(android.content.Intent.ACTION_VIEW);

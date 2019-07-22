@@ -178,6 +178,8 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
     MentionsEditText typer;
     ImageView anonymousSendBtn;
 
+    boolean matchedMessage;
+
 
     //User Mentions
     UserMentionsFormat.MentionsLoader mentionsLoader;
@@ -216,6 +218,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
 
 
@@ -744,13 +747,21 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
             }
         }
 
+        if(getIntent().hasExtra(   "match")){
+            matchedMessage = getIntent().getBooleanExtra("match",false);
+            if(matchedMessage){
+                postMessage(false);
+            }
+        }
+
+
     }
 
     private void postMessage(boolean anonymous) {
 
 //        final EditText typer = ((EditText) findViewById(R.id.typer));
         final String text;
-        if (TextUtils.isEmpty(typer.getText().toString().trim())) {
+        if (!matchedMessage && TextUtils.isEmpty(typer.getText().toString().trim())) {
             showToast("Message is empty.");
             return;
         }
@@ -851,6 +862,13 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
                 message.setUuid(userItem.getUserUID());
                 message.setName(userItem.getUsername());
+                if(matchedMessage){
+                    message.setMessage("\"" + "You guys matched!!" + "\"");
+                }
+                else{
+                    message.setMessage("\"" + text + "\"");
+
+                }
                 if (userItem.getAnonymousUsername() != null) {
                     message.setUserName(userItem.getAnonymousUsername());
 
@@ -858,7 +876,6 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                     message.setUserName("Unknown");
                 }
                 message.setImageThumb(userItem.getImageURLThumbnail());
-                message.setMessage("\"" + text + "\"");
                 GlobalFunctions.addPoints(2);
                 message.setKey(messagePushID);
                 if(anonymous){
@@ -867,6 +884,10 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 else{
                     message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
 
+                }
+                if(matchedMessage){
+                    message.setMessageType(MessageTypeUtilities.KEY_MATCHED_MESSAGE_STR);
+                    matchedMessage = false;
                 }
 
                 databaseReference.child("Chat").child(messagePushID).setValue(message);
@@ -997,6 +1018,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
         typer.setText(null);
         // chatView.scrollToPosition(chatView.getChildCount());
+
 
     }
 

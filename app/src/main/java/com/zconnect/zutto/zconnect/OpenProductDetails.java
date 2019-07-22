@@ -180,7 +180,7 @@ public class OpenProductDetails extends BaseActivity {
                                 String key = dataSnapshot.getValue().toString();
                                 Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
                                 intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
-                                intent.putExtra("type", "personalChats");
+                                intent.putExtra("type", "forums");
                                 intent.putExtra("store_room_message", "Hey there, I was checking out the following product:\nProduct Name: " +
                                         productName.getText().toString() + "\nProduct Category:" + productCategory + "\nPrice:" +
                                         productPrice.getText().toString());
@@ -422,7 +422,7 @@ public class OpenProductDetails extends BaseActivity {
                                 String key = dataSnapshot.getValue().toString();
                                 Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
                                 intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
-                                intent.putExtra("type", "personalChats");
+                                intent.putExtra("type", "forums");
                                 intent.putExtra("store_room_message", "Hey there, I was checking out the following product:\nProduct Name: " +
                                         productName.getText().toString() + "\nProduct Category:" + productCategory + "\nPrice:" +
                                         productPrice.getText().toString());
