@@ -1734,6 +1734,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     counterPush.pushValues();
                     Intent intent = new Intent(context, OpenStatus.class);
                     intent.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getKey());
+                    Log.d("username" , " "+recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUsername());
                     System.out.println(recentsItemFormats.get(getAdapterPosition()).getKey());
                     context.startActivity(intent);  }
                                     });
@@ -1818,30 +1819,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             final TextView likeText = (TextView) itemView.findViewById(R.id.like_text_status);
 
 
-            likeIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(statusLikeFlag == true){
-                        statusLikeFlag = false;
-                        likeText.setText(String.valueOf(Integer.valueOf(likeText.getText().toString())-1));
-                        if(likeText.getText().toString().equals("0")){
-                            likeText.setText("");
-                        }
-                        likeIcon.setColorFilter(itemView.getContext().getResources().getColor(R.color.icon_color));
-                        likeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.outline_thumb_up_alt_white_24));
-                    }else{
-                        statusLikeFlag = true;
-                        likeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.baseline_thumb_up_alt_white_24));
-                        likeIcon.setColorFilter(context.getResources().getColor(R.color.deepPurple500));
-                        if(likeText.getText().toString().equals("")){
-                            likeText.setText("1");
-                        }else {
-                            likeText.setText(String.valueOf(Integer.valueOf(likeText.getText().toString()) + 1));
-                        }
-
-                    }
-                }
-            });
 
 
             statusDatabase.child("likeUids").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -1882,26 +1859,28 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             });
 
             if (user != null) {
-                likeLayout.setOnClickListener(new View.OnClickListener() {
+                likeIcon.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if(statusLikeFlag == true){
+                            statusLikeFlag = false;
+                            statusDatabase.child("likeUids").child(user.getUid()).removeValue();
 
-                        CounterItemFormat counterItemFormat = new CounterItemFormat();
-                        HashMap<String, String> meta = new HashMap<>();
-                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                        counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_LIKE);
-                        counterItemFormat.setTimestamp(System.currentTimeMillis());
-                        counterItemFormat.setMeta(meta);
-                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                        counterPush.pushValues();
-                        if (!statusLikeFlag) {
+                            likeText.setText(String.valueOf(Integer.valueOf(likeText.getText().toString())-1));
+                            if(likeText.getText().toString().equals("0")){
+                                likeText.setText("");
+                            }
+                            likeIcon.setColorFilter(itemView.getContext().getResources().getColor(R.color.icon_color));
+                            likeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.outline_thumb_up_alt_white_24));
+                        }else{
+                            statusLikeFlag = true;
                             Map<String, Object> taskMap = new HashMap<String, Object>();
                             taskMap.put(user.getUid(), user.getUid());
                             statusDatabase.child("likeUids").updateChildren(taskMap);
                             final NotificationSender notificationSender = new NotificationSender(itemView.getContext(), FirebaseAuth.getInstance().getCurrentUser().getUid());
                             final NotificationItemFormat statusLikeNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_STATUS_LIKED, FirebaseAuth.getInstance().getCurrentUser().getUid());
-                           // HashMap<String,Object> hashmap=new HashMap<>();
-                           // hashmap.put("meta",1);
+                            // HashMap<String,Object> hashmap=new HashMap<>();
+                            // hashmap.put("meta",1);
                             statusLikeNotification.setItemKey(key);
                             mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -1921,19 +1900,29 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                                 }
                             });
-//                            statusLikeNotification.setItemName(statusText);
-//                            statusLikeNotification.setItemImage(statusImage);
+                            likeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.baseline_thumb_up_alt_white_24));
+                            likeIcon.setColorFilter(context.getResources().getColor(R.color.deepPurple500));
+                            if(likeText.getText().toString().equals("")){
+                                likeText.setText("1");
+                            }else {
+                                likeText.setText(String.valueOf(Integer.valueOf(likeText.getText().toString()) + 1));
+                            }
 
-                            Log.d("LIKESSSS", "1");
-
-                        } else {
-                            statusDatabase.child("likeUids").child(user.getUid()).removeValue();
                         }
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        HashMap<String, String> meta = new HashMap<>();
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_LIKE);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        counterItemFormat.setMeta(meta);
+                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                        counterPush.pushValues();
+
                     }
                 });
 
             } else {
-                likeLayout.setOnClickListener(new View.OnClickListener() {
+                likeIcon.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(itemView.getContext());

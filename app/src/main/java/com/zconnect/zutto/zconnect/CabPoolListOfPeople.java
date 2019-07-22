@@ -542,7 +542,7 @@ public class CabPoolListOfPeople extends BaseActivity {
         FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("cabpools").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue() != null) {
+                if(dataSnapshot.child("name").getValue() != null) {
                     String name = dataSnapshot.child("name").getValue().toString();
 
                     Intent intent = new Intent(CabPoolListOfPeople.this, ChatActivity.class);

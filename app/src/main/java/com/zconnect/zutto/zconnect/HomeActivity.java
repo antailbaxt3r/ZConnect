@@ -147,6 +147,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private DatabaseReference mDatabaseStats;
     private DatabaseReference mDatabaseUserStats;
     private String navHeaderBackGroundImageUrl = null;
+    SimpleDraweeView navHeaderImage;
+    private String navHeaderImageUrl;
     private String Title;
     Context context;
 
@@ -338,14 +340,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         initListeners();
         tabs();
     /////////////////////////////////////////////////////////////////////////////////////
-        boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
-                .getBoolean("isFirstRun", true);
-
-        if(isFirstRun){
-            showAppTour();
-            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit()
-                    .putBoolean("isFirstRun", false).commit();
-        }
 
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -991,6 +985,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         editProfileValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                navHeaderImageUrl = dataSnapshot.child("imageURL").getValue().toString();
+                if(navHeaderImageUrl!= null){
+                    navHeaderImage = findViewById(R.id.iv_z_connect_logo_nav_header1);
+                    navHeaderImage.setImageURI(Uri.parse(navHeaderImageUrl));
+                }
                 if(!dataSnapshot.hasChild("mobileNumber")){
                     DatabaseReference referredUsersRef = FirebaseDatabase.getInstance().getReference().child("referredUsers");
                     referredUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -1246,6 +1245,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 startActivity(i);
                 finish();
             }
+
+
         }
 
     }
