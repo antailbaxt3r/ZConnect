@@ -79,6 +79,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 import static com.zconnect.zutto.zconnect.utilities.RequestCodes.GALLERY_REQUEST;
 
@@ -135,6 +136,7 @@ public class OpenStatus extends BaseActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
         anonymousSendBtn = findViewById(R.id.sendAnonymousButton);
         currentUserID = user.getUid();
+        intentHandle = new IntentHandle();
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -505,7 +507,8 @@ public class OpenStatus extends BaseActivity {
                 String messagePushID = ref.child("Chat").push().getKey();
                 message.setKey(messagePushID);
                 ref.child("Chat").child(messagePushID).setValue(message);
-
+                Log.d("AINTNO", "POP");
+                ref.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
             }
 
             @Override
@@ -728,7 +731,8 @@ public class OpenStatus extends BaseActivity {
                                 String messagePushID = ref.child("Chat").push().getKey();
                                 message.setKey(messagePushID);
                                 ref.child("Chat").child(messagePushID).setValue(message);
-
+                                Log.d("AINTNO", "POP2");
+                                ref.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
                             }
 
                             @Override

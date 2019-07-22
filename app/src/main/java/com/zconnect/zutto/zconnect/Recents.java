@@ -124,7 +124,7 @@ public class Recents extends Fragment {
         userReference.keepSynced(true);
         //Keep databaseReference in sync even without needing to call valueEventListener
         homeDbRef.keepSynced(true);
-        queryRef = homeDbRef.limitToLast(100);
+        queryRef = homeDbRef.limitToLast(75);
         queryRef.keepSynced(true);
 
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshContainer);

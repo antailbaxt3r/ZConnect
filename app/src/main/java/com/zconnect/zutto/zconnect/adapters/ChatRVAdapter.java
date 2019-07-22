@@ -673,14 +673,74 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                   if(ctx instanceof ChatActivity){
-                       if(forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
-                           return;
-                       }
-                       else {
-                           ((ChatActivity) ctx).setAnonymousChat();
-                       }
-                   }
+                    String messageText = message.getMessage();
+                    messageText = messageText.substring(1,messageText.length()-1);
+                    //TODO IMPROVE EXTRACTION OF USERNAME AND UID
+                    String newMessageText = "", token = "";
+                    ArrayList<Integer> startIndexList = new ArrayList<>();
+                    ArrayList<Integer> endIndexList = new ArrayList<>();
+                    ArrayList<String> uid = new ArrayList<>();
+
+                    int startIndex = 0;
+                    int endIndex = 0;
+                    boolean isToken = false;
+                    try {
+                        for (int i = 0; i < messageText.length(); i++) {
+                            char letter = messageText.charAt(i);
+                            if (letter == '@') {
+                                startIndex = i;
+                                isToken = true;
+                            } else if (letter == '~') {
+                                endIndex = i;
+                                newMessageText += token;
+                                token = "";
+                            } else if (letter == ';') {
+                                startIndexList.add(newMessageText.length()-endIndex+startIndex);
+                                endIndexList.add(newMessageText.length());
+                                Log.d("logtokrn", token);
+                                uid.add(token.substring(1));
+                                startIndex = 0;
+                                endIndex = 0;
+                                token = "";
+                                isToken = false;
+                                continue;
+                            }
+
+                            if (isToken) {
+                                token += letter;
+                            } else {
+                                newMessageText += letter;
+                            }
+
+                        }
+                        SpannableString spannableString = new SpannableString(newMessageText);
+                        int i = 0;
+                        for (String u : uid) {
+                            spannableString.setSpan(new MentionsClickableSpan(holder.itemView.getContext(), u), startIndexList.get(i), endIndexList.get(i), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            i++;
+                        }
+                        holder.message.setText(spannableString);
+                        holder.message.setMovementMethod(LinkMovementMethod.getInstance());
+                        holder.message.setTypeface(holder.message.getTypeface(),Typeface.BOLD_ITALIC);
+                        holder.message.setHighlightColor(Color.TRANSPARENT);
+                        Linkify.addLinks(holder.message, Linkify.ALL);
+
+                    }
+                    catch (Exception e){
+                        Log.e("MYERROR",e.toString());
+                        holder.message.setText("Unable to load the message");
+
+                    }
+
+
+//                    if(ctx instanceof ChatActivity){
+//                       if(forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+//                           return;
+//                       }
+//                       else {
+//                           ((ChatActivity) ctx).setAnonymousChat();
+//                       }
+//                   }
 
 
                 }

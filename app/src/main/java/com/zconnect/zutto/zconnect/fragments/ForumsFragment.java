@@ -47,6 +47,7 @@ public class ForumsFragment extends Fragment {
     ProgressBar progressBar;
     FirebaseAuth mAuth;
     DBHelper mydb;
+    static boolean isActivityRunning;
     Boolean newUser =false;
 
     Vector<ForumCategoriesItemFormat> forumCategoriesItemFormats = new Vector<ForumCategoriesItemFormat>();
@@ -86,7 +87,7 @@ public class ForumsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mydb = new DBHelper(getContext());
-
+        isActivityRunning = true;
         forumCategoriesItemFormats = mydb.getTabForums(currenttab);
 
         tabsCategories.addValueEventListener(new ValueEventListener() {
@@ -195,10 +196,19 @@ public class ForumsFragment extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
                 progressBar.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
-                Toast.makeText(getContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
+                if(isActivityRunning) {
+                    Toast.makeText(getContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
+    }
+
+
+    @Override
+    public void onStop() {
+        isActivityRunning = false;
+        super.onStop();
     }
 
     public Integer totalSeenNumber(String catID){

@@ -476,12 +476,16 @@ exports.updateLastMessageAfterDeletion = functions.database.ref('communities/{co
 exports.addTitleImagePersChatUserForums = functions.database.ref('/communities/{communityID}/features/forums/tabsCategories/{tabID}/{forumID}')
 .onCreate((snapshot, context) => {
   let { tabID, forumID } = context.params;
-  console.log("1 ", tabID, forumID, snapshot.val());
-  if(tabID === null || forumID === null)
+  console.log("1 ", typeof tabID, forumID, snapshot.val());
+  if(tabID === "null" || forumID === "null")
   {
-    console.warn(`Invalid params, expected 'tabID' and 'forumID'`, context.params);
-    tabID = snapshot.ref.parent.id;
-    forumID = snapshot.ref.id;
+    return console.log("null string values");
+  }
+  else if(tabID === null || forumID === null)
+  {
+    console.log(`Invalid params, expected 'tabID' and 'forumID'`, context.params);
+    tabID = snapshot.ref.parent.key;
+    forumID = snapshot.ref.key;
     console.log("2", tabID, forumID, snapshot.val());
   }
   if(tabID!=="personalChats")
@@ -505,8 +509,10 @@ exports.addTitleImagePersChatUserForums = functions.database.ref('/communities/{
   delete _forumObj1["users"];
   delete _forumObj2["users"];
   console.log("name 1 ", _forumObj1.name, "name 2 ", _forumObj2.name);
-  return userForumRef1.child(forumID).set(_forumObj1)
-  && userForumRef2.child(forumID).set(_forumObj2);
+  return () => { 
+    userForumRef1.child(forumID).set(_forumObj1);
+    userForumRef2.child(forumID).set(_forumObj2)
+  };
 });
 
 exports.deleteForumInAppNotif = functions.database.ref('communities/{communityID}/features/forums/categories/{forumID}')
@@ -556,6 +562,32 @@ exports.deleteEventsInAppNotif = functions.database.ref('communities/{communityI
       else
         global_inAppNotifsRef.child(notif.key).remove();
       notif.ref.remove();
+    });
+  });
+});
+
+exports.syncCabChatsWithCabForums = functions.database.ref('communities/{communityID}/features/cabPool/allCabs/{cabID}/Chat/{messageID}/')
+.onCreate((snapshot, context) => {
+  const { communityID, cabID, messageID } = context.params;
+  const chatForumRef = snapshot.ref.root.child(`communities/${communityID}/features/forums/categories/${cabID}/Chat`);
+  return chatForumRef.once('value', chatSnapshot => {
+    if(chatSnapshot.hasChild(messageID))
+      return console.log("Already synced this message: ", snapshot.child('message').val());
+    return chatForumRef.child(messageID).set(snapshot.val());
+  });
+});
+
+exports.syncCabForumsWithCabChats = functions.database.ref('communities/{communityID}/features/forums/categories/{cabID}/Chat/{messageID}/')
+.onWrite((change, context) => {
+  const { communityID, cabID, messageID } = context.params;
+  return change.after.ref.parent.parent.child('tab').once('value', tabSnapShot => {
+    if(tabSnapShot.val()!=="cabpools")
+      return;
+      const cabChatRef = change.before.ref.root.child(`communities/${communityID}/features/cabPool/allCabs/${cabID}/Chat`);
+      return cabChatRef.once('value', chatSnapshot => {
+        if(chatSnapshot.hasChild(messageID))
+          return console.log("Already synced this message: ", change.after.child('message').val());
+        return cabChatRef.child(messageID).set(change.after.val())
     });
   });
 });
