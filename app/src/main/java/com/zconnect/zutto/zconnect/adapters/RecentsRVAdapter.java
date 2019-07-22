@@ -1987,12 +1987,50 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     pollBNo.setLayoutParams(paramsBNo);
                     pollCNo.setLayoutParams(paramsCNo);
 
-                    pollOptionA.setTextColor(context.getResources().getColor(R.color.deeppurple700));
-                    pollOptionB.setTextColor(context.getResources().getColor(R.color.deeppurple700));
-                    pollOptionC.setTextColor(context.getResources().getColor(R.color.deeppurple700));
-                    markerA.setTextColor(context.getResources().getColor(R.color.deeppurple700));
-                    markerB.setTextColor(context.getResources().getColor(R.color.deeppurple700));
-                    markerC.setTextColor(context.getResources().getColor(R.color.deeppurple700));
+                    pollOptionA.setTextColor(context.getResources().getColor(R.color.white));
+                    pollOptionB.setTextColor(context.getResources().getColor(R.color.white));
+                    pollOptionC.setTextColor(context.getResources().getColor(R.color.white));
+                    markerA.setTextColor(context.getResources().getColor(R.color.white));
+                    markerB.setTextColor(context.getResources().getColor(R.color.white));
+                    markerC.setTextColor(context.getResources().getColor(R.color.white));
+
+
+                    //set background
+                    if (optionACount == 0){
+                        pollANo.setBackground(context.getResources().getDrawable(R.drawable.rounded_corner_purple_light));
+                    }else{
+                        pollANo.setBackground(context.getResources().getDrawable(R.drawable.right_rounded_corner_purple_border));
+                    }
+
+                    if (optionBCount == 0){
+                        pollBNo.setBackground(context.getResources().getDrawable(R.drawable.rounded_corner_purple_light));
+                    }else{
+                        pollBNo.setBackground(context.getResources().getDrawable(R.drawable.right_rounded_corner_purple_border));
+                    }
+
+                    if (optionCCount == 0){
+                        pollCNo.setBackground(context.getResources().getDrawable(R.drawable.rounded_corner_purple_light));
+                    }else{
+                        pollCNo.setBackground(context.getResources().getDrawable(R.drawable.right_rounded_corner_purple_border));
+                    }
+
+                    if (optionACount != 0 && optionBCount == 0 && optionCCount == 0){
+                        pollAYes.setBackground(context.getResources().getDrawable(R.drawable.rounded_corner_purple_dark));
+                    }else{
+                        pollAYes.setBackground(context.getResources().getDrawable(R.drawable.left_rounded_corner_full_purple_border));
+                    }
+
+                    if (optionBCount != 0 && optionACount == 0 && optionCCount == 0){
+                        pollBYes.setBackground(context.getResources().getDrawable(R.drawable.rounded_corner_purple_dark));
+                    }else{
+                        pollBYes.setBackground(context.getResources().getDrawable(R.drawable.left_rounded_corner_full_purple_border));
+                    }
+
+                    if (optionCCount != 0 && optionBCount == 0 && optionACount == 0){
+                        pollCYes.setBackground(context.getResources().getDrawable(R.drawable.rounded_corner_purple_dark));
+                    }else{
+                        pollCYes.setBackground(context.getResources().getDrawable(R.drawable.left_rounded_corner_full_purple_border));
+                    }
 
                     //make highest option bold
                     if (optionACount > optionBCount && optionACount > optionCCount){
