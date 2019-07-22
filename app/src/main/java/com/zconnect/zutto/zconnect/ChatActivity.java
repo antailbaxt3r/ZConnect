@@ -655,7 +655,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 }
 
 
-                if (type.equals("forums") || type.equals("others") || type.equals("personalChats")) {
+                if (type.equals("forums") || type.equals("others") || type.equals("personalChats") || type.equals("cabpools")) {
                     DBHelper mydb = new DBHelper(ChatActivity.this);
                     setActionBarTitle(getIntent().getStringExtra("name"));
                     toolbar.setTitle(getIntent().getStringExtra("name"));
@@ -870,6 +870,10 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 }
 
                 databaseReference.child("Chat").child(messagePushID).setValue(message);
+                if(type.equals("post"))
+                {
+                    databaseReference.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
+                }
 //                messages.add(message);
 
 //                adapter.notifyDataSetChanged();
@@ -934,6 +938,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                     metadata.put("ref",getIntent().getStringExtra("ref"));
                     metadata.put("type",getIntent().getStringExtra("type"));
                     metadata.put("uid",getIntent().getStringExtra("uid"));
+                    Log.d("OLDTOWNROADC", type);
                     GlobalFunctions.inAppNotifications("commented on your status","Comment: "+text,userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
                     notificationSender.execute(postChatNotification);
 
@@ -1035,6 +1040,10 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                                 String messagePushID = databaseReference.child("Chat").push().getKey();
                                 message.setKey(messagePushID);
                                 databaseReference.child("Chat").child(messagePushID).setValue(message);
+                                if(type.equals("post"))
+                                {
+                                    databaseReference.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
+                                }
                                 if (type.equals("forums")) {
                                     NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItem.getUserUID());
 

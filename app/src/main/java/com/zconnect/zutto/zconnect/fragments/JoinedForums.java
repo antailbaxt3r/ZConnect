@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -23,6 +24,7 @@ import android.widget.ProgressBar;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -308,7 +310,8 @@ public class JoinedForums extends Fragment {
 
 //                }
 //                else{
-                    adapter.notifyDataSetChanged();
+//                    adapter.notifyDataSetChanged();
+                adapter.updateList(forumCategoriesItemFormats);
 
 //                }
                 try {
@@ -340,7 +343,8 @@ public class JoinedForums extends Fragment {
 
                     }
                 }, 500);
-                adapter.notifyDataSetChanged();
+//                adapter.notifyDataSetChanged();
+                adapter.updateList(forumCategoriesItemFormats);
 
             }
 
@@ -380,6 +384,285 @@ public class JoinedForums extends Fragment {
         }
 
     }
+
+
+
+//    private  void setAdapter1(final String queryString, final Boolean search) {
+//
+//        ChildEventListener joinedForumsListener1 = new ChildEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                forumCategoriesItemFormats.clear();
+//                Parcelable recyclerViewState = null;
+//                isUnread = false;
+//                try {
+//                    if (joinedForumsRV != null) {
+//                        recyclerViewState = joinedForumsRV.getLayoutManager().onSaveInstanceState();
+//                    }
+//                }
+//                catch (Exception e){
+//                    recyclerViewState = null;
+//                }
+//                ChatItemFormats fakeLastMessage = new ChatItemFormats();
+//                fakeLastMessage.setMessage(" ");
+//                fakeLastMessage.setTimeDate(0);
+//                fakeLastMessage.setName(" ");
+//
+//                exploreButton.setName("Explore");
+//                exploreButton.setCatUID("add");
+//                exploreButton.setTabUID("this");
+//                exploreButton.setLastMessage(fakeLastMessage);
+//                exploreButton.setForumType(ForumTypeUtilities.KEY_EXPLORER_FORUM_STR);
+//
+//                for(DataSnapshot shot2: dataSnapshot.getChildren()) {
+//
+//                }
+//
+//
+//
+//
+//                if(activityType == null) {
+//
+//                    forumCategoriesItemFormats.add(exploreButton);
+//                }
+//
+//                Collections.reverse(forumCategoriesItemFormats);
+//
+////                adapter = new JoinedForumsAdapter(forumCategoriesItemFormats,getContext());
+////                joinedForumsRV.setLayoutManager(linearLayoutManager);
+////                joinedForumsRV.setAdapter(adapter);
+////
+////                progressBar.setVisibility(View.GONE);
+////                joinedForumsRV.setVisibility(View.VISIBLE);
+////                Log.d("Adapter List",forumCategoriesItemFormats.toString());
+////                adapter = new JoinedForumsAdapter(forumCategoriesItemFormats,getActivity());
+////                joinedForumsRV.setLayoutManager(linearLayoutManager);
+////                joinedForumsRV.setAdapter(adapter);
+////                adapter.notifyDataSetChanged();
+////                if(adapter == null ) {
+//                Log.d("TryHere","Setting Adapter");
+//                adapter = new JoinedForumsAdapter(forumCategoriesItemFormats, getActivity());
+//                joinedForumsRV.setLayoutManager(linearLayoutManager);
+//                joinedForumsRV.setAdapter(adapter);
+//                if(joinedForumsRV != null && recyclerViewState != null) {
+//                    joinedForumsRV.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+//                }
+//
+////                }
+////                else{
+//                adapter.notifyDataSetChanged();
+//
+////                }
+//                try {
+//                    if (!isUnread) {
+//                        if (activityType == null) {
+//                            TabLayout tabs = getActivity().findViewById(R.id.navigation);
+//                            tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
+//                        }
+//                    } else {
+//                        if (activityType == null) {
+//
+//                            TabLayout tabs = getActivity().findViewById(R.id.navigation);
+//                            tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
+//                            isUnread = false;
+//                        }
+//                    }
+//                }
+//                catch (Exception e){
+//                    Log.d("JoinedForumDot",e.toString());
+//                }
+//
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//
+//                        shimmerFrameLayout.stopShimmerAnimation();
+//                        shimmerFrameLayout.setVisibility(View.GONE);
+//                        joinedForumsRV.setVisibility(View.VISIBLE);
+//
+//                    }
+//                }, 500);
+//                adapter.notifyDataSetChanged();
+//
+//            }
+//
+//            @Override
+//            public void onChildAdded(@NonNull DataSnapshot shot2, @Nullable String s) {
+//                try {
+//                    String name = null;
+//                    String imageURL = null;
+//                    Log.d("Try",shot2.toString());
+//                    ForumCategoriesItemFormat temp = new ForumCategoriesItemFormat();
+//                    try{
+//                        temp = shot2.getValue(ForumCategoriesItemFormat.class);
+//                    }
+//                    catch (Exception e){
+//                        Log.d("Try:ErrorFormat", e.toString());
+//
+//                    }
+//                    if(temp==null) {
+//                        temp.setTabUID(shot2.child("tabUID").getValue().toString());
+//                        temp.setCatUID(shot2.child("catUID").getValue().toString());
+//                    }
+//
+//
+//
+//                    if(shot2.child("TabUID").toString().equals("personalChats")){
+//                        name = shot2.child("personalChatTitle").getValue().toString();
+//                        imageURL = shot2.child("imageThumb").getValue().toString();
+//                        shot2.child("personalChatTitle");
+//                    }
+//
+//                    if (!shot2.hasChild("totalMessages")) {
+//                        temp.setTotalMessages(0);
+//                    }
+//                    mydb = new DBHelper(getContext());
+////                        Log.d("TabUID",)
+//                    notifTabForum = mydb.getTabForums(shot2.child("tabUID").getValue().toString());
+//                    temp.setSeenMessages(totalSeenNumber(temp.getCatUID()));
+//
+//
+//                    if(activityType != null) {
+//                        if (activityType.equals(ForumUtilities.VALUE_SHARE_FORUM_STR)) {
+//                            Log.d("Setting message", message);
+//                            temp.setForumType(ForumUtilities.VALUE_SHARE_FORUM_STR);
+//                            temp.setMessage(message);
+//                            temp.setMessageType(messageType);
+//
+//                        }
+//                    }
+//                    else {
+//                        if(shot2.child("forumType").getValue()==null)
+//                            temp.setForumType(ForumTypeUtilities.KEY_JOINED_STR);
+//                    }
+//                    if(name!=null){
+//                        temp.setName(name);
+//                    }
+//                    if(imageURL!=null){
+//                        temp.setImage(imageURL);
+//                        temp.setImageThumb(imageURL);
+//                    }
+//                    Log.d("Try",temp.getCatUID());
+//                    Log.d("Try",temp.getForumType());
+//                    Log.d("Try",temp.getLastMessage().getMessage());
+//                    Log.d("Try",temp.getTotalMessages().toString());
+//
+//                    if(shot2.hasChild("isUnread")){
+//                        temp.setUnread(shot2.child("isUnread").getValue(Boolean.class));
+//                    }
+//                    else{
+//
+//                    }
+//
+//                    boolean unread = false;
+//                    if(temp.getTotalMessages()>temp.getSeenMessages()){
+//                        Log.d("UNREADMESSAGE",temp.getName());
+//                        unread = true;
+//                        isUnread = true;
+//
+//
+//                    }
+//                    if(unread){
+//                        if(activityType == null) {
+//
+//                            TabLayout tabs = getActivity().findViewById(R.id.navigation);
+//                            tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
+//                        }
+////                        isUnread = false;
+//                    }
+//
+//                    if (shot2.child("users").child(mAuth.getCurrentUser().getUid()).hasChild("userType")) {
+//                        if (!(shot2.child("users").child(mAuth.getCurrentUser().getUid()).child("userType").getValue().equals(ForumsUserTypeUtilities.KEY_BLOCKED))) {
+//                            if (shot2.hasChild("lastMessage")) {
+//                                forumCategoriesItemFormats.add(temp);
+//                            } else {
+//                                ChatItemFormats lastMessage = new ChatItemFormats();
+//                                lastMessage.setMessage(" ");
+//                                lastMessage.setTimeDate(1388534400);
+//                                lastMessage.setName(" ");
+//                                temp.setLastMessage(lastMessage);
+//                                forumCategoriesItemFormats.add(temp);
+//                            }
+//                        }
+//                    } else {
+//                        if (shot2.hasChild("lastMessage")) {
+//                            forumCategoriesItemFormats.add(temp);
+//                        } else {
+//                            ChatItemFormats lastMessage = new ChatItemFormats();
+//                            lastMessage.setMessage(" ");
+//                            lastMessage.setTimeDate(1388534400);
+//                            lastMessage.setName(" ");
+//                            lastMessage.setMessageType("message");
+//                            lastMessage.setUuid(" ");
+//                            temp.setLastMessage(lastMessage);
+//                            forumCategoriesItemFormats.add(temp);
+//                        }
+//
+//                    }
+//                    Collections.sort(forumCategoriesItemFormats, new Comparator<ForumCategoriesItemFormat>() {
+//                        @Override
+//                        public int compare(ForumCategoriesItemFormat o2, ForumCategoriesItemFormat o1) {
+//
+//                            return Long.valueOf((Long) o2.getLastMessage().getTimeDate()).compareTo((Long) o1.getLastMessage().getTimeDate()) ;
+//                        }
+//                    });
+//
+//                }catch (Exception e){Log.e("Try:Outside Error",e.toString());}
+//
+//            }
+//
+//            @Override
+//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        };
+//
+//
+//        if(search){
+//            if(!queryString.equals("")) {
+//                searchForumCategoriesItemFormats = new Vector<ForumCategoriesItemFormat>();
+//                for (int i = 0; i < forumCategoriesItemFormats.size(); i++) {
+//
+//                    if (forumCategoriesItemFormats.get(i).getName().toLowerCase().trim().contains(queryString.toLowerCase())) {
+//                        searchForumCategoriesItemFormats.add(forumCategoriesItemFormats.get(i));
+//                    }
+//                    if (searchForumCategoriesItemFormats.size() > 7) {
+//                        break;
+//                    }
+//                }
+//
+//                adapter = new JoinedForumsAdapter(searchForumCategoriesItemFormats,getContext());
+//                joinedForumsRV.setAdapter(adapter);
+////                progressBar.setVisibility(View.GONE);
+//                joinedForumsRV.setVisibility(View.VISIBLE);
+//            }else {
+//                adapter = new JoinedForumsAdapter(forumCategoriesItemFormats,getContext());
+//                joinedForumsRV.setAdapter(adapter);
+//                joinedForumsRV.setVisibility(View.VISIBLE);
+//            }
+//
+//        }else {
+//            userForumsRef.addValueEventListener(joinedForumsListener);
+////            forumsCategoriesRef.addValueEventListener(joinedForumsListener);
+//        }
+//
+//    }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
