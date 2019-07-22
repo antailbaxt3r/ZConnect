@@ -347,10 +347,13 @@ public class OpenUserDetail extends BaseActivity {
                 counterPush.pushValues();
                 if(like_status){
                     db_like.child(myUID).setValue(null);
+                    btn_like.setImageResource(R.drawable.like);
                     like_status = false;
                 }else {
                     db_like.child(myUID).setValue(true);
                     like_status = true;
+                    btn_like.setImageResource(R.drawable.like_blue);
+
                     currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {

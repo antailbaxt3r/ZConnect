@@ -147,6 +147,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private DatabaseReference mDatabaseStats;
     private DatabaseReference mDatabaseUserStats;
     private String navHeaderBackGroundImageUrl = null;
+    SimpleDraweeView navHeaderImage;
+    private String navHeaderImageUrl;
     private String Title;
     Context context;
 
@@ -983,6 +985,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         editProfileValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                navHeaderImageUrl = dataSnapshot.child("imageURL").getValue().toString();
+                if(navHeaderImageUrl!= null){
+                    navHeaderImage = findViewById(R.id.iv_z_connect_logo_nav_header1);
+                    navHeaderImage.setImageURI(Uri.parse(navHeaderImageUrl));
+                }
                 if(!dataSnapshot.hasChild("mobileNumber")){
                     DatabaseReference referredUsersRef = FirebaseDatabase.getInstance().getReference().child("referredUsers");
                     referredUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -1237,15 +1244,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 Intent i = new Intent(this, CommunitiesAround.class);
                 startActivity(i);
                 finish();
-            }
-            boolean isFirstRun = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("isFirstRun",true);
-
-            if(isFirstRun){
-                showAppTour();
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean("isFirstRun",false);
-                editor.apply();
             }
 
 
