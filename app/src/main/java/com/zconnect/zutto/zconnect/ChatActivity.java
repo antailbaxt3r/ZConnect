@@ -111,6 +111,7 @@ import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
 import com.zconnect.zutto.zconnect.adapters.ChatRVAdapter;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.io.File;
@@ -300,6 +301,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
             if (!TextUtils.isEmpty(getIntent().getStringExtra("type"))) {
                 type = getIntent().getStringExtra("type");
+                Log.d("this is the type", type);
             }
         }
         joinButton = (Button) findViewById(R.id.join);
@@ -332,6 +334,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         } else if (type.equals("storeroom")) {
             toolbar.setTitle("Chat with seller");
         } else if (type.equals("post")) {
+            Log.d(TAG, "onCreate: ihjg");
             toolbar.setTitle("Comments");
         } else if (type.equals("personalChats")) {
             Log.d("Setting it to:", getIntent().getStringExtra("name"));
@@ -940,6 +943,23 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                     metadata.put("uid",getIntent().getStringExtra("uid"));
                     Log.d("OLDTOWNROADC", type);
                     GlobalFunctions.inAppNotifications("commented on your status","Comment: "+text,userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
+                    FirebaseDatabase.getInstance().getReference().child(communityReference).child("Users1").child(getIntent().getStringExtra("uid")).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            UserItemFormat userItemFormat = new UserItemFormat();
+                            HashMap<String,Object> meta = new HashMap<>();
+                            meta.put("ref",databaseReference);
+                            userItemFormat.setUserUID(getIntent().getStringExtra("uid"));
+                            userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
+                            userItem.setUsername((String) dataSnapshot.child("username").getValue());
+                            GlobalFunctions.inAppNotifications("Someone just commented on a status that you commented on","Comment: "+text,userItemFormat,false,"statusNestedComment",meta,null);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                     notificationSender.execute(postChatNotification);
 
                 } else if (type.equals("messages")) {

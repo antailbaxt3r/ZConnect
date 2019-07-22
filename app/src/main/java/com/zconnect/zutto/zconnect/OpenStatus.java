@@ -509,6 +509,17 @@ public class OpenStatus extends BaseActivity {
                 ref.child("Chat").child(messagePushID).setValue(message);
                 Log.d("AINTNO", "POP");
                 ref.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
+                HashMap<String,Object> metadata = new HashMap<>();
+                metadata.put("key",getIntent().getStringExtra("key"));
+                GlobalFunctions.inAppNotifications("commented on your status","Comment: "+text,userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
+                UserItemFormat userItemFormat = new UserItemFormat();
+                HashMap<String,Object> meta = new HashMap<>();
+                meta.put("ref",ref);
+                userItemFormat.setUserUID(getIntent().getStringExtra("uid"));
+                userItemFormat.setImageURL(getIntent().getStringExtra("imageURL"));
+                userItemFormat.setUsername(getIntent().getStringExtra("username"));
+                GlobalFunctions.inAppNotifications("commented on a status you commented","Comment: "+text,userItemFormat,false,"statusNestedComment",meta,null);
+
             }
 
             @Override
