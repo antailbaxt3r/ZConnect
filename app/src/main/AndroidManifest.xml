@@ -452,18 +452,35 @@
             android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".Internships"
             android:label="Internships"
             android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".ApplyInternships"
             android:label="Apply for Internship"
-            android:parentActivityName=".HomeActivity"
+            android:parentActivityName=".Internships"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".InternshipsDetails"
+            android:label="Internship Details"
+            android:parentActivityName=".Internships"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".MyInternships"
+            android:label="My Internships"
+            android:parentActivityName=".Internships"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".VerificationPage"
             android:label="@string/title_activity_verfication_page"

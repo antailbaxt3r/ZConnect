@@ -1,6 +1,5 @@
 package com.zconnect.zutto.zconnect;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,39 +7,40 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.adapters.CabPoolRVAdapter;
 import com.zconnect.zutto.zconnect.adapters.InternshipsRVAdapter;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.itemFormats.InternshipsItemFormat;
 
 import java.util.Vector;
 
-public class Internships extends BaseActivity {
+public class MyInternships extends BaseActivity{
 
     private RecyclerView recyclerView;
     private TextView noInternshipsText;
     private InternshipsRVAdapter internshipsRVAdapter;
     Vector<InternshipsItemFormat> internshipsList = new Vector<InternshipsItemFormat>();
-    DatabaseReference databaseReference;
+    DatabaseReference databaseReference,reference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_internships);
 
+        setContentView(R.layout.my_internships);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         setToolbar();
+        toolbar.setTitle("My Internships");
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
 
@@ -67,12 +67,14 @@ public class Internships extends BaseActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.internships_main_rv);
         noInternshipsText = (TextView) findViewById(R.id.no_internships_available_message);
-        internshipsRVAdapter = new InternshipsRVAdapter(Internships.this, internshipsList);
+        internshipsRVAdapter = new InternshipsRVAdapter(MyInternships.this, internshipsList);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
         recyclerView.setAdapter(internshipsRVAdapter);
         recyclerView.setVisibility(View.INVISIBLE);
 
         databaseReference = (DatabaseReference) FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("internships").child("opportunities");
+        reference = FirebaseDatabase.getInstance().getReference().child("appliedInternships");
+
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -80,9 +82,22 @@ public class Internships extends BaseActivity {
                 internshipsList.clear();
                 for (DataSnapshot shot: dataSnapshot.getChildren())
                 {
-                    InternshipsItemFormat internshipsItemFormat = shot.getValue(InternshipsItemFormat.class);
-                    internshipsList.add(internshipsItemFormat);
+                    internshipsList.add(shot.getValue(InternshipsItemFormat.class));
+                    /*reference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            InternshipsItemFormat internshipsItemFormat = shot.getValue(InternshipsItemFormat.class);
+                            if (dataSnapshot.child(internshipsItemFormat.getOrgID()).child(internshipsItemFormat.getKey()).hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                internshipsList.add(internshipsItemFormat);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });*/
                 }
+
                 if (internshipsList.size()==0)
                 {
                     recyclerView.setVisibility(View.GONE);
@@ -101,17 +116,5 @@ public class Internships extends BaseActivity {
 
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_internships, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        startActivity(new Intent(getApplicationContext(), MyInternships.class));
-        return super.onOptionsItemSelected(item);
     }
 }
