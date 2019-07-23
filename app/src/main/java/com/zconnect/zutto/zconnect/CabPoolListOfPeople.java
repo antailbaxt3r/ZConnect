@@ -489,7 +489,7 @@ public class CabPoolListOfPeople extends BaseActivity {
                 if (!flag) {
                     final UsersListItemFormat userDetails = new UsersListItemFormat();
                     DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    final DatabaseReference forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("others").child(key);
+                    final DatabaseReference forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("cabpools").child(key);
                     user.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -539,17 +539,17 @@ public class CabPoolListOfPeople extends BaseActivity {
     }
 
     private void openChatActivity() {
-        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("others").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("cabpools").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue() != null) {
+                if(dataSnapshot.child("name").getValue() != null) {
                     String name = dataSnapshot.child("name").getValue().toString();
 
                     Intent intent = new Intent(CabPoolListOfPeople.this, ChatActivity.class);
                     intent.putExtra("type", "forums");
                     intent.putExtra("key", key);
                     intent.putExtra("name", name);
-                    intent.putExtra("tab", "others");
+                    intent.putExtra("tab", "cabpools");
                     intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
 
                     startActivity(intent);

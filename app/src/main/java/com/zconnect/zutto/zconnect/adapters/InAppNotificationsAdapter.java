@@ -35,6 +35,7 @@ import com.zconnect.zutto.zconnect.ExploreForumsActivity;
 import com.zconnect.zutto.zconnect.InfoneProfileActivity;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.OpenProductDetails;
+import com.zconnect.zutto.zconnect.OpenStatus;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.VerificationPage;
@@ -82,13 +83,7 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
         if(!notificationsList.isEmpty()) {
 
                     Log.d("AAAA",notificationsList.get(position).getScope() + " " );
-                try{
-               /* if (notificationsList.get(position).getScope().equals(NotificationIdentifierUtilities.KEY_GLOBAL)&&!notificationsList.get(position).getType().equals("adminNotification")) {
-                    holder.simpleDraweeView.setVisibility(View.GONE);
-
-                } else {
-                    holder.simpleDraweeView.setVisibility(View.VISIBLE);
-                }*/
+     //           try{
                 if (notificationsList.get(position).isSeen().get(FirebaseAuth.getInstance().getCurrentUser().getUid()) != null) {
 
                     if(!notificationsList.get(position).isSeen().get(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
@@ -212,11 +207,8 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
                             context.startActivity(intent);
                             break;
                         case "statusComment":
-                            intent = new Intent(context, ChatActivity.class);
-                            intent.putExtra("ref", String.valueOf(notificationsList.get(position).getMetadata().get("ref")));
+                            intent = new Intent(context, OpenStatus.class);
                             intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
-                            intent.putExtra("type", "post");
-                            intent.putExtra("uid", String.valueOf(notificationsList.get(position).getMetadata().get("uid")));
                             context.startActivity(intent);
                             break;
                     }
@@ -234,7 +226,7 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
 
                 }           //Open Metadata related stuff
             });
-                }catch (Exception e){}
+              //  }catch (Exception e){}
         }
     }
 

@@ -145,7 +145,7 @@ public class AddStatus extends BaseActivity {
             statusHints.get(i).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String hint_str = hint.getText().toString().substring(0,hint.getText().length()-3) + "?";
+                    String hint_str = hint.getText().toString().substring(0,hint.getText().length()-3) + " ?";
                     messageInput.setText(hint_str);
                     messageInput.setEnabled(true);
                     messageInput.requestFocus();

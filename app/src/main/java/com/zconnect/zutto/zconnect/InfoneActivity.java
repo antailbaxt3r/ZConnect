@@ -77,13 +77,16 @@ public class InfoneActivity extends Fragment {
 
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(activity_infone2, container, false);
-
         recyclerViewCat = (RecyclerView) view.findViewById(R.id.rv_cat_infone);
         recyclerViewCat.setVisibility(View.GONE);
         fabCatAdd = getActivity().findViewById(R.id.fab_cat_infone);
@@ -158,7 +161,7 @@ public class InfoneActivity extends Fragment {
                 shimmerFrameLayout.stopShimmerAnimation();
                 shimmerFrameLayout.setVisibility(View.INVISIBLE);
                 recyclerViewCat.setVisibility(View.VISIBLE);
-                Toast.makeText(getActivity().getApplicationContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
+
             }
         };
 

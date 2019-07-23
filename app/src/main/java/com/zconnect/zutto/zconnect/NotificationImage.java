@@ -44,7 +44,6 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.addActivities.AddProduct;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CustomSpinner;
-import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
@@ -239,7 +238,6 @@ public class NotificationImage extends BaseActivity{
                         userItemFormat.setUserUID(UserUtilities.currentUser.getUserUID());
                         userItemFormat.setImageURL(UserUtilities.currentUser.getImageURL());
                         userItemFormat.setUsername(UserUtilities.currentUser.getUsername());
-                        GlobalFunctions.inAppNotifications(" has send a notification","Notification message: "+notificationDescription.getText().toString()+"\nNotification URL: "+nottificationURL.getText().toString(),userItemFormat,true,"adminNotification",null,null);
 
                         NotificationSender notificationSender = new NotificationSender(NotificationImage.this, userId);
                         NotificationItemFormat addImageNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_IMAGE_URL, userId);
@@ -278,7 +276,6 @@ public class NotificationImage extends BaseActivity{
             userItemFormat.setUserUID(UserUtilities.currentUser.getUserUID());
             userItemFormat.setImageURL(UserUtilities.currentUser.getImageURL());
             userItemFormat.setUsername(UserUtilities.currentUser.getUsername());
-            GlobalFunctions.inAppNotifications(" has send a notification","Notification message: "+notificationDescription.getText().toString()+"             Notification URL: "+nottificationURL.getText().toString(),userItemFormat,true,"adminNotification",null,null);
             notificationSender.execute(addImageNotification);
 
             mProgress.dismiss();

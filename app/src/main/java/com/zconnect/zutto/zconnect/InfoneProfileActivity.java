@@ -100,6 +100,7 @@ public class InfoneProfileActivity extends BaseActivity {
     private String userImageURL;
 
     ArrayList<String> phoneNums;
+    public static boolean isActivityRunning;
     /*user id of the current infone contact in /infone/numbers */
     String infoneUserId, catID;
 
@@ -297,7 +298,7 @@ public class InfoneProfileActivity extends BaseActivity {
                                 String key = dataSnapshot.getValue().toString();
                                 Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
                                 intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
-                                intent.putExtra("type", "personalChats");
+                                intent.putExtra("type", "forums");
                                 intent.putExtra("name", name);
                                 intent.putExtra("tab", "personalChats");
                                 intent.putExtra("key", key);
@@ -1027,6 +1028,7 @@ public class InfoneProfileActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        isActivityRunning = true;
         databaseReferenceContact.addValueEventListener(listener);
     }
 
@@ -1041,8 +1043,10 @@ public class InfoneProfileActivity extends BaseActivity {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    if(isActivityRunning){
                     verifyDialog.show();
                     hasCalled = false;
+                    }
                 }
             }, 5000);
 
@@ -1053,6 +1057,7 @@ public class InfoneProfileActivity extends BaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        isActivityRunning = false;
         databaseReferenceContact.removeEventListener(listener);
         mDatabaseViews.removeEventListener(listenerView);
     }

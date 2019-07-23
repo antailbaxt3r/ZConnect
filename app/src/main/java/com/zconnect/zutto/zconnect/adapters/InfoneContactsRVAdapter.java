@@ -329,7 +329,13 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                verifyDialog.show();
+
+                try {
+                    verifyDialog.show();
+                }
+                catch (Exception e){
+                    Log.d("ERROR",e.toString());
+                }
             }
         }, 5000);
 

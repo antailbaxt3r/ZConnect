@@ -347,10 +347,13 @@ public class OpenUserDetail extends BaseActivity {
                 counterPush.pushValues();
                 if(like_status){
                     db_like.child(myUID).setValue(null);
+                    btn_like.setImageResource(R.drawable.like);
                     like_status = false;
                 }else {
                     db_like.child(myUID).setValue(true);
                     like_status = true;
+                    btn_like.setImageResource(R.drawable.like_blue);
+
                     currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -415,6 +418,51 @@ public class OpenUserDetail extends BaseActivity {
                             infoneLoveNotification.setCommunityName(communityTitle);
                             GlobalFunctions.inAppNotifications("has loved your profile","Your profile is loved",userItemFormat,false,"status",null,userProfile.getUserUID());
                             notificationSender.execute(infoneLoveNotification);
+                            Log.d("Try", "clicked");
+                            final DatabaseReference databaseReferenceUser = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB)
+                                    .child(communityReference).child(ZConnectDetails.USERS_DB).child(mAuth.getCurrentUser().getUid());
+
+                            if (databaseReferenceUser == null) {
+                                Toast.makeText(v.getContext(), "The user does not exist!", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            databaseReferenceUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                    if (!dataSnapshot.child("userChats").hasChild(Uid)) {
+                                        userImageURL = dataSnapshot.child("imageURL").getValue().toString();
+                                        Log.d("Try", createPersonalChat(mAuth.getCurrentUser().getUid(), Uid,databaseReferenceUser));
+                                    }
+                                    databaseReferenceUser.child("userChats").child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            String key = dataSnapshot.getValue().toString();
+                                            Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                                            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
+                                            intent.putExtra("type", "forums");
+                                            intent.putExtra("name", name);
+                                            intent.putExtra("tab", "personalChats");
+                                            intent.putExtra("key", key);
+                                            intent.putExtra("match",true);
+                                            startActivity(intent);
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
 
                         }
 
@@ -524,7 +572,7 @@ public class OpenUserDetail extends BaseActivity {
                                 String key = dataSnapshot.getValue().toString();
                                 Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
                                 intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
-                                intent.putExtra("type", "personalChats");
+                                intent.putExtra("type", "forums");
                                 intent.putExtra("name", name);
                                 intent.putExtra("tab", "personalChats");
                                 intent.putExtra("key", key);

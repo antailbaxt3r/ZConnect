@@ -2,22 +2,27 @@ package com.zconnect.zutto.zconnect.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -160,9 +165,9 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 Log.d("VERSIONN", dataSnapshot.getValue(Integer.class) + "");
                                 if (dataSnapshot.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
-                                    Intent intent = new Intent(getContext(), UpdateAppActivity.class);
+                                    Intent intent = new Intent(view.getContext(), UpdateAppActivity.class);
                                     intent.putExtra("feature", "shops");
-                                    getContext().startActivity(intent);
+                                   view.getContext().startActivity(intent);
 
                                 } else {
 
@@ -179,26 +184,39 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                                     CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                                     counterPush.pushValues();
                                     //TODO app crashes on line 163/171
+                                    //TODO UPDATE: FIXED
                                     AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mHomeActivity);
-                                    alertBuilder.setTitle("Add/Ask")
-                                            .setMessage("Do you want to add a product or ask for a product?")
-                                            .setPositiveButton("Ask", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    Intent intent = new Intent(mHomeActivity, AddProduct.class);
-                                                    intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
-                                                    mHomeActivity.startActivity(intent);
-                                                }
-                                            })
-                                            .setNegativeButton("Add", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    Intent intent = new Intent(mHomeActivity, AddProduct.class);
-                                                    intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
-                                                    mHomeActivity.startActivity(intent);
-                                                }
-                                            })
-                                            .show();
+                                    Dialog addAskDialog = new Dialog(view.getContext());
+                                    addAskDialog.setContentView(R.layout.new_dialog_box);
+                                    addAskDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                    addAskDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(getContext(),R.drawable.ic_outline_store_24px));
+                                    TextView heading =  addAskDialog.findViewById(R.id.dialog_box_heading);
+                                    heading.setText("Sell/Ask");
+                                    TextView body = addAskDialog.findViewById(R.id.dialog_box_body);
+                                    body.setText("Do you want to sell a product or ask for a product?");
+                                    Button addButton = addAskDialog.findViewById(R.id.dialog_box_positive_button);
+                                    addButton.setText("Sell");
+                                    addButton.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Intent intent = new Intent(getContext(), AddProduct.class);
+                                            intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
+                                            view.getContext().startActivity(intent);
+                                        }
+                                    });
+                                    Button askButton = addAskDialog.findViewById(R.id.dialog_box_negative_button);
+                                    askButton.setText("Ask");
+                                    askButton.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Intent intent = new Intent(getContext(), AddProduct.class);
+                                            intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
+                                            view.getContext().startActivity(intent);
+                                        }
+                                    });
+
+                                    addAskDialog.show();
+
                                 }
                             }
 
@@ -269,9 +287,9 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 Log.d("VERSIONN", dataSnapshot.getValue(Integer.class) + "");
                                 if (dataSnapshot.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
-                                    Intent intent = new Intent(getContext(), UpdateAppActivity.class);
+                                    Intent intent = new Intent(view.getContext(), UpdateAppActivity.class);
                                     intent.putExtra("feature", "shops");
-                                    getContext().startActivity(intent);
+                                    view.getContext().startActivity(intent);
 
                                 } else {
 
@@ -289,8 +307,8 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                                     CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                                     counterPush.pushValues();
                                     Intent intent;
-                                    intent = new Intent(getContext(), CabPooling.class);
-                                    startActivity(intent);
+                                    intent = new Intent(view.getContext(), CabPooling.class);
+                                    view.getContext().startActivity(intent);
                                 }
                             }
 
@@ -321,8 +339,9 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                 counterPush.pushValues();
 
                 Intent intent;
-                intent = new Intent(getContext(), AddNotices.class);
-                startActivity(intent);
+                intent = new Intent(v.getContext(), AddNotices.class);
+                v.getContext()
+                        .startActivity(intent);
             }
         };
 

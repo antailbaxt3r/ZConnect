@@ -147,6 +147,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private DatabaseReference mDatabaseStats;
     private DatabaseReference mDatabaseUserStats;
     private String navHeaderBackGroundImageUrl = null;
+    SimpleDraweeView navHeaderImage;
+    private String navHeaderImageUrl;
     private String Title;
     Context context;
 
@@ -334,17 +336,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         FirebaseMessaging.getInstance().setAutoInitEnabled(true);
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
+
         initListeners();
         tabs();
     /////////////////////////////////////////////////////////////////////////////////////
-        boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
-                .getBoolean("isFirstRun", true);
-
-        if(isFirstRun){
-            showAppTour();
-            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit()
-                    .putBoolean("isFirstRun", false).commit();
-        }
 
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -586,7 +581,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         tabImage[2].setImageResource(R.drawable.ic_control_point_outline_24dp);
                         tabImage[3].setImageResource(R.drawable.ic_phone_outline_24dp);
                         tabImage[4].setImageResource(R.drawable.ic_notifications_outline_24dp);
-
 
                         fm.beginTransaction().hide(active).show(recent).commit();
                         active = recent;
@@ -991,6 +985,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         editProfileValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                navHeaderImageUrl = dataSnapshot.child("imageURL").getValue().toString();
+                if(navHeaderImageUrl!= null){
+                    navHeaderImage = findViewById(R.id.iv_z_connect_logo_nav_header1);
+                    navHeaderImage.setImageURI(Uri.parse(navHeaderImageUrl));
+                }
                 if(!dataSnapshot.hasChild("mobileNumber")){
                     DatabaseReference referredUsersRef = FirebaseDatabase.getInstance().getReference().child("referredUsers");
                     referredUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -1246,6 +1245,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 startActivity(i);
                 finish();
             }
+
+
         }
 
     }
@@ -1353,19 +1354,39 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
             }
             case R.id.MyRides: {
+                FirebaseDatabase.getInstance().getReference().child("minimumClientVersion").
+                        child("cabpool").addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta = new HashMap<>();
-                meta.put("type", "fromNavigationDrawer");
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_MY_RIDES_OPEN);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
+                            }
 
-                Intent intent = new Intent(HomeActivity.this, MyRides.class);
-                startActivity(intent);
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                Log.d("VERSIONN", dataSnapshot.getValue(Integer.class) + "");
+                                if (dataSnapshot.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
+                                    Intent intent = new Intent(HomeActivity.this, UpdateAppActivity.class);
+                                    intent.putExtra("feature", "shops");
+                                    startActivity(intent);
+
+                                } else {
+
+                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                    HashMap<String, String> meta = new HashMap<>();
+                                    meta.put("type", "fromNavigationDrawer");
+                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_MY_RIDES_OPEN);
+                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                    counterItemFormat.setMeta(meta);
+                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                    counterPush.pushValues();
+
+                                    Intent intent = new Intent(HomeActivity.this, MyRides.class);
+                                    startActivity(intent);
+                                }
+                            }
+                        });
                 break;
             }
             case R.id.signOut: {

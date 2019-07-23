@@ -91,9 +91,9 @@ public class MyProducts extends BaseActivity {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(MyProducts.this);
-                alertBuilder.setTitle("Add/Ask")
-                        .setMessage("Do you want to add a product or ask for a product?")
-                        .setPositiveButton("Ask", new DialogInterface.OnClickListener() {
+                alertBuilder.setTitle("Sell/Ask")
+                        .setMessage("Do you want to Sell a product or ask for a product?")
+                        .setPositiveButton("Sell", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent = new Intent(MyProducts.this, AddProduct.class);

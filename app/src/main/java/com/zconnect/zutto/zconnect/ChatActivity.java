@@ -111,6 +111,7 @@ import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
 import com.zconnect.zutto.zconnect.adapters.ChatRVAdapter;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.io.File;
@@ -178,6 +179,8 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
     MentionsEditText typer;
     ImageView anonymousSendBtn;
 
+    boolean matchedMessage;
+
 
     //User Mentions
     UserMentionsFormat.MentionsLoader mentionsLoader;
@@ -216,6 +219,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
 
 
@@ -300,6 +304,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
             if (!TextUtils.isEmpty(getIntent().getStringExtra("type"))) {
                 type = getIntent().getStringExtra("type");
+                Log.d("this is the type", type);
             }
         }
         joinButton = (Button) findViewById(R.id.join);
@@ -332,6 +337,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         } else if (type.equals("storeroom")) {
             toolbar.setTitle("Chat with seller");
         } else if (type.equals("post")) {
+            Log.d(TAG, "onCreate: ihjg");
             toolbar.setTitle("Comments");
         } else if (type.equals("personalChats")) {
             Log.d("Setting it to:", getIntent().getStringExtra("name"));
@@ -655,7 +661,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 }
 
 
-                if (type.equals("forums") || type.equals("others") || type.equals("personalChats")) {
+                if (type.equals("forums") || type.equals("others") || type.equals("personalChats") || type.equals("cabpools")) {
                     DBHelper mydb = new DBHelper(ChatActivity.this);
                     setActionBarTitle(getIntent().getStringExtra("name"));
                     toolbar.setTitle(getIntent().getStringExtra("name"));
@@ -744,13 +750,21 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
             }
         }
 
+        if(getIntent().hasExtra(   "match")){
+            matchedMessage = getIntent().getBooleanExtra("match",false);
+            if(matchedMessage){
+                postMessage(false);
+            }
+        }
+
+
     }
 
     private void postMessage(boolean anonymous) {
 
 //        final EditText typer = ((EditText) findViewById(R.id.typer));
         final String text;
-        if (TextUtils.isEmpty(typer.getText().toString().trim())) {
+        if (!matchedMessage && TextUtils.isEmpty(typer.getText().toString().trim())) {
             showToast("Message is empty.");
             return;
         }
@@ -851,6 +865,13 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
                 message.setUuid(userItem.getUserUID());
                 message.setName(userItem.getUsername());
+                if(matchedMessage){
+                    message.setMessage("\"" + "You guys matched!!" + "\"");
+                }
+                else{
+                    message.setMessage("\"" + text + "\"");
+
+                }
                 if (userItem.getAnonymousUsername() != null) {
                     message.setUserName(userItem.getAnonymousUsername());
 
@@ -858,7 +879,6 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                     message.setUserName("Unknown");
                 }
                 message.setImageThumb(userItem.getImageURLThumbnail());
-                message.setMessage("\"" + text + "\"");
                 GlobalFunctions.addPoints(2);
                 message.setKey(messagePushID);
                 if(anonymous){
@@ -868,8 +888,16 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                     message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
 
                 }
+                if(matchedMessage){
+                    message.setMessageType(MessageTypeUtilities.KEY_MATCHED_MESSAGE_STR);
+                    matchedMessage = false;
+                }
 
                 databaseReference.child("Chat").child(messagePushID).setValue(message);
+                if(type.equals("post"))
+                {
+                    databaseReference.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
+                }
 //                messages.add(message);
 
 //                adapter.notifyDataSetChanged();
@@ -934,7 +962,25 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                     metadata.put("ref",getIntent().getStringExtra("ref"));
                     metadata.put("type",getIntent().getStringExtra("type"));
                     metadata.put("uid",getIntent().getStringExtra("uid"));
+                    Log.d("OLDTOWNROADC", type);
                     GlobalFunctions.inAppNotifications("commented on your status","Comment: "+text,userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
+                    FirebaseDatabase.getInstance().getReference().child(communityReference).child("Users1").child(getIntent().getStringExtra("uid")).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            UserItemFormat userItemFormat = new UserItemFormat();
+                            HashMap<String,Object> meta = new HashMap<>();
+                            meta.put("ref",databaseReference);
+                            userItemFormat.setUserUID(getIntent().getStringExtra("uid"));
+                            userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
+                            userItem.setUsername((String) dataSnapshot.child("username").getValue());
+                            GlobalFunctions.inAppNotifications("Someone just commented on a status that you commented on","Comment: "+text,userItemFormat,false,"statusNestedComment",meta,null);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                     notificationSender.execute(postChatNotification);
 
                 } else if (type.equals("messages")) {
@@ -993,6 +1039,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         typer.setText(null);
         // chatView.scrollToPosition(chatView.getChildCount());
 
+
     }
 
     private void postPhoto() {
@@ -1035,6 +1082,10 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                                 String messagePushID = databaseReference.child("Chat").push().getKey();
                                 message.setKey(messagePushID);
                                 databaseReference.child("Chat").child(messagePushID).setValue(message);
+                                if(type.equals("post"))
+                                {
+                                    databaseReference.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
+                                }
                                 if (type.equals("forums")) {
                                     NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItem.getUserUID());
 
