@@ -680,7 +680,17 @@ public class CreateForum extends BaseActivity {
             counterPush.pushValues();
 
             //Home
+        Log.d("DATABASEREFHOME",databaseReferenceHome.toString());
         if(databaseReferenceHome!=null) {
+                databaseReferenceHome.child(newPush.getKey()).child("feature").setValue("Forums");
+                databaseReferenceHome.child(newPush.getKey()).child("name").setValue(catName);
+                databaseReferenceHome.child(newPush.getKey()).child("id").setValue(tabUid);
+                databaseReferenceHome.child(newPush.getKey()).child("desc").setValue(mtabName);
+                databaseReferenceHome.child(newPush.getKey()).child("Key").setValue(newPush.getKey());
+                databaseReferenceHome.child(newPush.getKey()).child("PostTimeMillis").setValue(postTimeMillis);
+
+                databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
             FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

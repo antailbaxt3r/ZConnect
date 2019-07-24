@@ -557,7 +557,13 @@ public class OpenStatus extends BaseActivity {
                         userItemFormat.setUserUID((String) dataSnapshot.child("ImageThumb").getValue());
                         userItemFormat.setImageURL((String) dataSnapshot.child("Username").getValue());
                         userItemFormat.setUsername((String) dataSnapshot.child("UID").getValue());
-                        GlobalFunctions.inAppNotifications("commented on a status you commented","Comment: "+text,userItemFormat,false,"statusNestedComment",meta,null);
+                        try {
+                            GlobalFunctions.inAppNotifications("commented on a status you commented", "Comment: " + text, userItemFormat, false, "statusNestedComment", meta, null);
+                        }
+                        catch (Exception e){
+                            //TODO TEMPRORARY FIX CHANGE ASAP
+                            Log.d("ERROR",e.toString());
+                        }
                     }
 
                     @Override

@@ -27,7 +27,7 @@ import java.util.HashMap;
 public class ApplyInternships extends BaseActivity {
     Intent callingActivityIntent,intent;
     String orgID,internshipID,internshipQuestion,nameOfUserString;
-    DatabaseReference databaseReference,databaseReferenceUsers1;
+    DatabaseReference databaseReference,databaseReferenceUsers1,reference;
     EditText branch,proficiency,answer;
     TextView nameOfUser;
     TextView question;
@@ -39,9 +39,12 @@ public class ApplyInternships extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_apply_internships);
+        setContentView(R.layout.activity_internships_apply);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         setToolbar();
+        toolbar.setTitle("Apply for Internship");
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
 
@@ -65,7 +68,6 @@ public class ApplyInternships extends BaseActivity {
 //            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-
 
         branch = findViewById(R.id.branch);
         proficiency = findViewById(R.id.proficiency);
@@ -91,12 +93,12 @@ public class ApplyInternships extends BaseActivity {
 
         nameOfUserString = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
 
+        reference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("internships").child("opportunities").child(internshipID).child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         databaseReference = (DatabaseReference) FirebaseDatabase.getInstance().getReference().child("appliedInternships").child(orgID).child(internshipID).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         databaseReferenceUsers1 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         nameOfUser.setText(nameOfUserString);
 
-        //Progress bar needed
         databaseReferenceUsers1.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -144,6 +146,7 @@ public class ApplyInternships extends BaseActivity {
                 deatilsMap.put("branch",branch.getText().toString());
                 deatilsMap.put("proficiency",proficiency.getText().toString());
 
+                reference.setValue("true");
                 databaseReference.setValue(internshipMap);
                 databaseReferenceUsers1.updateChildren(deatilsMap);
                 //Log.e("Database Message","Data pushed successfully");

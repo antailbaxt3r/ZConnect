@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ApplyInternships;
 import com.zconnect.zutto.zconnect.Internships;
+import com.zconnect.zutto.zconnect.InternshipsDetails;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.itemFormats.InternshipsItemFormat;
 
@@ -29,26 +30,28 @@ public class InternshipsRVAdapter extends RecyclerView.Adapter<InternshipsRVAdap
     Context context;
     Vector<InternshipsItemFormat> internshipsList;
     DatabaseReference databaseReference;
-    public InternshipsRVAdapter(Context context, Vector<InternshipsItemFormat> internshipsItemFormats)
+    String communityReference;
+    public InternshipsRVAdapter(Context context, Vector<InternshipsItemFormat> internshipsItemFormats,String communityReference)
     {
         this.context = context;
         this.internshipsList = internshipsItemFormats;
+        this.communityReference = communityReference;
     }
 
     @Override
     public InternshipsRVAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View contactView = inflater.inflate(R.layout.internships_item_format, parent, false);
+        View contactView = inflater.inflate(R.layout.item_internships, parent, false);
 
         return new InternshipsRVAdapter.ViewHolder(contactView);
     }
 
     @Override
     public void onBindViewHolder(final InternshipsRVAdapter.ViewHolder holder, int position) {
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("appliedInternships");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("internships").child("opportunities").child(internshipsList.get(position).getKey()).child("users");
 
         try {
-            databaseReference.child(internshipsList.get(position).getOrgID()).child(internshipsList.get(position).getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
@@ -103,6 +106,24 @@ public class InternshipsRVAdapter extends RecyclerView.Adapter<InternshipsRVAdap
             stipend = itemView.findViewById(R.id.internships_stipend);
             organisaton = itemView.findViewById(R.id.internships_organisation);
             apply = itemView.findViewById(R.id.applybutton);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent internshipsDetails = new Intent(context, InternshipsDetails.class);
+                    internshipsDetails.putExtra("description",internshipsList.get(pos).getDescription());
+                    internshipsDetails.putExtra("organization",internshipsList.get(pos).getOrganization());
+                    internshipsDetails.putExtra("role",internshipsList.get(pos).getRole());
+                    internshipsDetails.putExtra("question",internshipsList.get(pos).getQuestion());
+                    internshipsDetails.putExtra("duration",internshipsList.get(pos).getDuration());
+                    internshipsDetails.putExtra("stipend",internshipsList.get(pos).getStipend());
+                    internshipsDetails.putExtra("organizationID",internshipsList.get(pos).getOrgID());
+                    internshipsDetails.putExtra("internshipID",internshipsList.get(pos).getKey());
+                    internshipsDetails.putExtra("appliedCheck",apply.getText().toString());
+
+                    context.startActivity(internshipsDetails);
+                }
+            });
 
             apply.setOnClickListener(view -> {
                 Intent applyForInternship = new Intent(context, ApplyInternships.class);
