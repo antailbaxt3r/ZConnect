@@ -153,7 +153,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:textSize="25sp"
+                    android:textSize="16sp"
                     android:text="@string/question"
                     android:id="@+id/poll_question"/>
 
@@ -161,204 +161,261 @@
                 <!--AND LEAVE OTHERS AT deeppurple200-->
 
                 <!--OPTION A-->
-                <FrameLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginVertical="10dp"
-                    android:id="@+id/optionA_Layout">
+                    android:orientation="horizontal"
+                    android:id="@+id/option_a_fullLayout">
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="0.85"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/margin_x_small"
+                        android:id="@+id/optionA_Layout">
 
-                    <!--CHANGE VISIBILITY OF THE poll_results LINEARLAYOUT-->
-                    <!--TO VISIBLE ON CLICK FOR ALL OPTIONS-->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:weightSum="1"
-                        android:id="@+id/poll_results_optionA"
-                        android:visibility="invisible">
+                        <!--CHANGE VISIBILITY OF THE poll_results LINEARLAYOUT-->
+                        <!--TO VISIBLE ON CLICK FOR ALL OPTIONS-->
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@drawable/left_rounded_corner_full_purple_border"
-                            android:id="@+id/optionA_result_success"
-                            android:layout_weight="0.5"
-                            android:orientation="horizontal"/>
-                        <!--change this to required successFraction-->
+                            android:orientation="horizontal"
+                            android:weightSum="1"
+                            android:id="@+id/poll_results_optionA"
+                            android:visibility="invisible">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/left_rounded_corner_full_purple_border"
+                                android:id="@+id/optionA_result_success"
+                                android:orientation="horizontal"
+                                android:layout_weight="0.5"/>
+                            <!--change this to required successFraction-->
 
-                        <LinearLayout
+                            <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:background="@drawable/right_rounded_corner_purple_border"
                             android:id="@+id/optionA_result_failure"
                             android:layout_weight="0.5"
                             android:orientation="horizontal"/>
-                        <!--change layout_weight to (1 - successFraction)-->
-                    </LinearLayout>
+                            <!--change layout_weight to (1 - successFraction)-->
+                        </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-                        <!--CHANGE textColor OF BOTH TEXTVIEWs TO WHITE-->
-                        <!--ON CLICK OF THE OPTION FOR ALL OPTIONS-->
-                        <TextView
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="A."
-                            android:textColor="@color/secondaryText"
-                            android:textSize="20sp"
-                            android:layout_marginTop="7dp"
-                            android:layout_marginBottom="2dp"
-                            android:layout_marginStart="10dp"
-                            android:id="@+id/optionA_placeHolder"
-                            android:layout_weight="9"/>
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Option A"
-                            android:textColor="@color/secondaryText"
-                            android:textSize="20sp"
-                            android:layout_margin="7dp"
-                            android:id="@+id/optionA_option_text"
-                            android:layout_weight="1"/>
-                    </LinearLayout>
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+                            <!--CHANGE textColor OF BOTH TEXTVIEWs TO WHITE-->
+                            <!--ON CLICK OF THE OPTION FOR ALL OPTIONS-->
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="A."
+                                android:textColor="@color/primaryText"
+                                android:textSize="16sp"
+                                android:layout_marginTop="7dp"
+                                android:layout_marginBottom="2dp"
+                                android:layout_marginStart="10dp"
+                                android:id="@+id/optionA_placeHolder"
+                                android:layout_weight="9"/>
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Option A"
+                                android:textColor="@color/primaryText"
+                                android:textSize="16sp"
+                                android:layout_margin="7dp"
+                                android:id="@+id/optionA_option_text"
+                                android:layout_weight="1"/>
+                        </LinearLayout>
 
 
-                </FrameLayout>
+                    </FrameLayout>
+                    <TextView
+                        android:id="@+id/option_a_percent"
+                        android:visibility="gone"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.15"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/primaryText"
+                        android:text="100%"
+                        android:textSize="16sp"
+                        android:gravity="end"
+                        android:layout_gravity="center"/>
+                </LinearLayout>
 
                 <!--OPTION B-->
-                <FrameLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginVertical="10dp"
-                    android:id="@+id/optionB_Layout">
+                    android:orientation="horizontal"
+                    android:id="@+id/option_b_fullLayout">
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="0.85"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_x_small"
+                        android:id="@+id/optionB_Layout">
 
-                    <!--CHANGE VISIBILITY OF THE poll_results LINEARLAYOUT-->
-                    <!--TO VISIBLE ON CLICK FOR ALL OPTIONS-->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:weightSum="1"
-                        android:id="@+id/poll_results_optionB"
-                        android:visibility="invisible">
+                        <!--CHANGE VISIBILITY OF THE poll_results LINEARLAYOUT-->
+                        <!--TO VISIBLE ON CLICK FOR ALL OPTIONS-->
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@drawable/left_rounded_corner_full_purple_border"
-                            android:id="@+id/optionB_result_success"
-                            android:layout_weight="0.5"
-                            android:orientation="horizontal"/>
-                        <!--change this to required successFraction-->
+                            android:orientation="horizontal"
+                            android:weightSum="1"
+                            android:id="@+id/poll_results_optionB"
+                            android:visibility="invisible">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/left_rounded_corner_full_purple_border"
+                                android:id="@+id/optionB_result_success"
+                                android:orientation="horizontal"
+                                android:layout_weight="0.5"/>
+                            <!--change this to required successFraction-->
 
-                        <LinearLayout
+                            <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:background="@drawable/right_rounded_corner_purple_border"
                             android:id="@+id/optionB_result_failure"
                             android:layout_weight="0.5"
                             android:orientation="horizontal"/>
-                        <!--change layout_weight to (1 - successFraction)-->
-                    </LinearLayout>
+                            <!--change layout_weight to (1 - successFraction)-->
+                        </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <!--CHANGE textColor OF BOTH TEXTVIEWs TO WHITE-->
-                        <!--ON CLICK OF THE OPTION FOR ALL OPTIONS-->
-                        <TextView
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="B."
-                            android:textColor="@color/secondaryText"
-                            android:textSize="20sp"
-                            android:layout_marginTop="7dp"
-                            android:layout_marginBottom="2dp"
-                            android:layout_marginStart="10dp"
-                            android:id="@+id/optionB_placeHolder"
-                            android:layout_weight="9"/>
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Option B"
-                            android:textColor="@color/secondaryText"
-                            android:textSize="20sp"
-                            android:layout_margin="7dp"
-                            android:id="@+id/optionB_option_text"
-                            android:layout_weight="1"/>
-                    </LinearLayout>
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
 
-
-                </FrameLayout>
+                            <!--CHANGE textColor OF BOTH TEXTVIEWs TO WHITE-->
+                            <!--ON CLICK OF THE OPTION FOR ALL OPTIONS-->
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="B."
+                                android:textColor="@color/primaryText"
+                                android:textSize="16sp"
+                                android:layout_marginTop="7dp"
+                                android:layout_marginBottom="2dp"
+                                android:layout_marginStart="10dp"
+                                android:id="@+id/optionB_placeHolder"
+                                android:layout_weight="9"/>
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Option B"
+                                android:textColor="@color/primaryText"
+                                android:textSize="16sp"
+                                android:layout_margin="7dp"
+                                android:id="@+id/optionB_option_text"
+                                android:layout_weight="1"/>
+                        </LinearLayout>
+                    </FrameLayout>
+                    <TextView
+                        android:id="@+id/option_b_percent"
+                        android:visibility="gone"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.15"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/primaryText"
+                        android:text="100%"
+                        android:textSize="16sp"
+                        android:gravity="end"
+                        android:layout_gravity="center"/>
+                </LinearLayout>
 
                 <!--OPTION C-->
-                <FrameLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginVertical="10dp"
-                    android:id="@+id/optionC_Layout">
+                    android:orientation="horizontal"
+                    android:id="@+id/option_c_fullLayout">
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="0.85"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_x_small"
+                        android:id="@+id/optionC_Layout">
 
-                    <!--CHANGE VISIBILITY OF THE poll_results LINEARLAYOUT-->
-                    <!--TO VISIBLE ON CLICK FOR ALL OPTIONS-->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:weightSum="1"
-                        android:id="@+id/poll_results_optionC"
-                        android:visibility="invisible">
+                        <!--CHANGE VISIBILITY OF THE poll_results LINEARLAYOUT-->
+                        <!--TO VISIBLE ON CLICK FOR ALL OPTIONS-->
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@drawable/left_rounded_corner_full_purple_border"
-                            android:id="@+id/optionC_result_success"
-                            android:layout_weight="0.5"
-                            android:orientation="horizontal"/>
-                        <!--change this to required successFraction-->
+                            android:orientation="horizontal"
+                            android:weightSum="1"
+                            android:id="@+id/poll_results_optionC"
+                            android:visibility="invisible">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/left_rounded_corner_full_purple_border"
+                                android:id="@+id/optionC_result_success"
+                                android:orientation="horizontal"
+                                android:layout_weight="0.5"/>
+                            <!--change this to required successFraction-->
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/right_rounded_corner_purple_border"
+                                android:id="@+id/optionC_result_failure"
+                                android:layout_weight="0.5"
+                                android:orientation="horizontal"/>
+                            <!--change layout_weight to (1 - successFraction)-->
+                        </LinearLayout>
 
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@drawable/right_rounded_corner_purple_border"
-                            android:id="@+id/optionC_result_failure"
-                            android:layout_weight="0.5"
-                            android:orientation="horizontal"/>
-                        <!--change layout_weight to (1 - successFraction)-->
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-                        <!--CHANGE textColor OF BOTH TEXTVIEWs TO WHITE-->
-                        <!--ON CLICK OF THE OPTION FOR ALL OPTIONS-->
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="C."
-                            android:textColor="@color/secondaryText"
-                            android:textSize="20sp"
-                            android:layout_marginTop="7dp"
-                            android:layout_marginBottom="2dp"
-                            android:layout_marginStart="10dp"
-                            android:id="@+id/optionC_placeHolder"
-                            android:layout_weight="9"/>
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Option C"
-                            android:layout_margin="7dp"
-                            android:textColor="@color/secondaryText"
-                            android:textSize="20sp"
-                            android:id="@+id/optionC_option_text"
-                            android:layout_weight="1"/>
-                    </LinearLayout>
-                </FrameLayout>
+                            android:orientation="horizontal">
+                            <!--CHANGE textColor OF BOTH TEXTVIEWs TO WHITE-->
+                            <!--ON CLICK OF THE OPTION FOR ALL OPTIONS-->
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="C."
+                                android:textColor="@color/primaryText"
+                                android:textSize="16sp"
+                                android:layout_marginTop="7dp"
+                                android:layout_marginBottom="2dp"
+                                android:layout_marginStart="10dp"
+                                android:id="@+id/optionC_placeHolder"
+                                android:layout_weight="9"/>
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Option C"
+                                android:layout_margin="7dp"
+                                android:textColor="@color/primaryText"
+                                android:textSize="16sp"
+                                android:id="@+id/optionC_option_text"
+                                android:layout_weight="1"/>
+                        </LinearLayout>
+                    </FrameLayout>
+                    <TextView
+                        android:id="@+id/option_c_percent"
+                        android:visibility="gone"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.15"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/primaryText"
+                        android:text="100%"
+                        android:textSize="16sp"
+                        android:gravity="end"
+                        android:layout_gravity="center"/>
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/total_vote_count"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="1234 Votes"
+                    android:textSize="14sp"
+                    android:textColor="@color/secondaryText" />
             </LinearLayout>
         </LinearLayout>
 

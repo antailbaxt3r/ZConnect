@@ -587,10 +587,13 @@ exports.syncCabForumsWithCabChats = functions.database.ref('communities/{communi
     if(tabSnapShot.val()!=="cabpools")
       return;
       const cabChatRef = change.before.ref.root.child(`communities/${communityID}/features/cabPool/allCabs/${cabID}/Chat`);
+      // eslint-disable-next-line consistent-return
       return cabChatRef.once('value', chatSnapshot => {
         if(chatSnapshot.hasChild(messageID))
+        {
           return console.log("Already synced this message: ", change.after.child('message').val());
-        return cabChatRef.child(messageID).set(change.after.val())
+        }
+        return cabChatRef.child(messageID).set(change.after.val());
     });
   });
 });
@@ -607,4 +610,15 @@ exports.addNameImageToPersChat = functions.database.ref('communities/{communityI
       && snapshot.ref.child('image').set(userSnapshot.child('imageURL').val())
       && snapshot.ref.child('imageThumb').set(userSnapshot.child('imageURLThumbnail').val());
   });
-})
+});
+
+exports.addUserInternships = functions.database.ref('communities/{communityID}/features/internships/opportunities/{internshipID}/users/{uid}')
+.onCreate((snapshot, context) => {
+  const { internshipID, uid } = context.params;
+  return snapshot.ref.parent.parent.once('value', internshipSnapshot => {
+    const internshipObj = internshipSnapshot.val();
+    delete internshipObj["users"];
+    const addUserInternshipsRef = snapshot.ref.parent.parent.parent.parent.child('usersInternships').child('appliedInternships').child(uid);
+    return addUserInternshipsRef.child(internshipID).set(internshipObj);
+    });
+});

@@ -129,13 +129,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     View.OnClickListener openUserProfileListener;
     boolean flag;
     private CommunityFeatures communityFeatures;
-    private static int firstVisibleInRV;
     LinearLayoutManager linearLayoutManager;
     RecyclerView recyclerView;
     String videoId;
-    private ImageButton leftArrow, rightArrow;
     private Long count;
-    private boolean hasNotSelected = false;
 
 
     public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity, CommunityFeatures communityFeatures, LinearLayoutManager linearLayoutManager, RecyclerView recyclerView) {
@@ -579,9 +576,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
 
-
                     holder.postConjunction.setText(" created a ");
-                    holder.post.setText(" Poll ");
+                    holder.post.setText("Poll");
+                    holder.post.setTypeface(Typeface.DEFAULT);
                     holder.pollQuestion.setText(recentsItemFormats.get(position).getQuestion());
                     holder.pollOptionA.setText(recentsItemFormats.get(position).getOptions().getOptionA());
                     holder.pollOptionB.setText(recentsItemFormats.get(position).getOptions().getOptionB());
@@ -598,7 +595,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             {
                                 if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                                 {
-                                    holder.setPollResultsVisible(recentsItemFormats.get(position).getKey());
+                                    holder.setPollResultsVisible(recentsItemFormats.get(position).getKey(),
+                                            recentsItemFormats.get(position).getUsersList().get(FirebaseAuth.getInstance().getCurrentUser().getUid()).getOptionSelected());
 
                                 }
                                 else
@@ -1318,7 +1316,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 sentence,totalComments,
                 noticesText,
                 pollQuestion,pollOptionA,pollOptionB,pollOptionC,
-                markerA, markerB, markerC;
+                markerA, markerB, markerC,
+                totalVoteCount, votePercentageA, votePercentageB, votePercentageC;
 
         SimpleDraweeView featureCircle, avatarCircle,
                 eventImage,
@@ -1333,7 +1332,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
 
         LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails, noticesRecentItem,pollLinearLayout,
-                pollAYes, pollANo, pollBYes, pollBNo, pollCYes, pollCNo, pollAResult, pollBResult, pollCResult, youtubeLink;
+                pollALL, pollAYes, pollANo, pollBLL, pollBYes, pollBNo, pollCLL, pollCYes, pollCNo, pollAResult, pollBResult, pollCResult, youtubeLink;
 
         FrameLayout layoutFeatureIcon, bannerLinkLayout, optionALayout, optionBLayout, optionCLayout;
         //
@@ -1353,22 +1352,29 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             optionALayout = itemView.findViewById(R.id.optionA_Layout);
             pollOptionA = itemView.findViewById(R.id.optionA_option_text);
             markerA = itemView.findViewById(R.id.optionA_placeHolder);
+            pollALL = itemView.findViewById(R.id.option_a_fullLayout);
             pollAYes = itemView.findViewById(R.id.optionA_result_success);
             pollANo = itemView.findViewById(R.id.optionA_result_failure);
             pollAResult = itemView.findViewById(R.id.poll_results_optionA);
             optionBLayout = itemView.findViewById(R.id.optionB_Layout);
             pollOptionB = itemView.findViewById(R.id.optionB_option_text);
             markerB = itemView.findViewById(R.id.optionB_placeHolder);
+            pollBLL = itemView.findViewById(R.id.option_b_fullLayout);
             pollBYes = itemView.findViewById(R.id.optionB_result_success);
             pollBNo = itemView.findViewById(R.id.optionB_result_failure);
             pollBResult = itemView.findViewById(R.id.poll_results_optionB);
             optionCLayout = itemView.findViewById(R.id.optionC_Layout);
             pollOptionC = itemView.findViewById(R.id.optionC_option_text);
             markerC = itemView.findViewById(R.id.optionC_placeHolder);
+            pollCLL = itemView.findViewById(R.id.option_c_fullLayout);
             pollCYes = itemView.findViewById(R.id.optionC_result_success);
             pollCNo = itemView.findViewById(R.id.optionC_result_failure);
             pollCResult = itemView.findViewById(R.id.poll_results_optionC);
             pollLinearLayout = itemView.findViewById(R.id.pollFormat);
+            totalVoteCount = itemView.findViewById(R.id.total_vote_count);
+            votePercentageA = itemView.findViewById(R.id.option_a_percent);
+            votePercentageB = itemView.findViewById(R.id.option_b_percent);
+            votePercentageC = itemView.findViewById(R.id.option_c_percent);
 
             //new ui
             postedBy = (TextView) itemView.findViewById(R.id.postedBy);
@@ -1945,10 +1951,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 //            eventNumLit.setTypeface(customfont);
         }
 
-        public void setPollResultsVisible(String key){
+        public void setPollResultsVisible(String key, String selectedOption){
 
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(key);
-            ref.child("options").addValueEventListener(new ValueEventListener() {
+            ref.child("options").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     int optionACount = Integer.parseInt(dataSnapshot.child("optionACount").getValue().toString());
@@ -1956,8 +1962,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     int optionCCount = Integer.parseInt(dataSnapshot.child("optionCCount").getValue().toString());
 
                     int sum = optionACount + optionBCount + optionCCount;
-
-
+                    totalVoteCount.setVisibility(View.VISIBLE);
+                    totalVoteCount.setText(sum==1?"1 vote": sum+" votes");
                     float optionAFraction = 1;
                     float optionBFraction = 1;
                     float optionCFraction = 1;
@@ -1965,6 +1971,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     optionAFraction = (float) optionACount / sum;
                     optionBFraction = (float) optionBCount / sum;
                     optionCFraction = (float) optionCCount / sum;
+
+                    votePercentageA.setVisibility(View.VISIBLE);
+                    votePercentageB.setVisibility(View.VISIBLE);
+                    votePercentageC.setVisibility(View.VISIBLE);
+                    votePercentageA.setText((int)(optionAFraction*100)+"%");
+                    votePercentageB.setText((int)(optionBFraction*100)+"%");
+                    votePercentageC.setText((int)(optionCFraction*100)+"%");
 
                     LinearLayout.LayoutParams paramsAYes = (LinearLayout.LayoutParams) pollAYes.getLayoutParams();
                     LinearLayout.LayoutParams paramsBYes = (LinearLayout.LayoutParams) pollBYes.getLayoutParams();
@@ -1987,13 +2000,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     pollBNo.setLayoutParams(paramsBNo);
                     pollCNo.setLayoutParams(paramsCNo);
 
-                    pollOptionA.setTextColor(context.getResources().getColor(R.color.white));
-                    pollOptionB.setTextColor(context.getResources().getColor(R.color.white));
-                    pollOptionC.setTextColor(context.getResources().getColor(R.color.white));
-                    markerA.setTextColor(context.getResources().getColor(R.color.white));
-                    markerB.setTextColor(context.getResources().getColor(R.color.white));
-                    markerC.setTextColor(context.getResources().getColor(R.color.white));
-
 
                     //set background
                     if (optionACount == 0){
@@ -2013,63 +2019,54 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     }else{
                         pollCNo.setBackground(context.getResources().getDrawable(R.drawable.right_rounded_corner_purple_border));
                     }
+                    pollAYes.setBackground(context.getResources().getDrawable(R.drawable.left_rounded_corner_full_purple_border));
 
-                    if (optionACount != 0 && optionBCount == 0 && optionCCount == 0){
+                    pollBYes.setBackground(context.getResources().getDrawable(R.drawable.left_rounded_corner_full_purple_border));
+
+                    pollCYes.setBackground(context.getResources().getDrawable(R.drawable.left_rounded_corner_full_purple_border));
+                    pollOptionA.setTypeface(null, Typeface.NORMAL);
+                    pollOptionB.setTypeface(null, Typeface.NORMAL);
+                    pollOptionC.setTypeface(null, Typeface.NORMAL);
+                    markerA.setTypeface(null, Typeface.NORMAL);
+                    markerB.setTypeface(null, Typeface.NORMAL);
+                    markerC.setTypeface(null, Typeface.NORMAL);
+                    votePercentageA.setTypeface(null, Typeface.NORMAL);
+                    votePercentageB.setTypeface(null, Typeface.NORMAL);
+                    votePercentageC.setTypeface(null, Typeface.NORMAL);
+
+                    //make selected option bg purple and text bold
+                    if(selectedOption.equals("optionA"))
+                    {
                         pollAYes.setBackground(context.getResources().getDrawable(R.drawable.rounded_corner_purple_dark));
-                    }else{
-                        pollAYes.setBackground(context.getResources().getDrawable(R.drawable.left_rounded_corner_full_purple_border));
+                        pollOptionA.setTypeface(null, BOLD);
+                        markerA.setTypeface(null, BOLD);
+                        votePercentageA.setTypeface(null, BOLD);
                     }
-
-                    if (optionBCount != 0 && optionACount == 0 && optionCCount == 0){
+                    else if(selectedOption.equals("optionB"))
+                    {
                         pollBYes.setBackground(context.getResources().getDrawable(R.drawable.rounded_corner_purple_dark));
-                    }else{
-                        pollBYes.setBackground(context.getResources().getDrawable(R.drawable.left_rounded_corner_full_purple_border));
+                        pollOptionB.setTypeface(null, BOLD);
+                        markerB.setTypeface(null, BOLD);
+                        votePercentageB.setTypeface(null, BOLD);
                     }
-
-                    if (optionCCount != 0 && optionBCount == 0 && optionACount == 0){
+                    else if(selectedOption.equals("optionC"))
+                    {
                         pollCYes.setBackground(context.getResources().getDrawable(R.drawable.rounded_corner_purple_dark));
-                    }else{
-                        pollCYes.setBackground(context.getResources().getDrawable(R.drawable.left_rounded_corner_full_purple_border));
-                    }
-
-                    //make highest option bold
-                    if (optionACount > optionBCount && optionACount > optionCCount){
-                        pollOptionA.setTypeface(null, BOLD);
-                        pollOptionB.setTypeface(null, Typeface.NORMAL);
-                        pollOptionC.setTypeface(null, Typeface.NORMAL);
-                    } else if (optionBCount > optionACount && optionBCount > optionCCount){
-                        pollOptionB.setTypeface(null, BOLD);
-                        pollOptionA.setTypeface(null, Typeface.NORMAL);
-                        pollOptionC.setTypeface(null, Typeface.NORMAL);
-                    } else if (optionCCount > optionACount && optionCCount > optionBCount){
                         pollOptionC.setTypeface(null, BOLD);
-                        pollOptionB.setTypeface(null, Typeface.NORMAL);
-                        pollOptionA.setTypeface(null, Typeface.NORMAL);
+                        markerC.setTypeface(null, BOLD);
+                        votePercentageC.setTypeface(null, BOLD);
                     }
 
-                    if(optionACount == optionBCount && optionACount > optionCCount){
-                        pollOptionA.setTypeface(null, BOLD);
-                        pollOptionB.setTypeface(null, BOLD);
-                        pollOptionC.setTypeface(null, Typeface.NORMAL);
-                    }
 
-                    if(optionCCount == optionBCount && optionCCount > optionACount){
-                        pollOptionC.setTypeface(null, BOLD);
-                        pollOptionB.setTypeface(null, BOLD);
-                        pollOptionA.setTypeface(null, Typeface.NORMAL);
-                    }
-
-                    if(optionACount == optionCCount && optionACount > optionBCount){
-                        pollOptionA.setTypeface(null, BOLD);
-                        pollOptionC.setTypeface(null, BOLD);
-                        pollOptionB.setTypeface(null, Typeface.NORMAL);
-                    }
-
-                    if (optionACount == optionBCount && optionACount == optionCCount){
-                        pollOptionA.setTypeface(null, BOLD);
-                        pollOptionB.setTypeface(null, BOLD);
-                        pollOptionC.setTypeface(null, BOLD);
-                    }
+                    pollAYes.setVisibility(View.VISIBLE);
+                    pollANo.setVisibility(View.VISIBLE);
+                    pollBYes.setVisibility(View.VISIBLE);
+                    pollBNo.setVisibility(View.VISIBLE);
+                    pollCYes.setVisibility(View.VISIBLE);
+                    pollCNo.setVisibility(View.VISIBLE);
+                    pollAResult.setVisibility(View.VISIBLE);
+                    pollBResult.setVisibility(View.VISIBLE);
+                    pollCResult.setVisibility(View.VISIBLE);
                 }
 
                 @Override
@@ -2078,25 +2075,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
             });
 
-
-
-            pollAYes.setVisibility(View.VISIBLE);
-            pollANo.setVisibility(View.VISIBLE);
-            pollBYes.setVisibility(View.VISIBLE);
-            pollBNo.setVisibility(View.VISIBLE);
-            pollCYes.setVisibility(View.VISIBLE);
-            pollCNo.setVisibility(View.VISIBLE);
-            pollAResult.setVisibility(View.VISIBLE);
-            pollBResult.setVisibility(View.VISIBLE);
-            pollCResult.setVisibility(View.VISIBLE);
-
         }
 
         public void pollOptionsSelect(String key) {
 
             final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/" + key);
 
-            optionALayout.setOnClickListener(new View.OnClickListener() {
+            pollALL.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
@@ -2113,21 +2098,19 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 {
                                     count = dataSnapshot.child("options").child("optionACount").getValue(Long.class);
                                     count++;
-
                                     reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionA");
                                     reference.child("options").child("optionACount").setValue(count);
                                     String key  = recentsItemFormats.get(getAdapterPosition()).getKey();
-                                    setPollResultsVisible(key);
+                                    setPollResultsVisible(key, "optionA");
                                 }
                             }
                             else {
                                 count = dataSnapshot.child("options").child("optionACount").getValue(Long.class);
                                 count++;
-
                                 reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionA");
                                 reference.child("options").child("optionACount").setValue(count);
                                 String key  = recentsItemFormats.get(getAdapterPosition()).getKey();
-                                setPollResultsVisible(key);
+                                setPollResultsVisible(key, "optionA");
 
 
                             }
@@ -2141,7 +2124,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
             });
 
-            optionBLayout.setOnClickListener(new View.OnClickListener() {
+            pollBLL.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
@@ -2158,22 +2141,20 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 {
                                     count = dataSnapshot.child("options").child("optionBCount").getValue(Long.class);
                                     count++;
-
                                     reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionB");
                                     reference.child("options").child("optionBCount").setValue(count);
                                     String key  = recentsItemFormats.get(getAdapterPosition()).getKey();
-                                    setPollResultsVisible(key);
+                                    setPollResultsVisible(key, "optionB");
 
                                 }
                             }
                             else {
                                 count = dataSnapshot.child("options").child("optionBCount").getValue(Long.class);
                                 count++;
-
                                 reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionB");
                                 reference.child("options").child("optionBCount").setValue(count);
                                 String key  = recentsItemFormats.get(getAdapterPosition()).getKey();
-                                setPollResultsVisible(key);
+                                setPollResultsVisible(key, "optionB");
 
                             }
                         }
@@ -2186,7 +2167,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
             });
 
-            optionCLayout.setOnClickListener(new View.OnClickListener() {
+            pollCLL.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
@@ -2203,21 +2184,19 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 {
                                     count = dataSnapshot.child("options").child("optionCCount").getValue(Long.class);
                                     count++;
-
                                     reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionC");
                                     reference.child("options").child("optionCCount").setValue(count);
                                     String key  = recentsItemFormats.get(getAdapterPosition()).getKey();
-                                    setPollResultsVisible(key);
+                                    setPollResultsVisible(key, "optionC");
                                 }
                             }
                             else {
                                 count = dataSnapshot.child("options").child("optionCCount").getValue(Long.class);
                                 count++;
-
                                 reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionC");
                                 reference.child("options").child("optionCCount").setValue(count);
                                 String key  = recentsItemFormats.get(getAdapterPosition()).getKey();
-                                setPollResultsVisible(key);
+                                setPollResultsVisible(key, "optionC");
                             }
                         }
 
