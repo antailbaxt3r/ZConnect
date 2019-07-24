@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -198,6 +199,20 @@ public class Recents extends Fragment {
                 features.setRecentType(RecentTypeUtilities.KEY_RECENT_FEATURES_STR);
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
+                if(getActivity() instanceof  HomeActivity && getContext() != null){
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                    boolean preferencesBoolean = preferences.getBoolean("isFirstRun", true);
+                    if(preferencesBoolean)
+                    {
+                        ((HomeActivity)getActivity()).showAppTour();
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putBoolean("isFirstRun",false);
+                        editor.apply();
+                    }
+
+                }
+
+
 
 
             }

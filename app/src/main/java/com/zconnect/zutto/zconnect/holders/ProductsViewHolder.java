@@ -24,6 +24,7 @@ import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.Product;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
@@ -149,11 +150,83 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    public void defaultSwitch(final String key, final Context ctx, final String category, final String productName) {
+    public void defaultSwitch(final String key, final Context ctx, final String category, final String productName, Product product) {
+
+        StoreRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(final DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.child(key).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
+//                    StoreRoom.child(key).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
+//                                productShortList.setText("ShortlistedPeopleList");
+                    flag = true;
+                    productShortList.setImageResource(R.drawable.ic_bookmark_white_24dp);
+//                                productShortList.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.curvedradiusbutton2_sr));
+//                                Typeface customfont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+//                                productShortList.setTypeface(customfont);
+
+
+                } else {
+                    flag = false;
+                    productShortList.setImageResource(R.drawable.ic_bookmark_border_white_24dp);
+//                                productShortList.setText("Shortlist");
+
+                }
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         mListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(flag){
+                    StoreRoom.child(key).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
+                    productShortList.setImageResource(R.drawable.ic_bookmark_border_white_24dp);
+                    flag = false;
+
+                }
+                else{
+                    productShortList.setImageResource(R.drawable.ic_bookmark_white_24dp);
+                    final UsersListItemFormat userDetails = new UsersListItemFormat();
+                    DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    user.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot2) {
+                            UserItemFormat userItemFormat = dataSnapshot2.getValue(UserItemFormat.class);
+                            userDetails.setImageThumb(userItemFormat.getImageURLThumbnail());
+                            userDetails.setName(userItemFormat.getUsername());
+                            userDetails.setPhonenumber(userItemFormat.getMobileNumber());
+                            userDetails.setUserUID(userItemFormat.getUserUID());
+
+                            StoreRoom.child(key).child("UsersReserved").child(userItemFormat.getUserUID()).setValue(userDetails);
+
+                            NotificationSender notificationSender = new NotificationSender(itemView.getContext(),userItemFormat.getUserUID());
+                            NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST,userItemFormat.getUserUID(), (String) product.getPostedBy().getUID(),1);
+                            productShortlistNotification.setCommunityName(communityTitle);
+                            productShortlistNotification.setItemKey(key);
+                            productShortlistNotification.setItemName(productName);
+                            productShortlistNotification.setUserName(userItemFormat.getUsername());
+                            productShortlistNotification.setUserMobileNumber(userItemFormat.getMobileNumber());
+                            productShortlistNotification.setUserImage(userItemFormat.getImageURLThumbnail());
+                            productShortlistNotification.setRecieverKey(product.getPostedBy().getUID());
+                            notificationSender.execute(productShortlistNotification);
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+
+                }
 //                flag = true;
 
                 CounterItemFormat counterItemFormat = new CounterItemFormat();
@@ -169,64 +242,7 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                 counterPush.pushValues();
 
-                StoreRoom.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(final DataSnapshot dataSnapshot) {
 
-                            if (dataSnapshot.child(key).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
-                                StoreRoom.child(key).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
-//                                productShortList.setText("ShortlistedPeopleList");
-                                flag = false;
-                                productShortList.setImageResource(R.drawable.ic_bookmark_white_24dp);
-//                                productShortList.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.curvedradiusbutton2_sr));
-//                                Typeface customfont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-//                                productShortList.setTypeface(customfont);
-
-
-                            } else {
-//                                productShortList.setText("Shortlist");
-                                final UsersListItemFormat userDetails = new UsersListItemFormat();
-                                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                user.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot2) {
-                                        UserItemFormat userItemFormat = dataSnapshot2.getValue(UserItemFormat.class);
-                                        userDetails.setImageThumb(userItemFormat.getImageURLThumbnail());
-                                        userDetails.setName(userItemFormat.getUsername());
-                                        userDetails.setPhonenumber(userItemFormat.getMobileNumber());
-                                        userDetails.setUserUID(userItemFormat.getUserUID());
-
-                                        StoreRoom.child(key).child("UsersReserved").child(userItemFormat.getUserUID()).setValue(userDetails);
-
-                                        NotificationSender notificationSender = new NotificationSender(itemView.getContext(),userItemFormat.getUserUID());
-                                        NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST,userItemFormat.getUserUID(), (String) dataSnapshot.child("PostedBy").child("UID").getValue(),1);
-                                        productShortlistNotification.setCommunityName(communityTitle);
-                                        productShortlistNotification.setItemKey(key);
-                                        productShortlistNotification.setItemName(productName);
-                                        productShortlistNotification.setUserName(userItemFormat.getUsername());
-                                        productShortlistNotification.setUserMobileNumber(userItemFormat.getMobileNumber());
-                                        productShortlistNotification.setUserImage(userItemFormat.getImageURLThumbnail());
-                                        productShortlistNotification.setRecieverKey(dataSnapshot.child(key).child("PostedBy").child("UID").getValue().toString());
-                                        notificationSender.execute(productShortlistNotification);
-
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
-                                flag = false;
-                                productShortList.setImageResource(R.drawable.ic_bookmark_border_white_24dp);
-                            }
-                        }
-
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
 
             }
         };
@@ -239,35 +255,35 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
 
 
         //Getting  data from database
-        StoreRoom.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                productShortList.setOnClickListener(null);
-                if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
-                    productShortList.setImageResource(R.drawable.ic_bookmark_white_24dp);
-                    flag = true;
-//                    productShortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
-//                    productShortList.setText("ShortlistedPeopleList");
-//                    Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-//                    productShortList.setTypeface(customfont);
-                } else {
-                    flag = false;
-                    productShortList.setImageResource(R.drawable.ic_bookmark_border_white_24dp);
-//                    productShortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton_sr));
-//                    productShortList.setText("Shortlist");
-//                    Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-//                    productShortList.setTypeface(customfont);
-                }
-                productShortList.setOnClickListener(mListener);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-
-        });
+//        StoreRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                productShortList.setOnClickListener(null);
+//                if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
+//                    productShortList.setImageResource(R.drawable.ic_bookmark_white_24dp);
+//                    flag = true;
+////                    productShortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
+////                    productShortList.setText("ShortlistedPeopleList");
+////                    Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+////                    productShortList.setTypeface(customfont);
+//                } else {
+//                    flag = false;
+//                    productShortList.setImageResource(R.drawable.ic_bookmark_border_white_24dp);
+////                    productShortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton_sr));
+////                    productShortList.setText("Shortlist");
+////                    Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+////                    productShortList.setTypeface(customfont);
+//                }
+//                productShortList.setOnClickListener(mListener);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//
+//        });
     }
 
     public void setProductName(String productName) {

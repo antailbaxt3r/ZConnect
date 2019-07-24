@@ -165,7 +165,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         isFabOpen = false;
     }
 
-    private void showAppTour(){
+    public void showAppTour(){
 
         recentView = findViewById(R.id.recentView);
 

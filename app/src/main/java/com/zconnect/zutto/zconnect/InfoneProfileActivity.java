@@ -680,7 +680,9 @@ public class InfoneProfileActivity extends BaseActivity {
                                 userItemFormat.setUserUID((String) dataSnapshot.child("userUID").getValue());
                                 userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
                                 metadata.put("catID",catID);
+                                if(infoneUserUID != null){
                                 GlobalFunctions.inAppNotifications("has invalidated your phone number",phoneNums.get(0),userItemFormat,false,"infoneinvalidate",metadata,infoneUserUID);
+                                }
 
                             }
 
