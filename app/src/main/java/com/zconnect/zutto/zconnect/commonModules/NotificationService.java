@@ -879,7 +879,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setSound(defaultSoundUri)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setContentTitle(communityName)
-                .setSubText("Yolo")
+                .setSubText("Yolo") //ENTER HERE
                 .setContentText("Hey! " + userName + " liked your profile");
 
         Intent intent = new Intent(NotificationService.this, OpenUserDetail.class);

@@ -370,6 +370,7 @@ public class CabPoolListOfPeople extends BaseActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     Log.d("fullpoolref", String.valueOf(fullPool));
                     Log.d("datapool", String.valueOf(dataSnapshot.child("source").getValue()));
+                    Log.d("fullpooldata",dataSnapshot.toString());
                     source = dataSnapshot.child("source").getValue().toString();
                     destination = dataSnapshot.child("destination").getValue().toString();
 

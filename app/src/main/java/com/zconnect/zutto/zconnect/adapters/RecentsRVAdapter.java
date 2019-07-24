@@ -204,7 +204,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     public void onClick(View v) {
 
                         if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(recentsItemFormats.get(position).getPostedBy().getUID())) {
-                            mHomeActivity.changeFragment(4);
+                            Intent i = new Intent(context, OpenUserDetail.class);
+                            i.putExtra("Uid", recentsItemFormats.get(position).getPostedBy().getUID());
+                            context.startActivity(i);
+//                            mHomeActivity.changeFragment(4);
                         } else {
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
                             HashMap<String, String> meta = new HashMap<>();
@@ -245,7 +248,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             @Override
                             public void onClick(View widget) {
                                 if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(recentsItemFormats.get(position).getPostedBy().getUID())) {
-                                    mHomeActivity.changeFragment(4);
+                                    Intent i = new Intent(context, OpenUserDetail.class);
+                                    i.putExtra("Uid", recentsItemFormats.get(position).getPostedBy().getUID());
+                                    context.startActivity(i);
+//                                    mHomeActivity.changeFragment(4);
                                 } else {
 
                                     CounterItemFormat counterItemFormat = new CounterItemFormat();
@@ -1635,6 +1641,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                         Intent intent = new Intent(context, OpenStatus.class);
                         intent.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getKey());
+                        intent.putExtra("uid",recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUID());
                         System.out.println(recentsItemFormats.get(getAdapterPosition()).getKey());
                         context.startActivity(intent);
                     }
@@ -1733,6 +1740,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                     counterPush.pushValues();
                     Intent intent = new Intent(context, OpenStatus.class);
+                    intent.putExtra("uid",recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUID());
                     intent.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getKey());
                     Log.d("username" , " "+recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUsername());
                     System.out.println(recentsItemFormats.get(getAdapterPosition()).getKey());
@@ -2942,47 +2950,76 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public void setFeatureVisibility(CommunityFeatures communityFeatures) {
             try {
 
-                if (communityFeatures.getCabpool().equals("true")) {
-                    cabpool.setVisibility(View.VISIBLE);
-                } else {
-                    cabpool.setVisibility(View.GONE);
+                try {
+
+                    if (communityFeatures.getCabpool().equals("true")) {
+                        cabpool.setVisibility(View.VISIBLE);
+                    } else {
+                        cabpool.setVisibility(View.GONE);
+                    }
                 }
+                catch (Exception e){
+
+                }
+
+
+
+                try {
+                    if (communityFeatures.getEvents().equals("true")) {
+                        events.setVisibility(View.VISIBLE);
+                    } else {
+                        events.setVisibility(View.GONE);
+                    }
+                }
+                catch(Exception e){
+
+                }
+
+                try {
+
+                    if (communityFeatures.getNotices().equals("true")) {
+                        notices.setVisibility(View.VISIBLE);
+                    } else {
+                        notices.setVisibility(View.GONE);
+                    }
+                }
+                catch (Exception e){}
+
+                try {
+
+                    if (communityFeatures.getLinks().equals("true")) {
+                        links.setVisibility(View.VISIBLE);
+                    } else {
+                        links.setVisibility(View.VISIBLE);
+                    }
+                }
+                catch (Exception e){}
+
+                try {
+
+                    if (communityFeatures.getStoreroom().equals("true")) {
+                        storeroom.setVisibility(View.VISIBLE);
+                    } else {
+                        storeroom.setVisibility(View.GONE);
+                    }
+                }
+                catch (Exception e){}
+
+                try {
+
+                    if (communityFeatures.getShops().equals("true")) {
+                        shops.setVisibility(View.VISIBLE);
+                    } else {
+                        shops.setVisibility(View.GONE);
+                    }
+                }
+                catch (Exception e){}
+
 
                 if (communityFeatures.getInternships().equals("true")) {
                     internships.setVisibility(View.VISIBLE);
                 } else {
                     internships.setVisibility(View.GONE);
-                }
-
-
-                if (communityFeatures.getEvents().equals("true")) {
-                    events.setVisibility(View.VISIBLE);
-                } else {
-                    events.setVisibility(View.GONE);
-                }
-
-                if (communityFeatures.getNotices().equals("true")) {
-                    notices.setVisibility(View.VISIBLE);
-                } else {
-                    notices.setVisibility(View.GONE);
-                }
-
-                if (communityFeatures.getLinks().equals("true")) {
-                    links.setVisibility(View.VISIBLE);
-                } else {
-                    links.setVisibility(View.VISIBLE);
-                }
-
-                if (communityFeatures.getStoreroom().equals("true")) {
-                    storeroom.setVisibility(View.VISIBLE);
-                } else {
-                    storeroom.setVisibility(View.GONE);
-                }
-
-                if (communityFeatures.getShops().equals("true")) {
-                    shops.setVisibility(View.VISIBLE);
-                } else {
-                    shops.setVisibility(View.GONE);
                 }
 
 

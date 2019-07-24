@@ -88,6 +88,13 @@ public class GlobalFunctions {
             return;
         } else {
             if (!type.equals("statusNestedComment")) {
+                try {
+                    Log.d("COMMUNITYREF", communityReference);
+                    Log.d("UID", uid);
+                }
+                catch (Exception e){
+                    Log.d("ERR",e.toString());
+                }
                 notificationsRef = FirebaseDatabase.getInstance().getReference().child("communities").
                         child(communityReference).child("Users1").child(uid)
                         .child("notifications");

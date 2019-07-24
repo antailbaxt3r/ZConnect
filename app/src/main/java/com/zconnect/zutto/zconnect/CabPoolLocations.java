@@ -153,6 +153,10 @@ public class CabPoolLocations extends BaseActivity {
                     builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            if(input.getText().toString().trim().equals("")){
+                                Toast.makeText(CabPoolLocations.this,"Location can not be empty!",Toast.LENGTH_LONG);
+                                return;
+                            }
                             addLocation(input.getText().toString());
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
                             HashMap<String, String> meta= new HashMap<>();

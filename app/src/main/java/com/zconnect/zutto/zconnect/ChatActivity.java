@@ -1197,12 +1197,8 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
     @Override
     public void onBackPressed() {
-        if(isAnonymousEnabled){
-            setNormalChat();
-        }
-        else{
         super.onBackPressed();
-        }
+
     }
 
     @Override
@@ -1241,6 +1237,17 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         this.menu = menu;
 
         getMenuInflater().inflate(R.menu.menu_chat_activity, menu);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean preferencesBoolean = preferences.getBoolean("isAnonymousOn", false);
+        if(preferencesBoolean){
+            menu.findItem(R.id.anonymous_mode_toggle).setTitle("Turn Anonymous mode OFF");
+            setAnonymousChat();
+        }
+        else{
+            menu.findItem(R.id.anonymous_mode_toggle).setTitle("Turn Anonymous mode ON");
+            setNormalChat();
+
+        }
         return true;
     }
 
@@ -1327,6 +1334,28 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
             });
 
         }
+        if(item.getItemId() == R.id.anonymous_mode_toggle){
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            boolean preferencesBoolean = preferences.getBoolean("isAnonymousOn", false);
+            if(preferencesBoolean)
+            {
+                setNormalChat();
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("isAnonymousOn",false);
+                editor.apply();
+                item.setTitle("Turn Anonymous mode ON");
+
+            }
+            else{
+                setAnonymousChat();
+
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("isAnonymousOn",true);
+                editor.apply();
+                item.setTitle("Turn Anonymous mode OFF");
+            }
+
+        }
 
 
 
@@ -1371,8 +1400,9 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         chatView = (RecyclerView) findViewById(R.id.chatList);
         chatView.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
         appBarLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimary));
-        chatFrameLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
-        chatLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
+//        chatFrameLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
+        chatFrameLayout.setBackground(ContextCompat.getDrawable(this,R.color.white));
+        chatLayout.setBackground(ContextCompat.getDrawable(this,R.drawable.message_box));
 
         typer.setTextColor(ContextCompat.getColor(this,R.color.black));
 
