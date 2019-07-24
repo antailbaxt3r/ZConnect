@@ -29,10 +29,12 @@ public class InternshipsRVAdapter extends RecyclerView.Adapter<InternshipsRVAdap
     Context context;
     Vector<InternshipsItemFormat> internshipsList;
     DatabaseReference databaseReference;
-    public InternshipsRVAdapter(Context context, Vector<InternshipsItemFormat> internshipsItemFormats)
+    String communityReference;
+    public InternshipsRVAdapter(Context context, Vector<InternshipsItemFormat> internshipsItemFormats,String communityReference)
     {
         this.context = context;
         this.internshipsList = internshipsItemFormats;
+        this.communityReference = communityReference;
     }
 
     @Override
@@ -45,10 +47,10 @@ public class InternshipsRVAdapter extends RecyclerView.Adapter<InternshipsRVAdap
 
     @Override
     public void onBindViewHolder(final InternshipsRVAdapter.ViewHolder holder, int position) {
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("appliedInternships");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("internships").child("opportunities").child(internshipsList.get(position).getKey()).child("users");
 
         try {
-            databaseReference.child(internshipsList.get(position).getOrgID()).child(internshipsList.get(position).getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))

@@ -27,7 +27,7 @@ import java.util.HashMap;
 public class ApplyInternships extends BaseActivity {
     Intent callingActivityIntent,intent;
     String orgID,internshipID,internshipQuestion,nameOfUserString;
-    DatabaseReference databaseReference,databaseReferenceUsers1;
+    DatabaseReference databaseReference,databaseReferenceUsers1,reference;
     EditText branch,proficiency,answer;
     TextView nameOfUser;
     TextView question;
@@ -69,32 +69,6 @@ public class ApplyInternships extends BaseActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
-        setToolbar();
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
-
-        if (toolbar != null) {
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onBackPressed();
-                }
-            });
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
-            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-//            getWindow().setStatusBarColor(colorDarkPrimary);
-//            getWindow().setNavigationBarColor(colorPrimary);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        }
-
-
         branch = findViewById(R.id.branch);
         proficiency = findViewById(R.id.proficiency);
         answer = findViewById(R.id.answer);
@@ -119,12 +93,12 @@ public class ApplyInternships extends BaseActivity {
 
         nameOfUserString = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
 
+        reference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("internships").child("opportunities").child(internshipID).child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         databaseReference = (DatabaseReference) FirebaseDatabase.getInstance().getReference().child("appliedInternships").child(orgID).child(internshipID).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         databaseReferenceUsers1 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         nameOfUser.setText(nameOfUserString);
 
-        //Progress bar needed
         databaseReferenceUsers1.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -172,6 +146,7 @@ public class ApplyInternships extends BaseActivity {
                 deatilsMap.put("branch",branch.getText().toString());
                 deatilsMap.put("proficiency",proficiency.getText().toString());
 
+                reference.setValue("true");
                 databaseReference.setValue(internshipMap);
                 databaseReferenceUsers1.updateChildren(deatilsMap);
                 //Log.e("Database Message","Data pushed successfully");

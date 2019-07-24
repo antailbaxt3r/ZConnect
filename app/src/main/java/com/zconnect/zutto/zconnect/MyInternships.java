@@ -67,7 +67,7 @@ public class MyInternships extends BaseActivity{
 
         recyclerView = (RecyclerView) findViewById(R.id.internships_main_rv);
         noInternshipsText = (TextView) findViewById(R.id.no_internships_available_message);
-        internshipsRVAdapter = new InternshipsRVAdapter(MyInternships.this, internshipsList);
+        internshipsRVAdapter = new InternshipsRVAdapter(MyInternships.this, internshipsList,communityReference);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
         recyclerView.setAdapter(internshipsRVAdapter);
         recyclerView.setVisibility(View.INVISIBLE);

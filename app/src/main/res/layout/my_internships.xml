@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@id/CoordinatorLt"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MyInternships">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_app_bar_home"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:collapseIcon="@drawable/ic_arrow_back_black_24dp"
+            app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <TextView
+        android:id="@+id/no_internships_available_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You haven't applied for any Internships."
+        android:layout_gravity="center"
+        android:maxWidth="250dp"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:visibility="gone"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:id="@+id/internships_main_rv"/>
+
+</android.support.design.widget.CoordinatorLayout>
