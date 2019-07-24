@@ -67,43 +67,28 @@ public class MyInternships extends BaseActivity{
 
         recyclerView = (RecyclerView) findViewById(R.id.internships_main_rv);
         noInternshipsText = (TextView) findViewById(R.id.no_internships_available_message);
-        internshipsRVAdapter = new InternshipsRVAdapter(MyInternships.this, internshipsList,communityReference);
+        internshipsRVAdapter = new InternshipsRVAdapter(MyInternships.this, internshipsList, communityReference);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
         recyclerView.setAdapter(internshipsRVAdapter);
         recyclerView.setVisibility(View.INVISIBLE);
 
-        databaseReference = (DatabaseReference) FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("internships").child("opportunities");
+        databaseReference = (DatabaseReference) FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("internships").child("usersInternships").child("appliedInternships");
         reference = FirebaseDatabase.getInstance().getReference().child("appliedInternships");
 
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        try {
+        databaseReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 internshipsList.clear();
-                for (DataSnapshot shot: dataSnapshot.getChildren())
-                {
+                for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     internshipsList.add(shot.getValue(InternshipsItemFormat.class));
-                    /*reference.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            InternshipsItemFormat internshipsItemFormat = shot.getValue(InternshipsItemFormat.class);
-                            if (dataSnapshot.child(internshipsItemFormat.getOrgID()).child(internshipsItemFormat.getKey()).hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                                internshipsList.add(internshipsItemFormat);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });*/
                 }
 
-                if (internshipsList.size()==0)
-                {
+                if (internshipsList.size() == 0) {
                     recyclerView.setVisibility(View.GONE);
                     noInternshipsText.setVisibility(View.VISIBLE);
-                }
-                else {
+                } else {
                     recyclerView.setVisibility(View.VISIBLE);
                     noInternshipsText.setVisibility(View.GONE);
                     recyclerView.setAdapter(internshipsRVAdapter);
@@ -116,5 +101,6 @@ public class MyInternships extends BaseActivity{
 
             }
         });
+      } catch (Exception e){}
     }
 }
