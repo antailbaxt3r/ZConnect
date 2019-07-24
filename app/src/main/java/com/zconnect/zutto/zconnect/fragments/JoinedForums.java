@@ -359,12 +359,17 @@ public class JoinedForums extends Fragment {
             if(!queryString.equals("")) {
                 searchForumCategoriesItemFormats = new Vector<ForumCategoriesItemFormat>();
                 for (int i = 0; i < forumCategoriesItemFormats.size(); i++) {
+                    try {
 
-                    if (forumCategoriesItemFormats.get(i).getName().toLowerCase().trim().contains(queryString.toLowerCase())) {
-                        searchForumCategoriesItemFormats.add(forumCategoriesItemFormats.get(i));
+                        if (forumCategoriesItemFormats.get(i).getName().toLowerCase().trim().contains(queryString.toLowerCase())) {
+                            searchForumCategoriesItemFormats.add(forumCategoriesItemFormats.get(i));
+                        }
+                        if (searchForumCategoriesItemFormats.size() > 7) {
+                            break;
+                        }
                     }
-                    if (searchForumCategoriesItemFormats.size() > 7) {
-                        break;
+                    catch (Exception e){
+                        Log.d("ERROR",e.toString());
                     }
                 }
 

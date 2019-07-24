@@ -1197,12 +1197,8 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
     @Override
     public void onBackPressed() {
-        if(isAnonymousEnabled){
-            setNormalChat();
-        }
-        else{
         super.onBackPressed();
-        }
+
     }
 
     @Override
@@ -1241,6 +1237,17 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         this.menu = menu;
 
         getMenuInflater().inflate(R.menu.menu_chat_activity, menu);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean preferencesBoolean = preferences.getBoolean("isAnonymousOn", false);
+        if(preferencesBoolean){
+            menu.findItem(R.id.anonymous_mode_toggle).setTitle("Exit dark chats");
+            setAnonymousChat();
+        }
+        else{
+            menu.findItem(R.id.anonymous_mode_toggle).setTitle("Enter dark chats");
+            setNormalChat();
+
+        }
         return true;
     }
 
@@ -1327,6 +1334,59 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
             });
 
         }
+        if(item.getItemId() == R.id.anonymous_mode_toggle){
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            boolean preferencesBoolean = preferences.getBoolean("isAnonymousOn", false);
+            if(preferencesBoolean)
+            {
+                setNormalChat();
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("isAnonymousOn",false);
+                editor.apply();
+                item.setTitle("Enter Dark Chats");
+
+            }
+            else{
+                Dialog exitDialog = new Dialog(ChatActivity.this);
+                exitDialog.setContentView(R.layout.new_dialog_box);
+                exitDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                exitDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(ChatActivity.this,R.drawable.ic_profile_icon));
+                TextView heading =  exitDialog.findViewById(R.id.dialog_box_heading);
+                heading.setText("Dark Chat");
+                TextView body = exitDialog.findViewById(R.id.dialog_box_body);
+                body.setText("You are entering dark chats");
+                Button positiveButton = exitDialog.findViewById(R.id.dialog_box_positive_button);
+                positiveButton.setText("Just once");
+                positiveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        setAnonymousChat();
+                        exitDialog.dismiss();
+
+
+                    }
+                });
+                Button askButton = exitDialog.findViewById(R.id.dialog_box_negative_button);
+                askButton.setText("Always");
+                askButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        setAnonymousChat();
+
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putBoolean("isAnonymousOn",true);
+                        editor.apply();
+                        item.setTitle("Exit dark chats");
+                        exitDialog.dismiss();
+                    }
+                });
+
+                exitDialog.show();
+
+
+            }
+
+        }
 
 
 
@@ -1371,8 +1431,9 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         chatView = (RecyclerView) findViewById(R.id.chatList);
         chatView.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
         appBarLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimary));
-        chatFrameLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
-        chatLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
+//        chatFrameLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
+        chatFrameLayout.setBackground(ContextCompat.getDrawable(this,R.color.white));
+        chatLayout.setBackground(ContextCompat.getDrawable(this,R.drawable.message_box));
 
         typer.setTextColor(ContextCompat.getColor(this,R.color.black));
 

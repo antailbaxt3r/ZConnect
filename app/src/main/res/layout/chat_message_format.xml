@@ -72,6 +72,14 @@
                         android:text="Username"
                         android:layout_marginStart="5dp"/>
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/chat_layout_ll"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+
                 <LinearLayout
                     android:id="@+id/chat_format_message_bubble"
                     android:layout_width="wrap_content"
@@ -100,6 +108,15 @@
                         android:textAlignment="viewEnd"
                         android:id="@+id/chat_format_timestamp"
                         android:text="timestamp"/>
+                </LinearLayout>
+                    <ImageView
+                        android:id="@+id/anonymous_icon"
+                        android:layout_margin="@dimen/padding_10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_people_24"
+                        android:layout_gravity="center"/>
+
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

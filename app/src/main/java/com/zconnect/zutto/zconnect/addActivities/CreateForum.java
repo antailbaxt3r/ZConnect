@@ -346,7 +346,7 @@ public class CreateForum extends BaseActivity {
                     {
                         if(snapshot.hasChild("userType") && snapshot.child("userType").getValue().toString().equals(ForumsUserTypeUtilities.KEY_ADMIN)) {
                             if(!uid.equals("others")) {
-                                deleteForumLL.setVisibility(View.VISIBLE);
+//                                deleteForumLL.setVisibility(View.VISIBLE);
                             }
                         }
                     }
@@ -363,7 +363,7 @@ public class CreateForum extends BaseActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if(dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN)) {
                         if(!uid.equals("others")) {
-                            deleteForumLL.setVisibility(View.VISIBLE);
+//                            deleteForumLL.setVisibility(View.VISIBLE);
                         }
                     }
                 }
@@ -373,19 +373,19 @@ public class CreateForum extends BaseActivity {
 
                 }
             });
-            deleteForumLL.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(TAG, "Removing forum started...");
-                    categoriesRef.removeValue();
-                    tabsCategoriesRef.removeValue();
-                    Toast.makeText(CreateForum.this, "Forum successfully deleted", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(CreateForum.this, HomeActivity.class);
-                    intent.putExtra("tab",1);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                }
-            });
+//            deleteForumLL.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Log.d(TAG, "Removing forum started...");
+//                    categoriesRef.removeValue();
+//                    tabsCategoriesRef.removeValue();
+//                    Toast.makeText(CreateForum.this, "Forum successfully deleted", Toast.LENGTH_LONG).show();
+//                    Intent intent = new Intent(CreateForum.this, HomeActivity.class);
+//                    intent.putExtra("tab",1);
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    startActivity(intent);
+//                }
+//            });
 
             tabsCategoriesRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override

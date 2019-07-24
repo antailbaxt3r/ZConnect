@@ -3,6 +3,7 @@ package com.zconnect.zutto.zconnect.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,7 +57,18 @@ public class InternshipsRVAdapter extends RecyclerView.Adapter<InternshipsRVAdap
                     if (dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                     {
                         holder.apply.setText("Applied");
+                        holder.apply.setBackground(ContextCompat.getDrawable(context,R.drawable.round_button_gray));
+                        holder.apply.setTextColor(ContextCompat.getColor(context,R.color.primaryText));
                         holder.apply.setEnabled(false);
+                        holder.apply.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        holder.apply.setText("Apply");
+                        holder.apply.setBackground(ContextCompat.getDrawable(context,R.drawable.round_button_primary));
+                        holder.apply.setTextColor(ContextCompat.getColor(context,R.color.white));
+                        holder.apply.setEnabled(true);
+                        holder.apply.setVisibility(View.VISIBLE);
+
                     }
                 }
 
