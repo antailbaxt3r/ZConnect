@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -89,7 +90,7 @@ public class CabPoolListOfPeople extends BaseActivity {
     private String reference, reference_old = "archives", reference_default = "allCabs";
     private Button joinButton;
     private LinearLayout joinLayout,chatLayout, share;
-    private TextView chatEditText;
+    private EditText chatEditText;
     private String formatted_date, Date;
     private TextView dateTV, timeTV, sourceTV, destinationTV, peopleTV, postedByTV;
     private SimpleDraweeView postedByImageDV;
@@ -280,7 +281,7 @@ public class CabPoolListOfPeople extends BaseActivity {
         joinLayout.setVisibility(View.GONE);
         chatLayout.setVisibility(View.VISIBLE);
 
-        chatEditText = (TextView) findViewById(R.id.typer);
+        chatEditText =  findViewById(R.id.typer);
         chatEditText.setShowSoftInputOnFocus(false);
 
         flag = false;
@@ -456,6 +457,7 @@ public class CabPoolListOfPeople extends BaseActivity {
 
 
         View.OnClickListener chatListener = new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
 
@@ -474,9 +476,10 @@ public class CabPoolListOfPeople extends BaseActivity {
 
                 openChatActivity();
 
-
-//                }
             }
+
+
+
         };
         chatLayout.setOnClickListener(chatListener);
 
@@ -527,6 +530,7 @@ public class CabPoolListOfPeople extends BaseActivity {
                             counterPush.pushValues();
 
                             FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
+                            chatEditText.requestFocus();
                         }
 
                         @Override

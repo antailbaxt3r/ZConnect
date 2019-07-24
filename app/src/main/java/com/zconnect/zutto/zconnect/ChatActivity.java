@@ -1240,11 +1240,11 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean preferencesBoolean = preferences.getBoolean("isAnonymousOn", false);
         if(preferencesBoolean){
-            menu.findItem(R.id.anonymous_mode_toggle).setTitle("Turn Anonymous mode OFF");
+            menu.findItem(R.id.anonymous_mode_toggle).setTitle("Exit dark chats");
             setAnonymousChat();
         }
         else{
-            menu.findItem(R.id.anonymous_mode_toggle).setTitle("Turn Anonymous mode ON");
+            menu.findItem(R.id.anonymous_mode_toggle).setTitle("Enter dark chats");
             setNormalChat();
 
         }
@@ -1343,16 +1343,47 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putBoolean("isAnonymousOn",false);
                 editor.apply();
-                item.setTitle("Turn Anonymous mode ON");
+                item.setTitle("Enter Dark Chats");
 
             }
             else{
-                setAnonymousChat();
+                Dialog exitDialog = new Dialog(ChatActivity.this);
+                exitDialog.setContentView(R.layout.new_dialog_box);
+                exitDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                exitDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(ChatActivity.this,R.drawable.ic_profile_icon));
+                TextView heading =  exitDialog.findViewById(R.id.dialog_box_heading);
+                heading.setText("Dark Chat");
+                TextView body = exitDialog.findViewById(R.id.dialog_box_body);
+                body.setText("You are entering dark chats");
+                Button positiveButton = exitDialog.findViewById(R.id.dialog_box_positive_button);
+                positiveButton.setText("Just once");
+                positiveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        setAnonymousChat();
+                        exitDialog.dismiss();
 
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean("isAnonymousOn",true);
-                editor.apply();
-                item.setTitle("Turn Anonymous mode OFF");
+
+                    }
+                });
+                Button askButton = exitDialog.findViewById(R.id.dialog_box_negative_button);
+                askButton.setText("Always");
+                askButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        setAnonymousChat();
+
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putBoolean("isAnonymousOn",true);
+                        editor.apply();
+                        item.setTitle("Exit dark chats");
+                        exitDialog.dismiss();
+                    }
+                });
+
+                exitDialog.show();
+
+
             }
 
         }
