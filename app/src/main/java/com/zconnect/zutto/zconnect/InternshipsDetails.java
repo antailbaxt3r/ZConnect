@@ -15,6 +15,7 @@ public class InternshipsDetails extends BaseActivity {
 
     TextView description,duration,question,role,stipend,organisaton;
     Button apply;
+    String appliedCheck;
 
     Intent callingActivityIntent;
 
@@ -67,14 +68,23 @@ public class InternshipsDetails extends BaseActivity {
         role.setText(callingActivityIntent.getStringExtra("role"));
         stipend.setText(callingActivityIntent.getStringExtra("stipend"));
         organisaton.setText(callingActivityIntent.getStringExtra("organization"));
+        appliedCheck = callingActivityIntent.getStringExtra("appliedCheck");
 
+        if (appliedCheck.equalsIgnoreCase("apply"))
+        {
         apply.setOnClickListener(view -> {
-            Intent applyForInternship = new Intent(this, ApplyInternships.class);
-            applyForInternship.putExtra("organizationID",callingActivityIntent.getStringExtra("organizationID"));
-            applyForInternship.putExtra("internshipID",callingActivityIntent.getStringExtra("internshipID"));
-            applyForInternship.putExtra("question",callingActivityIntent.getStringExtra("question"));
+                Intent applyForInternship = new Intent(this, ApplyInternships.class);
+                applyForInternship.putExtra("organizationID",callingActivityIntent.getStringExtra("organizationID"));
+                applyForInternship.putExtra("internshipID",callingActivityIntent.getStringExtra("internshipID"));
+                applyForInternship.putExtra("question",callingActivityIntent.getStringExtra("question"));
 
-            startActivity(applyForInternship);
-        });
+                startActivity(applyForInternship);
+            });
+        }
+        else
+        {
+            apply.setText("Applied");
+            apply.setEnabled(false);
+        }
     }
 }

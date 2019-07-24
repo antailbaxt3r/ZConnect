@@ -107,6 +107,7 @@ public class InternshipsRVAdapter extends RecyclerView.Adapter<InternshipsRVAdap
                     internshipsDetails.putExtra("stipend",internshipsList.get(pos).getStipend());
                     internshipsDetails.putExtra("organizationID",internshipsList.get(pos).getOrgID());
                     internshipsDetails.putExtra("internshipID",internshipsList.get(pos).getKey());
+                    internshipsDetails.putExtra("appliedCheck",apply.getText().toString());
 
                     context.startActivity(internshipsDetails);
                 }
