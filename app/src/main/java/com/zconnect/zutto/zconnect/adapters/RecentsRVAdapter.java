@@ -1478,7 +1478,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("createPoll"))
                     {
                         pollOptionsSelect(recentsItemFormats.get(getAdapterPosition()).getKey());
-                        System.out.print(recentsItemFormats.get(getAdapterPosition()).getKey());
                     }
                     else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("StoreRoom")) {
                           try{
@@ -2091,47 +2090,44 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/" + key);
 
-            pollALL.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.hasChild("usersList"))
+            pollALL.setOnClickListener(view -> {
+                Log.d("SZCH", "clicked!");
+                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.hasChild("usersList"))
+                        {
+                            if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                             {
-                                if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                                {
-                                    Log.e("Create Poll","User has already selected an option");
-                                }
-                                else
-                                {
-                                    count = dataSnapshot.child("options").child("optionACount").getValue(Long.class);
-                                    count++;
-                                    reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionA");
-                                    reference.child("options").child("optionACount").setValue(count);
-                                    String key  = recentsItemFormats.get(getAdapterPosition()).getKey();
-                                    setPollResultsVisible(key, "optionA");
-                                }
+                                Log.e("Create Poll","User has already selected an option");
                             }
-                            else {
+                            else
+                            {
                                 count = dataSnapshot.child("options").child("optionACount").getValue(Long.class);
                                 count++;
                                 reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionA");
                                 reference.child("options").child("optionACount").setValue(count);
-                                String key  = recentsItemFormats.get(getAdapterPosition()).getKey();
-                                setPollResultsVisible(key, "optionA");
-
-
+                                String key1 = recentsItemFormats.get(getAdapterPosition()).getKey();
+                                setPollResultsVisible(key1, "optionA");
                             }
                         }
+                        else {
+                            count = dataSnapshot.child("options").child("optionACount").getValue(Long.class);
+                            count++;
+                            reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionA");
+                            reference.child("options").child("optionACount").setValue(count);
+                            String key1 = recentsItemFormats.get(getAdapterPosition()).getKey();
+                            setPollResultsVisible(key1, "optionA");
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
                         }
-                    });
-                }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             });
 
             pollBLL.setOnClickListener(new View.OnClickListener() {
