@@ -15,6 +15,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.zconnect.zutto.zconnect.ChatActivity;
+import com.zconnect.zutto.zconnect.OnSingleClickListener;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
@@ -180,9 +181,10 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
     }
     public void openChat(final String uid, final String tabId, final String  name ){
 
-        mView.setOnClickListener(new View.OnClickListener() {
+        mView.setOnClickListener(new OnSingleClickListener() {
+
             @Override
-            public void onClick(View view) {
+            public void onSingleClick(View view) {
                 Intent intent = new Intent(mView.getContext(), ChatActivity.class);
 
                 CounterItemFormat counterItemFormat = new CounterItemFormat();

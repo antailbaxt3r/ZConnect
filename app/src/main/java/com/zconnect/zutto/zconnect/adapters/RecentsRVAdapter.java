@@ -1647,7 +1647,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         Intent intent = new Intent(context, OpenStatus.class);
                         intent.putExtra("desc",recentsItemFormats.get(getAdapterPosition()).getDesc());
                         intent.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getKey());
-                        intent.putExtra("uid",recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUID());
+                        intent.putExtra("uid", recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUID());
                         System.out.println(recentsItemFormats.get(getAdapterPosition()).getKey());
                         context.startActivity(intent);
                     }

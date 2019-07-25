@@ -211,6 +211,11 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
                             intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
                             context.startActivity(intent);
                             break;
+                        case "statusNestedComment":
+                            intent = new Intent(context, OpenStatus.class);
+                            intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                            context.startActivity(intent);
+                            break;
                     }
 
                     if (notificationsList.get(position).getTitle().equals("tried contacting you")) {
