@@ -142,7 +142,14 @@ public class InfoneActivity extends Fragment {
                 Collections.sort(categoriesList, new Comparator<InfoneCategoryModel>() {
                     @Override
                     public int compare(InfoneCategoryModel cat1, InfoneCategoryModel cat2) {
-                        return cat1.getName().trim().compareToIgnoreCase(cat2.getName().trim());
+                        try {
+                            return cat1.getName().trim().compareToIgnoreCase(cat2.getName().trim());
+
+                        }
+                        catch (Exception e){
+                            Log.d("ERROR",e.toString());
+                            return 1;
+                        }
                     }
                 });
                 if(categoriesList.isEmpty()){
