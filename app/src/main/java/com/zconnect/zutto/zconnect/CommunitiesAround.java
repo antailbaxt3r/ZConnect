@@ -20,6 +20,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -59,6 +60,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.adapters.CommunitiesAroundAdapter;
+import com.zconnect.zutto.zconnect.adapters.CommunitiesPagerAdapter;
 import com.zconnect.zutto.zconnect.addActivities.CreateCommunity;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.fragments.CommunitiesFragment;
@@ -73,7 +75,7 @@ import static com.zconnect.zutto.zconnect.R.drawable.ic_arrow_back_black_24dp;
 
 public class CommunitiesAround extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
 
-    CommunitiesAroundAdapter adapter;
+//    CommunitiesAroundAdapter adapter;
     Vector<CommunitiesItemFormat> totalCommunitiesList = new Vector<>();
     Vector<CommunitiesItemFormat> communitiesList = new Vector<>();
     Vector<CommunitiesItemFormat> communitiesJoinedList = new Vector<>();
@@ -88,6 +90,7 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
 //    private RelativeLayout noCommunitiesLayout;
     private Button turnOnGPS;
     private FirebaseAuth mAuth;
+
     private GoogleApiClient mGoogleApiClient;
 
     private double lon, lat;
@@ -112,7 +115,7 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
     Location currentLocation = null;
     private LocationCallback locationCallback;
     TabLayout tablayout;
-    CommunitiesFragment f1,f2;
+    public CommunitiesFragment f1,f2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,36 +136,8 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
         progressDialog.setCancelable(false);
         tablayout = findViewById(R.id.communities_tab_layout);
 
-        tablayout.addTab(tablayout.newTab().setText("Communities Around"));
-        tablayout.addTab(tablayout.newTab().setText("Communities Joined"));
-        tablayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                int position = tab.getPosition();
-                switch(position){
-                    case 0:
-                        if(f1 != null){
-                            getSupportFragmentManager().beginTransaction().replace(R.id.communities_container,f1).commit();
-                        }
-                        break;
-                    case 1:
-                        if(f2!=null){
-                            getSupportFragmentManager().beginTransaction().replace(R.id.communities_container,f2).commit();
-                        }
 
-                }
-            }
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -265,8 +240,17 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
                     bundle1.putDouble("lat",location.getLatitude());
                     bundle1.putDouble("lon",location.getLongitude());
                     f2.setArguments(bundle1);
-                    tablayout.getTabAt(0).select();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.communities_container,f1).commit();
+                    ViewPager viewPager;
+                    viewPager = (ViewPager) findViewById(R.id.communities_container);
+
+                    try {
+                        final CommunitiesPagerAdapter adapter = new CommunitiesPagerAdapter(getSupportFragmentManager(), CommunitiesAround.this);
+                        viewPager.setAdapter(adapter);
+                    }
+                    catch (Exception e){
+                    }
+
+                    tablayout.setupWithViewPager(viewPager);
 
 
 //                    loadCommunities(location.getLongitude(), location.getLatitude());
@@ -324,8 +308,16 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
                         bundle1.putDouble("lat",location.getLatitude());
                         bundle1.putDouble("lon",location.getLongitude());
                         f2.setArguments(bundle1);
-                        tablayout.getTabAt(0).select();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.communities_container,f1).commit();
+                        ViewPager viewPager;
+                        viewPager = (ViewPager) findViewById(R.id.communities_container);
+                        try {
+
+                            final CommunitiesPagerAdapter adapter = new CommunitiesPagerAdapter(getSupportFragmentManager(), CommunitiesAround.this);
+                            viewPager.setAdapter(adapter);
+                        }
+                        catch (Exception e){
+                        }
+                        tablayout.setupWithViewPager(viewPager);
 
 
 
@@ -498,7 +490,7 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
 //                            noCommunitiesLayout.setVisibility(View.GONE);
 //                        }
                         progressDialog.dismiss();
-                        adapter.notifyDataSetChanged();
+//                        adapter.notifyDataSetChanged();
                     }
 
                     @Override

@@ -346,7 +346,7 @@ public class CreateForum extends BaseActivity {
                     {
                         if(snapshot.hasChild("userType") && snapshot.child("userType").getValue().toString().equals(ForumsUserTypeUtilities.KEY_ADMIN)) {
                             if(!uid.equals("others")) {
-                                deleteForumLL.setVisibility(View.VISIBLE);
+//                                deleteForumLL.setVisibility(View.VISIBLE);
                             }
                         }
                     }
@@ -363,7 +363,7 @@ public class CreateForum extends BaseActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if(dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN)) {
                         if(!uid.equals("others")) {
-                            deleteForumLL.setVisibility(View.VISIBLE);
+//                            deleteForumLL.setVisibility(View.VISIBLE);
                         }
                     }
                 }
@@ -373,19 +373,19 @@ public class CreateForum extends BaseActivity {
 
                 }
             });
-            deleteForumLL.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(TAG, "Removing forum started...");
-                    categoriesRef.removeValue();
-                    tabsCategoriesRef.removeValue();
-                    Toast.makeText(CreateForum.this, "Forum successfully deleted", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(CreateForum.this, HomeActivity.class);
-                    intent.putExtra("tab",1);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                }
-            });
+//            deleteForumLL.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Log.d(TAG, "Removing forum started...");
+//                    categoriesRef.removeValue();
+//                    tabsCategoriesRef.removeValue();
+//                    Toast.makeText(CreateForum.this, "Forum successfully deleted", Toast.LENGTH_LONG).show();
+//                    Intent intent = new Intent(CreateForum.this, HomeActivity.class);
+//                    intent.putExtra("tab",1);
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    startActivity(intent);
+//                }
+//            });
 
             tabsCategoriesRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -680,7 +680,17 @@ public class CreateForum extends BaseActivity {
             counterPush.pushValues();
 
             //Home
+        Log.d("DATABASEREFHOME",databaseReferenceHome.toString());
         if(databaseReferenceHome!=null) {
+                databaseReferenceHome.child(newPush.getKey()).child("feature").setValue("Forums");
+                databaseReferenceHome.child(newPush.getKey()).child("name").setValue(catName);
+                databaseReferenceHome.child(newPush.getKey()).child("id").setValue(tabUid);
+                databaseReferenceHome.child(newPush.getKey()).child("desc").setValue(mtabName);
+                databaseReferenceHome.child(newPush.getKey()).child("Key").setValue(newPush.getKey());
+                databaseReferenceHome.child(newPush.getKey()).child("PostTimeMillis").setValue(postTimeMillis);
+
+                databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
             FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

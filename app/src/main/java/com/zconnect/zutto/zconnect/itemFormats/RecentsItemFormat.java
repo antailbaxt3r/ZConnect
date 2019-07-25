@@ -54,12 +54,14 @@ public class RecentsItemFormat {
     private PostedByDetails PostedBy;
     //
 
+    private HashMap<String, UsersListItemPollFormat> usersList;
+
     public RecentsItemFormat(String name, String desc, String desc2, String imageurl, String feature, String id,
                              String DT, String cabpoolSource, String cabpoolDestination, String cabpoolDate,
                              String cabpoolTime, int cabpoolTimeFrom, int cabpoolTimeTo, String eventDate, String productPrice, String Key, long PostTimeMillis,
                              PostedByDetails PostedBy, String infoneContactName, String infoneContactCategoryName,
                              String communityName, String message, String recentType, int msgLikes, int msgComments, String productType,
-                             HashMap<String, CabItemFormat> cabItemFormat,String question,int totalCount,CreatePollOptionsItemFormat optionsItemFormat) {
+                             HashMap<String, CabItemFormat> cabItemFormat,String question,int totalCount,CreatePollOptionsItemFormat optionsItemFormat, HashMap<String, UsersListItemPollFormat> usersList) {
         this.name = name;
         this.desc = desc;
         this.desc2 = desc2;
@@ -92,6 +94,8 @@ public class RecentsItemFormat {
         this.question = question;
         this.totalCount = totalCount;
         this.options = optionsItemFormat;
+
+        this.usersList = usersList;
     }
 
     public RecentsItemFormat() {
@@ -299,6 +303,14 @@ public class RecentsItemFormat {
     public void setOptions(CreatePollOptionsItemFormat options) {
         this.options = options;
 
+    }
+
+    public HashMap<String, UsersListItemPollFormat> getUsersList() {
+        return usersList;
+    }
+
+    public void setUsersList(HashMap<String, UsersListItemPollFormat> usersList) {
+        this.usersList = usersList;
     }
 }
 
