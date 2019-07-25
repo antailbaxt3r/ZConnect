@@ -1635,6 +1635,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                         Intent intent = new Intent(context, OpenStatus.class);
                         intent.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getKey());
+                        intent.putExtra("uid", recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUID());
                         System.out.println(recentsItemFormats.get(getAdapterPosition()).getKey());
                         context.startActivity(intent);
                     }
@@ -1734,6 +1735,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     counterPush.pushValues();
                     Intent intent = new Intent(context, OpenStatus.class);
                     intent.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getKey());
+                    intent.putExtra("uid", recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUID());
                     Log.d("username" , " "+recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUsername());
                     System.out.println(recentsItemFormats.get(getAdapterPosition()).getKey());
                     context.startActivity(intent);  }

@@ -79,30 +79,39 @@ public class GlobalFunctions {
         */
         Log.d("SASASA", uid + "");
         if (audience) {
-            notificationsRef = FirebaseDatabase.getInstance().getReference().child("communities").
-                    child(communityReference).child("globalNotifications");
-            key = NotificationIdentifierUtilities.KEY_GLOBAL;
+            if (!type.equals("statusNestedComment")) {
+                notificationsRef = FirebaseDatabase.getInstance().getReference().child("communities").
+                        child(communityReference).child("globalNotifications");
+                key = NotificationIdentifierUtilities.KEY_GLOBAL;
+            }else{
+                key = NotificationIdentifierUtilities.KEY_PERSONAL;
+            }
 
         } else if (notifiedby.getUserUID().equals(uid)) {
             //for personal in app notifs return void if the notified by is same as the current user.
             return;
         } else {
-            if (!type.equals("statusNestedComment")) {
                 notificationsRef = FirebaseDatabase.getInstance().getReference().child("communities").
                         child(communityReference).child("Users1").child(uid)
                         .child("notifications");
-            }
             key = NotificationIdentifierUtilities.KEY_PERSONAL;
         }
 
         if (type.equals("statusNestedComment")) {
+            Log.d("commentKey", String.valueOf(metadata.get("key")));
+            Log.d("referencekey", String.valueOf(metadata.get("ref")));
+            String commentKey = String.valueOf(metadata.get("key"));
+            String referenceKey = String.valueOf(metadata.get("ref"));
+            HashMap<String,Object> metamap = new HashMap<>();
+            metamap.put("key",commentKey);
+            metamap.put("ref",referenceKey);
             DatabaseReference dbref = (DatabaseReference) metadata.get("ref");
             Log.d("databaseref", String.valueOf(dbref));
                 dbref.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot childsnap : dataSnapshot.getChildren()) {
-                            Log.d("keyyyy", childsnap.getKey());
+                            Log.d("keyyyy", notifiedby.getUserUID()+"");
                             if(!notifiedby.getUserUID().equals(childsnap.getKey())) {
                                 notificationsRef = FirebaseDatabase.getInstance().getReference().child("communities").
                                         child(communityReference).child("Users1").child(childsnap.getKey())
@@ -116,12 +125,11 @@ public class GlobalFunctions {
                                 notificationMap.put("seen", seenmap);
                                 notificationMap.put("type", type);
                                 notificationMap.put("key", newNotifRef.getKey());
+                                notificationMap.put("metadata",metamap);
                                 notificationMap.put("notifiedBy", notifiedby);
                                 newNotifRef.setValue(notificationMap);
+
                             }
-                      /*  for (HashMap.Entry<String, Object> entry : metadata.entrySet()) {
-                            newNotifRef.child("metadata").child(entry.getKey()).setValue(entry.getValue());
-                        }*/
                         }
                     }
 
