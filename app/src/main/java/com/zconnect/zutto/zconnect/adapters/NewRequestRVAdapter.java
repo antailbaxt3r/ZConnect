@@ -20,6 +20,7 @@ import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.holders.newRequestViewHolder;
 import com.zconnect.zutto.zconnect.itemFormats.NewRequestItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.RequestTypeUtilities;
 
 import java.util.Objects;
@@ -58,8 +59,10 @@ public class NewRequestRVAdapter extends RecyclerView.Adapter<newRequestViewHold
             holder.newRequestName.setText("Requested ForumTab name: "+newRequestItemFormats.get(position).getName());
         else if(newRequestItemFormats.get(holder.getAdapterPosition()).getType().equals(RequestTypeUtilities.TYPE_LINKS))
             holder.newRequestName.setText("Requested Links name: "+newRequestItemFormats.get(position).getName());
-        holder.postedByNameInLocation.setText(newRequestItemFormats.get(position).getPostedBy().getUsername());
+        else if (newRequestItemFormats.get(holder.getAdapterPosition()).getType().equals(RequestTypeUtilities.TYPE_INFONE_CAT))
+            holder.newRequestName.setText("Requested Infone Category: "+newRequestItemFormats.get(position).getName());
 
+        holder.postedByNameInLocation.setText(newRequestItemFormats.get(position).getPostedBy().getUsername());
         holder.postedByImageLocation.setImageURI(newRequestItemFormats.get(position).getPostedBy().getImageThumb());
 
         if (newRequestItemFormats.get(position).getType().equals(RequestTypeUtilities.TYPE_CABPOOL_LOCATION)) {
@@ -116,6 +119,27 @@ public class NewRequestRVAdapter extends RecyclerView.Adapter<newRequestViewHold
                         }
                     }
                     holder.setAcceptDeclineButtonForLinks(newRequestItemFormats.get(holder.getAdapterPosition()).getKey(), newRequestItemFormats.get(holder.getAdapterPosition()).getPostedBy().getUID(),userItemFormat,holder.acceptUserButton,holder.declineUserButton);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        }
+        else if(newRequestItemFormats.get(position).getType().equals(RequestTypeUtilities.TYPE_INFONE_CAT)){
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot childsnap: dataSnapshot.getChildren()){
+                        if(childsnap.getKey().equals(FirebaseAuth.getInstance().getUid())){
+                            userItemFormat.setUserUID(FirebaseAuth.getInstance().getUid());
+                            userItemFormat.setUsername((String) childsnap.child("username").getValue());
+                            userItemFormat.setImageURL((String) childsnap.child("imageURL").getValue());
+                        }
+                    }
+                    holder.setAcceptDeclineButtonForInfoneCat(newRequestItemFormats.get(holder.getAdapterPosition()).getKey(), newRequestItemFormats.get(holder.getAdapterPosition()).getPostedBy().getUID(),userItemFormat,holder.acceptUserButton,holder.declineUserButton);
                 }
 
                 @Override

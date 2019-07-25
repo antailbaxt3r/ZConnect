@@ -415,6 +415,7 @@
                     android:layout_height="wrap_content"
                     android:text="1234 Votes"
                     android:textSize="14sp"
+                    android:gravity="end"
                     android:textColor="@color/secondaryText" />
             </LinearLayout>
         </LinearLayout>

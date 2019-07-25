@@ -592,7 +592,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.pollOptionC.setText(recentsItemFormats.get(position).getOptions().getOptionC());
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_outline_poll_24px));
-
+                    holder.pollOptionsSelect(recentsItemFormats.get(position).getKey());
                     DatabaseReference databaseReferenceGetOptionSelected = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/" + recentsItemFormats.get(position).getKey());
 
                     databaseReferenceGetOptionSelected.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -1478,7 +1478,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     }
                     else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("createPoll"))
                     {
-                        pollOptionsSelect(recentsItemFormats.get(getAdapterPosition()).getKey());
+                        //Clicking on the layout item as a whole will cause nothing in the UI
+//                        pollOptionsSelect(recentsItemFormats.get(getAdapterPosition()).getKey());
                     }
                     else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("StoreRoom")) {
                           try{
@@ -1985,9 +1986,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     votePercentageA.setVisibility(View.VISIBLE);
                     votePercentageB.setVisibility(View.VISIBLE);
                     votePercentageC.setVisibility(View.VISIBLE);
-                    votePercentageA.setText((int)(optionAFraction*100)+"%");
-                    votePercentageB.setText((int)(optionBFraction*100)+"%");
-                    votePercentageC.setText((int)(optionCFraction*100)+"%");
+                    votePercentageA.setText(Math.round(optionAFraction*100)+"%");
+                    votePercentageB.setText(Math.round(optionBFraction*100)+"%");
+                    votePercentageC.setText(Math.round(optionCFraction*100)+"%");
 
                     LinearLayout.LayoutParams paramsAYes = (LinearLayout.LayoutParams) pollAYes.getLayoutParams();
                     LinearLayout.LayoutParams paramsBYes = (LinearLayout.LayoutParams) pollBYes.getLayoutParams();
