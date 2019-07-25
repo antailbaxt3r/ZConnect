@@ -645,22 +645,25 @@
                 android:layout_marginStart="@dimen/margin_small"
                 android:layout_marginEnd="@dimen/margin_small"
                 android:paddingTop="5dp"
+                android:orientation="vertical"
                 android:paddingBottom="5dp">
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/noticesRecentItem_image"
-                    android:layout_width="0dp"
-                    android:layout_weight="0.34"
-                    android:layout_height="wrap_content"
-                    app:viewAspectRatio="0.85"
-                    app:srcCompat="@drawable/addimage"/>
                 <TextView
                     android:id="@+id/noticesRecentItem_text"
-                    android:layout_width="0dp"
-                    android:layout_weight="0.66"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:textColor="@color/primaryText"
                     android:layout_marginStart="@dimen/margin_small" />
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/noticesRecentItem_image"
+                    app:srcCompat="@drawable/addimage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="Post Image"
+                    fresco:viewAspectRatio="1.33"
+                    android:padding="10dp"/>
+
+
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/cabpoolRecentItem"
