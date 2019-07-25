@@ -81,6 +81,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
                         android:hint="Option A"
+                        android:maxLength="30"
                         android:id="@+id/poll_add_optionA"/>
                     <TextView
                         android:layout_width="match_parent"
@@ -94,6 +95,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
                         android:hint="Option B"
+                        android:maxLength="30"
                         android:id="@+id/poll_add_optionB"/>
                     <TextView
                         android:layout_width="match_parent"
@@ -107,6 +109,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
                         android:hint="Option C"
+                        android:maxLength="30"
                         android:id="@+id/poll_add_optionC"/>
                 </LinearLayout>
 
