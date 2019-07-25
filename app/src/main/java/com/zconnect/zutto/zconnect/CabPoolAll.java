@@ -128,9 +128,9 @@ public class CabPoolAll extends BaseActivity {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
 
         if (toolbar != null) {
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            toolbar.setNavigationOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onSingleClick(View view) {
                     onBackPressed();
                 }
             });
@@ -171,9 +171,10 @@ public class CabPoolAll extends BaseActivity {
         communitySP = CabPoolAll.this.getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
         fab = (FloatingActionButton) findViewById(R.id.fab_cab_pool_main);
-        fab.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new OnSingleClickListener()
+         {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 CounterItemFormat counterItemFormat = new CounterItemFormat();
                 HashMap<String, String> meta= new HashMap<>();
 

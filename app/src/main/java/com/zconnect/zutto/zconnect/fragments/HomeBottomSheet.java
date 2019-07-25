@@ -34,6 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.BuildConfig;
 import com.zconnect.zutto.zconnect.HomeActivity;
 import com.zconnect.zutto.zconnect.InfoneActivity;
+import com.zconnect.zutto.zconnect.OnSingleClickListener;
 import com.zconnect.zutto.zconnect.addActivities.AddEvent;
 import com.zconnect.zutto.zconnect.addActivities.AddNotices;
 import com.zconnect.zutto.zconnect.addActivities.AddProduct;
@@ -133,9 +134,9 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
             }
         });
 
-        View.OnClickListener addEventListener = new View.OnClickListener() {
+        View.OnClickListener addEventListener = new OnSingleClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSingleClick(View view) {
 
                 try {
                     HomeBottomSheet.this.dismiss();
@@ -149,9 +150,9 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
 
             }
         };
-        View.OnClickListener addProductListener = new View.OnClickListener() {
+        View.OnClickListener addProductListener = new OnSingleClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSingleClick(View view) {
 
                 try {
                     HomeBottomSheet.this.dismiss();
@@ -196,9 +197,9 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                                     body.setText("Do you want to sell a product or ask for a product?");
                                     Button addButton = addAskDialog.findViewById(R.id.dialog_box_positive_button);
                                     addButton.setText("Sell");
-                                    addButton.setOnClickListener(new View.OnClickListener() {
+                                    addButton.setOnClickListener(new OnSingleClickListener() {
                                         @Override
-                                        public void onClick(View v) {
+                                        public void onSingleClick(View v) {
                                             Intent intent = new Intent(view.getContext(), AddProduct.class);
                                             intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
                                             view.getContext().startActivity(intent);
@@ -206,9 +207,9 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                                     });
                                     Button askButton = addAskDialog.findViewById(R.id.dialog_box_negative_button);
                                     askButton.setText("Ask");
-                                    askButton.setOnClickListener(new View.OnClickListener() {
+                                    askButton.setOnClickListener(new OnSingleClickListener() {
                                         @Override
-                                        public void onClick(View v) {
+                                        public void onSingleClick(View v) {
                                             Intent intent = new Intent(view.getContext(), AddProduct.class);
                                             intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
                                             view.getContext().startActivity(intent);
@@ -229,9 +230,9 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
         }
         };
 
-        View.OnClickListener addMessageListener = new View.OnClickListener() {
+        View.OnClickListener addMessageListener = new OnSingleClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSingleClick(View view) {
 
                 try {
                     HomeBottomSheet.this.dismiss();
@@ -255,9 +256,9 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
             }
         };
 
-        View.OnClickListener createPollListener = new View.OnClickListener() {
+        View.OnClickListener createPollListener = new OnSingleClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSingleClick(View view) {
 
                 try {
                     HomeBottomSheet.this.dismiss();
@@ -271,9 +272,9 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
             }
         };
 
-        View.OnClickListener searchPoolListener = new View.OnClickListener() {
+        View.OnClickListener searchPoolListener = new OnSingleClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSingleClick(View view) {
 
                 try {
                     HomeBottomSheet.this.dismiss();
@@ -319,9 +320,9 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                         });
         }};
 
-        View.OnClickListener noticesListener = new View.OnClickListener() {
+        View.OnClickListener noticesListener = new OnSingleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 try {
                     HomeBottomSheet.this.dismiss();
                 } catch (Throwable throwable) {
@@ -345,9 +346,9 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
             }
         };
 
-        View.OnClickListener addContactListener = new View.OnClickListener() {
+        View.OnClickListener addContactListener = new OnSingleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 try {
                     HomeBottomSheet.this.dismiss();
                 } catch (Throwable throwable) {
