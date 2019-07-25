@@ -72,7 +72,7 @@ public class ForumsPeopleList extends BaseActivity {
 
         setToolbar();
         setSupportActionBar(toolbar);
-//        setTitle("List of people");
+        toolbar.setTitle("List of people");
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +48,7 @@ public class AddMembersToForumActivity extends BaseActivity {
     int totalContacts;
     AllUsersRVAdapter allUsersRVAdapter;
     RecyclerView recyclerViewContacts;
+    ProgressBar progressBar;
     ArrayList<String> addedUserIds = new ArrayList<>();
     SearchView searchView;
     Toolbar toolbar;
@@ -64,6 +66,8 @@ public class AddMembersToForumActivity extends BaseActivity {
         toolbar = findViewById(R.id.toolbar_add_members);
         setSupportActionBar(toolbar);
         setActionBarTitle("Add Users");
+        progressBar = findViewById(R.id.add_members_progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
         members = findViewById(R.id.add_members_tv);
         listener = new ValueEventListener() {
             @Override
@@ -151,6 +155,7 @@ public class AddMembersToForumActivity extends BaseActivity {
 
                 recyclerViewContacts.setAdapter(allUsersRVAdapter);
 //                progressBar.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
                 recyclerViewContacts.setVisibility(View.VISIBLE);
             }
 

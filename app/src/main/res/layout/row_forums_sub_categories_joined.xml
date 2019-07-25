@@ -63,7 +63,7 @@
                             android:maxWidth="235dp"
                             android:ellipsize="end"
                             android:textColor="@color/primaryText"
-                            android:textSize="16sp"
+                            android:textSize="18sp"
                             android:layout_gravity="center"
                             android:gravity="center"/>
                         <FrameLayout
@@ -88,6 +88,7 @@
                         </FrameLayout>
                     </LinearLayout>
                     <TextView
+                        android:layout_gravity="center"
                         android:layout_marginStart="5dp"
                         android:id="@+id/forums_cat_last_message_timestamp"
                         android:layout_width="0dp"
@@ -108,6 +109,7 @@
                         android:layout_weight="0.9"
                         android:textColor="@color/secondaryText"
                         android:ellipsize="end"
+                        android:layout_gravity="center"
                         android:textColorLink="@color/deepPurple500"
                         style="@style/autoscroll"
                         android:maxLines="1"

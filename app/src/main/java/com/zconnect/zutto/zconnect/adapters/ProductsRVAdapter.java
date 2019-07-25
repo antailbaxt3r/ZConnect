@@ -74,7 +74,7 @@ ProductsRVAdapter extends RecyclerView.Adapter<ProductsViewHolder>{
             holder.setImage(ctx,null);
         }
         holder.setProductName(productVector.get(position).getProductName());
-        holder.defaultSwitch(productVector.get(position).getKey(),ctx,productVector.get(position).getCategory(),productVector.get(position).getProductName());
+        holder.defaultSwitch(productVector.get(position).getKey(),ctx,productVector.get(position).getCategory(),productVector.get(position).getProductName(),productVector.get(position));
         holder.openProduct(productVector.get(position).getKey(), productVector.get(position).getType());
         holder.setProductDate(productVector.get(position).getPostTimeMillis(), System.currentTimeMillis());
     }
