@@ -80,19 +80,17 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="@dimen/border_radius_5dp"
         android:layout_marginBottom="5dp"
-        android:layout_width="0dp"
+        android:layout_width="32dp"
         android:id="@+id/image_btn_whatsapp_infone_contacts"
-        android:layout_height="match_parent"
-        android:layout_weight="0.1"
+        android:layout_height="32dp"
         android:background="@drawable/whatsapp_64px"/>
 
     <ImageButton
         android:id="@+id/image_btn_call_infone_contacts"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.1"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:background="@drawable/ic_phone"
         android:tint="@color/primaryText"/>
 

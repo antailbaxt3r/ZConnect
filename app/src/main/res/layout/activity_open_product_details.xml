@@ -68,7 +68,7 @@
                                 android:layout_height="wrap_content"
                                 android:maxHeight="260dp"
                                 android:adjustViewBounds="true"
-                                android:scaleType="fitCenter"
+                                android:scaleType="fitXY"
                                 android:src="@drawable/product"
                                 android:visibility="visible"/>
                             <TextView
