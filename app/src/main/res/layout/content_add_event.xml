@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/dashed_border"
             android:minHeight="150dp"
-            android:scaleType="center"
+            android:scaleType="fitXY"
             tools:src="@drawable/addimage"
             android:contentDescription="Event image" />
 
