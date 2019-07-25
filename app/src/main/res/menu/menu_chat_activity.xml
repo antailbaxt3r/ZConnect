@@ -17,4 +17,12 @@
         android:orderInCategory="1"
         android:name="Members"
         app:showAsAction="collapseActionView|ifRoom" />
+    <item
+        android:title="Turn Anonymous mode ON"
+        android:id="@+id/anonymous_mode_toggle"
+        android:icon="@drawable/ic_people_white_24dp"
+        android:iconTint="@color/black"
+        android:orderInCategory="1"
+        android:name="Members"
+        app:showAsAction="collapseActionView" />
 </menu>

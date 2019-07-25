@@ -101,6 +101,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             return MessageTypeUtilities.KEY_SHOP_PHOTO;
         }else if(chatFormats.get(position).getMessageType().equals(MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE_STR)){
             return MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE;
+        }else if(chatFormats.get(position).getMessageType().equals(MessageTypeUtilities.KEY_MATCHED_MESSAGE_STR)){
+            return MessageTypeUtilities.KEY_MATCHED_MESSAGE;
         }
 //        else if(chatFormats.get(position).getMessageType().equals(MessageTypeUtilities.KEY_PHOTO_SENDING_STR)){
 //            return MessageTypeUtilities.KEY_PHOTO_SENDING;
@@ -130,7 +132,9 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         } else if(viewType == MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE){
             View messageContactView = inflater.inflate(R.layout.chat_message_format, parent, false);
             return new messageViewHolder(messageContactView, parent.getContext());
-
+        } else if(viewType == MessageTypeUtilities.KEY_MATCHED_MESSAGE){
+            View messageContactView = inflater.inflate(R.layout.chat_message_format, parent, false);
+            return new messageViewHolder(messageContactView, parent.getContext());
         }
 //        else if(viewType == MessageTypeUtilities.KEY_PHOTO_SENDING){
 //            View photoContactView = inflater.inflate(R.layout.chat_photo_format, parent, false);
@@ -152,7 +156,11 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if(message.getMessageType().equals("message")){
             ((messageViewHolder) rvHolder).anonymousImage.setVisibility(View.GONE);
 
+
             messageViewHolder holder = (messageViewHolder) rvHolder;
+            holder.usernameLayout.setVisibility(View.VISIBLE);
+            holder.messageBubble.setVisibility(View.VISIBLE);
+            holder.anonymousButton.setVisibility(View.GONE);
             long previousTs = 0;
             if(position>=1){
                 ChatItemFormats pm = chatFormats.get(position-1);
@@ -195,6 +203,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     holder.leftDummy.setVisibility(View.VISIBLE);
                     holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box_self));
                     holder.chatContainer.setGravity(Gravity.END);
+                    holder.chatLayout.setGravity(Gravity.END);
                     holder.userAvatar.setVisibility(View.GONE);
                     holder.name.setVisibility(View.GONE);
                 }
@@ -392,12 +401,14 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         else if(message.getMessageType().equals(MessageTypeUtilities.KEY_SHOP_MESSAGE_STR)){
 
             messageShopViewHolder holder = (messageShopViewHolder) rvHolder;
+
             long previousTs = 0;
             if(position>=1){
                 ChatItemFormats pm = chatFormats.get(position-1);
                 previousTs = pm.getTimeDate();
             }
             holder.message.setTypeface(holder.message.getTypeface(),Typeface.NORMAL);
+            holder.messageBubble.setVisibility(View.VISIBLE);
 
             setTimeTextVisibility(message.getTimeDate(), previousTs, holder.timeGroupText);
             if(message.getUuid()!=null)
@@ -539,6 +550,10 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
         else if(message.getMessageType().equals(MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE_STR)){
             messageViewHolder holder = (messageViewHolder) rvHolder;
+            holder.usernameLayout.setVisibility(View.VISIBLE);
+            holder.messageBubble.setVisibility(View.VISIBLE);
+            holder.anonymousButton.setVisibility(View.VISIBLE);
+
             long previousTs = 0;
             if(position>=1){
                 ChatItemFormats pm = chatFormats.get(position-1);
@@ -558,6 +573,11 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     else {
                         if (message.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             holder.name.setVisibility(View.GONE);
+                            holder.usernameLayout.setVisibility(View.GONE);
+                            holder.chatLayout.removeAllViews();
+                            holder.chatLayout.addView(holder.anonymousButton);
+                            holder.chatLayout.addView(holder.messageBubble);
+                            holder.chatLayout.setGravity(Gravity.END);
 //                            holder.usernameLayout.setGravity(Gravity.END);
                             holder.anonymousImage.setVisibility(View.GONE);
 //                            holder.name.setGravity(Gravity.END);
@@ -569,6 +589,10 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         } else {
                             holder.name.setVisibility(View.VISIBLE);
                             holder.name.setText(message.getUserName());
+                            holder.chatLayout.removeAllViews();
+                            holder.chatLayout.addView(holder.messageBubble);
+                            holder.chatLayout.addView(holder.anonymousButton);
+                            holder.chatLayout.setGravity(Gravity.START);
                             holder.usernameLayout.setGravity(Gravity.START);
                             holder.anonymousImage.setVisibility(View.VISIBLE);
                             holder.rightDummy.setVisibility(View.VISIBLE);
@@ -723,6 +747,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         holder.message.setMovementMethod(LinkMovementMethod.getInstance());
                         holder.message.setTypeface(holder.message.getTypeface(),Typeface.BOLD_ITALIC);
                         holder.message.setHighlightColor(Color.TRANSPARENT);
+                        holder.anonymousButton.setVisibility(View.GONE);
                         Linkify.addLinks(holder.message, Linkify.ALL);
 
                     }
@@ -746,7 +771,38 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 }
             });
 
-        }else{
+        }
+        else if(message.getMessageType().equals(MessageTypeUtilities.KEY_MATCHED_MESSAGE_STR)){
+            ((messageViewHolder) rvHolder).anonymousImage.setVisibility(View.GONE);
+
+            messageViewHolder holder = (messageViewHolder) rvHolder;
+            long previousTs = 0;
+
+            holder.time.setVisibility(View.GONE);
+            holder.timeGroupText.setText(message.getMessage());
+            holder.timeGroupText.setVisibility(View.VISIBLE);
+            holder.usernameLayout.setVisibility(View.GONE);
+            holder.messageBubble.setVisibility(View.GONE);
+            holder.message.setTypeface(Typeface.DEFAULT,Typeface.NORMAL);
+            holder.chatContainer.setVisibility(View.GONE);
+
+
+            if(forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                holder.message.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+//                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box_dark_mode));
+            }
+            else{
+                holder.message.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+//                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box));
+
+            }
+
+        }
+        else{
             final otherForumsRVViewHolder otherForumsRVViewHolder = (otherForumsRVViewHolder) rvHolder;
             otherForumsRVViewHolder.itemView.setOnClickListener(v -> {
                 Intent i = new Intent(android.content.Intent.ACTION_VIEW);
@@ -829,9 +885,9 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextView message, name, time, timeGroupText;
         LinearLayout usernameLayout;
         SimpleDraweeView userAvatar;
-        LinearLayout rightDummy, leftDummy, messageBubble, chatContainer, chatItem;
+        LinearLayout rightDummy, leftDummy, messageBubble, chatContainer, chatItem, chatLayout;
         Context context;
-        ImageView anonymousImage;
+        ImageView anonymousImage, anonymousButton;
 
         public messageViewHolder(final View itemView, final Context context) {
             super(itemView);
@@ -848,6 +904,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             messageBubble = (LinearLayout) itemView.findViewById(R.id.chat_format_message_bubble);
             anonymousImage = itemView.findViewById(R.id.anonymous_image);
             usernameLayout = itemView.findViewById(R.id.username_layout);
+            chatLayout = itemView.findViewById(R.id.chat_layout_ll);
+            anonymousButton = itemView.findViewById(R.id.anonymous_icon);
 
             Typeface quicksandRegular = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Quicksand-Regular.ttf");
             Typeface quicksandBold = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Quicksand-Bold.ttf");
@@ -1029,26 +1087,40 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                     if(delphoto.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                     {
-                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+
+
+                        Dialog deletePostDialog = new Dialog(context);
+                        deletePostDialog.setContentView(R.layout.new_dialog_box);
+                        deletePostDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        deletePostDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(context,R.drawable.baseline_insert_photo_white_24));
+                        TextView heading =  deletePostDialog.findViewById(R.id.dialog_box_heading);
+                        heading.setText("Confirm");
+                        TextView body = deletePostDialog.findViewById(R.id.dialog_box_body);
+                        body.setText("Are you sure you want to delete this photo?");
+                        Button positiveButton = deletePostDialog.findViewById(R.id.dialog_box_positive_button);
+                        positiveButton.setText("CONFIRM");
+                        positiveButton.setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which){
-                                    case DialogInterface.BUTTON_POSITIVE:
-                                        //Yes button clicked
-                                        databaseref.child("deletedChat").push().setValue(delphoto);
-                                        deleteFromDatabase(delphoto);
-                                        break;
+                            public void onClick(View v) {
+                                databaseref.child("deletedChat").push().setValue(delphoto);
+                                deleteFromDatabase(delphoto);
+                                deletePostDialog.dismiss();
 
-                                    case DialogInterface.BUTTON_NEGATIVE:
-                                        //No button clicked
-                                        break;
-                                }
+
+
                             }
-                        };
+                        });
+                        Button negativeButton = deletePostDialog.findViewById(R.id.dialog_box_negative_button);
+                        negativeButton.setText("CANCEL");
+                        negativeButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                deletePostDialog.dismiss();
+                            }
+                        });
+                        deletePostDialog.show();
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder.setMessage("Delete photo?").setPositiveButton("Yes", dialogClickListener)
-                                .setNegativeButton("No", dialogClickListener).show();
+
                     }
 
                     return true;

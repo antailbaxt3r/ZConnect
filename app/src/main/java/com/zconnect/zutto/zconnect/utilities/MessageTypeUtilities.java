@@ -9,6 +9,7 @@ public class MessageTypeUtilities {
     public static final int KEY_SHOP_PHOTO = 5;
     public static final int KEY_PHOTO_SENDING = 6;
     public static final int KEY_ANONYMOUS_MESSAGE = 7;
+    public static final int KEY_MATCHED_MESSAGE = 8;
 
     public static final String KEY_MESSAGE_STR = "message";
     public static final String KEY_PHOTO_STR = "photo";
@@ -18,5 +19,6 @@ public class MessageTypeUtilities {
     public static final String KEY_SHOP_PHOTO_STR = "shopPhoto";
     public static final String KEY_PHOTO_SENDING_STR = "photoSending";
     public static final String KEY_ANONYMOUS_MESSAGE_STR = "AnonymousMessage";
+    public static final String KEY_MATCHED_MESSAGE_STR = "MatchedMessage";
 
 }

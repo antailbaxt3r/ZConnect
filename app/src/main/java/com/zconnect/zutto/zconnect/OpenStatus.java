@@ -31,6 +31,7 @@ import android.widget.Adapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -80,6 +81,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.zconnect.zutto.zconnect.utilities.RequestCodes.GALLERY_REQUEST;
 
@@ -167,7 +169,7 @@ public class OpenStatus extends BaseActivity {
         key  = getIntent().getStringExtra("key");
         ref= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(key);
 
-        ref.addValueEventListener(new ValueEventListener() {
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -227,7 +229,7 @@ public class OpenStatus extends BaseActivity {
             }
         });
 
-        ref.child("likeUids").addValueEventListener(new ValueEventListener() {
+        ref.child("likeUids").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
                 
@@ -261,6 +263,7 @@ public class OpenStatus extends BaseActivity {
                             if(likes.getText().toString().equals("0")){
                                 likes.setText("");
                             }
+                            ref.child("likeUids").child(user.getUid()).removeValue();
                             likeButton.setColorFilter(context.getResources().getColor(R.color.icon_color));
                             likeButton.setImageDrawable(context.getResources().getDrawable(R.drawable.outline_thumb_up_alt_white_24));
                         }else{
@@ -273,6 +276,39 @@ public class OpenStatus extends BaseActivity {
                             }else {
                                 likes.setText(String.valueOf(Integer.valueOf(likes.getText().toString()) + 1));
                             }
+                            Map<String, Object> taskMap = new HashMap<String, Object>();
+                            taskMap.put(user.getUid(), user.getUid());
+                            ref.child("likeUids").updateChildren(taskMap);
+                            try {
+                                final NotificationSender notificationSender = new NotificationSender(context, FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                final NotificationItemFormat statusLikeNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_STATUS_LIKED, FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                // HashMap<String,Object> hashmap=new HashMap<>();
+                                // hashmap.put("meta",1);
+                                statusLikeNotification.setItemKey(key);
+                                DatabaseReference mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
+                                        statusLikeNotification.setUserImage(userItem.getImageURLThumbnail());
+                                        statusLikeNotification.setUserName(userItem.getUsername());
+                                        statusLikeNotification.setUserKey(userItem.getUserUID());
+                                        statusLikeNotification.setCommunityName(communityTitle);
+                                        statusLikeNotification.setItemLikeCount(Integer.parseInt(likes.getText().toString()));
+                                        GlobalFunctions.inAppNotifications("liked your status", getIntent().getStringExtra("desc"), userItem, false, "status", null, getIntent().getStringExtra("uid"));
+                                        notificationSender.execute(statusLikeNotification);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+                            }
+                            catch (Exception e){
+                                Toast.makeText(context,"Could not send notification",Toast.LENGTH_LONG).show();
+                            }
+
                         }
                     }
                 });
@@ -509,6 +545,33 @@ public class OpenStatus extends BaseActivity {
                 ref.child("Chat").child(messagePushID).setValue(message);
                 Log.d("AINTNO", "POP");
                 ref.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
+                HashMap<String,Object> metadata = new HashMap<>();
+                metadata.put("key",getIntent().getStringExtra("key"));
+                GlobalFunctions.inAppNotifications("commented on your status","Comment: "+text,userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
+                ref.child("Chat").child(messagePushID).child("PostedBy").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        UserItemFormat userItemFormat = new UserItemFormat();
+                        HashMap<String,Object> meta = new HashMap<>();
+                        meta.put("ref",ref);
+                        userItemFormat.setUserUID((String) dataSnapshot.child("ImageThumb").getValue());
+                        userItemFormat.setImageURL((String) dataSnapshot.child("Username").getValue());
+                        userItemFormat.setUsername((String) dataSnapshot.child("UID").getValue());
+                        try {
+                            GlobalFunctions.inAppNotifications("commented on a status you commented", "Comment: " + text, userItemFormat, false, "statusNestedComment", meta, null);
+                        }
+                        catch (Exception e){
+                            //TODO TEMPRORARY FIX CHANGE ASAP
+                            Log.d("ERROR",e.toString());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
             }
 
             @Override

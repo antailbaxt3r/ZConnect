@@ -314,6 +314,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                                           Uri flowcharLink = task.getResult().getPreviewLink();
                                           Intent intent = new Intent();
                                           intent.setAction(Intent.ACTION_SEND);
+
                                           intent.putExtra(Intent.EXTRA_TEXT, "Join my cabpool from " + cabItemFormat.get(getAdapterPosition()).getSource() +
                                                   " to " + cabItemFormat.get(getAdapterPosition()).getDestination() + " on " +
                                                   cabItemFormat.get(getAdapterPosition()).getDate() +

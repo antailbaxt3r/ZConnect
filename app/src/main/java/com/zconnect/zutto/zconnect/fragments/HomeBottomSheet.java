@@ -144,7 +144,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                 }
 
                 Intent intent;
-                intent = new Intent(getContext(), AddEvent.class);
+                intent = new Intent(view.getContext(), AddEvent.class);
                 startActivity(intent);
 
             }
@@ -189,7 +189,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                                     Dialog addAskDialog = new Dialog(view.getContext());
                                     addAskDialog.setContentView(R.layout.new_dialog_box);
                                     addAskDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                                    addAskDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(getContext(),R.drawable.ic_outline_store_24px));
+                                    addAskDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(view.getContext(),R.drawable.ic_outline_store_24px));
                                     TextView heading =  addAskDialog.findViewById(R.id.dialog_box_heading);
                                     heading.setText("Sell/Ask");
                                     TextView body = addAskDialog.findViewById(R.id.dialog_box_body);
@@ -199,7 +199,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                                     addButton.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            Intent intent = new Intent(getContext(), AddProduct.class);
+                                            Intent intent = new Intent(view.getContext(), AddProduct.class);
                                             intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
                                             view.getContext().startActivity(intent);
                                         }
@@ -209,7 +209,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                                     askButton.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            Intent intent = new Intent(getContext(), AddProduct.class);
+                                            Intent intent = new Intent(view.getContext(), AddProduct.class);
                                             intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
                                             view.getContext().startActivity(intent);
                                         }
@@ -250,7 +250,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                 counterPush.pushValues();
 
                 Intent intent;
-                intent = new Intent(getContext(), AddStatus.class);
+                intent = new Intent(view.getContext(), AddStatus.class);
                 startActivity(intent);
             }
         };
@@ -266,7 +266,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                 }
 
                 Intent intent;
-                intent = new Intent(getContext(), CreatePoll.class);
+                intent = new Intent(view.getContext(), CreatePoll.class);
                 startActivity(intent);
             }
         };
@@ -360,7 +360,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                 mHomeActivity.setActionBarTitle("Infone");
                 mHomeActivity.tabs.getTabAt(3).select();
                 getFragmentManager().beginTransaction().show(mHomeActivity.infone).commit();
-                Toast.makeText(getContext(), "Choose a category to add a contact", Toast.LENGTH_LONG).show();
+                Toast.makeText(v.getContext(), "Choose a category to add a contact", Toast.LENGTH_LONG).show();
             }
         };
 

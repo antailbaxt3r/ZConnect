@@ -73,6 +73,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_cat_infone"
             android:layout_width="match_parent"
+            android:paddingBottom="60dp"
+            android:clipToPadding="false"
             android:layout_height="match_parent"
             android:layout_marginBottom="80dp">
 

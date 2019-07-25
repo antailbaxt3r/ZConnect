@@ -26,7 +26,7 @@ import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityRe
 
 public class newRequestViewHolder extends RecyclerView.ViewHolder {
     public TextView newRequestName, postedByNameInLocation;
-    private Button acceptUserButton, declineUserButton;
+    public Button acceptUserButton, declineUserButton;
     public SimpleDraweeView postedByImageLocation;
 
     public newRequestViewHolder(View itemView) {
@@ -38,7 +38,7 @@ public class newRequestViewHolder extends RecyclerView.ViewHolder {
         postedByNameInLocation = itemView.findViewById(R.id.postedByInLocation);
     }
 
-    public void setAcceptDeclineButtonForLocations(final String key, final String uid, final UserItemFormat userItemFormat) {
+    public void setAcceptDeclineButtonForLocations(final String key, final String uid, final UserItemFormat userItemFormat, Button acceptUserButton, Button declineUserButton) {
         acceptUserButton.setOnClickListener(view -> {
             final DatabaseReference requestedLocationDatabaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("admin").child("requests");
             final DatabaseReference addNewLocation=FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("locations");
@@ -89,7 +89,7 @@ public class newRequestViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public void setAcceptDeclineButtonForForumTabs(final String key, final String uid, final UserItemFormat userItemFormat) {
+    public void setAcceptDeclineButtonForForumTabs(final String key, final String uid, final UserItemFormat userItemFormat, Button acceptUserButton, Button declineUserButton) {
 
         final DatabaseReference requestForumTabs = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features/admin/requests");
         final DatabaseReference forumTab = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features/forums/tabs");
@@ -127,7 +127,7 @@ public class newRequestViewHolder extends RecyclerView.ViewHolder {
             GlobalFunctions.inAppNotifications("has declined your forum tab request", "You forum tab request has been rejected", userItemFormat, false, "declineforum", null, uid);
         });
     }
-    public void setAcceptDeclineButtonForLinks(final String key, final String uid, final UserItemFormat userItemFormat) {
+    public void setAcceptDeclineButtonForLinks(final String key, final String uid, final UserItemFormat userItemFormat,  Button acceptUserButton, Button declineUserButton) {
 
         final DatabaseReference requestLinks = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features/admin/requests");
         final DatabaseReference linksRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features/links");

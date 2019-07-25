@@ -299,6 +299,7 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
                 intent.putExtra(ForumUtilities.KEY_MESSAGE,message);
                 mView.getContext().startActivity(intent);
             }
+
         });
 
     }

@@ -111,6 +111,7 @@ import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
 import com.zconnect.zutto.zconnect.adapters.ChatRVAdapter;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.io.File;
@@ -178,6 +179,8 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
     MentionsEditText typer;
     ImageView anonymousSendBtn;
 
+    boolean matchedMessage;
+
 
     //User Mentions
     UserMentionsFormat.MentionsLoader mentionsLoader;
@@ -216,6 +219,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
 
 
@@ -300,6 +304,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
             if (!TextUtils.isEmpty(getIntent().getStringExtra("type"))) {
                 type = getIntent().getStringExtra("type");
+                Log.d("this is the type", type);
             }
         }
         joinButton = (Button) findViewById(R.id.join);
@@ -332,6 +337,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         } else if (type.equals("storeroom")) {
             toolbar.setTitle("Chat with seller");
         } else if (type.equals("post")) {
+            Log.d(TAG, "onCreate: ihjg");
             toolbar.setTitle("Comments");
         } else if (type.equals("personalChats")) {
             Log.d("Setting it to:", getIntent().getStringExtra("name"));
@@ -744,13 +750,21 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
             }
         }
 
+        if(getIntent().hasExtra(   "match")){
+            matchedMessage = getIntent().getBooleanExtra("match",false);
+            if(matchedMessage){
+                postMessage(false);
+            }
+        }
+
+
     }
 
     private void postMessage(boolean anonymous) {
 
 //        final EditText typer = ((EditText) findViewById(R.id.typer));
         final String text;
-        if (TextUtils.isEmpty(typer.getText().toString().trim())) {
+        if (!matchedMessage && TextUtils.isEmpty(typer.getText().toString().trim())) {
             showToast("Message is empty.");
             return;
         }
@@ -851,6 +865,13 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
                 message.setUuid(userItem.getUserUID());
                 message.setName(userItem.getUsername());
+                if(matchedMessage){
+                    message.setMessage("\"" + "You guys matched!!" + "\"");
+                }
+                else{
+                    message.setMessage("\"" + text + "\"");
+
+                }
                 if (userItem.getAnonymousUsername() != null) {
                     message.setUserName(userItem.getAnonymousUsername());
 
@@ -858,7 +879,6 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                     message.setUserName("Unknown");
                 }
                 message.setImageThumb(userItem.getImageURLThumbnail());
-                message.setMessage("\"" + text + "\"");
                 GlobalFunctions.addPoints(2);
                 message.setKey(messagePushID);
                 if(anonymous){
@@ -867,6 +887,10 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 else{
                     message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
 
+                }
+                if(matchedMessage){
+                    message.setMessageType(MessageTypeUtilities.KEY_MATCHED_MESSAGE_STR);
+                    matchedMessage = false;
                 }
 
                 databaseReference.child("Chat").child(messagePushID).setValue(message);
@@ -940,6 +964,23 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                     metadata.put("uid",getIntent().getStringExtra("uid"));
                     Log.d("OLDTOWNROADC", type);
                     GlobalFunctions.inAppNotifications("commented on your status","Comment: "+text,userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
+                    FirebaseDatabase.getInstance().getReference().child(communityReference).child("Users1").child(getIntent().getStringExtra("uid")).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            UserItemFormat userItemFormat = new UserItemFormat();
+                            HashMap<String,Object> meta = new HashMap<>();
+                            meta.put("ref",databaseReference);
+                            userItemFormat.setUserUID(getIntent().getStringExtra("uid"));
+                            userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
+                            userItem.setUsername((String) dataSnapshot.child("username").getValue());
+                            GlobalFunctions.inAppNotifications("Someone just commented on a status that you commented on","Comment: "+text,userItemFormat,false,"statusNestedComment",meta,null);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                     notificationSender.execute(postChatNotification);
 
                 } else if (type.equals("messages")) {
@@ -997,6 +1038,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
         typer.setText(null);
         // chatView.scrollToPosition(chatView.getChildCount());
+
 
     }
 
@@ -1155,12 +1197,8 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
     @Override
     public void onBackPressed() {
-        if(isAnonymousEnabled){
-            setNormalChat();
-        }
-        else{
         super.onBackPressed();
-        }
+
     }
 
     @Override
@@ -1199,6 +1237,17 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         this.menu = menu;
 
         getMenuInflater().inflate(R.menu.menu_chat_activity, menu);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean preferencesBoolean = preferences.getBoolean("isAnonymousOn", false);
+        if(preferencesBoolean){
+            menu.findItem(R.id.anonymous_mode_toggle).setTitle("Exit dark chats");
+            setAnonymousChat();
+        }
+        else{
+            menu.findItem(R.id.anonymous_mode_toggle).setTitle("Enter dark chats");
+            setNormalChat();
+
+        }
         return true;
     }
 
@@ -1285,6 +1334,59 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
             });
 
         }
+        if(item.getItemId() == R.id.anonymous_mode_toggle){
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            boolean preferencesBoolean = preferences.getBoolean("isAnonymousOn", false);
+            if(preferencesBoolean)
+            {
+                setNormalChat();
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("isAnonymousOn",false);
+                editor.apply();
+                item.setTitle("Enter Dark Chats");
+
+            }
+            else{
+                Dialog exitDialog = new Dialog(ChatActivity.this);
+                exitDialog.setContentView(R.layout.new_dialog_box);
+                exitDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                exitDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(ChatActivity.this,R.drawable.ic_profile_icon));
+                TextView heading =  exitDialog.findViewById(R.id.dialog_box_heading);
+                heading.setText("Dark Chat");
+                TextView body = exitDialog.findViewById(R.id.dialog_box_body);
+                body.setText("You are entering dark chats");
+                Button positiveButton = exitDialog.findViewById(R.id.dialog_box_positive_button);
+                positiveButton.setText("Just once");
+                positiveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        setAnonymousChat();
+                        exitDialog.dismiss();
+
+
+                    }
+                });
+                Button askButton = exitDialog.findViewById(R.id.dialog_box_negative_button);
+                askButton.setText("Always");
+                askButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        setAnonymousChat();
+
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putBoolean("isAnonymousOn",true);
+                        editor.apply();
+                        item.setTitle("Exit dark chats");
+                        exitDialog.dismiss();
+                    }
+                });
+
+                exitDialog.show();
+
+
+            }
+
+        }
 
 
 
@@ -1329,8 +1431,9 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         chatView = (RecyclerView) findViewById(R.id.chatList);
         chatView.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
         appBarLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimary));
-        chatFrameLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
-        chatLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
+//        chatFrameLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
+        chatFrameLayout.setBackground(ContextCompat.getDrawable(this,R.color.white));
+        chatLayout.setBackground(ContextCompat.getDrawable(this,R.drawable.message_box));
 
         typer.setTextColor(ContextCompat.getColor(this,R.color.black));
 

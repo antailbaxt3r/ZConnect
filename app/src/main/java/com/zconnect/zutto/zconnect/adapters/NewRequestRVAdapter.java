@@ -50,15 +50,13 @@ public class NewRequestRVAdapter extends RecyclerView.Adapter<newRequestViewHold
     }
 
     @Override
-    public void onBindViewHolder(newRequestViewHolder hold, int pos) {
+    public void onBindViewHolder(newRequestViewHolder holder,final int position) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
-        holder=hold;
-        position=pos;
-        if (newRequestItemFormats.get(position).getType().equals(RequestTypeUtilities.TYPE_CABPOOL_LOCATION))
+        if (newRequestItemFormats.get(holder.getAdapterPosition()).getType().equals(RequestTypeUtilities.TYPE_CABPOOL_LOCATION))
             holder.newRequestName.setText("Requested Location name: "+newRequestItemFormats.get(position).getName());
-        else if(newRequestItemFormats.get(position).getType().equals(RequestTypeUtilities.TYPE_FORUM_TAB))
+        else if(newRequestItemFormats.get(holder.getAdapterPosition()).getType().equals(RequestTypeUtilities.TYPE_FORUM_TAB))
             holder.newRequestName.setText("Requested ForumTab name: "+newRequestItemFormats.get(position).getName());
-        else if(newRequestItemFormats.get(position).getType().equals(RequestTypeUtilities.TYPE_LINKS))
+        else if(newRequestItemFormats.get(holder.getAdapterPosition()).getType().equals(RequestTypeUtilities.TYPE_LINKS))
             holder.newRequestName.setText("Requested Links name: "+newRequestItemFormats.get(position).getName());
         holder.postedByNameInLocation.setText(newRequestItemFormats.get(position).getPostedBy().getUsername());
 
@@ -76,7 +74,7 @@ public class NewRequestRVAdapter extends RecyclerView.Adapter<newRequestViewHold
                             userItemFormat.setImageURL((String) childsnap.child("imageURL").getValue());
                         }
                     }
-                    holder.setAcceptDeclineButtonForLocations(newRequestItemFormats.get(position).getKey(), newRequestItemFormats.get(position).getPostedBy().getUID(),userItemFormat);
+                    holder.setAcceptDeclineButtonForLocations(newRequestItemFormats.get(holder.getAdapterPosition()).getKey(), newRequestItemFormats.get(holder.getAdapterPosition()).getPostedBy().getUID(),userItemFormat,holder.acceptUserButton,holder.declineUserButton);
                 }
 
                 @Override
@@ -97,7 +95,7 @@ public class NewRequestRVAdapter extends RecyclerView.Adapter<newRequestViewHold
                             userItemFormat.setImageURL((String) childsnap.child("imageURL").getValue());
                         }
                     }
-                    holder.setAcceptDeclineButtonForForumTabs(newRequestItemFormats.get(position).getKey(), newRequestItemFormats.get(position).getPostedBy().getUID(),userItemFormat);
+                    holder.setAcceptDeclineButtonForForumTabs(newRequestItemFormats.get(holder.getAdapterPosition()).getKey(), newRequestItemFormats.get(holder.getAdapterPosition()).getPostedBy().getUID(),userItemFormat,holder.acceptUserButton,holder.declineUserButton);
                 }
 
                 @Override
@@ -117,7 +115,7 @@ public class NewRequestRVAdapter extends RecyclerView.Adapter<newRequestViewHold
                             userItemFormat.setImageURL((String) childsnap.child("imageURL").getValue());
                         }
                     }
-                    holder.setAcceptDeclineButtonForLinks(newRequestItemFormats.get(position).getKey(), newRequestItemFormats.get(position).getPostedBy().getUID(),userItemFormat);
+                    holder.setAcceptDeclineButtonForLinks(newRequestItemFormats.get(holder.getAdapterPosition()).getKey(), newRequestItemFormats.get(holder.getAdapterPosition()).getPostedBy().getUID(),userItemFormat,holder.acceptUserButton,holder.declineUserButton);
                 }
 
                 @Override
