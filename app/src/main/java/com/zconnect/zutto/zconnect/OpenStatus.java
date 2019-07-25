@@ -546,24 +546,23 @@ public class OpenStatus extends BaseActivity {
                 Log.d("AINTNO", "POP");
                 ref.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
                 HashMap<String,Object> metadata = new HashMap<>();
-                metadata.put("key",getIntent().getStringExtra("key"));
+                metadata.put("key",key);
                 GlobalFunctions.inAppNotifications("commented on your status","Comment: "+text,userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
-                ref.child("Chat").child(messagePushID).child("PostedBy").addListenerForSingleValueEvent(new ValueEventListener() {
+                ref.child("Chat").child(messagePushID).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         UserItemFormat userItemFormat = new UserItemFormat();
                         HashMap<String,Object> meta = new HashMap<>();
                         meta.put("ref",ref);
-                        userItemFormat.setUserUID((String) dataSnapshot.child("ImageThumb").getValue());
-                        userItemFormat.setImageURL((String) dataSnapshot.child("Username").getValue());
-                        userItemFormat.setUsername((String) dataSnapshot.child("UID").getValue());
-                        try {
-                            GlobalFunctions.inAppNotifications("commented on a status you commented", "Comment: " + text, userItemFormat, false, "statusNestedComment", meta, null);
-                        }
-                        catch (Exception e){
-                            //TODO TEMPRORARY FIX CHANGE ASAP
-                            Log.d("ERROR",e.toString());
-                        }
+                        meta.put("key",key);
+                        Log.d("reference", ref+"");
+                        Log.d("ImageThumb",(String) dataSnapshot.child("imageThumb").getValue()+"");
+                        Log.d("Username",(String) dataSnapshot.child("name").getValue()+"");
+                        Log.d("UID",(String) dataSnapshot.child("uuid").getValue()+"");
+                        userItemFormat.setUserUID((String) dataSnapshot.child("uuid").getValue());
+                        userItemFormat.setImageURL((String) dataSnapshot.child("imageThumb").getValue());
+                        userItemFormat.setUsername((String) dataSnapshot.child("name").getValue());
+                        GlobalFunctions.inAppNotifications("commented on a status you commented","Comment: "+text,userItemFormat,true,"statusNestedComment",meta,null);
                     }
 
                     @Override
