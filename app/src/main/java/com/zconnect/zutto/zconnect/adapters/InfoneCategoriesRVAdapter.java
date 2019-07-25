@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.zconnect.zutto.zconnect.OnSingleClickListener;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.holders.InfoneCategoriesRVViewHolder;
 import com.zconnect.zutto.zconnect.InfoneContactListActivity;
@@ -61,9 +62,9 @@ public class InfoneCategoriesRVAdapter extends RecyclerView.Adapter<InfoneCatego
 
         }
 
-        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+        holder.linearLayout.setOnClickListener(new OnSingleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
 
                 Intent intentInfoneList = new Intent(context, InfoneContactListActivity.class);
                 intentInfoneList.putExtra("catId", categoriesList.get(position).getCatId());

@@ -172,9 +172,9 @@ public class InfoneActivity extends Fragment {
 
         databaseReferenceCat.addValueEventListener(listener);
 
-        fabCatAdd.setOnClickListener(new View.OnClickListener() {
+        fabCatAdd.setOnClickListener(new OnSingleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
 
                 Log.e("tt", "data fab");
 
