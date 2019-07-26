@@ -3,6 +3,11 @@ package com.zconnect.zutto.zconnect.utilities;
 public class CounterUtilities {
 
     //infone
+
+    public static final String KEY_INFONE_REQUEST_CATEGORY = "infoneRequestCategory";
+
+    public static final String KEY_INFONE_REQUEST_CATEGORY_OPEN = "infoneRequestCategoryOpen";
+
     //checked
     public static final String KEY_INFONE_ADD_CONTACT_OPEN = "infoneAddContactOpen";
     //checked
