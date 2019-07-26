@@ -583,6 +583,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".addActivities.RequestInfoneCat"
+            android:label="Request a Infone Category"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".addActivities.CreatePoll"
             android:label="Create a Poll"
             android:screenOrientation="portrait"

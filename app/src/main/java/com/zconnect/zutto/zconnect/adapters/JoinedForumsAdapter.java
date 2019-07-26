@@ -24,6 +24,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.zconnect.zutto.zconnect.ExploreForumsActivity;
 import com.zconnect.zutto.zconnect.ForumsDiffCallback;
+import com.zconnect.zutto.zconnect.OnSingleClickListener;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.holders.JoinedForumsRVViewHolder;
@@ -229,9 +230,9 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
 
         public void exploreForums() {
-            itemView.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onSingleClick(View v) {
                     CounterItemFormat counterItemFormat = new CounterItemFormat();
                     HashMap<String, String> meta = new HashMap<>();
                     counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());

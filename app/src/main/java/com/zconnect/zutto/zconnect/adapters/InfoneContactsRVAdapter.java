@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.InfoneContactListActivity;
+import com.zconnect.zutto.zconnect.OnSingleClickListener;
 import com.zconnect.zutto.zconnect.ZConnectDetails;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
@@ -259,9 +260,9 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
             holder.desctv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.gray_holo_light));
             holder.hiddentv.setText("hidden");
         }
-            holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+            holder.linearLayout.setOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onSingleClick(View v) {
 
                     if (infoneContactsRVItems.get(position).getContactHidden()) {
                         createAlertForRequest(infoneContactsRVItems.get(position).getInfoneUserId(), currentUser);

@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -16,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.R;
 
+import com.zconnect.zutto.zconnect.ZConnectDetails;
 import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 
@@ -164,6 +166,53 @@ public class newRequestViewHolder extends RecyclerView.ViewHolder {
             DatabaseReference requestForumTabs1 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features/admin/requests");
             requestForumTabs1.child(key).removeValue();
 //            GlobalFunctions.inAppNotifications("has declined your forum tab request", "You forum tab request has been rejected", userItemFormat, false, "declineforum", null, uid);
+        });
+    }
+
+    public void setAcceptDeclineButtonForInfoneCat(String key, String uid, UserItemFormat userItemFormat, Button acceptUserButton, Button declineUserButton) {
+
+        DatabaseReference requestedInfoneCatDatabaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("admin").child("requests");
+
+        DatabaseReference databaseReferenceInfone = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child(ZConnectDetails.INFONE_DB_NEW);
+        String catId = databaseReferenceInfone.child("categoriesInfo").push().getKey();
+
+        DatabaseReference newCategoryRef = databaseReferenceInfone.child("categoriesInfo").child(catId);
+
+        acceptUserButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                requestedInfoneCatDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        final HashMap<String, Object> infoneCatMap = new HashMap<>();
+                        infoneCatMap.put("name",dataSnapshot.child(key).child("Name").getValue());
+                        infoneCatMap.put("admin",dataSnapshot.child(key).child("PostedBy").child("Username").getValue());
+                        infoneCatMap.put("catId",catId);
+                        infoneCatMap.put("totalContacts",0);
+
+                        newCategoryRef.setValue(infoneCatMap);
+
+                        requestedInfoneCatDatabaseReference.child(key).removeValue();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+                /*newCategoryRef.child("name").setValue(name);
+                newCategoryRef.child("admin").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                newCategoryRef.child("catId").setValue(catId);
+                newCategoryRef.child("totalContacts").setValue(0);*/
+            }
+        });
+        declineUserButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatabaseReference declineInfoneCat = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features/admin/requests");
+                declineInfoneCat.child(key).removeValue();
+            }
         });
     }
 }
