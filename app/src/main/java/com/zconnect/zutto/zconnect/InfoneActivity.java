@@ -143,7 +143,11 @@ public class InfoneActivity extends Fragment {
                 Collections.sort(categoriesList, new Comparator<InfoneCategoryModel>() {
                     @Override
                     public int compare(InfoneCategoryModel cat1, InfoneCategoryModel cat2) {
-                        return cat1.getName().trim().compareToIgnoreCase(cat2.getName().trim());
+
+                        if(cat1.getName()!=null && cat2.getName()!=null)
+                            return cat1.getName().trim().compareToIgnoreCase(cat2.getName().trim());
+                        else
+                            return 0;
                     }
                 });
                 if(categoriesList.isEmpty()){
@@ -169,9 +173,9 @@ public class InfoneActivity extends Fragment {
 
         databaseReferenceCat.addValueEventListener(listener);
 
-        fabCatAdd.setOnClickListener(new View.OnClickListener() {
+        fabCatAdd.setOnClickListener(new OnSingleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
 
                 Log.e("tt", "data fab");
 

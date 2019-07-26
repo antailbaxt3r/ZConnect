@@ -68,6 +68,7 @@ import com.zconnect.zutto.zconnect.LeaderBoard;
 import com.zconnect.zutto.zconnect.Links;
 import com.zconnect.zutto.zconnect.LoginActivity;
 import com.zconnect.zutto.zconnect.Notices;
+import com.zconnect.zutto.zconnect.OnSingleClickListener;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.OpenProductDetails;
 import com.zconnect.zutto.zconnect.OpenStatus;
@@ -126,7 +127,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     Vector<RecentsItemFormat> recentsItemFormats;
     private HomeActivity mHomeActivity;
     DatabaseReference mRef;
-    View.OnClickListener openUserProfileListener;
+    OnSingleClickListener openUserProfileListener;
     boolean flag;
     private CommunityFeatures communityFeatures;
     LinearLayoutManager linearLayoutManager;
@@ -196,9 +197,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 break;
             case 2:
                 final Viewholder holder = (Viewholder) holder2;
-                openUserProfileListener = new View.OnClickListener() {
+                openUserProfileListener = new OnSingleClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onSingleClick(View v) {
 
                         if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(recentsItemFormats.get(position).getPostedBy().getUID())) {
                             Intent i = new Intent(context, OpenUserDetail.class);
@@ -310,13 +311,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                     Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.bannerImage);
 //                    holder.bannerImage.setImageURI(recentsItemFormats.get(position).getImageurl());
-                    holder.bannerImage.setOnClickListener(new View.OnClickListener() {
+                    holder.bannerImage.setOnClickListener(new OnSingleClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onSingleClick(View v) {
                             holder.bannerLinkLayout.setVisibility(View.VISIBLE);
-                            holder.bannerLinkLayout.setOnClickListener(new View.OnClickListener() {
+                            holder.bannerLinkLayout.setOnClickListener(new OnSingleClickListener() {
                                 @Override
-                                public void onClick(View v) {
+                                public void onSingleClick(View v) {
 
                                     CounterItemFormat counterItemFormat = new CounterItemFormat();
                                     HashMap<String, String> meta = new HashMap<>();
@@ -372,9 +373,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_people_white_24dp));
-                    holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
+                    holder.layoutFeatureIcon.setOnClickListener(new OnSingleClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onSingleClick(View v) {
                             mHomeActivity.changeFragment(3);
                         }
                     });
@@ -426,9 +427,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_event_white_24dp));
-                    holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
+                    holder.layoutFeatureIcon.setOnClickListener(new OnSingleClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onSingleClick(View v) {
                             FirebaseDatabase.getInstance().getReference().child("minimumClientVersion")
                                     .child("events").addListenerForSingleValueEvent(
                                     new ValueEventListener() {
@@ -453,9 +454,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     });
                     holder.postConjunction.setText(" created an ");
                     holder.post.setText(recentsItemFormats.get(position).getFeature());
-                    holder.post.setOnClickListener(new View.OnClickListener() {
+                    holder.post.setOnClickListener(new OnSingleClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onSingleClick(View v) {
                             Intent intent = new Intent(context, TabbedEvents.class);
                             context.startActivity(intent);
                         }
@@ -591,7 +592,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.pollOptionC.setText(recentsItemFormats.get(position).getOptions().getOptionC());
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_outline_poll_24px));
-
+                    holder.pollOptionsSelect(recentsItemFormats.get(position).getKey());
                     DatabaseReference databaseReferenceGetOptionSelected = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/" + recentsItemFormats.get(position).getKey());
 
                     databaseReferenceGetOptionSelected.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -646,9 +647,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 //            holder.featureCircle.setBackground(layerDrawable);
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_local_mall_white_24dp));
-                    holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
+                    holder.layoutFeatureIcon.setOnClickListener(new OnSingleClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onSingleClick(View v) {
                             FirebaseDatabase.getInstance().getReference().child("minimumClientVersion").
                                     child("storeroom").addListenerForSingleValueEvent(
                                     new ValueEventListener() {
@@ -677,9 +678,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         holder.postConjunction.setText(" added a ");
                     }
                     holder.post.setText("Product");
-                    holder.post.setOnClickListener(new View.OnClickListener() {
+                    holder.post.setOnClickListener(new OnSingleClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onSingleClick(View v) {
 
                             FirebaseDatabase.getInstance().getReference().child("minimumClientVersion")
                                     .child("storeroom").addListenerForSingleValueEvent(
@@ -825,9 +826,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                     holder.postConjunction.setText(" started a ");
                     holder.post.setText(recentsItemFormats.get(position).getFeature());
-                    holder.post.setOnClickListener(new View.OnClickListener() {
+                    holder.post.setOnClickListener(new OnSingleClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onSingleClick(View v) {
                             FirebaseDatabase.getInstance().getReference().child("minimumClientVersion").
                                     child("cabpool").addListenerForSingleValueEvent(
                                     new ValueEventListener() {
@@ -903,9 +904,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 //            holder.featureCircle.setBackground(layerDrawable);
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_local_taxi_white_24dp));
-                    holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
+                    holder.layoutFeatureIcon.setOnClickListener(new OnSingleClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onSingleClick(View v) {
 
                             FirebaseDatabase.getInstance().getReference().child("minimumClientVersion").
                                     child("cabpool").addListenerForSingleValueEvent(
@@ -1145,9 +1146,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.baseline_insert_photo_white_24));
                     holder.setOpenNoticeImage(recentsItemFormats.get(position).getName(), recentsItemFormats.get(position).getImageurl());
-                    holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
+                    holder.layoutFeatureIcon.setOnClickListener(new OnSingleClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onSingleClick(View v) {
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
                             HashMap<String, String> meta = new HashMap<>();
                             meta.put("type", "fromRecents");
@@ -1170,9 +1171,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                     holder.postConjunction.setText(" posted a ");
                     holder.post.setText("Notice");
-                    holder.post.setOnClickListener(new View.OnClickListener() {
+                    holder.post.setOnClickListener(new OnSingleClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onSingleClick(View v) {
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
                             HashMap<String, String> meta = new HashMap<>();
                             meta.put("type", "fromRecents");
@@ -1234,9 +1235,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_forum_white_24dp));
-                    holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
+                    holder.layoutFeatureIcon.setOnClickListener(new OnSingleClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onSingleClick(View v) {
                             mHomeActivity.changeFragment(1);
                         }
                     });
@@ -1432,9 +1433,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             totalComments = (TextView) itemView.findViewById(R.id.comment_text_status);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onSingleClick(View view) {
                     if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Event")) {
                         FirebaseDatabase.getInstance().getReference().child("minimumClientVersion").
                                 child("events").addListenerForSingleValueEvent(
@@ -1477,7 +1478,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     }
                     else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("createPoll"))
                     {
-                        pollOptionsSelect(recentsItemFormats.get(getAdapterPosition()).getKey());
+                        //Clicking on the layout item as a whole will cause nothing in the UI
+//                        pollOptionsSelect(recentsItemFormats.get(getAdapterPosition()).getKey());
                     }
                     else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("StoreRoom")) {
                           try{
@@ -1647,7 +1649,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         Intent intent = new Intent(context, OpenStatus.class);
                         intent.putExtra("desc",recentsItemFormats.get(getAdapterPosition()).getDesc());
                         intent.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getKey());
-                        intent.putExtra("uid",recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUID());
+                        intent.putExtra("uid", recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUID());
                         System.out.println(recentsItemFormats.get(getAdapterPosition()).getKey());
                         context.startActivity(intent);
                     }
@@ -1665,9 +1667,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public void deletePost(final String postID) {
 
 
-            deleteButton.setOnClickListener(new View.OnClickListener() {
+            deleteButton.setOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onSingleClick(View v) {
                     Dialog deletePostDialog = new Dialog(context);
                     deletePostDialog.setContentView(R.layout.new_dialog_box);
                     deletePostDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -1734,9 +1736,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             final RelativeLayout commentLayout = (RelativeLayout) itemView.findViewById(R.id.messagesRecentItem_comment_layout);
 
-            commentLayout.setOnClickListener(new View.OnClickListener() {
+            commentLayout.setOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onSingleClick(View v) {
                     CounterItemFormat counterItemFormat = new CounterItemFormat();
                     HashMap<String, String> meta = new HashMap<>();
                     counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
@@ -1761,9 +1763,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         public void setOpenStatusImage(final String name, final String imageURL) {
 
-            postImage.setOnClickListener(new View.OnClickListener() {
+            postImage.setOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onSingleClick(View v) {
 
                     CounterItemFormat counterItemFormat = new CounterItemFormat();
                     HashMap<String, String> meta = new HashMap<>();
@@ -1787,9 +1789,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         public void setOpenNoticeImage(final String title, final String imageURL) {
 
-            noticesImage.setOnClickListener(new View.OnClickListener() {
+            noticesImage.setOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onSingleClick(View v) {
 
                     CounterItemFormat counterItemFormat = new CounterItemFormat();
                     HashMap<String, String> meta = new HashMap<>();
@@ -1874,9 +1876,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             });
 
             if (user != null) {
-                likeIcon.setOnClickListener(new View.OnClickListener() {
+                likeIcon.setOnClickListener(new OnSingleClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onSingleClick(View v) {
                         if(statusLikeFlag == true){
                             statusLikeFlag = false;
                             statusDatabase.child("likeUids").child(user.getUid()).removeValue();
@@ -1937,9 +1939,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 });
 
             } else {
-                likeIcon.setOnClickListener(new View.OnClickListener() {
+                likeIcon.setOnClickListener(new OnSingleClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onSingleClick(View v) {
                         android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(itemView.getContext());
                         dialog.setNegativeButton("Lite", null)
                                 .setPositiveButton("Login", new DialogInterface.OnClickListener() {
@@ -1984,9 +1986,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     votePercentageA.setVisibility(View.VISIBLE);
                     votePercentageB.setVisibility(View.VISIBLE);
                     votePercentageC.setVisibility(View.VISIBLE);
-                    votePercentageA.setText((int)(optionAFraction*100)+"%");
-                    votePercentageB.setText((int)(optionBFraction*100)+"%");
-                    votePercentageC.setText((int)(optionCFraction*100)+"%");
+                    votePercentageA.setText(Math.round(optionAFraction*100)+"%");
+                    votePercentageB.setText(Math.round(optionBFraction*100)+"%");
+                    votePercentageC.setText(Math.round(optionCFraction*100)+"%");
 
                     LinearLayout.LayoutParams paramsAYes = (LinearLayout.LayoutParams) pollAYes.getLayoutParams();
                     LinearLayout.LayoutParams paramsBYes = (LinearLayout.LayoutParams) pollBYes.getLayoutParams();
@@ -2273,17 +2275,17 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
             });
 
-            leaderBoardText.setOnClickListener(new View.OnClickListener() {
+            leaderBoardText.setOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onSingleClick(View v) {
                     Intent intent = new Intent(itemView.getContext(), LeaderBoard.class);
                     itemView.getContext().startActivity(intent);
                 }
             });
 
-            totalMembersLayout.setOnClickListener(new View.OnClickListener() {
+            totalMembersLayout.setOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onSingleClick(View v) {
                     Toast.makeText(context, "Top the leader board by inviting your friends", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(context, ReferralCode.class);
                     context.startActivity(intent);
@@ -2588,9 +2590,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     if (userItem.getUsername() != null) {
                         if (userItem.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)) {
                             admin.setVisibility(View.VISIBLE);
-                            admin.setOnClickListener(new View.OnClickListener() {
+                            admin.setOnClickListener(new OnSingleClickListener() {
                                 @Override
-                                public void onClick(View v) {
+                                public void onSingleClick(View v) {
                                     Log.d(TAG, "clicked on admin");
                                     FirebaseDatabase.getInstance().getReference().child("minimumClientVersion").
                                             child("admin").addListenerForSingleValueEvent(
@@ -2619,9 +2621,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             });
                         }
                     }
-                    events.setOnClickListener(new View.OnClickListener() {
+                    events.setOnClickListener(new OnSingleClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onSingleClick(View v) {
                             FirebaseDatabase.getInstance().getReference().child("minimumClientVersion")
                                     .child("events").addListenerForSingleValueEvent(
                                     new ValueEventListener() {
@@ -2663,9 +2665,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     }
                     });
 
-                    storeroom.setOnClickListener(new View.OnClickListener() {
+                    storeroom.setOnClickListener(new OnSingleClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onSingleClick(View v) {
                             FirebaseDatabase.getInstance().getReference().child("minimumClientVersion")
                                     .child("storeroom").addListenerForSingleValueEvent(
                                     new ValueEventListener() {
@@ -2707,9 +2709,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }
                     });
 
-                    cabpool.setOnClickListener(new View.OnClickListener() {
+                    cabpool.setOnClickListener(new OnSingleClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onSingleClick(View v) {
 
                             FirebaseDatabase.getInstance().getReference().child("minimumClientVersion").
                                     child("cabpool").addListenerForSingleValueEvent(
@@ -2753,9 +2755,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }
                     });
 
-                    internships.setOnClickListener(new View.OnClickListener() {
+                    internships.setOnClickListener(new OnSingleClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onSingleClick(View v) {
                             FirebaseDatabase.getInstance().getReference().child("minimumClientVersion")
                                     .child("internships").addListenerForSingleValueEvent(
                                     new ValueEventListener() {
@@ -2797,9 +2799,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }});
 
 
-                    notices.setOnClickListener(new View.OnClickListener() {
+                    notices.setOnClickListener(new OnSingleClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onSingleClick(View v) {
                             if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
                                 resetFeaturesUnreadCount(FeatureDBName.KEY_NOTICES, dataSnapshot);
                                 Intent intent = new Intent(context, Notices.class);
@@ -2821,9 +2823,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }
                     });
 
-                    shops.setOnClickListener(new View.OnClickListener() {
+                    shops.setOnClickListener(new OnSingleClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onSingleClick(View v) {
                             FirebaseDatabase.getInstance().getReference().child("minimumClientVersion")
                                     .child("shops").addListenerForSingleValueEvent(
                                     new ValueEventListener() {
@@ -2868,47 +2870,50 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }
                     });
 
-                    links.setOnClickListener(v -> {
-                        FirebaseDatabase.getInstance().getReference().child("minimumClientVersion")
-                                .child("links").addListenerForSingleValueEvent(
-                                new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        Log.d("VERSIONN", dataSnapshot.getValue(Integer.class) + "");
-                                        if (dataSnapshot.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
-                                            Intent intent = new Intent(context, UpdateAppActivity.class);
-                                            intent.putExtra("feature", "shops");
-                                            context.startActivity(intent);
-
-                                        } else {
-                                            if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
-                                                resetFeaturesUnreadCount(FeatureDBName.KEY_LINKS, dataSnapshot);
-                                                Intent intent = new Intent(context, Links.class);
+                    links.setOnClickListener(new OnSingleClickListener() {
+                        @Override
+                               public void onSingleClick(View v){
+                            FirebaseDatabase.getInstance().getReference().child("minimumClientVersion")
+                                    .child("links").addListenerForSingleValueEvent(
+                                    new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            Log.d("VERSIONN", dataSnapshot.getValue(Integer.class) + "");
+                                            if (dataSnapshot.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
+                                                Intent intent = new Intent(context, UpdateAppActivity.class);
+                                                intent.putExtra("feature", "shops");
                                                 context.startActivity(intent);
-                                                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                                HashMap<String, String> meta = new HashMap<>();
 
-
-                                                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                                                counterItemFormat.setUniqueID(CounterUtilities.KEY_LINKS_OPEN);
-                                                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                                                counterItemFormat.setMeta(meta);
-
-                                                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                                                counterPush.pushValues();
                                             } else {
-                                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Links", context);
+                                                if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
+                                                    resetFeaturesUnreadCount(FeatureDBName.KEY_LINKS, dataSnapshot);
+                                                    Intent intent = new Intent(context, Links.class);
+                                                    context.startActivity(intent);
+                                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                                    HashMap<String, String> meta = new HashMap<>();
+
+
+                                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_LINKS_OPEN);
+                                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                                    counterItemFormat.setMeta(meta);
+
+                                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                                    counterPush.pushValues();
+                                                } else {
+                                                    newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Links", context);
+                                                }
                                             }
                                         }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
                                     }
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                            );
 
-                                    }
-                                }
-                        );
-
-
+                        }
                     });
 
                     mOtherFeatures.addValueEventListener(new ValueEventListener() {
@@ -2926,9 +2931,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                     otherFeatureIcon = (SimpleDraweeView) otherFeatureItemLayout.findViewById(R.id.icon_recents_features_view_item);
                                     otherFeatureIcon.setImageURI(shot.child("image").getValue().toString());
                                     featureName.setText(shot.child("name").getValue(String.class));
-                                    otherFeatureItemLayout.setOnClickListener(new View.OnClickListener() {
+                                    otherFeatureItemLayout.setOnClickListener(new OnSingleClickListener() {
                                         @Override
-                                        public void onClick(View v) {
+                                        public void onSingleClick(View v) {
                                             if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
                                                 Intent urlIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(shot.child("URL").getValue().toString()));
                                                 context.startActivity(urlIntent);

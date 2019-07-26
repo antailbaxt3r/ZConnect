@@ -24,6 +24,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.zconnect.zutto.zconnect.ChatActivity;
+import com.zconnect.zutto.zconnect.OnSingleClickListener;
 import com.zconnect.zutto.zconnect.addActivities.CreateForum;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
@@ -234,9 +235,9 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         }
 
         public void createForum(final String uid,Boolean newUser){
-            itemView.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onSingleClick(View v) {
                     CounterItemFormat counterItemFormat = new CounterItemFormat();
                     HashMap<String, String> meta= new HashMap<>();
                     counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
@@ -294,9 +295,9 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         void openChat(final String uid, final String tabId, final String  name, Boolean newUser){
 
             if(!newUser) {
-                mView.setOnClickListener(new View.OnClickListener() {
+                mView.setOnClickListener(new OnSingleClickListener() {
                     @Override
-                    public void onClick(View view) {
+                    public void onSingleClick(View view) {
                         Intent intent = new Intent(context, ChatActivity.class);
 
                         CounterItemFormat counterItemFormat = new CounterItemFormat();
@@ -386,9 +387,9 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         void openChat(final String uid, final String tabId, final String  name,Boolean newUser){
 
             if(!newUser) {
-                mView.setOnClickListener(new View.OnClickListener() {
+                mView.setOnClickListener(new OnSingleClickListener() {
                     @Override
-                    public void onClick(View view) {
+                    public void onSingleClick(View view) {
                         CounterItemFormat counterItemFormat = new CounterItemFormat();
                         HashMap<String, String> meta = new HashMap<>();
                         meta.put("type", "fromFeature");
@@ -421,9 +422,9 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 
             final DatabaseReference forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tabUID).child(key);
 
-            joinButton.setOnClickListener(new View.OnClickListener() {
+            joinButton.setOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onSingleClick(View v) {
                     CounterItemFormat counterItemFormat = new CounterItemFormat();
                     HashMap<String, String> meta= new HashMap<>();
 
