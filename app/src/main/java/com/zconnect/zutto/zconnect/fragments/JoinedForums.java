@@ -1,12 +1,10 @@
 package com.zconnect.zutto.zconnect.fragments;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -22,41 +20,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.zconnect.zutto.zconnect.FirebaseForumsViewHolder;
-import com.zconnect.zutto.zconnect.HomeActivity;
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.adapters.ForumCategoriesRVAdapter;
 import com.zconnect.zutto.zconnect.adapters.JoinedForumsAdapter;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
-import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.DBHelper;
-import com.zconnect.zutto.zconnect.holders.JoinedForumsRVViewHolder;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
-import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
 
-import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
-import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
-import static android.content.Context.POWER_SERVICE;
-import static com.zconnect.zutto.zconnect.R.menu.menu_infone_contact_list;
+
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 import java.util.ArrayList;
@@ -69,30 +52,32 @@ import java.util.Vector;
 
 public class JoinedForums extends Fragment {
 
+    //joinedForumsAdapter related variables
     private RecyclerView joinedForumsRV;
     private LinearLayoutManager linearLayoutManager;
-    private JoinedForumsAdapter adapter;
-    private FirebaseRecyclerAdapter firebaseRecyclerAdapter;
 
+    private JoinedForumsAdapter joinedForumsAdapter;
 
-//    private DatabaseReference forumsCategoriesRef;
-    private ShimmerFrameLayout shimmerFrameLayout;
-    private DatabaseReference forumsCategoriesRef;
-
-    private Vector<ForumCategoriesItemFormat> forumCategoriesItemFormats = new Vector<>();
-    private Vector<ForumCategoriesItemFormat> notifTabForum = new Vector<>();
-    private Vector<ForumCategoriesItemFormat> searchForumCategoriesItemFormats;
-    ForumCategoriesItemFormat exploreButton = new ForumCategoriesItemFormat();
     private ValueEventListener joinedForumsListener;
+    private DatabaseReference userForumsRef;
+
+    private ShimmerFrameLayout shimmerFrameLayout;
+
+    //vector for listing all the forums
+    private Vector<ForumCategoriesItemFormat> forumCategoriesItemFormats = new Vector<>();
+
+    //variables for Notifications
     private DBHelper mydb;
     private Map<String,Integer> allForumsSeenMessages = new HashMap();
+    boolean isUnread;
+
+
+    //vector for search
+    private Vector<ForumCategoriesItemFormat> searchForumCategoriesItemFormats = new Vector<>();
+
+    private ForumCategoriesItemFormat exploreButton = new ForumCategoriesItemFormat();
 
     private FirebaseAuth mAuth;
-//    private ProgressBar progressBar;
-
-    //New Forums
-    private DatabaseReference userForumsRef;
-//    private ValueEventListener forumEventListener;.
 
     //Share Forums
     boolean isShare =false;
@@ -100,7 +85,6 @@ public class JoinedForums extends Fragment {
     String messageType;
     String message;
 
-    boolean isUnread;
 
     public JoinedForums() {
         // Required empty public constructor
@@ -110,10 +94,13 @@ public class JoinedForums extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             activityType = getArguments().getString(ForumUtilities.KEY_ACTIVITY_TYPE_STR);
             if(activityType.equals(ForumUtilities.VALUE_SHARE_FORUM_STR)){
+
                 messageType = getArguments().getString(ForumUtilities.KEY_MESSAGE_TYPE_STR,null);
+
                 if(messageType != null){
                     message = getArguments().getString(ForumUtilities.KEY_MESSAGE,null);
                 }
@@ -124,6 +111,7 @@ public class JoinedForums extends Fragment {
 
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -131,15 +119,15 @@ public class JoinedForums extends Fragment {
 
         mAuth = FirebaseAuth.getInstance();
 
-//        forumsCategoriesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories");
         joinedForumsRV =view.findViewById(R.id.joined_forums_rv);
+        joinedForumsRV.setVisibility(View.INVISIBLE);
         shimmerFrameLayout = view.findViewById(R.id.shimmer_view_container_forums);
         shimmerFrameLayout.startShimmerAnimation();
-        joinedForumsRV.setVisibility(View.INVISIBLE);
         linearLayoutManager = new LinearLayoutManager(view.getContext());
+
         userForumsRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("userForums").child(mAuth.getCurrentUser().getUid()).child("joinedForums");
-//        setUpFirebaseAdapter();
-        setAdapter("lite",false);
+        userForumsRef.keepSynced(true);
+
         return  view;
     }
 
@@ -148,8 +136,13 @@ public class JoinedForums extends Fragment {
         joinedForumsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                Log.i("ttt",dataSnapshot.getValue().toString());
+
                 forumCategoriesItemFormats.clear();
+
                 Parcelable recyclerViewState = null;
+
                 isUnread = false;
                 try {
                     if (joinedForumsRV != null) {
@@ -159,6 +152,9 @@ public class JoinedForums extends Fragment {
                 catch (Exception e){
                     recyclerViewState = null;
                 }
+
+
+                //For creating explore Button
                 ChatItemFormats fakeLastMessage = new ChatItemFormats();
                 fakeLastMessage.setMessage(" ");
                 fakeLastMessage.setTimeDate(0);
@@ -170,106 +166,75 @@ public class JoinedForums extends Fragment {
                 exploreButton.setLastMessage(fakeLastMessage);
                 exploreButton.setForumType(ForumTypeUtilities.KEY_EXPLORER_FORUM_STR);
 
-                for(DataSnapshot shot2: dataSnapshot.getChildren()) {
-                    try {
-                        String name = null;
-                        String imageURL = null;
-                        Log.d("Try",shot2.toString());
-                        ForumCategoriesItemFormat temp = new ForumCategoriesItemFormat();
-                        try{
-                            temp = shot2.getValue(ForumCategoriesItemFormat.class);
-                        }
-                        catch (Exception e){
-                            Log.d("Try:ErrorFormat", e.toString());
 
-                        }
-                        if(temp==null) {
-                            temp.setTabUID(shot2.child("tabUID").getValue().toString());
-                            temp.setCatUID(shot2.child("catUID").getValue().toString());
-                        }
+                for(DataSnapshot shot: dataSnapshot.getChildren()) {
+
+                    if (shot.child("tabUID").getValue() != null && shot.child("catUID").getValue() != null) {
+                        try {
+                            String name = null;
+                            String imageURL = null;
 
 
+                            ForumCategoriesItemFormat temp = new ForumCategoriesItemFormat();
 
-                        if(shot2.child("TabUID").toString().equals("personalChats")){
-                            name = shot2.child("personalChatTitle").getValue().toString();
-                            imageURL = shot2.child("imageThumb").getValue().toString();
-                            shot2.child("personalChatTitle");
-                        }
+                            temp = shot.getValue(ForumCategoriesItemFormat.class);
 
-                        if (!shot2.hasChild("totalMessages")) {
-                            temp.setTotalMessages(0);
-                        }
-                        mydb = new DBHelper(getContext());
-//                        Log.d("TabUID",)
-                        notifTabForum = mydb.getTabForums(shot2.child("tabUID").getValue().toString());
-                        temp.setSeenMessages(totalSeenNumber(temp.getCatUID()));
-                        temp.setSeenMessages(0);
-
-
-                        if(activityType != null) {
-                            if (activityType.equals(ForumUtilities.VALUE_SHARE_FORUM_STR)) {
-                                Log.d("Setting message", message);
-                                temp.setForumType(ForumUtilities.VALUE_SHARE_FORUM_STR);
-                                temp.setMessage(message);
-                                temp.setMessageType(messageType);
-
+                            //Personal chats
+                            if (shot.child("TabUID").toString().equals("personalChats")) {
+                                name = shot.child("personalChatTitle").getValue().toString();
+                                imageURL = shot.child("imageThumb").getValue().toString();
+                                shot.child("personalChatTitle");
                             }
-                        }
-                        else {
-                            if(shot2.child("forumType").getValue()==null)
-                            temp.setForumType(ForumTypeUtilities.KEY_JOINED_STR);
-                        }
-                        if(name!=null){
-                            temp.setName(name);
-                        }
-                        if(imageURL!=null){
-                            temp.setImage(imageURL);
-                            temp.setImageThumb(imageURL);
-                        }
-                        Log.d("Try",temp.getCatUID());
-                        Log.d("Try",temp.getForumType());
-                        Log.d("Try",temp.getLastMessage().getMessage());
-                        Log.d("Try",temp.getTotalMessages().toString());
 
-                        if(shot2.hasChild("isUnread")){
-                            temp.setUnread(shot2.child("isUnread").getValue(Boolean.class));
-                        }
-                        else{
+                            //
+                            if (!shot.hasChild("totalMessages")) {
+                                temp.setTotalMessages(0);
+                            }
 
-                        }
+                            if (allForumsSeenMessages.get(temp.getCatUID()) != null) {
+                                temp.setSeenMessages(allForumsSeenMessages.get(temp.getCatUID()));
 
-                        boolean unread = false;
-                        if(temp.getTotalMessages()>temp.getSeenMessages()){
-                        Log.d("UNREADMESSAGE",temp.getName());
-                         unread = true;
-                        isUnread = true;
+                            } else {
+                                temp.setSeenMessages(temp.getTotalMessages());
+                            }
+                            if (activityType != null) {
+                                if (activityType.equals(ForumUtilities.VALUE_SHARE_FORUM_STR)) {
+                                    Log.d("Setting message", message);
+                                    temp.setForumType(ForumUtilities.VALUE_SHARE_FORUM_STR);
+                                    temp.setMessage(message);
+                                    temp.setMessageType(messageType);
 
-
-                    }
-//                    if(unread){
-//                        if(activityType == null) {
-//
-//                            TabLayout tabs = getActivity().findViewById(R.id.navigation);
-//                            tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
-//                        }
-////                        isUnread = false;
-//                    }
-
-                        if (shot2.child("users").child(mAuth.getCurrentUser().getUid()).hasChild("userType")) {
-                            if (!(shot2.child("users").child(mAuth.getCurrentUser().getUid()).child("userType").getValue().equals(ForumsUserTypeUtilities.KEY_BLOCKED))) {
-                                if (shot2.hasChild("lastMessage")) {
-                                    forumCategoriesItemFormats.add(temp);
-                                } else {
-                                    ChatItemFormats lastMessage = new ChatItemFormats();
-                                    lastMessage.setMessage(" ");
-                                    lastMessage.setTimeDate(1388534400);
-                                    lastMessage.setName(" ");
-                                    temp.setLastMessage(lastMessage);
-                                    forumCategoriesItemFormats.add(temp);
                                 }
+                            } else {
+                                if (shot.child("forumType").getValue() == null)
+                                    temp.setForumType(ForumTypeUtilities.KEY_JOINED_STR);
                             }
-                        } else {
-                            if (shot2.hasChild("lastMessage")) {
+                            if (name != null) {
+                                temp.setName(name);
+                            }
+                            if (imageURL != null) {
+                                temp.setImage(imageURL);
+                                temp.setImageThumb(imageURL);
+                            }
+
+                            if (shot.hasChild("isUnread")) {
+                                temp.setUnread(shot.child("isUnread").getValue(Boolean.class));
+                            } else {
+
+                            }
+
+                            boolean unread = false;
+                            if(temp.getTotalMessages()>temp.getSeenMessages()){
+                                Log.d("UNREADMESSAGE",temp.getName());
+                                 unread = true;
+                                isUnread = true;
+                            }
+
+                            if (shot.hasChild("lastMessage")) {
+                                if (temp.getLastMessage().getTimeDate() == 0) {
+
+                                    temp.getLastMessage().setTimeDate(1388534400);
+                                }
                                 forumCategoriesItemFormats.add(temp);
                             } else {
                                 ChatItemFormats lastMessage = new ChatItemFormats();
@@ -282,86 +247,60 @@ public class JoinedForums extends Fragment {
                                 forumCategoriesItemFormats.add(temp);
                             }
 
+//                        }
+
+                        } catch (Exception e) {
+                            Log.e("Try:Outside Error", e.toString());
                         }
+                    }
 
-                    }catch (Exception e){Log.e("Try:Outside Error",e.toString());}
                 }
-
-
-
+                // for loop ended
                 Collections.sort(forumCategoriesItemFormats, new Comparator<ForumCategoriesItemFormat>() {
                     @Override
                     public int compare(ForumCategoriesItemFormat o2, ForumCategoriesItemFormat o1) {
 
-                        return Long.valueOf((Long) o2.getLastMessage().getTimeDate()).compareTo((Long) o1.getLastMessage().getTimeDate()) ;
+                        return Long.valueOf((Long) o2.getLastMessage().getTimeDate()).compareTo((Long) o1.getLastMessage().getTimeDate());
                     }
                 });
-                if(activityType == null) {
-
+                if (activityType == null) {
                     forumCategoriesItemFormats.add(exploreButton);
                 }
 
                 Collections.reverse(forumCategoriesItemFormats);
 
-//                adapter = new JoinedForumsAdapter(forumCategoriesItemFormats,getContext());
-//                joinedForumsRV.setLayoutManager(linearLayoutManager);
-//                joinedForumsRV.setAdapter(adapter);
-//
-//                progressBar.setVisibility(View.GONE);
-//                joinedForumsRV.setVisibility(View.VISIBLE);
-//                Log.d("Adapter List",forumCategoriesItemFormats.toString());
-//                adapter = new JoinedForumsAdapter(forumCategoriesItemFormats,getActivity());
-//                joinedForumsRV.setLayoutManager(linearLayoutManager);
-//                joinedForumsRV.setAdapter(adapter);
-//                adapter.notifyDataSetChanged();
-//                if(adapter == null ) {
-                    Log.d("TryHere","Setting Adapter");
-                    adapter = new JoinedForumsAdapter(forumCategoriesItemFormats, getActivity());
+                    joinedForumsAdapter = new JoinedForumsAdapter(forumCategoriesItemFormats, getActivity());
                     joinedForumsRV.setLayoutManager(linearLayoutManager);
-                    joinedForumsRV.setAdapter(adapter);
-                    if(joinedForumsRV != null && recyclerViewState != null) {
+                    joinedForumsRV.setAdapter(joinedForumsAdapter);
+                    if (joinedForumsRV != null && recyclerViewState != null) {
                         joinedForumsRV.getLayoutManager().onRestoreInstanceState(recyclerViewState);
                     }
 
-//                }
-//                else{
-//                    adapter.notifyDataSetChanged();
-                adapter.updateList(forumCategoriesItemFormats);
+                    joinedForumsAdapter.updateList(forumCategoriesItemFormats);
 
-//                }
-//                try {
-//                    if (!isUnread) {
-//                        if (activityType == null) {
-//                            TabLayout tabs = getActivity().findViewById(R.id.navigation);
-//                            tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
-//                        }
-//                    } else {
-//                        if (activityType == null) {
-//
-//                            TabLayout tabs = getActivity().findViewById(R.id.navigation);
-//                            tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
-//                            isUnread = false;
-//                        }
-//                    }
-//                }
-//                catch (Exception e){
-//                    Log.d("JoinedForumDot",e.toString());
-//                }
+                    try {
+                        if (!isUnread) {
+                            if (activityType == null) {
+                                TabLayout tabs = getActivity().findViewById(R.id.navigation);
+                                tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
+                            }
+                        } else {
+                            if (activityType == null) {
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        shimmerFrameLayout.stopShimmerAnimation();
-                        shimmerFrameLayout.setVisibility(View.GONE);
-                        joinedForumsRV.setVisibility(View.VISIBLE);
-
+                                TabLayout tabs = getActivity().findViewById(R.id.navigation);
+                                tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
+                                isUnread = false;
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.d("JoinedForumDot", e.toString());
                     }
-                }, 500);
-//                adapter.notifyDataSetChanged();
-                adapter.updateList(forumCategoriesItemFormats);
-//                customSimpleAdapterListView(forumCategoriesItemFormats);
 
+                    shimmerFrameLayout.stopShimmerAnimation();
+                    shimmerFrameLayout.setVisibility(View.GONE);
+                    joinedForumsRV.setVisibility(View.VISIBLE);
+
+                    joinedForumsAdapter.updateList(forumCategoriesItemFormats);
             }
 
             @Override
@@ -389,19 +328,17 @@ public class JoinedForums extends Fragment {
                     }
                 }
 
-                adapter = new JoinedForumsAdapter(searchForumCategoriesItemFormats,getContext());
-                joinedForumsRV.setAdapter(adapter);
-//                progressBar.setVisibility(View.GONE);
+                joinedForumsAdapter = new JoinedForumsAdapter(searchForumCategoriesItemFormats,getContext());
+                joinedForumsRV.setAdapter(joinedForumsAdapter);
                 joinedForumsRV.setVisibility(View.VISIBLE);
             }else {
-                adapter = new JoinedForumsAdapter(forumCategoriesItemFormats,getContext());
-                joinedForumsRV.setAdapter(adapter);
+                joinedForumsAdapter = new JoinedForumsAdapter(forumCategoriesItemFormats,getContext());
+                joinedForumsRV.setAdapter(joinedForumsAdapter);
                 joinedForumsRV.setVisibility(View.VISIBLE);
             }
 
         }else {
             userForumsRef.addValueEventListener(joinedForumsListener);
-//            forumsCategoriesRef.addValueEventListener(joinedForumsListener);
         }
 
     }
@@ -451,19 +388,17 @@ public class JoinedForums extends Fragment {
             }
         });
     }
-
-    public Integer totalSeenNumber(String catID){
-        Integer seenMessages = 0;
-        Log.d("ForumTabs",notifTabForum.toString());
-        Log.d("CATUID",catID);
-        for (int i=0;i<notifTabForum.size(); i++){
-            if(notifTabForum.get(i).getCatUID().equals(catID)){
-                seenMessages = notifTabForum.get(i).getSeenMessages();
-            }
-        }
-        Log.d("Seen message",Integer.toString(seenMessages));
-        return seenMessages;
-    }
+//
+//    public Integer totalSeenNumber(String catID){
+//        Integer seenMessages = 0;
+//        for (int i=0;i<notifTabForum.size(); i++){
+//            if(notifTabForum.get(i).getCatUID().equals(catID)){
+//                seenMessages = notifTabForum.get(i).getSeenMessages();
+//            }
+//        }
+//        Log.d("Seen message",Integer.toString(seenMessages));
+//        return seenMessages;
+//    }
 
     @Override
     public void onAttach(Context context) {
@@ -475,6 +410,12 @@ public class JoinedForums extends Fragment {
         super.onResume();
         mydb = new DBHelper(getContext());
         allForumsSeenMessages = mydb.getAllForums();
+
+
+        shimmerFrameLayout.startShimmerAnimation();
+        shimmerFrameLayout.setVisibility(View.VISIBLE);
+        joinedForumsRV.setVisibility(View.GONE);
+        setAdapter("lite",false);
 //        userForumsRef.addValueEventListener(joinedForumsListener);
 //        forumsCategoriesRef.addValueEventListener(joinedForumsListener);
 
@@ -483,6 +424,7 @@ public class JoinedForums extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+       // userForumsRef.removeEventListener(joinedForumsListener);
 //        userForumsRef.removeEventListener(joinedForumsListener);
 //        forumsCategoriesRef.removeEventListener(joinedForumsListener);
     }
@@ -493,67 +435,35 @@ public class JoinedForums extends Fragment {
 
     }
 
-    private void setUpFirebaseAdapter() {
-        Log.d("FIREBASERV","Started");
-
-
-        FirebaseRecyclerOptions<ForumCategoriesItemFormat> options =
-                new FirebaseRecyclerOptions.Builder<ForumCategoriesItemFormat>()
-                        .setQuery(userForumsRef, new SnapshotParser<ForumCategoriesItemFormat>() {
-                            @NonNull
-                            @Override
-                            public ForumCategoriesItemFormat parseSnapshot(@NonNull DataSnapshot snapshot) {
-                                if(snapshot.getValue(ForumCategoriesItemFormat.class) != null) {
-                                    Log.d("NOTEMPTYFORMAT","EMPTYFORMATTT");
-
-                                    return snapshot.getValue(ForumCategoriesItemFormat.class);
-                                }
-                                else{
-                                    Log.d("EMPTYFORMATTTTT","EMPTYFORMATTT");
-                                    return new ForumCategoriesItemFormat();
-                                }
-                            }
-                        })
-                        .build();
-
-
-        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<ForumCategoriesItemFormat, FirebaseForumsViewHolder>(options)
-                 {
-
-
-            @Override
-            public FirebaseForumsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-                Log.d("FIREBASERV","View Created");
-//                }
-                View joinedContactView = layoutInflater.inflate(R.layout.row_forums_sub_categories_joined, parent, false);
-            return new FirebaseForumsViewHolder(joinedContactView);
-
-
-            }
-
-            @Override
-            protected void onBindViewHolder(@NonNull FirebaseForumsViewHolder holder, int position, @NonNull ForumCategoriesItemFormat model) {
-                FirebaseMessaging.getInstance().subscribeToTopic(forumCategoriesItemFormats.get(position).getCatUID());
-                final ForumCategoriesItemFormat forumCategory = forumCategoriesItemFormats.get(position);
-
-
-                    final FirebaseForumsViewHolder holderMain = (FirebaseForumsViewHolder) holder;
-                    Log.d("In here", forumCategoriesItemFormats.get(position).getTabUID().toString());
-
-                    holderMain.setDetails(forumCategoriesItemFormats.get(position));
-                    holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName());
-
-                }
-
-
-
-        };
-        joinedForumsRV.setLayoutManager(new LinearLayoutManager(getContext()));
-        joinedForumsRV.setAdapter(firebaseRecyclerAdapter);
-        joinedForumsRV.setVisibility(View.VISIBLE);
-        shimmerFrameLayout.setVisibility(View.GONE);
-    }
+//    private void setUpFirebaseAdapter() {
+//        Log.d("FIREBASERV","Started");
+//
+//
+//        FirebaseRecyclerOptions<ForumCategoriesItemFormat> options =
+//                new FirebaseRecyclerOptions.Builder<ForumCategoriesItemFormat>()
+//                        .setQuery(userForumsRef, new SnapshotParser<ForumCategoriesItemFormat>() {
+//                            @NonNull
+//                            @Override
+//                            public ForumCategoriesItemFormat parseSnapshot(@NonNull DataSnapshot snapshot) {
+//                                if(snapshot.getValue(ForumCategoriesItemFormat.class) != null) {
+//                                    Log.d("NOTEMPTYFORMAT","EMPTYFORMATTT");
+//
+//                                    return snapshot.getValue(ForumCategoriesItemFormat.class);
+//                                }
+//                                else{
+//                                    Log.d("EMPTYFORMATTTTT","EMPTYFORMATTT");
+//                                    return new ForumCategoriesItemFormat();
+//                                }
+//                            }
+//                        })
+//                        .build();
+//
+//
+//        joinedForumsRV.setLayoutManager(new LinearLayoutManager(getContext()));
+//        joinedForumsRV.setAdapter(joinedForumsAdapter);
+//        joinedForumsRV.setVisibility(View.VISIBLE);
+//        shimmerFrameLayout.setVisibility(View.GONE);
+//    }
 
     private void customSimpleAdapterListView(Vector<ForumCategoriesItemFormat> forumCategoriesItemFormats)
     {
