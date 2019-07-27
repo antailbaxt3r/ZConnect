@@ -1266,8 +1266,18 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     });
                     holder.postConjunction.setText(" created a ");
                     holder.post.setText(recentsItemFormats.get(position).getFeature());
-                    holder.forumNameCategorySentence.setText(recentsItemFormats.get(position).getName()
-                            + " in " + recentsItemFormats.get(position).getDesc());
+                    holder.forumNameCategorySentence.setText(recentsItemFormats.get(position).getName());
+                    holder.forumTabName.setText("in " + recentsItemFormats.get(position).getDesc());
+                    if(recentsItemFormats.get(position).getImageThumb()!=null)
+                    {
+                        holder.forumDefaultIcon.setVisibility(View.GONE);
+                        holder.forumImage.setImageURI(recentsItemFormats.get(position).getImageThumb());
+                    }
+                    else
+                    {
+                        holder.forumDefaultIcon.setVisibility(View.VISIBLE);
+                        holder.forumImage.setBackground(context.getResources().getDrawable(R.drawable.avatar_circle_128dp));
+                    }
                     posted = " created a ";
                     post = "Forum";
                     clickableSpanFeature = new ClickableSpan() {
@@ -1342,7 +1352,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 eventName, eventDate, eventTime, eventDesc,
                 productName, productPrice, productDesc,
                 messagesMessage,
-                forumNameCategorySentence,
+                forumNameCategorySentence, forumTabName,
                 sentence,totalComments,
                 noticesText,
                 pollQuestion,pollOptionA,pollOptionB,pollOptionC,
@@ -1354,8 +1364,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 postImage,
                 productImage,
                 bannerImage,
-                noticesImage;
-        ImageView featureIcon,iv_youtube_thumnail,iv_play;
+                noticesImage,
+                forumImage;
+        ImageView featureIcon, iv_youtube_thumnail, iv_play, forumDefaultIcon;
 
 
         ImageButton deleteButton;
@@ -1440,6 +1451,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             //iv_play=(ImageView)itemView.findViewById(R.id.iv_play_pause);
             forumsRecentItem = (LinearLayout) itemView.findViewById(R.id.forumsRecentItem);
             forumNameCategorySentence = (TextView) itemView.findViewById(R.id.forum_name_with_category_sentence);
+            forumTabName = itemView.findViewById(R.id.forumsRecentItem_tab_name);
+            forumImage = itemView.findViewById(R.id.forumsRecentItem_image);
+            forumDefaultIcon = itemView.findViewById(R.id.forumsRecentItem_image_default_icon);
             postImage = (SimpleDraweeView) itemView.findViewById(R.id.messagesRecentItem_image);
             bannerRecentItem = (LinearLayout) itemView.findViewById(R.id.bannerRecentItem);
             bannerImage = (SimpleDraweeView) itemView.findViewById(R.id.bannerRecentItem_image);

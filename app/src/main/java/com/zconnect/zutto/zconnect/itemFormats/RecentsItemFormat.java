@@ -50,6 +50,7 @@ public class RecentsItemFormat {
     private int msgComments;
 
         //for Forums
+    private String imageThumb;
 
     private PostedByDetails PostedBy;
     //
@@ -61,7 +62,7 @@ public class RecentsItemFormat {
                              String cabpoolTime, int cabpoolTimeFrom, int cabpoolTimeTo, String eventDate, String productPrice, String Key, long PostTimeMillis,
                              PostedByDetails PostedBy, String infoneContactName, String infoneContactCategoryName,
                              String communityName, String message, String recentType, int msgLikes, int msgComments, String productType,
-                             HashMap<String, CabItemFormat> cabItemFormat,String question,int totalCount,CreatePollOptionsItemFormat optionsItemFormat, HashMap<String, UsersListItemPollFormat> usersList) {
+                             HashMap<String, CabItemFormat> cabItemFormat,String question,int totalCount,CreatePollOptionsItemFormat optionsItemFormat, HashMap<String, UsersListItemPollFormat> usersList, String imageThumb) {
         this.name = name;
         this.desc = desc;
         this.desc2 = desc2;
@@ -94,12 +95,20 @@ public class RecentsItemFormat {
         this.question = question;
         this.totalCount = totalCount;
         this.options = optionsItemFormat;
-
         this.usersList = usersList;
+        this.imageThumb = imageThumb;
     }
 
     public RecentsItemFormat() {
 
+    }
+
+    public String getImageThumb() {
+        return imageThumb;
+    }
+
+    public void setImageThumb(String imageThumb) {
+        this.imageThumb = imageThumb;
     }
 
     public String getId() {
