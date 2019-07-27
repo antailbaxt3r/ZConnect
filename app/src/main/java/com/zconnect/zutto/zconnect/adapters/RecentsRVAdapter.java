@@ -599,6 +599,29 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     databaseReferenceGetOptionSelected.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            //reset all views
+                            holder.totalVoteCount.setVisibility(View.GONE);
+                            holder.votePercentageA.setVisibility(View.GONE);
+                            holder.votePercentageB.setVisibility(View.GONE);
+                            holder.votePercentageC.setVisibility(View.GONE);
+                            holder.pollAYes.setVisibility(View.GONE);
+                            holder.pollANo.setVisibility(View.GONE);
+                            holder.pollBYes.setVisibility(View.GONE);
+                            holder.pollBNo.setVisibility(View.GONE);
+                            holder.pollCYes.setVisibility(View.GONE);
+                            holder.pollCNo.setVisibility(View.GONE);
+                            holder.pollAResult.setVisibility(View.GONE);
+                            holder.pollBResult.setVisibility(View.GONE);
+                            holder.pollCResult.setVisibility(View.GONE);
+                            holder.pollOptionA.setTypeface(null, Typeface.NORMAL);
+                            holder.pollOptionB.setTypeface(null, Typeface.NORMAL);
+                            holder.pollOptionC.setTypeface(null, Typeface.NORMAL);
+                            holder.markerA.setTypeface(null, Typeface.NORMAL);
+                            holder.markerB.setTypeface(null, Typeface.NORMAL);
+                            holder.markerC.setTypeface(null, Typeface.NORMAL);
+                            holder.votePercentageA.setTypeface(null, Typeface.NORMAL);
+                            holder.votePercentageB.setTypeface(null, Typeface.NORMAL);
+                            holder.votePercentageC.setTypeface(null, Typeface.NORMAL);
                             if (dataSnapshot.hasChild("usersList"))
                             {
                                 if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
@@ -2036,15 +2059,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     pollBYes.setBackground(context.getResources().getDrawable(R.drawable.left_rounded_corner_full_purple_border));
 
                     pollCYes.setBackground(context.getResources().getDrawable(R.drawable.left_rounded_corner_full_purple_border));
-                    pollOptionA.setTypeface(null, Typeface.NORMAL);
-                    pollOptionB.setTypeface(null, Typeface.NORMAL);
-                    pollOptionC.setTypeface(null, Typeface.NORMAL);
-                    markerA.setTypeface(null, Typeface.NORMAL);
-                    markerB.setTypeface(null, Typeface.NORMAL);
-                    markerC.setTypeface(null, Typeface.NORMAL);
-                    votePercentageA.setTypeface(null, Typeface.NORMAL);
-                    votePercentageB.setTypeface(null, Typeface.NORMAL);
-                    votePercentageC.setTypeface(null, Typeface.NORMAL);
 
                     //make selected option bg purple and text bold
                     if(selectedOption.equals("optionA"))

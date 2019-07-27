@@ -558,7 +558,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         userItemFormat.setUserUID(userKey);
         userItemFormat.setUsername(userName);
         userItemFormat.setImageURL(userImage);
-        Log.d("addinggg", "productShortlistNotification: ");
+        Log.d("addinggg", productKey);
         GlobalFunctions.inAppNotifications("shortlisted your product","",userItemFormat,false,"productShortlist",metadata,recieverKey);
         sendNotification(true, productKey);
     }

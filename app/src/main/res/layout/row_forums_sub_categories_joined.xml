@@ -61,10 +61,9 @@
                             android:text="Forum Name"
                             android:maxLines="1"
                             android:maxWidth="235dp"
-                            android:textStyle="bold"
                             android:ellipsize="end"
                             android:textColor="@color/primaryText"
-                            android:textSize="22sp"
+                            android:textSize="16sp"
                             android:layout_gravity="center"
                             android:gravity="center"/>
                         <FrameLayout
