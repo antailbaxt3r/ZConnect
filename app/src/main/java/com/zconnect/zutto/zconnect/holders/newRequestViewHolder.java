@@ -189,6 +189,8 @@ public class newRequestViewHolder extends RecyclerView.ViewHolder {
                         infoneCatMap.put("admin",dataSnapshot.child(key).child("PostedBy").child("Username").getValue());
                         infoneCatMap.put("catId",catId);
                         infoneCatMap.put("totalContacts",0);
+                        infoneCatMap.put("imageurl",dataSnapshot.child(key).child("imageurl").getValue());
+                        infoneCatMap.put("thumbnail",dataSnapshot.child(key).child("thumbnail").getValue());
 
                         newCategoryRef.setValue(infoneCatMap);
 
