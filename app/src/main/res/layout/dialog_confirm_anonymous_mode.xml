@@ -11,7 +11,7 @@
     <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
         android:id="@+id/image_profile_infone"
         android:layout_width="32dp"
-        android:background="@drawable/baseline_people_24"
+        android:background="@drawable/ic_dark_chat_24dp"
         android:layout_height="32dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginVertical="10dp"

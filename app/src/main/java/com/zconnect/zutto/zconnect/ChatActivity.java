@@ -1276,11 +1276,11 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean preferencesBoolean = preferences.getBoolean("isAnonymousOn", false);
         if(preferencesBoolean){
-            menu.findItem(R.id.anonymous_mode_toggle).setTitle("Exit dark chats");
+            menu.findItem(R.id.anonymous_mode_toggle).setTitle("Hide dark chats");
             setAnonymousChat();
         }
         else{
-            menu.findItem(R.id.anonymous_mode_toggle).setTitle("Enter dark chats");
+            menu.findItem(R.id.anonymous_mode_toggle).setTitle("Show dark chats");
             setNormalChat();
 
         }

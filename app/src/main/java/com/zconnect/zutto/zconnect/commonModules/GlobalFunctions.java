@@ -156,21 +156,21 @@ public class GlobalFunctions {
                 switch (type) {
                     case "addforum":
                         Log.d("Adding", "inAppNotifications: ");
-                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/forums/inAppNotifications/" + metadata.get("featurePID")).child("key").setValue(newNotifRef.getKey());
+                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/forums/inAppNotifications/" + metadata.get("featurePID")).child(newNotifRef.getKey()).child("key").setValue(newNotifRef.getKey());
                         break;
                     case "productAdd":
-                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/storeroom/inAppNotifications/" + metadata.get("featurePID")).child("key").setValue(newNotifRef.getKey());
+                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/storeroom/inAppNotifications/" + metadata.get("featurePID")).child(newNotifRef.getKey()).child("key").setValue(newNotifRef.getKey());
                         break;
                     case "productShortlist":
-                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/storeroom/inAppNotifications/" + metadata.get("featurePID")).child("key").setValue(newNotifRef.getKey());
-                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/storeroom/inAppNotifications/" + metadata.get("featurePID")).child("receiverUID").setValue(uid);
+                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/storeroom/inAppNotifications/" + metadata.get("featurePID")).child(newNotifRef.getKey()).child("key").setValue(newNotifRef.getKey());
+                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/storeroom/inAppNotifications/" + metadata.get("featurePID")).child(newNotifRef.getKey()).child("receiverUID").setValue(uid);
                         break;
                     case "eventBoost":
-                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/events/inAppNotifications/" + metadata.get("featurePID")).child("key").setValue(newNotifRef.getKey());
-                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/events/inAppNotifications/" + metadata.get("featurePID")).child("receiverUID").setValue(uid);
+                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/events/inAppNotifications/" + metadata.get("featurePID")).child(newNotifRef.getKey()).child("key").setValue(newNotifRef.getKey());
+                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/events/inAppNotifications/" + metadata.get("featurePID")).child(newNotifRef.getKey()).child("receiverUID").setValue(uid);
                         break;
                     case "eventAdd":
-                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/events/inAppNotifications/" + metadata.get("featurePID")).child("key").setValue(newNotifRef.getKey());
+                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/events/inAppNotifications/" + metadata.get("featurePID")).child(newNotifRef.getKey()).child("key").setValue(newNotifRef.getKey());
                         break;
                 }
                 for (HashMap.Entry<String, Object> entry : metadata.entrySet()) {

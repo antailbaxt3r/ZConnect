@@ -2,16 +2,80 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
     android:nestedScrollingEnabled="true"
     android:id="@+id/fragContainer"
     tools:context="com.zconnect.zutto.zconnect.Recents">
 
 
-    <ProgressBar
-        android:id="@+id/recent_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/shimmer_view_container_recents"
+        app:duration="800">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:layout_marginBottom="20dp">
+
+                <View
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@color/placeholder_bg"/>
+
+                <View
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="20dp"
+                    android:background="@color/placeholder_bg"/>
+
+                <View
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="20dp"
+                    android:background="@color/placeholder_bg"/>
+
+                <View
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="20dp"
+                    android:background="@color/placeholder_bg"/>
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="20dp"
+                    android:src="@drawable/ic_keyboard_arrow_right_white_24dp"
+                    android:tint="@color/placeholder_bg"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <include layout="@layout/shimmer_item_layout_recents"/>
+                <include layout="@layout/shimmer_item_layout_recents"/>
+                <include layout="@layout/shimmer_item_layout_recents"/>
+                <include layout="@layout/shimmer_item_layout_recents"/>
+
+            </LinearLayout>
+        </LinearLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshContainer"
