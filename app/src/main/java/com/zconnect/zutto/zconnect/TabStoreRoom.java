@@ -144,7 +144,7 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
         }
 
 //        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-//        // Set up the ViewPager with the sections adapter.
+//        // Set up the ViewPager with the sections joinedForumsAdapter.
 //        mViewPager = (ViewPager) findViewById(R.id.view_pager);
 //        mViewPager.setAdapter(mSectionsPagerAdapter);
 

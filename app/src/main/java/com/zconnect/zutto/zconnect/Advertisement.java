@@ -135,8 +135,8 @@ public class Advertisement extends BaseActivity {
         RecyclerView.Adapter adapter = new RecyclerViewAdapterAdvertisement(this, mRecyclerViewItems);
         mRecyclerView.setAdapter(adapter);
 
-        //adapter = new AdRVAdapter(this, adItemFormats);
-        //recyclerView.setAdapter(adapter);
+        //joinedForumsAdapter = new AdRVAdapter(this, adItemFormats);
+        //recyclerView.setAdapter(joinedForumsAdapter);
 
         String android_id = Settings.Secure.getString(Advertisement.this.getContentResolver(),Settings.Secure.ANDROID_ID);
 

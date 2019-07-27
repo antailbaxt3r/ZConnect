@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect.holders;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.OnSingleClickListener;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
@@ -136,16 +138,6 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
                         }
 
                 lastMessageWithName.setText(shortName + ": " + newMessageText);
-
-
-
-
-
-
-
-
-
-
                 lastMessageTime.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(forumCategoriesItemFormat.getLastMessage().getTimeDate()));
                 String timeStamp = new TimeUtilities().getTimeStamp(forumCategoriesItemFormat.getLastMessage().getTimeDate());
 
@@ -179,13 +171,32 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
 
         catName.setTextColor(mView.getContext().getResources().getColor(R.color.primaryText));
     }
-    public void openChat(final String uid, final String tabId, final String  name ){
+    public void openChat(final String uid, final String tabId, final String  name, final int totalMessages){
 
         mView.setOnClickListener(new OnSingleClickListener() {
 
             @Override
             public void onSingleClick(View view) {
+
                 Intent intent = new Intent(mView.getContext(), ChatActivity.class);
+
+                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
+                intent.putExtra("type","forums");
+                intent.putExtra("name", name);
+                intent.putExtra("tab",tabId);
+                intent.putExtra("key",uid);
+                intent.putExtra("unseen_num", String.valueOf(unseen_num));
+                mView.getContext().startActivity(intent);
+
+                layoutUnseenMessages.setVisibility(View.GONE);
+
+                lastMessageTime.setTextColor(mView.getContext().getResources().getColor(R.color.secondaryText));
+                DBHelper mydb = new DBHelper(itemView.getContext());
+                String key, tab;
+                key = uid;
+                tab = tabId;
+                mydb.replaceForum(name, key, tab,totalMessages);
+                mydb.close();
 
                 CounterItemFormat counterItemFormat = new CounterItemFormat();
                 HashMap<String, String> meta= new HashMap<>();
@@ -201,14 +212,6 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
 
                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                 counterPush.pushValues();
-
-                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
-                intent.putExtra("type","forums");
-                intent.putExtra("name", name);
-                intent.putExtra("tab",tabId);
-                intent.putExtra("key",uid);
-                intent.putExtra("unseen_num", String.valueOf(unseen_num));
-                mView.getContext().startActivity(intent);
             }
         });
 

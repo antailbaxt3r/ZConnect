@@ -102,7 +102,7 @@ public class AdminHome extends BaseActivity {
 //            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-        // Set up the ViewPager with the sections adapter.
+        // Set up the ViewPager with the sections joinedForumsAdapter.
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 

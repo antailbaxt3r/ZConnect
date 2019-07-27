@@ -129,7 +129,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-//TODO: IMPROVE ANONYMOUS MODE
+
 public class ChatActivity extends BaseActivity implements QueryTokenReceiver, SuggestionsResultListener, SuggestionsVisibilityManager {
 
     private String TAG = ChatActivity.class.getSimpleName();
@@ -900,7 +900,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 }
 //                messages.add(message);
 
-//                adapter.notifyDataSetChanged();
+//                joinedForumsAdapter.notifyDataSetChanged();
                 if (type.equals("forums")) {
                     NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItem.getUserUID());
 
