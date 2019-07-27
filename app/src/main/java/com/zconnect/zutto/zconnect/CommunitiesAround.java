@@ -75,7 +75,7 @@ import static com.zconnect.zutto.zconnect.R.drawable.ic_arrow_back_black_24dp;
 
 public class CommunitiesAround extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
 
-//    CommunitiesAroundAdapter adapter;
+//    CommunitiesAroundAdapter joinedForumsAdapter;
     Vector<CommunitiesItemFormat> totalCommunitiesList = new Vector<>();
     Vector<CommunitiesItemFormat> communitiesList = new Vector<>();
     Vector<CommunitiesItemFormat> communitiesJoinedList = new Vector<>();
@@ -209,8 +209,8 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
             }
         });
 
-//        adapter = new CommunitiesAroundAdapter(this, totalCommunitiesList);
-//        communitiesRecycler.setAdapter(adapter);
+//        joinedForumsAdapter = new CommunitiesAroundAdapter(this, totalCommunitiesList);
+//        communitiesRecycler.setAdapter(joinedForumsAdapter);
 //        communitiesReference.keepSynced(true);
 
         locationRequest = new LocationRequest();
@@ -490,7 +490,7 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
 //                            noCommunitiesLayout.setVisibility(View.GONE);
 //                        }
                         progressDialog.dismiss();
-//                        adapter.notifyDataSetChanged();
+//                        joinedForumsAdapter.notifyDataSetChanged();
                     }
 
                     @Override
@@ -509,7 +509,7 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
 //                    noCommunitiesLayout.setVisibility(View.GONE);
 //                }
 //                progressDialog.dismiss();
-//                adapter.notifyDataSetChanged();
+//                joinedForumsAdapter.notifyDataSetChanged();
             }
 
             @Override

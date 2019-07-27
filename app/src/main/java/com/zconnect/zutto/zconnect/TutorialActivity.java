@@ -47,7 +47,7 @@ public class TutorialActivity extends BaseActivity {
         inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         //Reference ViewPager defined in activity
         vp=(ViewPager)findViewById(R.id.viewPager);
-        //set the adapter that will create the individual pages
+        //set the joinedForumsAdapter that will create the individual pages
         vp.setAdapter(new MyPagesAdapter());
 
         doneButton(vp.getCurrentItem());
