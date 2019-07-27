@@ -88,11 +88,11 @@ public class TabbedEvents extends BaseActivity {
         }
 
 
-        // Create the adapter that will return a fragment for each of the three
+        // Create the joinedForumsAdapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
+        // Set up the ViewPager with the sections joinedForumsAdapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 

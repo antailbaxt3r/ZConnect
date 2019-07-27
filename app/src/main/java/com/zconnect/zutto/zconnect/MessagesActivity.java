@@ -26,7 +26,7 @@ import android.widget.TextView;
 import com.zconnect.zutto.zconnect.fragments.ChatTabFragment;
 import com.zconnect.zutto.zconnect.fragments.MessageTabFragment;
 
-/* messages activity has 2 tabs and each one has a rv with its adapter and viewholder
+/* messages activity has 2 tabs and each one has a rv with its joinedForumsAdapter and viewholder
                    in the packages(holders and adapters) namely MessageTabRVAdapter,ChatTabRVAdapter
                    along with the item class ChatTabRVItem,MessageTabRVItem(item format package).
                 */
@@ -39,16 +39,16 @@ public class MessagesActivity extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.activity_messages, container, false);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
-        // Set up the ViewPager with the sections adapter.
+        // Set up the ViewPager with the sections joinedForumsAdapter.
         mViewPager = (ViewPager) v.findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
 //        Toolbar toolbar = (Toolbar) v.findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
+        // Create the joinedForumsAdapter that will return a fragment for each of the three
         // primary sections of the activity.
 
-        // Set up the ViewPager with the sections adapter.
+        // Set up the ViewPager with the sections joinedForumsAdapter.
 
         TabLayout tabLayout = (TabLayout) v.findViewById(R.id.tabs);
 

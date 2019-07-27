@@ -217,7 +217,7 @@ public class UpcomingPoolDetailsActivity extends BaseActivity {
         loading_text = findViewById(R.id.loading_text);
         btn_activate = findViewById(R.id.btn_activate);
 
-        //setup adapter
+        //setup joinedForumsAdapter
         adapter = new PoolItemDetailAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
