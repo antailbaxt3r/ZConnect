@@ -103,9 +103,11 @@ public class InAppNotificationsFragment extends Fragment {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         totalnotificationsList.clear();
                         for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                            InAppNotificationsItemFormat usernotification = childSnapshot.getValue(InAppNotificationsItemFormat.class);
-                            if (usernotification != null && !usernotification.getNotifiedBy().getUserUID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                                totalnotificationsList.add(usernotification);
+                            try {
+                                InAppNotificationsItemFormat usernotification = childSnapshot.getValue(InAppNotificationsItemFormat.class);
+                                if (usernotification != null && !usernotification.getNotifiedBy().getUserUID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                    totalnotificationsList.add(usernotification);
+                            }catch (Exception e){}
                         }
                         Collections.sort(totalnotificationsList, (o1, o2) -> Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis()));
                         shimmerFrameLayout.setVisibility(View.GONE);
@@ -157,6 +159,5 @@ public class InAppNotificationsFragment extends Fragment {
 
             }
         }
-
     }
 }
