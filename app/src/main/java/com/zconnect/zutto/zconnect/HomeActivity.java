@@ -1168,7 +1168,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                             }else {
                                 nav_Menu.findItem(R.id.MyProducts).setVisible(false);
                             }
-
+                            if (communityFeatures.getInternships().equals("true")){
+                                nav_Menu.findItem(R.id.MyInternships).setVisible(true);
+                            }else {
+                                nav_Menu.findItem(R.id.MyInternships).setVisible(false);
+                            }
 
                         }catch (Exception e){
 
@@ -1316,6 +1320,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.MyInternships: {
+                Intent intent = new Intent(getApplicationContext(), MyInternships.class);
+                startActivity(intent);
+                break;
+            }
             case R.id.admins: {
                 Intent intent = new Intent(getApplicationContext(), ViewAdmin.class);
                 startActivity(intent);

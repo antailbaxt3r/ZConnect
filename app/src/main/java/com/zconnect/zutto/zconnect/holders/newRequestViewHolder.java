@@ -173,10 +173,7 @@ public class newRequestViewHolder extends RecyclerView.ViewHolder {
 
         DatabaseReference requestedInfoneCatDatabaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("admin").child("requests");
 
-        DatabaseReference databaseReferenceInfone = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child(ZConnectDetails.INFONE_DB_NEW);
-        String catId = databaseReferenceInfone.child("categoriesInfo").push().getKey();
-
-        DatabaseReference newCategoryRef = databaseReferenceInfone.child("categoriesInfo").child(catId);
+        DatabaseReference databaseReferenceInfone = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child(ZConnectDetails.INFONE_DB_NEW).child("categoriesInfo").child(key);
 
         acceptUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,12 +184,12 @@ public class newRequestViewHolder extends RecyclerView.ViewHolder {
                         final HashMap<String, Object> infoneCatMap = new HashMap<>();
                         infoneCatMap.put("name",dataSnapshot.child(key).child("Name").getValue());
                         infoneCatMap.put("admin",dataSnapshot.child(key).child("PostedBy").child("Username").getValue());
-                        infoneCatMap.put("catId",catId);
+                        infoneCatMap.put("catId",key);
                         infoneCatMap.put("totalContacts",0);
                         infoneCatMap.put("imageurl",dataSnapshot.child(key).child("imageurl").getValue());
                         infoneCatMap.put("thumbnail",dataSnapshot.child(key).child("thumbnail").getValue());
 
-                        newCategoryRef.setValue(infoneCatMap);
+                        databaseReferenceInfone.setValue(infoneCatMap);
 
                         requestedInfoneCatDatabaseReference.child(key).removeValue();
                     }
