@@ -19,9 +19,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -64,8 +64,8 @@ public class Recents extends Fragment {
     private DatabaseReference homeDbRef, userReference, communityFeaturesRef;
     Query queryRef;
     private ValueEventListener homeListener, userListener, communityFeaturesListener;
-    @BindView(R.id.recent_progress)
-    ProgressBar progressBar;
+    @BindView(R.id.shimmer_view_container_recents)
+    ShimmerFrameLayout shimmerFrameLayout;
 
     RecentsItemFormat addStatus = new RecentsItemFormat();
     RecentsItemFormat features = new RecentsItemFormat();
@@ -131,7 +131,8 @@ public class Recents extends Fragment {
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshContainer);
         swipeContainer.setColorSchemeResources(R.color.black, R.color.deepPurple500, R.color.colorHighlight);
 
-        progressBar.setVisibility(VISIBLE);
+        shimmerFrameLayout.startShimmerAnimation();
+        shimmerFrameLayout.setVisibility(VISIBLE);
         getActivity().findViewById(R.id.fab_cat_infone).setVisibility(View.GONE);
 
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -198,7 +199,8 @@ public class Recents extends Fragment {
                 addStatus.setRecentType(RecentTypeUtilities.KEY_RECENT_ADD_STATUS_STR);
                 features.setRecentType(RecentTypeUtilities.KEY_RECENT_FEATURES_STR);
                 adapter.notifyDataSetChanged();
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayout.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmerAnimation();
                 if(getActivity() instanceof  HomeActivity && getContext() != null){
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
                     boolean preferencesBoolean = preferences.getBoolean("isFirstRun", true);
@@ -277,14 +279,16 @@ public class Recents extends Fragment {
                 addStatus.setRecentType(RecentTypeUtilities.KEY_RECENT_ADD_STATUS_STR);
                 features.setRecentType(RecentTypeUtilities.KEY_RECENT_FEATURES_STR);
                 adapter.notifyDataSetChanged();
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayout.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmerAnimation();
 
 
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayout.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmerAnimation();
             }
         };
 
