@@ -203,6 +203,8 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                                             Intent intent = new Intent(view.getContext(), AddProduct.class);
                                             intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
                                             view.getContext().startActivity(intent);
+                                            addAskDialog.dismiss();
+
                                         }
                                     });
                                     Button askButton = addAskDialog.findViewById(R.id.dialog_box_negative_button);
@@ -213,6 +215,8 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                                             Intent intent = new Intent(view.getContext(), AddProduct.class);
                                             intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
                                             view.getContext().startActivity(intent);
+                                            addAskDialog.dismiss();
+
                                         }
                                     });
 

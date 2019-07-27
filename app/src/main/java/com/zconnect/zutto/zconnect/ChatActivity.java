@@ -800,15 +800,24 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                         databaseReference.child("Chat").child(messagePushID).setValue(message);
                             NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItem.getUserUID());
 
-                            NotificationItemFormat forumChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_FORUM, userItem.getUserUID());
+                            NotificationItemFormat
+                                    forumChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_FORUM, userItem.getUserUID());
 
                             forumChatNotification.setItemMessage(" \uD83D\uDCF7 Image ");
                             forumChatNotification.setItemCategoryUID(getIntent().getStringExtra("tab"));
                             forumChatNotification.setItemName(getIntent().getStringExtra("name"));
                             forumChatNotification.setItemKey(getIntent().getStringExtra("key"));
+                            //TODO, FIX IMAGEURL
+                            if(anonymous){
+                                forumChatNotification.setUserName(userItem.getAnonymousUsername());
+                                forumChatNotification.setUserImage(userItem.getImageURLThumbnail());
 
-                            forumChatNotification.setUserImage(userItem.getImageURLThumbnail());
+                            }
+                            else{
                             forumChatNotification.setUserName(userItem.getUsername());
+                                forumChatNotification.setUserImage(userItem.getImageURLThumbnail());
+
+                            }
                             forumChatNotification.setCommunityName(communityTitle);
 
                             notificationSender.execute(forumChatNotification);
@@ -911,9 +920,18 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                     forumChatNotification.setItemName(getIntent().getStringExtra("name"));
                     forumChatNotification.setItemKey(getIntent().getStringExtra("key"));
 
-                    forumChatNotification.setUserImage(userItem.getImageURLThumbnail());
-                    forumChatNotification.setUserName(userItem.getUsername());
+                    if(anonymous) {
+
+                        forumChatNotification.setUserImage(null);
+                        forumChatNotification.setUserName(userItem.getAnonymousUsername());
+                    }
+                    else{
+                        forumChatNotification.setUserImage(userItem.getImageURLThumbnail());
+                        forumChatNotification.setUserName(userItem.getUsername());
+
+                    }
                     forumChatNotification.setCommunityName(communityTitle);
+
 
                     notificationSender.execute(forumChatNotification);
 
@@ -955,13 +973,23 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                     NotificationItemFormat postChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_POST, userItem.getUserUID());
                     postChatNotification.setItemMessage(text);
                     postChatNotification.setItemKey(getIntent().getStringExtra("key"));
-                    postChatNotification.setUserImage(userItem.getImageURLThumbnail());
-                    postChatNotification.setUserName(userItem.getUsername());
+                    if(anonymous){
+                        postChatNotification.setUserImage(userItem.getImageURLThumbnail());
+                        postChatNotification.setUserName(userItem.getAnonymousUsername());
+                        metadata.put("uid",getIntent().getStringExtra("uid"));
+
+
+                    }
+                    else{
+                        postChatNotification.setUserImage(userItem.getImageURLThumbnail());
+                        postChatNotification.setUserName(userItem.getUsername());
+                        metadata.put("uid",getIntent().getStringExtra("uid"));
+                    }
+
                     postChatNotification.setCommunityName(communityTitle);
                     metadata.put("key",getIntent().getStringExtra("key"));
                     metadata.put("ref",getIntent().getStringExtra("ref"));
                     metadata.put("type",getIntent().getStringExtra("type"));
-                    metadata.put("uid",getIntent().getStringExtra("uid"));
                     Log.d("OLDTOWNROADC", type);
                     GlobalFunctions.inAppNotifications("commented on your status","Comment: "+text,userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
                     FirebaseDatabase.getInstance().getReference().child(communityReference).child("Users1").child(getIntent().getStringExtra("uid")).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -970,9 +998,17 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                             UserItemFormat userItemFormat = new UserItemFormat();
                             HashMap<String,Object> meta = new HashMap<>();
                             meta.put("ref",databaseReference);
-                            userItemFormat.setUserUID(getIntent().getStringExtra("uid"));
-                            userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
-                            userItem.setUsername((String) dataSnapshot.child("username").getValue());
+                            if(anonymous){
+                                userItemFormat.setUserUID(null);
+                                userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
+                                userItem.setUsername((String) dataSnapshot.child("anonymousUsername").getValue());
+                            }
+                            else{
+                                userItemFormat.setUserUID(getIntent().getStringExtra("uid"));
+                                userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
+                                userItem.setUsername((String) dataSnapshot.child("username").getValue());
+                            }
+
                             GlobalFunctions.inAppNotifications("Someone just commented on a status that you commented on","Comment: "+text,userItemFormat,false,"statusNestedComment",meta,null);
                         }
 

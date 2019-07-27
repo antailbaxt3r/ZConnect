@@ -697,6 +697,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                         fm.beginTransaction().hide(active).show(notifications).commit();
                         active = notifications;
+                        notifications.onResume();
                         break;
                     }
                 }

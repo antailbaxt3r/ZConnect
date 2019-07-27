@@ -795,6 +795,33 @@ public class OpenStatus extends BaseActivity {
                                 ref.child("Chat").child(messagePushID).setValue(message);
                                 Log.d("AINTNO", "POP2");
                                 ref.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
+                                HashMap<String,Object> metadata = new HashMap<>();
+                                metadata.put("key",key);
+
+                                GlobalFunctions.inAppNotifications("commented on your status","Comment: "+"Photo",userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
+                                ref.child("Chat").child(messagePushID).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        UserItemFormat userItemFormat = new UserItemFormat();
+                                        HashMap<String,Object> meta = new HashMap<>();
+                                        meta.put("ref",ref);
+                                        meta.put("key",key);
+                                        Log.d("reference", ref+"");
+                                        Log.d("ImageThumb",(String) dataSnapshot.child("imageThumb").getValue()+"");
+                                        Log.d("Username",(String) dataSnapshot.child("name").getValue()+"");
+                                        Log.d("UID",(String) dataSnapshot.child("uuid").getValue()+"");
+                                        userItemFormat.setUserUID((String) dataSnapshot.child("uuid").getValue());
+                                        userItemFormat.setImageURL((String) dataSnapshot.child("imageThumb").getValue());
+                                        userItemFormat.setUsername((String) dataSnapshot.child("name").getValue());
+                                        GlobalFunctions.inAppNotifications("commented on a status you commented","Comment: "+"Photo",userItemFormat,true,"statusNestedComment",meta,null);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
                             }
 
                             @Override

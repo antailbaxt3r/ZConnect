@@ -92,13 +92,15 @@ public class InAppNotificationsFragment extends Fragment {
         return view;
     }
 
+
+
     @Override
     public void onResume() {
         super.onResume();
         Log.d("inapresume", "onResume: ");
         if (UserUtilities.currentUser != null) {
             if (!UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || !UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
-                globalReference.child("Users1").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("notifications").addValueEventListener(new ValueEventListener() {
+                globalReference.child("Users1").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("notifications").addListenerForSingleValueEvent (new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         totalnotificationsList.clear();

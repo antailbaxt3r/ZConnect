@@ -125,7 +125,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
                 break;
             //Done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE:
-                cabLeaveNotification(ND.getItemKey(), ND.getUserName(), ND.getCommunityName(), ND.getUserImage());
+                cabLeaveNotification(ND.getItemKey(), ND.getUserName(), ND.getCommunityName(), ND.getUserImage(),ND.getRecieverKey());
                 break;
             //done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST:
@@ -563,17 +563,26 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         sendNotification(true, productKey);
     }
 
-    private void cabLeaveNotification(String cabKey,String userName,String communityName,String userImage) {
+    private void cabLeaveNotification(String cabKey,String userName,String communityName,String userImage, String recieverKey) {
         creator = new RemoteMessage.Builder("data");
 
         creator.addData("userName",userName);
         creator.addData("cabKey",cabKey);
         creator.addData("communityName",communityName);
         creator.addData("userImage",userImage);
+        HashMap<String,Object> metadata = new HashMap<>();
+        metadata.put("key",cabKey);
 
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN);
+        creator.addData("userKey",userKey);
+        UserItemFormat userItemFormat=new UserItemFormat();
+        userItemFormat.setUserUID(userKey);
+        userItemFormat.setUsername(userName);
+        userItemFormat.setImageURL(userImage);
 
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE);
         creator.addData("userKey",userKey);
+        GlobalFunctions.inAppNotifications("left your cabpool","",userItemFormat,false,"cabpoolLeave",metadata,recieverKey);
 
         sendNotification(true, cabKey);
     }
@@ -585,6 +594,8 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("cabKey",cabKey);
         creator.addData("communityName",communityName);
         creator.addData("userImage",userImage);
+        HashMap<String,Object> metadata = new HashMap<>();
+        metadata.put("key",cabKey);
 
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN);
         creator.addData("userKey",userKey);
@@ -592,7 +603,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         userItemFormat.setUserUID(userKey);
         userItemFormat.setUsername(userName);
         userItemFormat.setImageURL(userImage);
-        GlobalFunctions.inAppNotifications("joined your cabpool","",userItemFormat,false,"cabpoolJoin",null,recieverKey);
+        GlobalFunctions.inAppNotifications("joined your cabpool","",userItemFormat,false,"cabpoolJoin",metadata,recieverKey);
         sendNotification(true, cabKey);
     }
 

@@ -71,6 +71,7 @@ public class GlobalFunctions {
         String key;
         HashMap<String, Object> notificationMap = new HashMap<>();
         HashMap<String, Boolean> seenmap = new HashMap<>();
+        Log.d("COMMUNITYREF",communityReference);
 
         Log.d("dddinggg", "productShortlistNotification: ");
         /*
