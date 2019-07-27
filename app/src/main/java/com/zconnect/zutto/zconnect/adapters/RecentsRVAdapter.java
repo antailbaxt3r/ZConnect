@@ -1774,6 +1774,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     intent.putExtra("desc",recentsItemFormats.get(getAdapterPosition()).getDesc());
                     intent.putExtra("uid",recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUID());
                     intent.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getKey());
+                    intent.putExtra("isFromCommentBtn", true);
                     Log.d("username" , " "+recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUsername());
                     System.out.println(recentsItemFormats.get(getAdapterPosition()).getKey());
                     context.startActivity(intent);  }
@@ -1899,7 +1900,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             });
 
             if (user != null) {
-                likeIcon.setOnClickListener(new OnSingleClickListener() {
+                likeLayout.setOnClickListener(new OnSingleClickListener() {
                     @Override
                     public void onSingleClick(View v) {
                         if(statusLikeFlag == true){
@@ -1962,7 +1963,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 });
 
             } else {
-                likeIcon.setOnClickListener(new OnSingleClickListener() {
+                likeLayout.setOnClickListener(new OnSingleClickListener() {
                     @Override
                     public void onSingleClick(View v) {
                         android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(itemView.getContext());

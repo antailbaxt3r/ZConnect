@@ -577,7 +577,8 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:textSize="16sp"
-                            android:textColor="@color/icon_color"/>
+                            android:textColor="@color/icon_color"
+                            android:duplicateParentState="true"/>
                         <ImageView
                             android:layout_centerVertical="true"
                             android:layout_marginStart="@dimen/margin_x_small"
@@ -586,7 +587,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/outline_thumb_up_alt_white_24"
-                            android:tint="@color/icon_color"/>
+                            android:tint="@color/icon_color"
+                            android:duplicateParentState="true"/>
                     </RelativeLayout>
                     <RelativeLayout
                         android:id="@+id/messagesRecentItem_comment_layout"
@@ -603,7 +605,8 @@
                             android:textSize="16sp"
                             android:text="123"
                             android:textColor="@color/icon_color"
-                            android:visibility="gone"/>
+                            android:visibility="gone"
+                            android:duplicateParentState="true"/>
                         <ImageView
                             android:layout_centerVertical="true"
                             android:layout_marginStart="@dimen/margin_x_small"
@@ -612,7 +615,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/outline_mode_comment_white_24"
-                            android:tint="@color/icon_color"/>
+                            android:tint="@color/icon_color"
+                            android:duplicateParentState="true"/>
                     </RelativeLayout>
                 </LinearLayout>
             </LinearLayout>
