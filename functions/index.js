@@ -529,14 +529,11 @@ exports.deleteStoreroomInAppNotif = functions.database.ref('communities/{communi
 .onDelete((snapshot, context) => {
   let { productID, communityID } = context.params;
   const productInAppNotifsRef = snapshot.parent.parent.child('inAppNotifications').child(productID);
-  const global_inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/globalNotifications`);
   const personal_inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/Users1`);
   return productInAppNotifsRef.once('value', notificationsSnapshot => {
     return notificationsSnapshot.forEach(notif => {
       if(notif.hasChild('receiverUID'))
         personal_inAppNotifsRef.child(notif.child('receiverUID').val()).child(notif.key).remove();
-      else
-        global_inAppNotifsRef.child(notif.key).remove();
       notif.ref.remove();
     });
   });
@@ -586,21 +583,6 @@ exports.syncCabForumsWithCabChats = functions.database.ref('communities/{communi
         return cabChatRef.child(messageID).set(change.after.val());
     });
   });
-});
-
-exports.addNameImageToPersChat = functions.database.ref('communities/{communityID}/features/forums/userForums/{uid}/joinedForums/{forumID}')
-.onCreate((snapshot, context) => {
-  return;
-  // if(snapshot.child('tabUID').val()!=="personalChats")
-  //   return console.log('Not a personal chat.');
-  // const { uid, communityID } = context.params;
-  // const users = Object.keys(snapshot.child("users").val());
-  // const thatUser = users[0]===uid ? users[1] : users[0];
-  // return snapshot.ref.root.child(`communities/${communityID}/Users1/${thatUser}`).once('value', userSnapshot => {
-  //   return snapshot.ref.child('name').set(userSnapshot.child('username').val())
-  //     && snapshot.ref.child('image').set(userSnapshot.child('imageURL').val())
-  //     && snapshot.ref.child('imageThumb').set(userSnapshot.child('imageURLThumbnail').val());
-  // });
 });
 
 exports.addUserInternships = functions.database.ref('communities/{communityID}/features/internships/opportunities/{internshipID}/users/{uid}')
