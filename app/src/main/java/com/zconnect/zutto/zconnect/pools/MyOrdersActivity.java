@@ -93,7 +93,7 @@ public class MyOrdersActivity extends BaseActivity {
         loading_text = findViewById(R.id.loading_text);
         noOrders = findViewById(R.id.no_my_orders);
 
-        //setup adapter
+        //setup joinedForumsAdapter
         adapter = new PoolOrderItemAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);

@@ -1,10 +1,8 @@
-package com.zconnect.zutto.zconnect.holders;
+package com.zconnect.zutto.zconnect;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -15,11 +13,8 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
-import com.zconnect.zutto.zconnect.ChatActivity;
-import com.zconnect.zutto.zconnect.OnSingleClickListener;
-import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
-import com.zconnect.zutto.zconnect.commonModules.DBHelper;
+import com.zconnect.zutto.zconnect.holders.JoinedForumsRVViewHolder;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
@@ -34,17 +29,23 @@ import java.util.Locale;
 
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
-public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
+public class FirebaseForumsViewHolder extends RecyclerView.ViewHolder{
+    private static final int MAX_WIDTH = 200;
+    private static final int MAX_HEIGHT = 200;
+
+    View mView;
+    Context mContext;
     private String TAG = JoinedForumsRVViewHolder.class.getSimpleName();
     TextView catName, lastMessageTime, lastMessageWithName;
     TextView unSeenMessages;
-    View mView;
     LinearLayout forumRowItem, layoutUnseenMessages;
     SimpleDraweeView forumIcon;
     ImageView defaultForumIcon;
     FrameLayout verifiedForumIconLayout;
     private int unseen_num;
-    public JoinedForumsRVViewHolder(View itemView) {
+
+
+    public FirebaseForumsViewHolder(View itemView) {
         super(itemView);
         mView = itemView;
         catName = (TextView) itemView.findViewById(R.id.cat_name);
@@ -59,6 +60,7 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
         verifiedForumIconLayout = (FrameLayout) itemView.findViewById(R.id.verified_forum_icon_layout);
     }
 
+
     public void setDetails(ForumCategoriesItemFormat forumCategoriesItemFormat){
 
         catName.setText(forumCategoriesItemFormat.getName());
@@ -70,7 +72,7 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
             defaultForumIcon.setVisibility(View.GONE);
             forumIcon.setImageURI(forumCategoriesItemFormat.getImageThumb());
         } else {
-           forumIcon.setImageResource(android.R.color.transparent);
+            forumIcon.setImageResource(android.R.color.transparent);
             defaultForumIcon.setVisibility(View.VISIBLE);
             forumIcon.setBackground(mView.getContext().getResources().getDrawable(R.drawable.forum_circle));
         }
@@ -92,52 +94,62 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
 
 
 
-                        String messageText = forumCategoriesItemFormat.getLastMessage().getMessage();
-                        messageText = messageText.substring(1,messageText.length()-1);
-                        //TODO IMPROVE EXTRACTION OF USERNAME AND UID
-                        String newMessageText = "", token = "";
-                        ArrayList<Integer> startIndexList = new ArrayList<>();
-                        ArrayList<Integer> endIndexList = new ArrayList<>();
-                        ArrayList<String> uid = new ArrayList<>();
+                String messageText = forumCategoriesItemFormat.getLastMessage().getMessage();
+                messageText = messageText.substring(1,messageText.length()-1);
+                //TODO IMPROVE EXTRACTION OF USERNAME AND UID
+                String newMessageText = "", token = "";
+                ArrayList<Integer> startIndexList = new ArrayList<>();
+                ArrayList<Integer> endIndexList = new ArrayList<>();
+                ArrayList<String> uid = new ArrayList<>();
 
-                        int startIndex = 0;
-                        int endIndex = 0;
-                        boolean isToken = false;
-                        try {
-                            for (int i = 0; i < messageText.length(); i++) {
-                                char letter = messageText.charAt(i);
-                                if (letter == '@') {
-                                    startIndex = i;
-                                    isToken = true;
-                                } else if (letter == '~') {
-                                    endIndex = i;
-                                    newMessageText += token;
-                                    token = "";
-                                } else if (letter == ';') {
-                                    startIndexList.add(newMessageText.length() - endIndex + startIndex);
-                                    endIndexList.add(newMessageText.length());
-                                    Log.d("logtokrn", token);
-                                    uid.add(token.substring(1));
-                                    startIndex = 0;
-                                    endIndex = 0;
-                                    token = "";
-                                    isToken = false;
-                                    continue;
-                                }
-
-                                if (isToken) {
-                                    token += letter;
-                                } else {
-                                    newMessageText += letter;
-                                }
-
-                            }
-                        }catch (Exception e){
-                            lastMessageWithName.setText(shortName + ": " + forumCategoriesItemFormat.getLastMessage().getMessage().substring(1, forumCategoriesItemFormat.getLastMessage().getMessage().length() - 1));
-
+                int startIndex = 0;
+                int endIndex = 0;
+                boolean isToken = false;
+                try {
+                    for (int i = 0; i < messageText.length(); i++) {
+                        char letter = messageText.charAt(i);
+                        if (letter == '@') {
+                            startIndex = i;
+                            isToken = true;
+                        } else if (letter == '~') {
+                            endIndex = i;
+                            newMessageText += token;
+                            token = "";
+                        } else if (letter == ';') {
+                            startIndexList.add(newMessageText.length() - endIndex + startIndex);
+                            endIndexList.add(newMessageText.length());
+                            Log.d("logtokrn", token);
+                            uid.add(token.substring(1));
+                            startIndex = 0;
+                            endIndex = 0;
+                            token = "";
+                            isToken = false;
+                            continue;
                         }
 
+                        if (isToken) {
+                            token += letter;
+                        } else {
+                            newMessageText += letter;
+                        }
+
+                    }
+                }catch (Exception e){
+                    lastMessageWithName.setText(shortName + ": " + forumCategoriesItemFormat.getLastMessage().getMessage().substring(1, forumCategoriesItemFormat.getLastMessage().getMessage().length() - 1));
+
+                }
+
                 lastMessageWithName.setText(shortName + ": " + newMessageText);
+
+
+
+
+
+
+
+
+
+
                 lastMessageTime.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(forumCategoriesItemFormat.getLastMessage().getTimeDate()));
                 String timeStamp = new TimeUtilities().getTimeStamp(forumCategoriesItemFormat.getLastMessage().getTimeDate());
 
@@ -171,32 +183,12 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
 
         catName.setTextColor(mView.getContext().getResources().getColor(R.color.primaryText));
     }
-    public void openChat(final String uid, final String tabId, final String  name, final int totalMessages){
+    public void openChat(final String uid, final String tabId, final String  name ){
 
-        mView.setOnClickListener(new OnSingleClickListener() {
-
+        mView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSingleClick(View view) {
-
+            public void onClick(View view) {
                 Intent intent = new Intent(mView.getContext(), ChatActivity.class);
-
-                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
-                intent.putExtra("type","forums");
-                intent.putExtra("name", name);
-                intent.putExtra("tab",tabId);
-                intent.putExtra("key",uid);
-                intent.putExtra("unseen_num", String.valueOf(unseen_num));
-                mView.getContext().startActivity(intent);
-
-                layoutUnseenMessages.setVisibility(View.GONE);
-
-                lastMessageTime.setTextColor(mView.getContext().getResources().getColor(R.color.secondaryText));
-                DBHelper mydb = new DBHelper(itemView.getContext());
-                String key, tab;
-                key = uid;
-                tab = tabId;
-                mydb.replaceForum(name, key, tab,totalMessages);
-                mydb.close();
 
                 CounterItemFormat counterItemFormat = new CounterItemFormat();
                 HashMap<String, String> meta= new HashMap<>();
@@ -212,6 +204,14 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
 
                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                 counterPush.pushValues();
+
+                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
+                intent.putExtra("type","forums");
+                intent.putExtra("name", name);
+                intent.putExtra("tab",tabId);
+                intent.putExtra("key",uid);
+                intent.putExtra("unseen_num", String.valueOf(unseen_num));
+                mView.getContext().startActivity(intent);
             }
         });
 

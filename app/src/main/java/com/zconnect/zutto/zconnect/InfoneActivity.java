@@ -31,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.addActivities.RequestInfoneCat;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
@@ -142,6 +143,7 @@ public class InfoneActivity extends Fragment {
                 Collections.sort(categoriesList, new Comparator<InfoneCategoryModel>() {
                     @Override
                     public int compare(InfoneCategoryModel cat1, InfoneCategoryModel cat2) {
+
                         if(cat1.getName()!=null && cat2.getName()!=null)
                             return cat1.getName().trim().compareToIgnoreCase(cat2.getName().trim());
                         else
@@ -171,9 +173,9 @@ public class InfoneActivity extends Fragment {
 
         databaseReferenceCat.addValueEventListener(listener);
 
-        fabCatAdd.setOnClickListener(new View.OnClickListener() {
+        fabCatAdd.setOnClickListener(new OnSingleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
 
                 Log.e("tt", "data fab");
 
@@ -182,7 +184,22 @@ public class InfoneActivity extends Fragment {
 
                 if (!status) {
                     Intent addCatIntent = new Intent(getContext(),AddInfoneCat.class);
-                    startActivity(addCatIntent);
+                    Intent reqCatIntent = new Intent(getContext(),RequestInfoneCat.class);
+
+                    mUserDetails.child("userType").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.getValue().toString().equalsIgnoreCase("admin"))
+                                startActivity(addCatIntent);
+                            else
+                                startActivity(reqCatIntent);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "Log in to use this function", Toast.LENGTH_SHORT).show();
                 }

@@ -324,7 +324,7 @@ public class OpenStatus extends BaseActivity {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-//        adapter = new CommentsRVAdapter(messages, ref, ref, this);
+//        joinedForumsAdapter = new CommentsRVAdapter(messages, ref, ref, this);
         adapter = new ChatRVAdapter(messages, ref, ref, this, ForumUtilities.VALUE_COMMENTS);
         recyclerView.setAdapter(adapter);
 
@@ -758,7 +758,7 @@ public class OpenStatus extends BaseActivity {
 //            message1.setPhotoURL(mImageUri.toString());
 //            message1.setMessageType(MessageTypeUtilities.KEY_PHOTO_SENDING_STR);
 //            messages.add(message1);
-//            adapter.notifyDataSetChanged();
+//            joinedForumsAdapter.notifyDataSetChanged();
 //            chatView.scrollToPosition(messages.size()-1);
 
 

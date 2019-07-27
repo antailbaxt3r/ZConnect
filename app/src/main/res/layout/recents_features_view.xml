@@ -476,7 +476,7 @@
                                 android:id="@+id/links_circle_recents_feature_item"
                                 android:layout_width="36dp"
                                 android:layout_height="36dp"
-                                android:src="@drawable/ic_outline_store_36"
+                                android:src="@drawable/ic_link_black_24dp"
                                 android:tint="@color/deepPurple500" />
                             <FrameLayout
                                 android:id="@+id/links_unread_count_fl_recents_feature_item"

@@ -146,7 +146,11 @@ public class CabItemFormat {
     public void setPostTimeMillis(long PostTimeMillis) { this.PostTimeMillis = PostTimeMillis; }
 
     public HashMap<String, UsersListItemFormat> getUsersListItemFormats() {
-        return usersListItemFormats;
+        if(usersListItemFormats!=null) {
+            return usersListItemFormats;
+        }else{
+            return new HashMap<String, UsersListItemFormat>();
+        }
     }
 
     public void setUsersListItemFormats(HashMap<String, UsersListItemFormat> usersListItemFormats) {

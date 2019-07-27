@@ -24,6 +24,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.zconnect.zutto.zconnect.ExploreForumsActivity;
 import com.zconnect.zutto.zconnect.ForumsDiffCallback;
+import com.zconnect.zutto.zconnect.OnSingleClickListener;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.holders.JoinedForumsRVViewHolder;
@@ -93,7 +94,9 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        FirebaseMessaging.getInstance().subscribeToTopic(forumCategoriesItemFormats.get(position).getCatUID());
+        try {
+            FirebaseMessaging.getInstance().subscribeToTopic(forumCategoriesItemFormats.get(position).getCatUID());
+        }catch (Exception e){}
         final ForumCategoriesItemFormat forumCategory = forumCategoriesItemFormats.get(position);
 
         if (forumCategory.getForumType().equals(ForumTypeUtilities.KEY_EXPLORER_FORUM_STR)) {
@@ -101,7 +104,8 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             JoinedForumsAdapter.exploreViewHolder holderMain = (JoinedForumsAdapter.exploreViewHolder) holder;
             holderMain.exploreForums();
 
-        } else if (forumCategory.getForumType().equals(ForumTypeUtilities.KEY_JOINED_STR)) {
+        }
+        else if (forumCategory.getForumType().equals(ForumTypeUtilities.KEY_JOINED_STR)) {
 
             final JoinedForumsRVViewHolder holderMain = (JoinedForumsRVViewHolder) holder;
             Log.d("In here", forumCategoriesItemFormats.get(position).getTabUID().toString());
@@ -156,10 +160,11 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 //            }
 //            else {
             holderMain.setDetails(forumCategoriesItemFormats.get(position));
-            holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName());
+            holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName(),forumCategoriesItemFormats.get(position).getTotalMessages());
 //            }
 
-        } else if (forumCategory.getForumType().equals(ForumUtilities.VALUE_SHARE_FORUM_STR)) {
+        }
+        else if (forumCategory.getForumType().equals(ForumUtilities.VALUE_SHARE_FORUM_STR)) {
             final JoinedForumsRVViewHolder holderMain = (JoinedForumsRVViewHolder) holder;
             Log.d("In here", forumCategoriesItemFormats.get(position).getTabUID().toString());
             if (forumCategoriesItemFormats.get(position).getTabUID().toString().equals("personalChats")) {
@@ -225,9 +230,9 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
 
         public void exploreForums() {
-            itemView.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onSingleClick(View v) {
                     CounterItemFormat counterItemFormat = new CounterItemFormat();
                     HashMap<String, String> meta = new HashMap<>();
                     counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());

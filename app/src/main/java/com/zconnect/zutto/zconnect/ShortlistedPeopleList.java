@@ -195,7 +195,7 @@ public class ShortlistedPeopleList extends BaseActivity {
 //                                            nos.add(item.getNumber());
 //                                            images.add(item.getImageurl());
 //                                        } catch (Exception e) {}
-//                                        adapter.notifyDataSetChanged();
+//                                        joinedForumsAdapter.notifyDataSetChanged();
 //
 //                                    }
 //                                }
@@ -244,7 +244,7 @@ public class ShortlistedPeopleList extends BaseActivity {
 //        }
 //
 //    }
-//    class adapter extends RecyclerView.Adapter<vh> {
+//    class joinedForumsAdapter extends RecyclerView.Adapter<vh> {
 //
 //        @Override
 //        public vh onCreateViewHolder(ViewGroup parent, int viewType) {

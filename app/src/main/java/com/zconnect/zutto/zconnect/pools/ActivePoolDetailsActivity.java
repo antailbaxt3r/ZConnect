@@ -173,7 +173,7 @@ public class ActivePoolDetailsActivity extends BaseActivity {
 
         shimmerFrameLayout = findViewById(R.id.shimmer_view_container_pool_list);
 
-        //setup adapter
+        //setup joinedForumsAdapter
         adapter = new PoolAddItemAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
