@@ -1,12 +1,14 @@
 package com.zconnect.zutto.zconnect.itemFormats;
 
+import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
+
 /**
  * Created by f390 on 29/12/17.
  */
 
 public class ChatItemFormats {
 
-    private long timeDate;
+    private long timeDate = 0;
     private String uuid,name,message, imageThumb;
     private String messageType;
     private String photoURL;
@@ -85,7 +87,12 @@ public class ChatItemFormats {
     }
 
     public String getMessageType() {
-        return messageType;
+        if (messageType!=null){
+            return messageType;
+        }else {
+            return MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE_STR;
+        }
+
     }
 
     public void setMessageType(String messageType) {
