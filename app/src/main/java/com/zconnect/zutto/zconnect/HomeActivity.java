@@ -3,7 +3,6 @@ package com.zconnect.zutto.zconnect;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -14,9 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.constraint.solver.widgets.Rectangle;
 import android.support.design.internal.BottomNavigationItemView;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -64,7 +61,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
-import com.zconnect.zutto.zconnect.fragments.ForumsFragment;
+import com.zconnect.zutto.zconnect.fragments.InfoneFragment;
 import com.zconnect.zutto.zconnect.fragments.JoinedForums;
 import com.zconnect.zutto.zconnect.fragments.MyProfileFragment;
 import com.zconnect.zutto.zconnect.fragments.InAppNotificationsFragment;
@@ -92,7 +89,6 @@ import butterknife.ButterKnife;
 import me.toptas.fancyshowcase.FancyShowCaseQueue;
 import me.toptas.fancyshowcase.FancyShowCaseView;
 import me.toptas.fancyshowcase.FocusShape;
-import me.toptas.fancyshowcase.listener.DismissListener;
 import me.toptas.fancyshowcase.listener.OnViewInflateListener;
 
 public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, Recents.OnHomeIconListener {
@@ -1030,7 +1026,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                                 recent = new Recents();
                                 forums = new JoinedForums();
                                 myProfile = new MyProfileFragment();
-                                infone = new InfoneActivity();
+                                infone = new InfoneFragment();
                                 notifications = new InAppNotificationsFragment();
 
                                 fm = getSupportFragmentManager();

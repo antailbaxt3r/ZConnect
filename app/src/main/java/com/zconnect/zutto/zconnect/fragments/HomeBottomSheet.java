@@ -3,14 +3,10 @@ package com.zconnect.zutto.zconnect.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Fragment;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -33,7 +29,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.BuildConfig;
 import com.zconnect.zutto.zconnect.HomeActivity;
-import com.zconnect.zutto.zconnect.InfoneActivity;
 import com.zconnect.zutto.zconnect.OnSingleClickListener;
 import com.zconnect.zutto.zconnect.addActivities.AddEvent;
 import com.zconnect.zutto.zconnect.addActivities.AddNotices;
@@ -356,7 +351,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                 }
 
 //                Intent intent;
-//                intent = new Intent(getContext(), InfoneActivity.class);
+//                intent = new Intent(getContext(), InfoneFragment.class);
 //                startActivity(intent);
                 mHomeActivity.setActionBarTitle("Infone");
                 mHomeActivity.tabs.getTabAt(3).select();

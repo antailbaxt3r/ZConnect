@@ -1,11 +1,9 @@
-package com.zconnect.zutto.zconnect;
+package com.zconnect.zutto.zconnect.fragments;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -31,27 +29,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.OnSingleClickListener;
+import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.addActivities.RequestInfoneCat;
-import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
-import com.zconnect.zutto.zconnect.commonModules.CounterPush;
-import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.InfoneCategoryModel;
 import com.zconnect.zutto.zconnect.adapters.InfoneCategoriesRVAdapter;
 import com.zconnect.zutto.zconnect.addActivities.AddInfoneCat;
-import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
-import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
-import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.zconnect.zutto.zconnect.R.layout.activity_infone2;
-import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
+import static com.zconnect.zutto.zconnect.R.layout.fragment_infone;
 
-public class InfoneActivity extends Fragment {
+public class InfoneFragment extends Fragment {
 
     RecyclerView recyclerViewCat;
     FloatingActionButton fabCatAdd;
@@ -67,7 +59,7 @@ public class InfoneActivity extends Fragment {
     Toolbar toolbar;
     public boolean isAdmin = false;
 
-    public InfoneActivity() {
+    public InfoneFragment() {
         // Required empty public constructor
     }
 
@@ -87,7 +79,7 @@ public class InfoneActivity extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(activity_infone2, container, false);
+        View view = inflater.inflate(fragment_infone, container, false);
         recyclerViewCat = (RecyclerView) view.findViewById(R.id.rv_cat_infone);
         recyclerViewCat.setVisibility(View.GONE);
         fabCatAdd = getActivity().findViewById(R.id.fab_cat_infone);
@@ -162,7 +154,7 @@ public class InfoneActivity extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.e(InfoneActivity.class.getName(), "database error" + databaseError.toString());
+                Log.e(InfoneFragment.class.getName(), "database error" + databaseError.toString());
                 shimmerFrameLayout.stopShimmerAnimation();
                 shimmerFrameLayout.setVisibility(View.INVISIBLE);
                 recyclerViewCat.setVisibility(View.VISIBLE);
@@ -290,14 +282,14 @@ public class InfoneActivity extends Fragment {
 //                    }
 //                });
 //
-//                infoneCategoriesRVAdapter = new InfoneCategoriesRVAdapter(categoriesList, InfoneActivity.this);
+//                infoneCategoriesRVAdapter = new InfoneCategoriesRVAdapter(categoriesList, InfoneFragment.this);
 //                recyclerViewCat.setAdapter(infoneCategoriesRVAdapter);
 //
 //            }
 //
 //            @Override
 //            public void onCancelled(DatabaseError databaseError) {
-//                Log.e(InfoneActivity.class.getName(), "database error" + databaseError.toString());
+//                Log.e(InfoneFragment.class.getName(), "database error" + databaseError.toString());
 //                progressBar.setVisibility(View.GONE);
 //                recyclerViewCat.setVisibility(View.VISIBLE);
 //                Toast.makeText(getApplicationContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
@@ -311,14 +303,14 @@ public class InfoneActivity extends Fragment {
 //
 //                Log.e("tt", "data fab");
 //
-//                SharedPreferences sharedPref = InfoneActivity.this.getSharedPreferences("guestMode", MODE_PRIVATE);
+//                SharedPreferences sharedPref = InfoneFragment.this.getSharedPreferences("guestMode", MODE_PRIVATE);
 //                Boolean status = sharedPref.getBoolean("mode", false);
 //
 //                if (!status) {
-//                    Intent addCatIntent = new Intent(InfoneActivity.this,AddInfoneCat.class);
+//                    Intent addCatIntent = new Intent(InfoneFragment.this,AddInfoneCat.class);
 //                    startActivity(addCatIntent);
 //                } else {
-//                    Toast.makeText(InfoneActivity.this, "Log in to use this function", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(InfoneFragment.this, "Log in to use this function", Toast.LENGTH_SHORT).show();
 //                }
 //            }
 //        });
@@ -352,9 +344,9 @@ public class InfoneActivity extends Fragment {
 //                        final String newCat = newCategoryET.getText().toString();
 //
 //                        if (!newCat.isEmpty()) {
-//                            Toast.makeText(InfoneActivity.this, "Add a contact in your new category",
+//                            Toast.makeText(InfoneFragment.this, "Add a contact in your new category",
 //                                    Toast.LENGTH_SHORT).show();
-//                            Intent addContactIntent = new Intent(InfoneActivity.this,
+//                            Intent addContactIntent = new Intent(InfoneFragment.this,
 //                                    AddInfoneContact.class);
 //                            addContactIntent.putExtra("categoryName", newCat);
 //                            startActivity(addContactIntent);
@@ -390,9 +382,9 @@ public class InfoneActivity extends Fragment {
 //                        final String newCat = newCategoryET.getText().toString();
 //
 //                        if (!newCat.isEmpty()) {
-//                            Toast.makeText(InfoneActivity.this, "Add a contact in your new category",
+//                            Toast.makeText(InfoneFragment.this, "Add a contact in your new category",
 //                                    Toast.LENGTH_SHORT).show();
-//                            Intent addContactIntent = new Intent(InfoneActivity.this,
+//                            Intent addContactIntent = new Intent(InfoneFragment.this,
 //                                    AddInfoneContact.class);
 //                            addContactIntent.putExtra("categoryName", newCat);
 //                            startActivity(addContactIntent);
