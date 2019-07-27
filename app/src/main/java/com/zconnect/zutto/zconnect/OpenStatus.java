@@ -30,6 +30,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Adapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -90,6 +91,7 @@ public class OpenStatus extends BaseActivity {
     private SimpleDraweeView userImage;
     private TextView username, timePosted, content, likes, comments;
     private ImageView postedImage, likeButton, commentButton;
+    private RelativeLayout likeLayout, commentLayout;
 
     private String key, currentUserID;
     private ArrayList<ChatItemFormats> messages  = new ArrayList<>();
@@ -167,6 +169,12 @@ public class OpenStatus extends BaseActivity {
         attachID();
 
         key  = getIntent().getStringExtra("key");
+        if(getIntent().getBooleanExtra("isFromCommentBtn", false))
+        {
+            findViewById(R.id.typer).requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(findViewById(R.id.typer), InputMethodManager.SHOW_IMPLICIT);
+        }
         ref= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(key);
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -254,7 +262,7 @@ public class OpenStatus extends BaseActivity {
                     statusLikeFlag=false;
                 }
 
-                likeButton.setOnClickListener(new View.OnClickListener() {
+                likeLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if(statusLikeFlag == true){
@@ -496,13 +504,15 @@ public class OpenStatus extends BaseActivity {
         userImage = findViewById(R.id.user_image_open_status);
         content = findViewById(R.id.content_open_status);
         likeButton = findViewById(R.id.like_image_open_status);
+        likeLayout = findViewById(R.id.messagesRecentItem_like_layout);
+        commentLayout = findViewById(R.id.messagesRecentItem_comment_layout);
         commentButton = findViewById(R.id.comment_image_open_status);
         postedImage = findViewById(R.id.open_status_image);
         likes = findViewById(R.id.like_text_open_status);
         comments = findViewById(R.id.comment_text_open_status);
         recyclerView = findViewById(R.id.open_status_comments_RV);
         calendar = Calendar.getInstance();
-        commentButton.setOnClickListener(new View.OnClickListener() {
+        commentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 findViewById(R.id.typer).requestFocus();

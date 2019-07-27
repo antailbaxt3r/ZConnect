@@ -511,15 +511,50 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/padding_x_small"
                 android:paddingBottom="@dimen/padding_x_small"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:paddingStart="@dimen/padding_small"
                 android:paddingEnd="@dimen/padding_small">
-                <TextView
-                    android:id="@+id/forum_name_with_category_sentence"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:textColor="@color/primaryText"/>
+                    android:layout_height="wrap_content">
+                    <FrameLayout
+                        android:id="@+id/forumsRecentItem_image_FL"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true">
+                        <com.facebook.drawee.view.SimpleDraweeView
+                            android:id="@+id/forumsRecentItem_image"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/avatar_circle_128dp"
+                            fresco:roundAsCircle="true"/>
+                        <ImageView
+                            android:id="@+id/forumsRecentItem_image_default_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/baseline_people_white_48"
+                            android:layout_gravity="center"/>
+                    </FrameLayout>
+                    <TextView
+                        android:id="@+id/forum_name_with_category_sentence"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="@color/primaryText"
+                        android:text="AAAAAAAAAAAAAA"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:layout_below="@+id/forumsRecentItem_image_FL"/>
+                    <TextView
+                        android:id="@+id/forumsRecentItem_tab_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textColor="@color/secondaryText"
+                        android:text="in Arjun Baba"
+                        android:gravity="center"
+                        android:layout_below="@+id/forum_name_with_category_sentence"/>
+                </RelativeLayout>
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/messagesRecentItem"
@@ -577,7 +612,8 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:textSize="16sp"
-                            android:textColor="@color/icon_color"/>
+                            android:textColor="@color/icon_color"
+                            android:duplicateParentState="true"/>
                         <ImageView
                             android:layout_centerVertical="true"
                             android:layout_marginStart="@dimen/margin_x_small"
@@ -586,7 +622,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/outline_thumb_up_alt_white_24"
-                            android:tint="@color/icon_color"/>
+                            android:tint="@color/icon_color"
+                            android:duplicateParentState="true"/>
                     </RelativeLayout>
                     <RelativeLayout
                         android:id="@+id/messagesRecentItem_comment_layout"
@@ -603,7 +640,8 @@
                             android:textSize="16sp"
                             android:text="123"
                             android:textColor="@color/icon_color"
-                            android:visibility="gone"/>
+                            android:visibility="gone"
+                            android:duplicateParentState="true"/>
                         <ImageView
                             android:layout_centerVertical="true"
                             android:layout_marginStart="@dimen/margin_x_small"
@@ -612,7 +650,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/outline_mode_comment_white_24"
-                            android:tint="@color/icon_color"/>
+                            android:tint="@color/icon_color"
+                            android:duplicateParentState="true"/>
                     </RelativeLayout>
                 </LinearLayout>
             </LinearLayout>

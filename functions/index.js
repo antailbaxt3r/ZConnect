@@ -517,7 +517,7 @@ exports.deleteForumInAppNotif = functions.database.ref('communities/{communityID
   return forumInAppNotifsRef.once('value', notificationsSnapshot => {
     return notificationsSnapshot.forEach(notif => {
       if(notif.hasChild('receiverUID'))
-        personal_inAppNotifsRef.child(notif.child('receiverUID').val()).child(notif.key).remove();
+        personal_inAppNotifsRef.child(notif.child('receiverUID').val()).child("notifications").child(notif.key).remove();
       else
         global_inAppNotifsRef.child(notif.key).remove();
       notif.ref.remove();
@@ -528,12 +528,12 @@ exports.deleteForumInAppNotif = functions.database.ref('communities/{communityID
 exports.deleteStoreroomInAppNotif = functions.database.ref('communities/{communityID}/features/storeroom/products/{productID}')
 .onDelete((snapshot, context) => {
   let { productID, communityID } = context.params;
-  const productInAppNotifsRef = snapshot.parent.parent.child('inAppNotifications').child(productID);
+  const productInAppNotifsRef = snapshot.ref.parent.parent.child('inAppNotifications').child(productID);
   const personal_inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/Users1`);
   return productInAppNotifsRef.once('value', notificationsSnapshot => {
     return notificationsSnapshot.forEach(notif => {
       if(notif.hasChild('receiverUID'))
-        personal_inAppNotifsRef.child(notif.child('receiverUID').val()).child(notif.key).remove();
+        personal_inAppNotifsRef.child(notif.child('receiverUID').val()).child("notifications").child(notif.key).remove();
       notif.ref.remove();
     });
   });
@@ -542,13 +542,13 @@ exports.deleteStoreroomInAppNotif = functions.database.ref('communities/{communi
 exports.deleteEventsInAppNotif = functions.database.ref('communities/{communityID}/features/events/activeEvents/{eventID}')
 .onDelete((snapshot, context) => {
   let { eventID, communityID } = context.params;
-  const eventInAppNotifsRef = snapshot.parent.parent.child('inAppNotifications').child(eventID);
+  const eventInAppNotifsRef = snapshot.ref.parent.parent.child('inAppNotifications').child(eventID);
   const global_inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/globalNotifications`);
   const personal_inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/Users1`);
   return eventInAppNotifsRef.once('value', notificationsSnapshot => {
     return notificationsSnapshot.forEach(notif => {
       if(notif.hasChild('receiverUID'))
-        personal_inAppNotifsRef.child(notif.child('receiverUID').val()).child(notif.key).remove();
+        personal_inAppNotifsRef.child(notif.child('receiverUID').val()).child("notifications").child(notif.key).remove();
       else
         global_inAppNotifsRef.child(notif.key).remove();
       notif.ref.remove();
