@@ -61,7 +61,7 @@
                             android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/baseline_people_24"/>
+                            android:src="@drawable/ic_dark_chat_18dp"/>
                     </FrameLayout>
                     <TextView
                         android:id="@+id/chat_format_name"
@@ -114,7 +114,7 @@
                         android:layout_margin="@dimen/padding_10"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/baseline_people_24"
+                        android:src="@drawable/ic_dark_chat_18dp"
                         android:layout_gravity="center"/>
 
                 </LinearLayout>
