@@ -8,4 +8,5 @@ public class FeatureNamesUtilities {
     public static final String KEY_EVENTS = "events";
     public static final String KEY_ADMIN_PANEL = "adminPanel";
     public static final String KEY_PROFILE = "profile";
+    public static final String KEY_STATUSES = "statuses";
 }

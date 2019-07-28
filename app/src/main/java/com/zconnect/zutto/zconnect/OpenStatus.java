@@ -65,6 +65,7 @@ import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.PostedByDetails;
 import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.FeatureNamesUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
@@ -303,7 +304,10 @@ public class OpenStatus extends BaseActivity {
                                         statusLikeNotification.setUserKey(userItem.getUserUID());
                                         statusLikeNotification.setCommunityName(communityTitle);
                                         statusLikeNotification.setItemLikeCount(Integer.parseInt(likes.getText().toString()));
-                                        GlobalFunctions.inAppNotifications("liked your status", getIntent().getStringExtra("desc"), userItem, false, "status", null, getIntent().getStringExtra("uid"));
+                                        HashMap<String,Object> metadata = new HashMap<>();
+                                        metadata.put("key",key);
+                                        metadata.put("featurePID", key);
+                                        GlobalFunctions.inAppNotifications("liked your status", getIntent().getStringExtra("desc"), userItem, false, "status", metadata, getIntent().getStringExtra("uid"));
                                         notificationSender.execute(statusLikeNotification);
                                     }
 
@@ -565,6 +569,7 @@ public class OpenStatus extends BaseActivity {
                 ref.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
                 HashMap<String,Object> metadata = new HashMap<>();
                 metadata.put("key",key);
+                metadata.put("featurePID", key);
                 if(isAnonymous) {
                     UserItemFormat userItemFormat = userItem;
                     userItemFormat.setUserUID(userItem.getUserUID());
@@ -588,7 +593,7 @@ public class OpenStatus extends BaseActivity {
                         userItemFormat.setUserUID((String) dataSnapshot.child("uuid").getValue());
                         userItemFormat.setImageURL((String) dataSnapshot.child("imageThumb").getValue());
                         userItemFormat.setUsername((String) dataSnapshot.child("name").getValue());
-                        GlobalFunctions.inAppNotifications("commented on a status you commented","Comment: "+text,userItemFormat,true,"statusNestedComment",meta,null);
+                        GlobalFunctions.inAppNotifications("commented on a status you commented","Comment: "+text,userItemFormat,true,"statusNestedComment",meta,getIntent().getStringExtra("uid"));
                     }
 
                     @Override
@@ -823,7 +828,7 @@ public class OpenStatus extends BaseActivity {
                                 ref.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
                                 HashMap<String,Object> metadata = new HashMap<>();
                                 metadata.put("key",key);
-
+                                metadata.put("featurePID", key);
                                 GlobalFunctions.inAppNotifications("commented on your status","Comment: "+" \uD83D\uDCF7 Image",userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
                                 ref.child("Chat").child(messagePushID).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override

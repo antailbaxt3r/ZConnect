@@ -1967,7 +1967,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                     statusLikeNotification.setUserKey(userItem.getUserUID());
                                     statusLikeNotification.setCommunityName(communityTitle);
                                     statusLikeNotification.setItemLikeCount(statusLikeCount);
-                                    GlobalFunctions.inAppNotifications("liked your status",recentsItemFormats.get(getAdapterPosition()).getDesc(),userItem,false,"status",null, recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUID());
+                                    HashMap<String, Object> metadata = new HashMap<>();
+                                    metadata.put("key", recentsItemFormats.get(getAdapterPosition()).getKey());
+                                    metadata.put("featurePID", recentsItemFormats.get(getAdapterPosition()).getKey());
+                                    GlobalFunctions.inAppNotifications("liked your status",recentsItemFormats.get(getAdapterPosition()).getDesc(),userItem,false,"status",metadata, recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUID());
                                     notificationSender.execute(statusLikeNotification);
                                 }
 
