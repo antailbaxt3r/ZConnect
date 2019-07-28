@@ -88,8 +88,8 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     Toolbar toolbar;
 
     private SimpleDraweeView userImageView;
-    private String userName,userEmail,userMobile,userWhatsapp,userAbout,userSkillTags,userInfoneType;
-    private MaterialEditText userNameText, userEmailText, userMobileNumberText, userWhatsappNumberText, userAboutText;
+    private String userName,userEmail,userMobile,userWhatsapp,userAbout,userSkillTags,userInfoneType, anonymousUserName;
+    private MaterialEditText userNameText, userEmailText, userMobileNumberText, userWhatsappNumberText, userAboutText,anonymousUserNameET;
     private Button userTypeText;
     private TagsEditText userSkillTagsText;
     private MaterialBetterSpinner userInfoneTypeSpinner;
@@ -181,6 +181,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         userInfoneTypeSpinner = (MaterialBetterSpinner) findViewById(R.id.user_infone_type);
         userSkillTagsText = (TagsEditText) findViewById(R.id.user_skill_tags);
         hideContactCB = (CheckBox) findViewById(R.id.hide_contact_check_box);
+        anonymousUserNameET = findViewById(R.id.anonymous_username_et);
 
         Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
         Typeface ralewaySemiBold = Typeface.createFromAsset(getAssets(), "fonts/Raleway-SemiBold.ttf");
@@ -276,6 +277,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             userEmailText.setText(mUser.getEmail());
             userTypeText.setVisibility(View.GONE);
 
+            anonymousUserNameET.setText("Unknown");
             hideContactCB.setChecked(false);
 
             userEmailText.setFocusable(false);
@@ -332,6 +334,12 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         userWhatsappNumberText.setText(userDetails.getWhatsAppNumber());
         userMobileNumberText.setText(userDetails.getMobileNumber());
         userAboutText.setText(userDetails.getAbout());
+        if(userDetails.getAnonymousUsername() != null){
+            anonymousUserNameET.setText(userDetails.getAnonymousUsername());
+        }
+        else{
+            anonymousUserNameET.setText("Unknown");
+        }
 
         hideContactCB.setChecked(userDetails.getContactHidden());
 
@@ -437,12 +445,13 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         mProgress.setMessage("Updating...");
         mProgress.show();
 
-        userName = userNameText.getText().toString();
+        userName = userNameText.getText().toString().trim();
         userEmail = userEmailText.getText().toString();
         userAbout = userAboutText.getText().toString();
         userWhatsapp = userWhatsappNumberText.getText().toString();
         userMobile = userMobileNumberText.getText().toString();
         userSkillTags = userSkillTagsText.getTags().toString();
+        anonymousUserName = anonymousUserNameET.getText().toString().trim();
         Boolean contactHidden = false;
         contactHidden = hideContactCB.isChecked();
 
@@ -457,7 +466,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         {
             photoUri = userInfo.getPhotoUrl();
         }
-        if (userName == null
+        if (userName == null || userName.equals("") || anonymousUserName == null || anonymousUserName.equals("")
                 || userEmail == null
                 || userMobile.length() <10 || userWhatsapp.length() <10 || userInfoneType ==null || ((photoUri == null)&& mImageUri==null)) {
 
@@ -499,6 +508,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             newPost.child("username").setValue(userName);
             newPost.child("email").setValue(userEmail);
             newPost.child("mobileNumber").setValue(userMobile);
+            newPost.child("anonymousUsername").setValue(anonymousUserName);
             if (userWhatsapp.length()==0){
                 newPost.child("whatsAppNumber").setValue(" ");
             }else {
