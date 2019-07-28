@@ -997,7 +997,6 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                     metadata.put("key",getIntent().getStringExtra("key"));
                     metadata.put("ref",getIntent().getStringExtra("ref"));
                     metadata.put("type",getIntent().getStringExtra("type"));
-                    Log.d("OLDTOWNROADC", type);
                     GlobalFunctions.inAppNotifications("commented on your status","Comment: "+text,userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
                     FirebaseDatabase.getInstance().getReference().child(communityReference).child("Users1").child(getIntent().getStringExtra("uid")).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override

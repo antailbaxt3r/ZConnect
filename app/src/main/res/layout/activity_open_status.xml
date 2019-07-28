@@ -195,7 +195,9 @@
                                     android:layout_centerVertical="true"
                                     android:textSize="16sp"
                                     android:visibility="gone"
-                                    android:textColor="@color/icon_color"/>
+                                    android:textColor="@color/icon_color"
+                                    android:duplicateParentState="true"
+                                    android:clickable="false"/>
                                 <ImageView
                                     android:layout_centerVertical="true"
                                     android:layout_marginStart="@dimen/margin_x_small"
@@ -204,7 +206,9 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:src="@drawable/outline_thumb_up_alt_white_24"
-                                    android:tint="@color/icon_color"/>
+                                    android:tint="@color/icon_color"
+                                    android:duplicateParentState="true"
+                                    android:clickable="false"/>
                             </RelativeLayout>
                             <RelativeLayout
                                 android:id="@+id/messagesRecentItem_comment_layout"
@@ -222,7 +226,8 @@
                                     android:text="123"
                                     android:textColor="@color/icon_color"
                                     android:visibility="gone"
-                                    />
+                                    android:duplicateParentState="true"
+                                    android:clickable="false"/>
                                 <ImageView
                                     android:layout_centerVertical="true"
                                     android:layout_marginStart="@dimen/margin_x_small"
@@ -231,7 +236,9 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:src="@drawable/outline_mode_comment_white_24"
-                                    android:tint="@color/icon_color"/>
+                                    android:tint="@color/icon_color"
+                                    android:duplicateParentState="true"
+                                    android:clickable="false"/>
                             </RelativeLayout>
                         </LinearLayout>
                     </LinearLayout>
