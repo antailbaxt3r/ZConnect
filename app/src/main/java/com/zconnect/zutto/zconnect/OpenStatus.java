@@ -824,7 +824,7 @@ public class OpenStatus extends BaseActivity {
                                 HashMap<String,Object> metadata = new HashMap<>();
                                 metadata.put("key",key);
 
-                                GlobalFunctions.inAppNotifications("commented on your status","Comment: "+"Photo",userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
+                                GlobalFunctions.inAppNotifications("commented on your status","Comment: "+" \uD83D\uDCF7 Image",userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
                                 ref.child("Chat").child(messagePushID).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

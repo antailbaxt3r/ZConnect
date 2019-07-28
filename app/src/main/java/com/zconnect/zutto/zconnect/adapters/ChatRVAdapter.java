@@ -700,7 +700,6 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box));
 
             }
-            holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
 
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {

@@ -189,7 +189,8 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 //    private Map<Integer,UserMentionsFormat> mentionedUsersList = new HashMap<>();
     ArrayList<UserMentionsFormat> mentionedUsersList = new ArrayList<>();
     private static final WordTokenizerConfig tokenizerConfig = new WordTokenizerConfig
-            .Builder().setLineSeparator("@")
+            .Builder()
+            .setWordBreakChars(". ")
             .setExplicitChars("@")
             .setMaxNumKeywords(3)
             .setThreshold(1)
