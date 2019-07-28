@@ -93,7 +93,7 @@ public class viewImage extends BaseActivity {
 
     void shareImage() {
         saveImage saveImage = new saveImage();
-        localAbsoluteFilePath = saveImage.saveImageLocally(event_image, name);
+        localAbsoluteFilePath = saveImage.saveImageLocally(event_image, name,getApplicationContext());
         if (localAbsoluteFilePath != null && localAbsoluteFilePath != "") {
 
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -111,7 +111,7 @@ public class viewImage extends BaseActivity {
         mProgress.setMessage("Saving to gallery...");
         mProgress.show();
         saveImage saveImage = new saveImage();
-        localAbsoluteFilePath = saveImage.saveImageLocally(event_image, name);
+        localAbsoluteFilePath = saveImage.saveImageLocally(event_image, name,getApplicationContext());
         mProgress.dismiss();
         if (localAbsoluteFilePath != null)
             Toast.makeText(this, "Saved Successfully", Toast.LENGTH_LONG).show();
