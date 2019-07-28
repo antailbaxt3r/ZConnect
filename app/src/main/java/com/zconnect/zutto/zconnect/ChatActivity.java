@@ -584,8 +584,11 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 user.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.child("anonymousUsername").getValue() != null) {
+                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ChatActivity.this);
+                        boolean preferencesBoolean = preferences.getBoolean("isAnonymousFirstTime", true);
+                        if(dataSnapshot.child("anonymousUsername").getValue() != null && !preferencesBoolean) {
                             UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+
                             if (dataSnapshot.hasChild("userType")) {
                                 if (userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
                                     newUserVerificationAlert.buildAlertCheckNewUser(userItemFormat.getUserType(), "Chat", ChatActivity.this);
@@ -598,6 +601,9 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                             }
                         }
                         else{
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putBoolean("isAnonymousFirstTime",false);
+                            editor.apply();
                             final Dialog anonymousModeDialog = new Dialog(ChatActivity.this);
                             anonymousModeDialog.setContentView(R.layout.dialog_confirm_anonymous_mode);
                             anonymousModeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

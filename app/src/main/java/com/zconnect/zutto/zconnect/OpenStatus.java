@@ -538,6 +538,7 @@ public class OpenStatus extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
+
                 message.setUuid(userItem.getUserUID());
                 message.setName(userItem.getUsername());
                 message.setImageThumb(userItem.getImageURLThumbnail());
@@ -549,6 +550,13 @@ public class OpenStatus extends BaseActivity {
                 else {
                     message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
                 }
+                if(userItem.getAnonymousUsername() != null){
+                    message.setUserName(userItem.getAnonymousUsername());
+
+                }
+                else{
+                    message.setUserName("Unknown");
+                }
                 GlobalFunctions.addPoints(2);
                 String messagePushID = ref.child("Chat").push().getKey();
                 message.setKey(messagePushID);
@@ -557,7 +565,15 @@ public class OpenStatus extends BaseActivity {
                 ref.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
                 HashMap<String,Object> metadata = new HashMap<>();
                 metadata.put("key",key);
-                GlobalFunctions.inAppNotifications("commented on your status","Comment: "+text,userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
+                if(isAnonymous) {
+                    UserItemFormat userItemFormat = userItem;
+                    userItemFormat.setUserUID(userItem.getUserUID());
+                    userItemFormat.setUsername(userItem.getAnonymousUsername());
+                    GlobalFunctions.inAppNotifications("commented on your status", "Comment: " + text, userItemFormat, false, "statusComment", metadata,getIntent().getStringExtra("uid"));
+                }
+                else{
+                    GlobalFunctions.inAppNotifications("commented on your status", "Comment: " + text, userItem, false, "statusComment", metadata, getIntent().getStringExtra("uid"));
+                }
                 ref.child("Chat").child(messagePushID).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

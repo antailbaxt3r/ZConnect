@@ -88,7 +88,7 @@ public class GlobalFunctions {
                 key = NotificationIdentifierUtilities.KEY_PERSONAL;
             }
 
-        } else if (notifiedby.getUserUID().equals(uid)) {
+        } else if (uid != null && notifiedby.getUserUID().equals(uid)) {
             //for personal in app notifs return void if the notified by is same as the current user.
             return;
         } else {

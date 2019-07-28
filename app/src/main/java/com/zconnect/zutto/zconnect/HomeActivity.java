@@ -982,7 +982,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         editProfileValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                navHeaderImageUrl = dataSnapshot.child("imageURL").getValue().toString();
+                navHeaderImageUrl = dataSnapshot.child("imageURL").getValue(String.class);
                 if(navHeaderImageUrl!= null){
                     navHeaderImage = findViewById(R.id.iv_z_connect_logo_nav_header1);
                     navHeaderImage.setImageURI(Uri.parse(navHeaderImageUrl));
