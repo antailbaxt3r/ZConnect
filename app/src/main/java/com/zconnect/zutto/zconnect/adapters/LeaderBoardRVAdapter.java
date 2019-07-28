@@ -28,7 +28,7 @@ public class LeaderBoardRVAdapter extends RecyclerView.Adapter<RecyclerView.View
     private final int VIEW_TYPE_LOADER = 1;
 
     private boolean isLoading;
-    private int visibleThreshold = 1;
+    private int visibleThreshold = 2;
     private int lastVisibleItem, totalItemCount;
 
     public LeaderBoardRVAdapter(Vector<LeaderBoardItemFormat> leaderBoardItemFormats, LinearLayout currentUserRank, Context context, RecyclerView recyclerView) {
