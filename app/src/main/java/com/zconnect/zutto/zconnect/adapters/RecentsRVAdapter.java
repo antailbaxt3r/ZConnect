@@ -3052,11 +3052,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                     if (!hsv.canScrollHorizontally(1)) {
                                         rightArrow.setVisibility(View.VISIBLE);
                                         leftArrow.setVisibility(View.GONE);
+
                                     }
                                     if (!hsv.canScrollHorizontally(-1)) {
 
                                         rightArrow.setVisibility(View.GONE);
                                         leftArrow.setVisibility(View.VISIBLE);
+
                                     }
                                 }
                             });
