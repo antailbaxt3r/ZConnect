@@ -172,6 +172,9 @@ public class LogoFlashActivity extends BaseActivity {
                                     if(path.equals("/openevent/"))
                                     {
                                         Log.d(TAG,"abc1 " + deepLink.getQueryParameter("eventID"));
+                                        Intent i = new Intent(LogoFlashActivity.this, HomeActivity.class);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                        startActivity(i);
                                         Intent intent = new Intent(LogoFlashActivity.this, OpenEventDetail.class);
                                         intent.putExtra("id", deepLink.getQueryParameter("eventID"));
                                         intent.putExtra("flag", true);
@@ -181,6 +184,10 @@ public class LogoFlashActivity extends BaseActivity {
                                     else if(path.equals("/cabpooling/"))
                                     {
                                         Log.d(TAG,"abc1 " + deepLink.getQueryParameter("key"));
+                                        Intent i = new Intent(LogoFlashActivity.this, HomeActivity.class);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                        startActivity(i);
+
                                         Intent intent = new Intent(LogoFlashActivity.this, CabPoolListOfPeople.class);
                                         intent.putExtra("key", deepLink.getQueryParameter("key"));
                                         startActivity(intent);
@@ -188,6 +195,10 @@ public class LogoFlashActivity extends BaseActivity {
                                     }
                                     else if(path.equals("/openproduct/"))
                                     {
+                                        Intent i = new Intent(LogoFlashActivity.this, HomeActivity.class);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                        startActivity(i);
+
                                         Log.d(TAG,"abc1 " + deepLink.getQueryParameter("key"));
                                         Intent intent = new Intent(LogoFlashActivity.this, OpenProductDetails.class);
                                         intent.putExtra("key", deepLink.getQueryParameter("key"));
