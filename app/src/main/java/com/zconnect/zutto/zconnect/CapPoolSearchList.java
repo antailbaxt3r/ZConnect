@@ -326,6 +326,8 @@ public class CapPoolSearchList extends BaseActivity {
                                 snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                                 snack.show();
                             }
+                            noCabPoolsDialog.dismiss();
+
                         }
                     });
                     Button cancelButton = noCabPoolsDialog.findViewById(R.id.dialog_box_negative_button);

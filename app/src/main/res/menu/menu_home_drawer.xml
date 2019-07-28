@@ -12,6 +12,11 @@
 
     <group android:id="@+id/group">
         <item
+            android:title="My Internships"
+            android:id="@+id/MyInternships"
+            android:icon="@drawable/ic_outline_shopping_basket_purple"
+            android:name="My Internships"/>
+        <item
             android:title="My Orders"
             android:id="@+id/MyOrders"
             android:icon="@drawable/ic_outline_shopping_basket_purple"

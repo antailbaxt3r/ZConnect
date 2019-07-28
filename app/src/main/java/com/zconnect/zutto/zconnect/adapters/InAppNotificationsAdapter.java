@@ -30,6 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.CabPoolAll;
+import com.zconnect.zutto.zconnect.CabPoolListOfPeople;
 import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.ExploreForumsActivity;
 import com.zconnect.zutto.zconnect.InfoneProfileActivity;
@@ -117,9 +118,22 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
                     ds.setUnderlineText(false); // set to false to remove underline
                 }
             };
+            ClickableSpan normalSpan = new ClickableSpan() {
+                @Override
+                public void onClick(@NonNull View widget) {
+                    holder.notificationsLayout.performClick();
+                }
+
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    ds.setUnderlineText(false); // set to false to remove underline
+                }
+            };
+
             StyleSpan styleSpan = new StyleSpan(BOLD);
             spannableString.setSpan(clickableSpan, 0, notificationsList.get(position).getNotifiedBy().getUsername().length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             spannableString.setSpan(styleSpan, 0, notificationsList.get(position).getNotifiedBy().getUsername().length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableString.setSpan(normalSpan,  notificationsList.get(position).getNotifiedBy().getUsername().length(),spannableString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             holder.titletv.setText(spannableString);
             holder.titletv.setClickable(true);
             holder.titletv.setMovementMethod(LinkMovementMethod.getInstance());
@@ -128,6 +142,16 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
             TimeUtilities timeUtilities = new TimeUtilities(notificationsList.get(position).getPostTimeMillis(), System.currentTimeMillis());
             holder.timetv.setText(timeUtilities.calculateTimeAgo());
             holder.desctv.setText(notificationsList.get(position).getDesc());
+
+            holder.simpleDraweeView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, OpenUserDetail.class);
+                    intent.putExtra("Uid", notificationsList.get(position).getNotifiedBy().getUserUID());
+                    context.startActivity(intent);
+                }
+            });
+
             holder.notificationsLayout.setOnClickListener(view -> {
                 //Seenzone
                 HashMap<String,Boolean> seenmap = new HashMap<>();
@@ -143,9 +167,10 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
                                 .child("seen");
                         seenReference.setValue(seenmap);
                     }
-                    holder.seen.setVisibility(View.INVISIBLE);
+                    holder.seen.setVisibility(View.GONE);
                     notificationsList.get(position).setSeen(seenmap);
                     String type = notificationsList.get(position).getType();
+                    Log.d("NOTIFICATIONTYPE",type);
                     switch (type) {
                         case "acceptforum":
                             intent = new Intent(context, ExploreForumsActivity.class);
@@ -174,6 +199,13 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
                             context.startActivity(intent);
                             break;
 
+                        case "cabpoolLeave":
+                            intent = new Intent(context, CabPoolListOfPeople.class);
+                            intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                            context.startActivity(intent);
+                            break;
+
+
                         case "eventAdd":
                             intent = new Intent(context, OpenEventDetail.class);
                             intent.putExtra("id", String.valueOf(notificationsList.get(position).getMetadata().get("id")));
@@ -185,6 +217,15 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
                             intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
                             context.startActivity(intent);
                             break;
+
+                        case "cabpoolJoin":
+                            intent = new Intent(context, CabPoolListOfPeople.class);
+
+//                            Log.d("METADATAAA",String.valueOf(notificationsList.get(position).getMetadata()));
+                            intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                            context.startActivity(intent);
+                            break;
+
                         case "eventBoost":
                             intent = new Intent(context, OpenEventDetail.class);
                             intent.putExtra("id", String.valueOf(notificationsList.get(position).getMetadata().get("key")));

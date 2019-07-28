@@ -401,26 +401,48 @@ public class OpenUserDetail extends BaseActivity {
                 } else{
                     db_love.child(myUID).setValue(true);
                     love_status = true;
+                    final DatabaseReference databaseReferenceUser = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB)
+                            .child(communityReference).child(ZConnectDetails.USERS_DB).child(mAuth.getCurrentUser().getUid());
+
                     currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.child("Loves").hasChild(Uid)){
+                                databaseReferenceUser.child("userChats").child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        String key = dataSnapshot.getValue().toString();
+                                        Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
+                                        intent.putExtra("type", "forums");
+                                        intent.putExtra("name", name);
+                                        intent.putExtra("tab", "personalChats");
+                                        intent.putExtra("key", key);
+                                        intent.putExtra("match",true);
+                                        startActivity(intent);
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
                                 Toast.makeText(OpenUserDetail.this, "WOW, now you both love each other, we recommend you to start a conversation", Toast.LENGTH_LONG).show();
                             }
                             UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
-                            NotificationSender notificationSender = new NotificationSender(OpenUserDetail.this, userItemFormat.getUserUID());
-
-                            NotificationItemFormat infoneLoveNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_LOVE,userItemFormat.getUserUID());
-
-                            infoneLoveNotification.setItemKey(userProfile.getUserUID());
-                            infoneLoveNotification.setUserImage(userItemFormat.getImageURLThumbnail());
-                            infoneLoveNotification.setUserName(userItemFormat.getUsername());
-                            infoneLoveNotification.setCommunityName(communityTitle);
-                            GlobalFunctions.inAppNotifications("has loved your profile","Your profile is loved",userItemFormat,false,"status",null,userProfile.getUserUID());
-                            notificationSender.execute(infoneLoveNotification);
+//                            NotificationSender notificationSender = new NotificationSender(OpenUserDetail.this, userItemFormat.getUserUID());
+//
+//                            NotificationItemFormat infoneLoveNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_LOVE,userItemFormat.getUserUID());
+//
+//                            infoneLoveNotification.setItemKey(userProfile.getUserUID());
+//                            infoneLoveNotification.setUserImage(userItemFormat.getImageURLThumbnail());
+//                            infoneLoveNotification.setUserName(userItemFormat.getUsername());
+//                            infoneLoveNotification.setCommunityName(communityTitle);
+//                            GlobalFunctions.inAppNotifications("has loved your profile","Your profile is loved",userItemFormat,false,"status",null,userProfile.getUserUID());
+//                            notificationSender.execute(infoneLoveNotification);
                             Log.d("Try", "clicked");
-                            final DatabaseReference databaseReferenceUser = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB)
-                                    .child(communityReference).child(ZConnectDetails.USERS_DB).child(mAuth.getCurrentUser().getUid());
 
                             if (databaseReferenceUser == null) {
                                 Toast.makeText(v.getContext(), "The user does not exist!", Toast.LENGTH_SHORT).show();
@@ -434,26 +456,6 @@ public class OpenUserDetail extends BaseActivity {
                                         userImageURL = dataSnapshot.child("imageURL").getValue().toString();
                                         Log.d("Try", createPersonalChat(mAuth.getCurrentUser().getUid(), Uid,databaseReferenceUser));
                                     }
-                                    databaseReferenceUser.child("userChats").child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            String key = dataSnapshot.getValue().toString();
-                                            Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                                            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
-                                            intent.putExtra("type", "forums");
-                                            intent.putExtra("name", name);
-                                            intent.putExtra("tab", "personalChats");
-                                            intent.putExtra("key", key);
-                                            intent.putExtra("match",true);
-                                            startActivity(intent);
-
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                        }
-                                    });
 
 
                                 }

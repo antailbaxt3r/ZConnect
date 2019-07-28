@@ -137,7 +137,7 @@ public class JoinedForums extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                Log.i("ttt",dataSnapshot.getValue().toString());
+//                Log.i("ttt",dataSnapshot.getValue(String.class));
 
                 forumCategoriesItemFormats.clear();
 

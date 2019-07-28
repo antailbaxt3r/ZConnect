@@ -693,6 +693,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                         fm.beginTransaction().hide(active).show(notifications).commit();
                         active = notifications;
+                        notifications.onResume();
                         break;
                     }
                 }
@@ -981,7 +982,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         editProfileValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                navHeaderImageUrl = dataSnapshot.child("imageURL").getValue().toString();
+                navHeaderImageUrl = dataSnapshot.child("imageURL").getValue(String.class);
                 if(navHeaderImageUrl!= null){
                     navHeaderImage = findViewById(R.id.iv_z_connect_logo_nav_header1);
                     navHeaderImage.setImageURI(Uri.parse(navHeaderImageUrl));
@@ -1168,7 +1169,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                             }else {
                                 nav_Menu.findItem(R.id.MyProducts).setVisible(false);
                             }
-
+                            if (communityFeatures.getInternships().equals("true")){
+                                nav_Menu.findItem(R.id.MyInternships).setVisible(true);
+                            }else {
+                                nav_Menu.findItem(R.id.MyInternships).setVisible(false);
+                            }
 
                         }catch (Exception e){
 
@@ -1316,6 +1321,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.MyInternships: {
+                Intent intent = new Intent(getApplicationContext(), MyInternships.class);
+                startActivity(intent);
+                break;
+            }
             case R.id.admins: {
                 Intent intent = new Intent(getApplicationContext(), ViewAdmin.class);
                 startActivity(intent);
