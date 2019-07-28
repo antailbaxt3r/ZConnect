@@ -30,8 +30,10 @@ import android.text.util.Linkify;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -2386,8 +2388,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         private String TAG = FeaturesViewHolder.class.getSimpleName();
 
         HorizontalScrollView hsv;
-        ImageButton leftArrow, rightArrow;
-        LinearLayout linearLayout;
+        RelativeLayout leftArrow, rightArrow;
+        LinearLayout linearLayout,totalLinearLayout;
         RelativeLayout notices, events, cabpool, storeroom, shops, admin,internships, links;
         FrameLayout unreadCountStoreroomFL, unreadCountEventsFL, unreadCountShopsFL, unreadCountCabpoolFL, unreadCountAdminPanelFL, unreadCountNoticesFL,unreadCountInternshipsFL, unreadCountLinksFL;
         TextView unreadCountStoreroomTV, unreadCountEventsTV, unreadCountShopsTV, unreadCountCabpoolTV, unreadCountAdminPanelTV, unreadCountNoticesTV,unreadCountInternshipsTV, unreadCountLinksTV;
@@ -2405,6 +2407,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             hsv = (HorizontalScrollView) itemView.findViewById(R.id.hsv_recents_features_view);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.linearLayout_recents_features_view);
+            totalLinearLayout = itemView.findViewById(R.id.total_linear_layout);
             events = (RelativeLayout) itemView.findViewById(R.id.events_recents_features_view);
             notices = itemView.findViewById(R.id.notices_recents_features_view);
             storeroom = (RelativeLayout) itemView.findViewById(R.id.storeroom_recents_features_view);
@@ -2445,25 +2448,26 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             mOtherFeatures = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("otherFeatures").orderByChild("pos");
             mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-            rightArrow.setVisibility(View.VISIBLE);
 
             rightArrow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    hsv.fullScroll(View.FOCUS_RIGHT);
-                    leftArrow.setVisibility(View.VISIBLE);
                     rightArrow.setVisibility(View.GONE);
+                    leftArrow.setVisibility(View.VISIBLE);
+                    hsv.fullScroll(View.FOCUS_LEFT);
+
                 }
             });
 
             leftArrow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    hsv.fullScroll(View.FOCUS_LEFT);
                     rightArrow.setVisibility(View.VISIBLE);
                     leftArrow.setVisibility(View.GONE);
+                    hsv.fullScroll(View.FOCUS_RIGHT);
                 }
             });
+
 
             mUserDetails.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -3043,6 +3047,35 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                         }
                     });
+
+                    hsv.getViewTreeObserver()
+                            .addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                                @Override
+                                public void onScrollChanged() {
+                                    if (!hsv.canScrollHorizontally(1)) {
+                                        rightArrow.setVisibility(View.VISIBLE);
+                                        leftArrow.setVisibility(View.GONE);
+
+                                    }
+                                    if (!hsv.canScrollHorizontally(-1)) {
+
+                                        rightArrow.setVisibility(View.GONE);
+                                        leftArrow.setVisibility(View.VISIBLE);
+
+                                    }
+                                }
+                            });
+
+
+
+
+                    if(linearLayout.getWidth()<totalLinearLayout.getWidth()){
+                        rightArrow.setVisibility(View.GONE);
+                        leftArrow.setVisibility(View.GONE);
+                    }else if(linearLayout.getWidth()>totalLinearLayout.getWidth()) {
+                        leftArrow.setVisibility(View.VISIBLE);
+                        rightArrow.setVisibility(View.GONE);
+                    }
                 }
 
                 @Override
@@ -3054,6 +3087,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
 
         public void setFeatureVisibility(CommunityFeatures communityFeatures) {
+
             try {
 
                 try {
@@ -3130,9 +3164,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                 }catch (Exception e){}
 
+
             } catch (Exception e) {
 
             }
+
+
 
         }
 

@@ -1,5 +1,9 @@
 package com.zconnect.zutto.zconnect.commonModules;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -13,6 +17,7 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
@@ -267,6 +272,34 @@ public class GlobalFunctions {
         databaseReferenceTabsCategories.child(newPush.getKey()).child("image").setValue(mImageURL);
 
 
+    }
+
+    public static Bitmap combineImages(Bitmap c, Context ctx) { // can add a 3rd parameter 'String loc' if you want to save the new image - left some code to do that at the bottom
+        Bitmap cs = null;
+        Bitmap s = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.share_icon);
+        int width, height = 0;
+
+        if(c.getWidth()>s.getWidth()){
+            width = s.getWidth();
+            int temp = (int) (c.getHeight()*((float)s.getWidth()/c.getWidth()));
+            c= Bitmap.createScaledBitmap(c, s.getWidth(), temp, false);
+
+        }else {
+            width = c.getWidth();
+            int temp = (int) (s.getHeight()*((float)c.getWidth()/s.getWidth()));
+            s= Bitmap.createScaledBitmap(s, c.getWidth(), temp, false);
+        }
+
+        height = c.getHeight() + s.getHeight();
+
+        cs = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+        Canvas comboImage = new Canvas(cs);
+
+        comboImage.drawBitmap(c, 0f, 0f, null);
+        comboImage.drawBitmap(s, 0f, c.getHeight(),null);
+
+        return cs;
     }
 
 }
