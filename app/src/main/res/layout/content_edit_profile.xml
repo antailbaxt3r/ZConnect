@@ -156,6 +156,20 @@
                     android:layout_height="wrap_content"
                     android:hint="Email"
                     android:textColor="@color/primaryText"/>
+                android:maxLength="12"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primaryText"
+                    android:text="Anonymous Username"
+                    android:textStyle="bold"
+                    android:paddingBottom="5dp"/>
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/anonymous_username_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Email"
+                    android:textColor="@color/primaryText"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

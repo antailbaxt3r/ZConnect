@@ -24,9 +24,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.adapters.InAppNotificationsAdapter;
+import com.zconnect.zutto.zconnect.interfaces.OnLoadMoreListener;
 import com.zconnect.zutto.zconnect.itemFormats.InAppNotificationsItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
@@ -39,6 +41,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.Vector;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -50,10 +53,15 @@ public class InAppNotificationsFragment extends Fragment {
     public String communityRef;
     private DatabaseReference notificationsReference;
     private DatabaseReference globalReference;
+    private DatabaseReference userNotifReference;
     private ValueEventListener listener;
     private TextView noNotif;
-    ArrayList<InAppNotificationsItemFormat> totalnotificationsList;
+    Vector<InAppNotificationsItemFormat> totalnotificationsList;
     private InAppNotificationsAdapter inAppNotificationsAdapter;
+    private ValueEventListener inAppNotifsListener;
+    private Query inAppNotifsQuery;
+    private String lastNotifID;
+    private Long lastPostTimeMillis;
 
     public InAppNotificationsFragment() {
 
@@ -77,87 +85,142 @@ public class InAppNotificationsFragment extends Fragment {
 
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
         communityRef = communitySP.getString("communityReference", null);
-
+        totalnotificationsList = new Vector<>();
         globalReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityRef);
+        userNotifReference = globalReference.child("Users1").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("notifications");
+        inAppNotifsQuery = userNotifReference.orderByChild("PostTimeMillis").limitToLast(20);
+        defineListerners();
         notifRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false));
-        totalnotificationsList = new ArrayList<>();
         //Test Notification. Uncomment for testing
         //GlobalFunctions.pushNotifications("Test", "This is a test", false, 1, new HashMap<String, String>());
         Log.d("outside", "onDataChange: ");
-        inAppNotificationsAdapter = new InAppNotificationsAdapter(getContext(), communityRef, totalnotificationsList);
+        inAppNotificationsAdapter = new InAppNotificationsAdapter(getContext(), communityRef, totalnotificationsList, notifRecyclerView);
+        inAppNotificationsAdapter.getLoadMoreUtility().setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                totalnotificationsList.add(null);
+                inAppNotificationsAdapter.notifyItemInserted(totalnotificationsList.size() - 1);
+
+                //load more data
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //removing loader item
+                        totalnotificationsList.remove(totalnotificationsList.size()-1);
+                        inAppNotificationsAdapter.notifyItemRemoved(totalnotificationsList.size());
+                        //load data
+                        inAppNotifsQuery = userNotifReference.orderByChild("PostTimeMillis").endAt(lastPostTimeMillis, lastNotifID).limitToLast(20);
+                        inAppNotifsQuery.addValueEventListener(inAppNotifsListener);
+                    }
+                }, 1000);
+            }
+        });
         notifRecyclerView.setAdapter(inAppNotificationsAdapter);
-
-
         return view;
+    }
+
+    private void defineListerners() {
+        inAppNotifsListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Integer index = 0;
+                if(lastNotifID==null)
+                {
+                    Log.d("IIIIII", "HERE");
+                    totalnotificationsList.clear();
+                }
+                Vector<InAppNotificationsItemFormat> notificationsListTemp = new Vector<>();
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                    try {
+                        index++;
+                        if(index==1)
+                        {
+                            lastNotifID = childSnapshot.child("key").getValue().toString();
+                            lastPostTimeMillis = childSnapshot.child("PostTimeMillis").getValue(Long.class);
+                            continue;
+                        }
+                        InAppNotificationsItemFormat usernotification = childSnapshot.getValue(InAppNotificationsItemFormat.class);
+                        if (usernotification != null && !usernotification.getNotifiedBy().getUserUID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                            notificationsListTemp.add(usernotification);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                Collections.reverse(notificationsListTemp);
+                totalnotificationsList.addAll(notificationsListTemp);
+                shimmerFrameLayout.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmerAnimation();
+
+                notifRecyclerView.setVisibility(View.VISIBLE);
+                if (!totalnotificationsList.isEmpty()) {
+                    noNotif.setVisibility(View.GONE);
+                    notifRecyclerView.setVisibility(View.VISIBLE);
+                    inAppNotificationsAdapter.notifyDataSetChanged();
+                    boolean isUnread = false;
+                    for(InAppNotificationsItemFormat notificationsItemFormat : totalnotificationsList){
+                        try{
+                            Log.d("NOTIFICATION",notificationsItemFormat.isSeen().get(UserUtilities.currentUser.getUserUID()).toString());
+                            if(!notificationsItemFormat.isSeen().get(UserUtilities.currentUser.getUserUID())){
+                                TabLayout tabs = getActivity().findViewById(R.id.navigation);
+                                tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
+                                isUnread = true;
+                            }
+                        }
+                        catch (Exception e){
+                            TabLayout tabs = getActivity().findViewById(R.id.navigation);
+                            tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
+                            Log.d("NOTIFICATIONERROR",e.toString());
+                        }
+                    }
+
+                    if(!isUnread){
+                        TabLayout tabs = getActivity().findViewById(R.id.navigation);
+                        tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
+
+                    }
+
+                } else {
+                    noNotif.setVisibility(View.VISIBLE);
+                    notifRecyclerView.setVisibility(View.GONE);
+                    TabLayout tabs = getActivity().findViewById(R.id.navigation);
+                    tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
+                }
+                if(lastNotifID!=null)
+                {
+                    inAppNotificationsAdapter.getLoadMoreUtility().setLoaded();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("inapresume", "onResume: ");
         if (UserUtilities.currentUser != null) {
             if (!UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || !UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
-                globalReference.child("Users1").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("notifications").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        totalnotificationsList.clear();
-                        for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                            try {
-                                InAppNotificationsItemFormat usernotification = childSnapshot.getValue(InAppNotificationsItemFormat.class);
-                                if (usernotification != null && !usernotification.getNotifiedBy().getUserUID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                                    totalnotificationsList.add(usernotification);
-                            }catch (Exception e){}
-                        }
-                        Collections.sort(totalnotificationsList, (o1, o2) -> Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis()));
-                        shimmerFrameLayout.setVisibility(View.GONE);
-                        shimmerFrameLayout.stopShimmerAnimation();
-
-                        notifRecyclerView.setVisibility(View.VISIBLE);
-                        if (!totalnotificationsList.isEmpty()) {
-                            noNotif.setVisibility(View.GONE);
-                            notifRecyclerView.setVisibility(View.VISIBLE);
-                            inAppNotificationsAdapter.notifyDataSetChanged();
-                            boolean isUnread = false;
-                            for(InAppNotificationsItemFormat notificationsItemFormat : totalnotificationsList){
-                                try{
-                                    Log.d("NOTIFICATION",notificationsItemFormat.isSeen().get(UserUtilities.currentUser.getUserUID()).toString());
-                                    if(!notificationsItemFormat.isSeen().get(UserUtilities.currentUser.getUserUID())){
-                                        TabLayout tabs = getActivity().findViewById(R.id.navigation);
-                                        tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
-                                        isUnread = true;
-                                    }
-                                }
-                                catch (Exception e){
-                                    TabLayout tabs = getActivity().findViewById(R.id.navigation);
-                                    tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
-                                    Log.d("NOTIFICATIONERROR",e.toString());
-                                }
-                            }
-
-                            if(!isUnread){
-                                TabLayout tabs = getActivity().findViewById(R.id.navigation);
-                                tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
-
-                            }
-
-
-                        } else {
-                            noNotif.setVisibility(View.VISIBLE);
-                            notifRecyclerView.setVisibility(View.GONE);
-                            TabLayout tabs = getActivity().findViewById(R.id.navigation);
-                            tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
+                Log.d("MMMMM", "MMMM");
+                Log.d("AAAAAAAAA", "RESUME");
+                if(!totalnotificationsList.isEmpty())
+                {
+                    inAppNotifsQuery = userNotifReference.orderByChild("PostTimeMillis").limitToLast(20);
+                    lastNotifID=null;
+                    lastPostTimeMillis=0L;
+                }
+                inAppNotifsQuery.addValueEventListener(inAppNotifsListener);
             }
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        inAppNotifsQuery.removeEventListener(inAppNotifsListener);
     }
 }

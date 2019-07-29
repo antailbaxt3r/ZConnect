@@ -569,6 +569,13 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         holder.usernameLayout.setGravity(Gravity.START);
                         holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box));
                         holder.chatContainer.setGravity(Gravity.START);
+                        holder.name.setVisibility(View.VISIBLE);
+                        holder.name.setText(message.getUserName());
+//                        holder.name.setTextColor(R.color.);
+//                        holder.chatLayout.addView(holder.anonymousButton);
+//                        holder.chatLayout.setGravity(Gravity.START);
+                        holder.usernameLayout.setGravity(Gravity.START);
+                        holder.anonymousImage.setVisibility(View.VISIBLE);
                     }
                     else {
                         if (message.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
@@ -693,6 +700,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box));
 
             }
+
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

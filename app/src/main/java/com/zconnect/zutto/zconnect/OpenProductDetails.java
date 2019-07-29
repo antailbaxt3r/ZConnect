@@ -69,6 +69,7 @@ import java.util.HashMap;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static com.zconnect.zutto.zconnect.commonModules.GlobalFunctions.combineImages;
 
 public class OpenProductDetails extends BaseActivity {
 
@@ -459,31 +460,6 @@ public class OpenProductDetails extends BaseActivity {
         return true;
     }
 
-    public Bitmap mergeBitmap(Bitmap bitmap2, Bitmap bitmap1, Context context) {
-        Bitmap mergedBitmap = null;
-
-
-        Drawable[] layers = new Drawable[2];
-
-        layers[0] = new BitmapDrawable(context.getResources(), bitmap1);
-        layers[1] = new BitmapDrawable(context.getResources(), bitmap2);
-
-        LayerDrawable layerDrawable = new LayerDrawable(layers);
-
-        int width = layers[0].getIntrinsicWidth();
-        int height = layers[0].getIntrinsicHeight();
-
-        mergedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(mergedBitmap);
-        layerDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        layerDrawable.draw(canvas);
-
-
-        //mergedBitmap=BitmapFactory.decodeResourceStream(layerDrawable)
-
-        return mergedBitmap;
-    }
-
     private void shareProduct(final String image, final Context context, final String productKey) {
 
         try {
@@ -530,8 +506,7 @@ public class OpenProductDetails extends BaseActivity {
                                                     .getInputStream());
 
 
-                                            bm = mergeBitmap(BitmapFactory.decodeResource(context.getResources(),
-                                                    R.drawable.background_icon_z), bm, context);
+                                            bm = combineImages(bm,OpenProductDetails.this);
                                             String temp = "Hey, check out this product!" +
                                                     "\n*Item:* " + productName.getText()
                                                     + "\n*Price:* " + productPrice.getText()
@@ -568,15 +543,6 @@ public class OpenProductDetails extends BaseActivity {
                             }
                         }
                     });
-//                    .setLink(Uri.parse("https://www.zconnect.com/openevent?eventid%" ))
-//                    .setDynamicLinkDomain("zconnect.page.link/")
-//                    .setAndroidParameters(new DynamicLink.AndroidParameters.Builder()
-//                            .setMinimumVersion(11)
-//                            .build())
-//                    .setIosParameters(new DynamicLink.IosParameters.Builder("https://www.google.com").build())
-//                    .buildDynamicLink();
-//            final Uri dynamicUri = dynamicLink.getUri();
-
 
         } catch (android.content.ActivityNotFoundException ex) {
             progressDialog.dismiss();
@@ -666,59 +632,6 @@ public class OpenProductDetails extends BaseActivity {
 
                     defaultSwitch(productKey, productCategory, productShortlist);
 
-//                    chatLayout.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//
-//                            CounterItemFormat counterItemFormat = new CounterItemFormat();
-//                            HashMap<String, String> meta = new HashMap<>();
-//                            meta.put("type", "fromTextBox");
-//                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-//                            counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_OPEN_CHAT);
-//                            counterItemFormat.setTimestamp(System.currentTimeMillis());
-//                            counterItemFormat.setMeta(meta);
-//
-//
-//                            CounterPush counterPush2 = new CounterPush(counterItemFormat, communityReference);
-//                            counterPush2.pushValues();
-//
-//                            //char room clicked
-//                            Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
-//                            intent.putExtra("type", "storeroom");
-//                            intent.putExtra("key", productKey);
-//                            intent.putExtra("name", productName.getText());
-//                            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
-//                            startActivity(intent);
-//                            overridePendingTransition(0, 0);
-//                        }
-//                    });
-
-//                    chatEditText.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            //char room clicked
-//                            CounterItemFormat counterItemFormat = new CounterItemFormat();
-//                            HashMap<String, String> meta = new HashMap<>();
-//                            meta.put("type", "fromTextBox");
-//                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-//                            counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_OPEN_CHAT);
-//                            counterItemFormat.setTimestamp(System.currentTimeMillis());
-//                            counterItemFormat.setMeta(meta);
-//
-//
-//                            CounterPush counterPush2 = new CounterPush(counterItemFormat, communityReference);
-//                            counterPush2.pushValues();
-//
-//
-//                            Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
-//                            intent.putExtra("type", "storeroom");
-//                            intent.putExtra("key", productKey);
-//                            intent.putExtra("name", productName.getText());
-//                            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
-//                            startActivity(intent);
-//                            overridePendingTransition(0, 0);
-//                        }
-//                    });
                 } catch (Exception e) {
                 }
             }

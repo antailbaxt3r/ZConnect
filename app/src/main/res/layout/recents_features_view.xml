@@ -1,28 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/recentView">
     <LinearLayout
+        android:id="@+id/total_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
         android:padding="5dp"
         android:background="@color/white">
-        <FrameLayout
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:weightSum="1">
+            <RelativeLayout
+                android:id="@+id/leftArrow"
+                android:layout_width="wrap_content"
+                android:padding="10dp"
+                android:visibility="gone"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_height="match_parent">
+
+                <ImageButton
+                    android:layout_width="10dp"
+                    android:duplicateParentState="true"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_keyboard_arrow_left_white_24dp"
+                    android:tint="@color/colorHighlight"
+                    android:layout_centerInParent="true"
+                    android:clickable="false"
+                    android:backgroundTint="@color/transparent"/>
+            </RelativeLayout>
+
 
             <HorizontalScrollView
                 android:id="@+id/hsv_recents_features_view"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:fillViewport="true"
                 android:measureAllChildren="false"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
                 android:scrollbars="none">
 
                 <LinearLayout
@@ -644,41 +667,25 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:id="@+id/rightArrow"
+                android:layout_width="wrap_content"
+                android:padding="10dp"
+                android:clickable="true"
+                android:visibility="gone"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:focusable="true">
 
                 <ImageButton
-                    android:layout_marginEnd="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_keyboard_arrow_left_white_24dp"
-                    android:tint="@color/deeppurple700"
-                    android:id="@+id/leftArrow"
-                    android:layout_gravity="start"
-                    android:visibility="gone"
-                    android:layout_weight="0.1"
-                    android:backgroundTint="@color/transparent"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"/>
-
-                <ImageButton
-                    android:layout_marginStart="10dp"
-                    android:layout_width="wrap_content"
+                    android:layout_width="10dp"
+                    android:clickable="false"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_keyboard_arrow_right_white_24dp"
-                    android:tint="@color/deeppurple700"
-                    android:id="@+id/rightArrow"
-                    android:visibility="gone"
-                    android:layout_weight="0.1"
-                    android:layout_gravity="end"
+                    android:tint="@color/colorHighlight"
+                    android:layout_centerInParent="true"
                     android:backgroundTint="@color/transparent"/>
-            </LinearLayout>
+            </RelativeLayout>
 
-        </FrameLayout>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

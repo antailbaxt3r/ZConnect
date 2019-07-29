@@ -238,6 +238,8 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                         Intent intent = new Intent(TabStoreRoom.this, AddProduct.class);
                         intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
                         startActivity(intent);
+                        addAskDialog.dismiss();
+
                     }
                 });
                 Button askButton = addAskDialog.findViewById(R.id.dialog_box_negative_button);
@@ -248,6 +250,8 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                         Intent intent = new Intent(TabStoreRoom.this, AddProduct.class);
                         intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
                         startActivity(intent);
+                        addAskDialog.dismiss();
+
                     }
                 });
 

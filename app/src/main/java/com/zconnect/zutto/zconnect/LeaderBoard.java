@@ -67,7 +67,7 @@ public class LeaderBoard extends BaseActivity {
     private ShimmerFrameLayout shimmerFrameLayout;
     private LinearLayout leaderBoardContent;
     private String lastUserUID;
-    private int lastUserPointsNum;
+    private int lastUserPointsNum, lastRank = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,17 +161,23 @@ public class LeaderBoard extends BaseActivity {
                 if(currentUserLayout.getVisibility() != View.VISIBLE)
                 {
                     currentUserLayout.setVisibility(View.GONE);
-                    for (int j=0;j<leaderBoardItemFormats.size();j++){
-                        leaderBoardItemFormats.get(j).setRank("#"+(j+1));
-                        if(leaderBoardItemFormats.get(j).getUserUID().equals(FirebaseAuth.getInstance().getUid())){
-                            currentUserLayout.setVisibility(View.VISIBLE);
-                            currentUserName.setText(leaderBoardItemFormats.get(j).getName());
-                            currentUserPoints.setText(leaderBoardItemFormats.get(j).getUserPointsNum() + "");
-                            currentUserRank.setText(leaderBoardItemFormats.get(j).getRank());
-                            currentUserImage.setImageURI(leaderBoardItemFormats.get(j).getImage());
-                        }
+                }
+                else
+                {
+                    currentUserLayout.setVisibility(View.VISIBLE);
+                }
+                int j;
+                for (j=lastRank;j<leaderBoardItemFormats.size();j++){
+                    leaderBoardItemFormats.get(j).setRank("#"+(j+1));
+                    if(leaderBoardItemFormats.get(j).getUserUID().equals(FirebaseAuth.getInstance().getUid())){
+                        currentUserLayout.setVisibility(View.VISIBLE);
+                        currentUserName.setText(leaderBoardItemFormats.get(j).getName());
+                        currentUserPoints.setText(leaderBoardItemFormats.get(j).getUserPointsNum() + "");
+                        currentUserRank.setText(leaderBoardItemFormats.get(j).getRank());
+                        currentUserImage.setImageURI(leaderBoardItemFormats.get(j).getImage());
                     }
                 }
+                lastRank=j;
 
                 leaderBoardContent.setVisibility(View.VISIBLE);
                 shimmerFrameLayout.setVisibility(View.INVISIBLE);
@@ -207,7 +213,7 @@ public class LeaderBoard extends BaseActivity {
                         leaderBoardQuery = leaderBoardRef.orderByChild("userPointsNum").endAt(lastUserPointsNum,lastUserUID).limitToLast(20);
                         leaderBoardQuery.addValueEventListener(leaderBoardListener);
                     }
-                }, 3000);
+                }, 1000);
             }
         });
         leaderBoardRV.setAdapter(leaderBoardRVAdapter);

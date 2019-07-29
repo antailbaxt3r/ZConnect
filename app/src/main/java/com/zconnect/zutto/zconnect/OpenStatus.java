@@ -30,6 +30,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Adapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +65,7 @@ import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.PostedByDetails;
 import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.FeatureNamesUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
@@ -90,6 +92,7 @@ public class OpenStatus extends BaseActivity {
     private SimpleDraweeView userImage;
     private TextView username, timePosted, content, likes, comments;
     private ImageView postedImage, likeButton, commentButton;
+    private RelativeLayout likeLayout, commentLayout;
 
     private String key, currentUserID;
     private ArrayList<ChatItemFormats> messages  = new ArrayList<>();
@@ -167,6 +170,12 @@ public class OpenStatus extends BaseActivity {
         attachID();
 
         key  = getIntent().getStringExtra("key");
+        if(getIntent().getBooleanExtra("isFromCommentBtn", false))
+        {
+            findViewById(R.id.typer).requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(findViewById(R.id.typer), InputMethodManager.SHOW_IMPLICIT);
+        }
         ref= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(key);
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -254,7 +263,7 @@ public class OpenStatus extends BaseActivity {
                     statusLikeFlag=false;
                 }
 
-                likeButton.setOnClickListener(new View.OnClickListener() {
+                likeLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if(statusLikeFlag == true){
@@ -295,7 +304,10 @@ public class OpenStatus extends BaseActivity {
                                         statusLikeNotification.setUserKey(userItem.getUserUID());
                                         statusLikeNotification.setCommunityName(communityTitle);
                                         statusLikeNotification.setItemLikeCount(Integer.parseInt(likes.getText().toString()));
-                                        GlobalFunctions.inAppNotifications("liked your status", getIntent().getStringExtra("desc"), userItem, false, "status", null, getIntent().getStringExtra("uid"));
+                                        HashMap<String,Object> metadata = new HashMap<>();
+                                        metadata.put("key",key);
+                                        metadata.put("featurePID", key);
+                                        GlobalFunctions.inAppNotifications("liked your status", getIntent().getStringExtra("desc"), userItem, false, "status", metadata, getIntent().getStringExtra("uid"));
                                         notificationSender.execute(statusLikeNotification);
                                     }
 
@@ -496,13 +508,15 @@ public class OpenStatus extends BaseActivity {
         userImage = findViewById(R.id.user_image_open_status);
         content = findViewById(R.id.content_open_status);
         likeButton = findViewById(R.id.like_image_open_status);
+        likeLayout = findViewById(R.id.messagesRecentItem_like_layout);
+        commentLayout = findViewById(R.id.messagesRecentItem_comment_layout);
         commentButton = findViewById(R.id.comment_image_open_status);
         postedImage = findViewById(R.id.open_status_image);
         likes = findViewById(R.id.like_text_open_status);
         comments = findViewById(R.id.comment_text_open_status);
         recyclerView = findViewById(R.id.open_status_comments_RV);
         calendar = Calendar.getInstance();
-        commentButton.setOnClickListener(new View.OnClickListener() {
+        commentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 findViewById(R.id.typer).requestFocus();
@@ -528,6 +542,7 @@ public class OpenStatus extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
+
                 message.setUuid(userItem.getUserUID());
                 message.setName(userItem.getUsername());
                 message.setImageThumb(userItem.getImageURLThumbnail());
@@ -539,6 +554,13 @@ public class OpenStatus extends BaseActivity {
                 else {
                     message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
                 }
+                if(userItem.getAnonymousUsername() != null){
+                    message.setUserName(userItem.getAnonymousUsername());
+
+                }
+                else{
+                    message.setUserName("Unknown");
+                }
                 GlobalFunctions.addPoints(2);
                 String messagePushID = ref.child("Chat").push().getKey();
                 message.setKey(messagePushID);
@@ -547,7 +569,16 @@ public class OpenStatus extends BaseActivity {
                 ref.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
                 HashMap<String,Object> metadata = new HashMap<>();
                 metadata.put("key",key);
-                GlobalFunctions.inAppNotifications("commented on your status","Comment: "+text,userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
+                metadata.put("featurePID", key);
+                if(isAnonymous) {
+                    UserItemFormat userItemFormat = userItem;
+                    userItemFormat.setUserUID(userItem.getUserUID());
+                    userItemFormat.setUsername(userItem.getAnonymousUsername());
+                    GlobalFunctions.inAppNotifications("commented on your status", "Comment: " + text, userItemFormat, false, "statusComment", metadata,getIntent().getStringExtra("uid"));
+                }
+                else{
+                    GlobalFunctions.inAppNotifications("commented on your status", "Comment: " + text, userItem, false, "statusComment", metadata, getIntent().getStringExtra("uid"));
+                }
                 ref.child("Chat").child(messagePushID).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -562,7 +593,7 @@ public class OpenStatus extends BaseActivity {
                         userItemFormat.setUserUID((String) dataSnapshot.child("uuid").getValue());
                         userItemFormat.setImageURL((String) dataSnapshot.child("imageThumb").getValue());
                         userItemFormat.setUsername((String) dataSnapshot.child("name").getValue());
-                        GlobalFunctions.inAppNotifications("commented on a status you commented","Comment: "+text,userItemFormat,true,"statusNestedComment",meta,null);
+                        GlobalFunctions.inAppNotifications("commented on a status you commented","Comment: "+text,userItemFormat,true,"statusNestedComment",meta,getIntent().getStringExtra("uid"));
                     }
 
                     @Override
@@ -795,6 +826,33 @@ public class OpenStatus extends BaseActivity {
                                 ref.child("Chat").child(messagePushID).setValue(message);
                                 Log.d("AINTNO", "POP2");
                                 ref.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
+                                HashMap<String,Object> metadata = new HashMap<>();
+                                metadata.put("key",key);
+                                metadata.put("featurePID", key);
+                                GlobalFunctions.inAppNotifications("commented on your status","Comment: "+" \uD83D\uDCF7 Image",userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
+                                ref.child("Chat").child(messagePushID).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        UserItemFormat userItemFormat = new UserItemFormat();
+                                        HashMap<String,Object> meta = new HashMap<>();
+                                        meta.put("ref",ref);
+                                        meta.put("key",key);
+                                        Log.d("reference", ref+"");
+                                        Log.d("ImageThumb",(String) dataSnapshot.child("imageThumb").getValue()+"");
+                                        Log.d("Username",(String) dataSnapshot.child("name").getValue()+"");
+                                        Log.d("UID",(String) dataSnapshot.child("uuid").getValue()+"");
+                                        userItemFormat.setUserUID((String) dataSnapshot.child("uuid").getValue());
+                                        userItemFormat.setImageURL((String) dataSnapshot.child("imageThumb").getValue());
+                                        userItemFormat.setUsername((String) dataSnapshot.child("name").getValue());
+                                        GlobalFunctions.inAppNotifications("commented on a status you commented","Comment: "+"Photo",userItemFormat,true,"statusNestedComment",meta,null);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
                             }
 
                             @Override

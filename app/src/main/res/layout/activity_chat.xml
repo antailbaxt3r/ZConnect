@@ -71,7 +71,7 @@
                 android:layout_margin="5dp">
                 <ImageButton
                     android:id="@+id/sendAnonymousButton"
-                    android:src="@drawable/baseline_people_24"
+                    android:src="@drawable/ic_dark_chat_24dp"
                     android:layout_width="0dp"
                     android:tint="@color/deepPurple500"
                     android:background="@color/transparent"

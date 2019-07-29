@@ -471,210 +471,253 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/bannerRecentItem"
+            <LinearLayout
+                android:id="@+id/bannerRecentItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone">
-                    <FrameLayout
+                    android:layout_height="wrap_content">
+                    <com.facebook.drawee.view.SimpleDraweeView
+                        android:id="@+id/bannerRecentItem_image"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        fresco:actualImageScaleType="centerCrop"
+                        android:background="@drawable/banner_recent_item"/>
+                    <FrameLayout
+                        android:id="@+id/bannerRecentItem_link_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:visibility="invisible">
                         <com.facebook.drawee.view.SimpleDraweeView
-                            android:id="@+id/bannerRecentItem_image"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            fresco:actualImageScaleType="centerCrop"
-                            android:background="@drawable/banner_recent_item"/>
-                        <FrameLayout
-                            android:id="@+id/bannerRecentItem_link_layout"
+                            android:background="@drawable/banner_recent_item_link_bar"/>
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:visibility="invisible">
-                            <com.facebook.drawee.view.SimpleDraweeView
-                                android:layout_width="match_parent"
+                            android:paddingStart="@dimen/padding_start_end_small"
+                            android:paddingEnd="@dimen/padding_start_end_small"
+                            android:layout_gravity="center">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.9"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/banner_recent_item_link_bar"/>
-                            <LinearLayout
-                                android:layout_width="match_parent"
+                                android:textSize="16sp"
+                                android:textColor="@color/white"
+                                android:textStyle="bold"
+                                android:text="@string/banner_link"/>
+                            <ImageView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.1"
                                 android:layout_height="wrap_content"
-                                android:paddingStart="@dimen/padding_start_end_small"
-                                android:paddingEnd="@dimen/padding_start_end_small"
-                                android:layout_gravity="center">
-                                <TextView
-                                    android:layout_width="0dp"
-                                    android:layout_weight="0.9"
-                                    android:layout_height="wrap_content"
-                                    android:textSize="16sp"
-                                    android:textColor="@color/white"
-                                    android:textStyle="bold"
-                                    android:text="@string/banner_link"/>
-                                <ImageView
-                                    android:layout_width="0dp"
-                                    android:layout_weight="0.1"
-                                    android:layout_height="wrap_content"
-                                    android:src="@drawable/ic_chevron_right_white_24dp"/>
-                            </LinearLayout>
-                        </FrameLayout>
+                                android:src="@drawable/ic_chevron_right_white_24dp"/>
+                        </LinearLayout>
                     </FrameLayout>
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/forumsRecentItem"
+                </FrameLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/forumsRecentItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/padding_x_small"
+                android:paddingBottom="@dimen/padding_x_small"
+                android:visibility="visible"
+                android:paddingStart="@dimen/padding_small"
+                android:paddingEnd="@dimen/padding_small">
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/padding_x_small"
-                    android:paddingBottom="@dimen/padding_x_small"
-                    android:visibility="gone"
-                    android:paddingStart="@dimen/padding_small"
-                    android:paddingEnd="@dimen/padding_small">
+                    android:layout_height="wrap_content">
+                    <FrameLayout
+                        android:id="@+id/forumsRecentItem_image_FL"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true">
+                        <com.facebook.drawee.view.SimpleDraweeView
+                            android:id="@+id/forumsRecentItem_image"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/avatar_circle_128dp"
+                            fresco:roundAsCircle="true"/>
+                        <ImageView
+                            android:id="@+id/forumsRecentItem_image_default_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/baseline_people_white_48"
+                            android:layout_gravity="center"/>
+                    </FrameLayout>
                     <TextView
                         android:id="@+id/forum_name_with_category_sentence"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
-                        android:textColor="@color/primaryText"/>
-                </LinearLayout>
+                        android:textColor="@color/primaryText"
+                        android:text="AAAAAAAAAAAAAA"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:layout_below="@+id/forumsRecentItem_image_FL"/>
+                    <TextView
+                        android:id="@+id/forumsRecentItem_tab_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textColor="@color/secondaryText"
+                        android:text="in Arjun Baba"
+                        android:gravity="center"
+                        android:layout_below="@+id/forum_name_with_category_sentence"/>
+                </RelativeLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/messagesRecentItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
                 <LinearLayout
-                    android:id="@+id/messagesRecentItem"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp">
-                        <TextView
-                            android:textSize="16sp"
-                            android:id="@+id/messagesRecentItem_message"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text="Message goes here"
-                            android:textColor="@color/primaryText"
-                            android:layout_marginStart="@dimen/margin_small"
-                            android:layout_marginEnd="@dimen/margin_small"
-                            android:maxLines="7"/>
-                    </LinearLayout>
-
-                    <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="Post Image"
-                        fresco:viewAspectRatio="1.33"
-                        android:id="@+id/messagesRecentItem_image"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"/>
-                    <View
-                        android:layout_marginTop="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_height="1dp"
-                        android:background="@color/horizontalLine"/>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="-5dp">
-                        <RelativeLayout
-                            android:id="@+id/messagesRecentItem_like_layout"
-                            android:layout_width="0dp"
-                            android:layout_weight="0.5"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:padding="@dimen/padding_small">
-                            <TextView
-                                android:id="@+id/like_text_status"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerVertical="true"
-                                android:textSize="16sp"
-                                android:textColor="@color/icon_color"/>
-                            <ImageView
-                                android:layout_centerVertical="true"
-                                android:layout_marginStart="@dimen/margin_x_small"
-                                android:id="@+id/like_image_status"
-                                android:layout_toRightOf="@+id/like_text_status"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/outline_thumb_up_alt_white_24"
-                                android:tint="@color/icon_color"/>
-                        </RelativeLayout>
-                        <RelativeLayout
-                            android:id="@+id/messagesRecentItem_comment_layout"
-                            android:layout_width="0dp"
-                            android:layout_weight="0.5"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:padding="@dimen/padding_small">
-                            <TextView
-                                android:id="@+id/comment_text_status"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerVertical="true"
-                                android:textSize="16sp"
-                                android:text="123"
-                                android:textColor="@color/icon_color"
-                                android:visibility="gone"/>
-                            <ImageView
-                                android:layout_centerVertical="true"
-                                android:layout_marginStart="@dimen/margin_x_small"
-                                android:id="@+id/comment_image_status"
-                                android:layout_toEndOf="@+id/comment_text_status"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/outline_mode_comment_white_24"
-                                android:tint="@color/icon_color"/>
-                        </RelativeLayout>
-                    </LinearLayout>
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/infoneRecentItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:visibility="gone">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_small"
-                        android:layout_marginEnd="@dimen/margin_small">
-                        <TextView
-                            android:id="@+id/infone_name_with_category_sentence"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="16sp"
-                            android:textColor="@color/primaryText"/>
-                    </LinearLayout>
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/noticesRecentItem"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="visible"
-                    android:layout_marginStart="@dimen/margin_small"
-                    android:layout_marginEnd="@dimen/margin_small"
-                    android:paddingTop="5dp"
-                    android:orientation="vertical"
                     android:paddingBottom="5dp">
                     <TextView
-                        android:id="@+id/noticesRecentItem_text"
+                        android:textSize="16sp"
+                        android:id="@+id/messagesRecentItem_message"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Message goes here"
+                        android:textColor="@color/primaryText"
+                        android:layout_marginStart="@dimen/margin_small"
+                        android:layout_marginEnd="@dimen/margin_small"
+                        android:maxLines="7"/>
+                </LinearLayout>
+
+                <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="Post Image"
+                    fresco:viewAspectRatio="1.33"
+                    android:id="@+id/messagesRecentItem_image"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"/>
+                <View
+                    android:layout_marginTop="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_height="1dp"
+                    android:background="@color/horizontalLine"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="-5dp">
+                    <RelativeLayout
+                        android:id="@+id/messagesRecentItem_like_layout"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.5"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="@dimen/padding_small">
+                        <TextView
+                            android:id="@+id/like_text_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:textSize="16sp"
+                            android:textColor="@color/icon_color"
+                            android:duplicateParentState="true"
+                            android:clickable="false"/>
+                        <ImageView
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="@dimen/margin_x_small"
+                            android:id="@+id/like_image_status"
+                            android:layout_toRightOf="@+id/like_text_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/outline_thumb_up_alt_white_24"
+                            android:tint="@color/icon_color"
+                            android:duplicateParentState="true"
+                            android:clickable="false"/>
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:id="@+id/messagesRecentItem_comment_layout"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.5"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="@dimen/padding_small">
+                        <TextView
+                            android:id="@+id/comment_text_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:textSize="16sp"
+                            android:text="123"
+                            android:textColor="@color/icon_color"
+                            android:visibility="gone"
+                            android:duplicateParentState="true"
+                            android:clickable="false"/>
+                        <ImageView
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="@dimen/margin_x_small"
+                            android:id="@+id/comment_image_status"
+                            android:layout_toEndOf="@+id/comment_text_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/outline_mode_comment_white_24"
+                            android:tint="@color/icon_color"
+                            android:duplicateParentState="true"
+                            android:clickable="false"/>
+                    </RelativeLayout>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/infoneRecentItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:visibility="gone">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginEnd="@dimen/margin_small">
+                    <TextView
+                        android:id="@+id/infone_name_with_category_sentence"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
-                        android:textColor="@color/primaryText"
-                        android:layout_marginStart="@dimen/margin_small" />
-                    <com.facebook.drawee.view.SimpleDraweeView
-                        android:id="@+id/noticesRecentItem_image"
-                        app:srcCompat="@drawable/addimage"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="Post Image"
-                        fresco:viewAspectRatio="1.33"
-                        android:padding="10dp"/>
+                        android:textColor="@color/primaryText"/>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/noticesRecentItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginEnd="@dimen/margin_small"
+                android:paddingTop="5dp"
+                android:orientation="vertical"
+                android:paddingBottom="5dp">
+                <TextView
+                    android:id="@+id/noticesRecentItem_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="@color/primaryText"
+                    android:layout_marginStart="@dimen/margin_small" />
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/noticesRecentItem_image"
+                    app:srcCompat="@drawable/addimage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="Post Image"
+                    fresco:viewAspectRatio="1.33"
+                    android:padding="10dp"/>
 
 
                 </LinearLayout>
