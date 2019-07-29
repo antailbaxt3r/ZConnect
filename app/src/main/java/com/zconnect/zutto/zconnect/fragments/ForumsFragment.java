@@ -2,7 +2,6 @@ package com.zconnect.zutto.zconnect.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -62,7 +61,7 @@ public class ForumsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_infone, container, false);
+        View view = inflater.inflate(R.layout.fragment_forum, container, false);
         Bundle bundle = getArguments();
         currenttab = bundle.getString("UID");
         newUser = bundle.getBoolean("newUser",false);

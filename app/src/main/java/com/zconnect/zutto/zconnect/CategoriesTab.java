@@ -71,6 +71,8 @@ public class CategoriesTab extends Fragment {
                         Intent intent = new Intent(getContext(), AddProduct.class);
                         intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
                         getContext().startActivity(intent);
+                        addAskDialog.dismiss();
+
                     }
                 });
                 Button askButton = addAskDialog.findViewById(R.id.dialog_box_negative_button);
@@ -81,6 +83,8 @@ public class CategoriesTab extends Fragment {
                         Intent intent = new Intent(getContext(), AddProduct.class);
                         intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
                         getContext().startActivity(intent);
+                        addAskDialog.dismiss();
+
                     }
                 });
 

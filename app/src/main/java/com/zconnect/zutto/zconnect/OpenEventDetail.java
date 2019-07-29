@@ -78,6 +78,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.zconnect.zutto.zconnect.R.drawable.ic_arrow_back_black_24dp;
+import static com.zconnect.zutto.zconnect.commonModules.GlobalFunctions.combineImages;
 
 public class OpenEventDetail extends BaseActivity {
 
@@ -517,8 +518,7 @@ public class OpenEventDetail extends BaseActivity {
                                                     .getInputStream());
 
 
-                                            bm = mergeBitmap(BitmapFactory.decodeResource(context.getResources(),
-                                                    R.drawable.background_icon_z), bm, context);
+                                            bm = combineImages(bm,OpenEventDetail.this);
                                             String temp = "Hey, check out this event!" +
                                                     "\n*Event:* " + event.getEventName()
                                                     + "\n*Venue:* " + event.getVenue()
@@ -571,31 +571,6 @@ public class OpenEventDetail extends BaseActivity {
             //ToastHelper.MakeShortText("Whatsapp have not been installed.");
         }
 
-    }
-
-    public Bitmap mergeBitmap(Bitmap bitmap2, Bitmap bitmap1, Context context) {
-        Bitmap mergedBitmap = null;
-
-
-        Drawable[] layers = new Drawable[2];
-
-        layers[0] = new BitmapDrawable(context.getResources(), bitmap1);
-        layers[1] = new BitmapDrawable(context.getResources(), bitmap2);
-
-        LayerDrawable layerDrawable = new LayerDrawable(layers);
-
-        int width = layers[0].getIntrinsicWidth();
-        int height = layers[0].getIntrinsicHeight();
-
-        mergedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(mergedBitmap);
-        layerDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        layerDrawable.draw(canvas);
-
-
-        //mergedBitmap=BitmapFactory.decodeResourceStream(layerDrawable)
-
-        return mergedBitmap;
     }
 
 

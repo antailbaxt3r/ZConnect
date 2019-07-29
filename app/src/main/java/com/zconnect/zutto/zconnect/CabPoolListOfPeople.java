@@ -511,6 +511,7 @@ public class CabPoolListOfPeople extends BaseActivity {
                             NotificationSender notificationSender = new NotificationSender(CabPoolListOfPeople.this, userItemFormat.getUserUID());
                             NotificationItemFormat cabPoolJoinNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN, userItemFormat.getUserUID(),reciverKey,1);
                             cabPoolJoinNotification.setCommunityName(communityTitle);
+
                             cabPoolJoinNotification.setUserImage(userItemFormat.getImageURLThumbnail());
                             cabPoolJoinNotification.setItemKey(getIntent().getStringExtra("key"));
                             cabPoolJoinNotification.setUserName(userItemFormat.getUsername());
@@ -521,6 +522,7 @@ public class CabPoolListOfPeople extends BaseActivity {
 
                             meta.put("type", "fromList");
                             meta.put("key", getIntent().getStringExtra("key"));
+
 
                             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                             counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_JOIN);
@@ -626,6 +628,7 @@ public class CabPoolListOfPeople extends BaseActivity {
                                     NotificationItemFormat cabPoolLeaveNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE, userItemFormat.getUserUID());
                                     cabPoolLeaveNotification.setCommunityName(communityTitle);
                                     cabPoolLeaveNotification.setItemKey(getIntent().getStringExtra("key"));
+                                    cabPoolLeaveNotification.setRecieverKey(reciverKey);
                                     cabPoolLeaveNotification.setUserName(userItemFormat.getUsername());
                                     cabPoolLeaveNotification.setUserImage(userItemFormat.getImageURLThumbnail());
                                     notificationSender.execute(cabPoolLeaveNotification);

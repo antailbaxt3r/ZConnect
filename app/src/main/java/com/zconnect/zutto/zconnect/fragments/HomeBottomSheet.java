@@ -3,14 +3,10 @@ package com.zconnect.zutto.zconnect.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Fragment;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -33,7 +29,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.BuildConfig;
 import com.zconnect.zutto.zconnect.HomeActivity;
-import com.zconnect.zutto.zconnect.InfoneActivity;
 import com.zconnect.zutto.zconnect.OnSingleClickListener;
 import com.zconnect.zutto.zconnect.addActivities.AddEvent;
 import com.zconnect.zutto.zconnect.addActivities.AddNotices;
@@ -203,6 +198,8 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                                             Intent intent = new Intent(view.getContext(), AddProduct.class);
                                             intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
                                             view.getContext().startActivity(intent);
+                                            addAskDialog.dismiss();
+
                                         }
                                     });
                                     Button askButton = addAskDialog.findViewById(R.id.dialog_box_negative_button);
@@ -213,6 +210,8 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                                             Intent intent = new Intent(view.getContext(), AddProduct.class);
                                             intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
                                             view.getContext().startActivity(intent);
+                                            addAskDialog.dismiss();
+
                                         }
                                     });
 
@@ -328,22 +327,40 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                 } catch (Throwable throwable) {
                     throwable.printStackTrace();
                 }
+                FirebaseDatabase.getInstance().getReference().child("minimumClientVersion").
+                        child("notices").addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
-                meta.put("type","fromRecents");
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTICES_ADD_NOTICES);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
+                            }
 
-                Intent intent;
-                intent = new Intent(v.getContext(), AddNotices.class);
-                v.getContext()
-                        .startActivity(intent);
-            }
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot d) {
+                                Log.d("VERSIONN", d.getValue(Integer.class) + "");
+                                if (d.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
+                                    Intent intent = new Intent(v.getContext(), UpdateAppActivity.class);
+                                    intent.putExtra("feature", "shops");
+                                    v.getContext().startActivity(intent);
+
+                                } else {
+
+                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                    HashMap<String, String> meta = new HashMap<>();
+                                    meta.put("type", "fromRecents");
+                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTICES_ADD_NOTICES);
+                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                    counterItemFormat.setMeta(meta);
+                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                    counterPush.pushValues();
+
+                                    Intent intent;
+                                    intent = new Intent(v.getContext(), AddNotices.class);
+                                    v.getContext()
+                                            .startActivity(intent);
+                                }}});
+                                }
         };
 
         View.OnClickListener addContactListener = new OnSingleClickListener() {
@@ -356,7 +373,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                 }
 
 //                Intent intent;
-//                intent = new Intent(getContext(), InfoneActivity.class);
+//                intent = new Intent(getContext(), InfoneFragment.class);
 //                startActivity(intent);
                 mHomeActivity.setActionBarTitle("Infone");
                 mHomeActivity.tabs.getTabAt(3).select();
