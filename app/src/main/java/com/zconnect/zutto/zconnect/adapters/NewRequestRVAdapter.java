@@ -58,7 +58,7 @@ public class NewRequestRVAdapter extends RecyclerView.Adapter<newRequestViewHold
         else if(newRequestItemFormats.get(holder.getAdapterPosition()).getType().equals(RequestTypeUtilities.TYPE_FORUM_TAB))
             holder.newRequestName.setText("Requested ForumTab name: "+newRequestItemFormats.get(position).getName());
         else if(newRequestItemFormats.get(holder.getAdapterPosition()).getType().equals(RequestTypeUtilities.TYPE_LINKS))
-            holder.newRequestName.setText("Requested Links name: "+newRequestItemFormats.get(position).getName());
+            holder.newRequestName.setText("Requested Link Title: "+newRequestItemFormats.get(position).getName()+"\n" + "Requested Link: "+newRequestItemFormats.get(position).getLink());
         else if (newRequestItemFormats.get(holder.getAdapterPosition()).getType().equals(RequestTypeUtilities.TYPE_INFONE_CAT))
             holder.newRequestName.setText("Requested Infone Category: "+newRequestItemFormats.get(position).getName());
 

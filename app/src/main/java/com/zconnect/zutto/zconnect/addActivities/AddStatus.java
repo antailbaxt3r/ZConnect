@@ -216,30 +216,101 @@ public class AddStatus extends BaseActivity {
 
                     homePosts.child(key).setValue(true);
 
-                    newMessage.child("Key").setValue(key);
-                    newMessage.child("desc").setValue(messageText);
-                    newMessage.child("desc2").setValue(anonymous);
-                    newMessage.child("feature").setValue("Message");
-                    newMessage.child("name").setValue("Message");
-                    newMessage.child("recentType").setValue(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
+                    final Map<String, Object> taskMap = new HashMap<String, Object>();
 
-                    newMessage.child("imageurl").setValue("https://www.iconexperience.com/_img/o_collection_png/green_dark_grey/512x512/plain/message.png");
-                    newMessage.child("id").setValue(key);
-                    newMessage.child("PostTimeMillis").setValue(System.currentTimeMillis());
+                    taskMap.put("Key",key);
+                    taskMap.put("desc",messageText);
+                    taskMap.put("desc2",anonymous);
+                    taskMap.put("feature","Message");
+                    taskMap.put("name","Message");
+                    taskMap.put("recentType",RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
+                    taskMap.put("id",key);
+                    taskMap.put("PostTimeMillis",System.currentTimeMillis());
+
                     FirebaseMessaging.getInstance().subscribeToTopic(key);
+
+                    final Map<String, Object> postedByMap = new HashMap<String, Object>();
+                    postedByMap.put("UID", FirebaseAuth.getInstance().getCurrentUser().getUid());
 
                     mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
                             if (anonymousCheck.isChecked()){
-                                newMessage.child("PostedBy").child("Username").setValue("Anonymous");
+                                postedByMap.put("Username", "Anonymous");
                             }else {
-                                newMessage.child("PostedBy").child("Username").setValue(user.getUsername());
+                                postedByMap.put("Username", user.getUsername());
                             }
-                            newMessage.child("PostedBy").child("UID").setValue(user.getUserUID());
-                            newMessage.child("PostedBy").child("ImageThumb").setValue(user.getImageURLThumbnail());
-//                            FirebaseMessaging.getInstance().subscribeToTopic(key);
+                            postedByMap.put("ImageThumb", user.getImageURLThumbnail());
+
+                            taskMap.put("PostedBy", postedByMap);
+
+
+                            if(mImageUri!= null) {
+
+                                final StorageReference filepath = mStorage.child((mImageUri.getLastPathSegment()) + FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                UploadTask uploadTask = filepath.putFile(mImageUri);
+                                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                                    @Override
+                                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                        if(!task.isSuccessful())
+                                        {
+                                            throw task.getException();
+                                        }
+                                        return filepath.getDownloadUrl();
+                                    }
+                                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        if(task.isSuccessful())
+                                        {
+                                            Uri downloadUri = task.getResult();
+                                            taskMap.put("imageurl",downloadUri != null ? downloadUri.toString() : null);
+                                            newMessage.setValue(taskMap);
+                                            GlobalFunctions.addPoints(10);
+                                            mProgress.dismiss();
+
+                                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                            HashMap<String, String> meta= new HashMap<>();
+                                            meta.put("type","withImage");
+                                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                            counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_ADDED_STATUS);
+                                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                            counterItemFormat.setMeta(meta);
+                                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                            counterPush.pushValues();
+
+                                            finish();
+                                        }
+                                        else {
+                                            // Handle failures
+                                            // ...
+                                            Snackbar snackbar = Snackbar.make(view, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
+                                            snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                                            snackbar.show();
+                                        }
+                                    }
+                                });
+
+                            }else {
+
+                                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                HashMap<String, String> meta= new HashMap<>();
+                                meta.put("type","withoutImage");
+                                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_ADDED_STATUS);
+                                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                counterItemFormat.setMeta(meta);
+                                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                counterPush.pushValues();
+
+                                taskMap.put("imageurl",RecentTypeUtilities.KEY_RECENTS_NO_IMAGE_STATUS);
+                                newMessage.setValue(taskMap);
+                                GlobalFunctions.addPoints(5);
+                                mProgress.dismiss();
+                                finish();
+                            }
+
 
                         }
 
@@ -250,67 +321,7 @@ public class AddStatus extends BaseActivity {
                     });
 
 
-                    if(mImageUri!= null) {
 
-                        final StorageReference filepath = mStorage.child((mImageUri.getLastPathSegment()) + FirebaseAuth.getInstance().getCurrentUser().getUid());
-                        UploadTask uploadTask = filepath.putFile(mImageUri);
-                        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                            @Override
-                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                if(!task.isSuccessful())
-                                {
-                                    throw task.getException();
-                                }
-                                return filepath.getDownloadUrl();
-                            }
-                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Uri> task) {
-                                if(task.isSuccessful())
-                                {
-                                    Uri downloadUri = task.getResult();
-                                    newMessage.child("imageurl").setValue(downloadUri != null ? downloadUri.toString() : null);
-                                    GlobalFunctions.addPoints(10);
-                                    mProgress.dismiss();
-
-                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                    HashMap<String, String> meta= new HashMap<>();
-                                    meta.put("type","withImage");
-                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_ADDED_STATUS);
-                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
-                                    counterItemFormat.setMeta(meta);
-                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                                    counterPush.pushValues();
-
-                                    finish();
-                                }
-                                else {
-                                    // Handle failures
-                                    // ...
-                                    Snackbar snackbar = Snackbar.make(view, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
-                                    snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
-                                    snackbar.show();
-                                }
-                            }
-                        });
-
-                    }else {
-
-                        CounterItemFormat counterItemFormat = new CounterItemFormat();
-                        HashMap<String, String> meta= new HashMap<>();
-                        meta.put("type","withoutImage");
-                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                        counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_ADDED_STATUS);
-                        counterItemFormat.setTimestamp(System.currentTimeMillis());
-                        counterItemFormat.setMeta(meta);
-                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                        counterPush.pushValues();
-                        newMessage.child("imageurl").setValue(RecentTypeUtilities.KEY_RECENTS_NO_IMAGE_STATUS);
-                        GlobalFunctions.addPoints(5);
-                        mProgress.dismiss();
-                        finish();
-                    }
                 }
             }
         };

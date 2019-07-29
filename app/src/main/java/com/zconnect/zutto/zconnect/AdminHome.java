@@ -258,6 +258,7 @@ public class AdminHome extends BaseActivity {
         private View requestsFromUsersTab(LayoutInflater inflater, ViewGroup container) {
 
             View rootView = inflater.inflate(R.layout.fragment_admin_requests, container, false);
+
             newRequestsDataReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("admin").child("requests");
             newRequestsRV = rootView.findViewById(R.id.new_requests_recycler);
             linearLayoutManager = new LinearLayoutManager(getContext());
