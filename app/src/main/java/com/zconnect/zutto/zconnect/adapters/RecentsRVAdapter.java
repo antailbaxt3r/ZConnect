@@ -160,7 +160,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             } else if (recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR)) {
                 return RecentTypeUtilities.KEY_RECENT_NORMAL_POST_INT;
             } else {
-                return -1;
+                return RecentTypeUtilities.KEY_UPDATE_APP_INT;
             }
         } catch (NullPointerException e) {
             Log.d("Exception", "adding type");
@@ -184,8 +184,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             View contactView = inflater.inflate(R.layout.recents_item_format, parent, false);
             return new RecentsRVAdapter.Viewholder(contactView);
         } else {
-            View blankLayout = inflater.inflate(R.layout.row_blank_layout, parent, false);
-            return new RecentsRVAdapter.BlankViewHolder(blankLayout);
+            View updateAppLayout = inflater.inflate(R.layout.recents_update_app_item, parent, false);
+            return new RecentsRVAdapter.UpdateAppViewHolder(updateAppLayout);
         }
     }
 
@@ -1375,8 +1375,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 holder.sentence.setMovementMethod(LinkMovementMethod.getInstance());
                 break;
             default:
-                BlankViewHolder blankViewHolder = (BlankViewHolder) holder2;
-//                blankViewHolder = (BlankViewHolder)holder2;
+                UpdateAppViewHolder updateAppViewHolder = (UpdateAppViewHolder) holder2;
                 break;
         }
 
@@ -2412,6 +2411,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             super(itemView);
         }
 
+    }
+
+    private class UpdateAppViewHolder extends RecyclerView.ViewHolder {
+
+        public UpdateAppViewHolder(View itemView) {
+            super(itemView);
+        }
     }
 
     private class FeaturesViewHolder extends RecyclerView.ViewHolder {

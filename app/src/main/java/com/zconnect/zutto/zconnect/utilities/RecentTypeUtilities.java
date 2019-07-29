@@ -4,6 +4,7 @@ public class RecentTypeUtilities {
     public static final int KEY_RECENT_ADD_STATUS_INT = 0;
     public static final int KEY_RECENT_FEATURES_INT = 1;
     public static final int KEY_RECENT_NORMAL_POST_INT = 2;
+    public static final int KEY_UPDATE_APP_INT = -1;
 //    public static final int KEY_LOADER_INT = 3;
 
     public static final String KEY_RECENT_ADD_STATUS_STR = "Add Status";
