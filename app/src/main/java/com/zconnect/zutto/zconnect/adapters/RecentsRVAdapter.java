@@ -44,6 +44,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -356,8 +357,11 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             thread.start();
                         }
                     });
+                    holder.shimmerFrameLayout.stopShimmerAnimation();
+                    holder.shimmerFrameLayout.setVisibility(View.GONE);
 
-                } else if (recentsItemFormats.get(position).getFeature().equals("Infone")) {
+                }
+                else if (recentsItemFormats.get(position).getFeature().equals("Infone")) {
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.VISIBLE);
@@ -410,8 +414,11 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             ds.setUnderlineText(false);
                         }
                     };
+                    holder.shimmerFrameLayout.stopShimmerAnimation();
+                    holder.shimmerFrameLayout.setVisibility(View.GONE);
 
-                } else if (recentsItemFormats.get(position).getFeature().equals("Event")) {
+                }
+                else if (recentsItemFormats.get(position).getFeature().equals("Event")) {
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
@@ -568,6 +575,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             ds.setUnderlineText(false);
                         }
                     };
+                    holder.shimmerFrameLayout.stopShimmerAnimation();
+                    holder.shimmerFrameLayout.setVisibility(View.GONE);
                 }
                 else if (recentsItemFormats.get(position).getFeature().equals("createPoll"))
                 {
@@ -622,6 +631,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                         }
                     });
+                    holder.shimmerFrameLayout.stopShimmerAnimation();
+                    holder.shimmerFrameLayout.setVisibility(View.GONE);
                 }
                 else if (recentsItemFormats.get(position).getFeature().equals("StoreRoom"))
                 {
@@ -809,8 +820,11 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             ds.setUnderlineText(false);
                         }
                     };
+                    holder.shimmerFrameLayout.stopShimmerAnimation();
+                    holder.shimmerFrameLayout.setVisibility(View.GONE);
                     //set product price
-                } else if (recentsItemFormats.get(position).getFeature().equals("CabPool")) {
+                }
+                else if (recentsItemFormats.get(position).getFeature().equals("CabPool")) {
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
@@ -983,7 +997,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }
                     };
                     //set text for source and destination...
-                } else if (recentsItemFormats.get(position).getFeature().equals("Shop")) {
+                    holder.shimmerFrameLayout.stopShimmerAnimation();
+                    holder.shimmerFrameLayout.setVisibility(View.GONE);
+                }
+                else if (recentsItemFormats.get(position).getFeature().equals("Shop")) {
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
@@ -1006,7 +1023,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     posted = " put an ";
                     post = "Offer";
                     clickableSpanFeature = null;
-                } else if (recentsItemFormats.get(position).getFeature().equals("Message")) {
+                    holder.shimmerFrameLayout.stopShimmerAnimation();
+                    holder.shimmerFrameLayout.setVisibility(View.GONE);
+                }
+                else if (recentsItemFormats.get(position).getFeature().equals("Message")) {
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
@@ -1129,7 +1149,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     post = "status";
                     clickableSpanFeature = null;
 
-                } else if (recentsItemFormats.get(position).getFeature().equals("Notices")) {
+                    holder.shimmerFrameLayout.stopShimmerAnimation();
+                    holder.shimmerFrameLayout.setVisibility(View.GONE);
+                }
+                else if (recentsItemFormats.get(position).getFeature().equals("Notices")) {
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
@@ -1218,8 +1241,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }
                     };
 
-
-                } else if (recentsItemFormats.get(position).getFeature().equals("Forums")) {
+                    holder.shimmerFrameLayout.stopShimmerAnimation();
+                    holder.shimmerFrameLayout.setVisibility(View.GONE);
+                }
+                else if (recentsItemFormats.get(position).getFeature().equals("Forums")) {
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
@@ -1271,6 +1296,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             ds.setUnderlineText(false);
                         }
                     };
+                    holder.shimmerFrameLayout.stopShimmerAnimation();
+                    holder.shimmerFrameLayout.setVisibility(View.GONE);
                 }
                 String sentence = name + posted + post;
                 SpannableString spannableString = new SpannableString(sentence);
@@ -1298,6 +1325,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 //                blankViewHolder = (BlankViewHolder)holder2;
                 break;
         }
+
     }
 
     @Override
@@ -1312,6 +1340,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         Intent i;
         String nam;
 
+        ShimmerFrameLayout shimmerFrameLayout;
         //new ui
         TextView postedBy, postConjunction, post, postTime,
                 infoneNameCategorySentence,
@@ -1354,6 +1383,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             name = (TextView) itemView.findViewById(R.id.recentname);
             feature = (TextView) itemView.findViewById(R.id.featurename);
             desc = (TextView) itemView.findViewById(R.id.recentdesc);
+
+            shimmerFrameLayout = itemView.findViewById(R.id.shimmer_view_container_recents_item_format);
+            shimmerFrameLayout.startShimmerAnimation();
 
             pollQuestion = itemView.findViewById(R.id.poll_question);
             optionALayout = itemView.findViewById(R.id.optionA_Layout);
@@ -2228,6 +2260,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         TextView leaderBoardText;
         TextView totalMembers;
         LinearLayout totalMembersLayout;
+        ShimmerFrameLayout shimmerFrameLayout;
 
         public ViewHolderStatus(final View itemView) {
             super(itemView);
@@ -2349,6 +2382,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public FeaturesViewHolder(final View itemView) {
             super(itemView);
             flag = true;
+
 
             hsv = (HorizontalScrollView) itemView.findViewById(R.id.hsv_recents_features_view);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.linearLayout_recents_features_view);
