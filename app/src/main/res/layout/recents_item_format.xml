@@ -10,453 +10,466 @@
     app:cardBackgroundColor="@android:color/white"
     app:cardElevation="0dp">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginStart="0dp"
-        android:paddingTop="@dimen/padding_x_small"
-        android:paddingBottom="@dimen/padding_x_small"
-        android:clipToPadding="false">
+        android:layout_height="match_parent">
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:duration="800"
+            android:id="@+id/shimmer_view_container_recents_item_format">
+
+            <include layout="@layout/shimmer_item_layout_recents"/>
+        </com.facebook.shimmer.ShimmerFrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
+            android:layout_marginStart="0dp"
             android:paddingTop="@dimen/padding_x_small"
             android:paddingBottom="@dimen/padding_x_small"
-            android:layout_marginStart="0dp"
-            android:weightSum="1"
-            android:id="@+id/prePostDetails">
-            <com.facebook.drawee.view.SimpleDraweeView
-                xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/avatarCircle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_small"
-                android:background="@drawable/avatar_circle"
-                fresco:roundAsCircle="true" />
+            android:clipToPadding="false">
+
             <LinearLayout
-                android:id="@+id/main_layout"
-                android:layout_width="0dp"
-                android:layout_weight=".9"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginStart="@dimen/margin_small">
-                <TextView
-                    android:id="@+id/sentence_recents_item_format"
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/padding_x_small"
+                android:paddingBottom="@dimen/padding_x_small"
+                android:layout_marginStart="0dp"
+                android:weightSum="1"
+                android:id="@+id/prePostDetails">
+                <com.facebook.drawee.view.SimpleDraweeView
+                    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/avatarCircle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="somebody did this"/>
-                <com.google.android.flexbox.FlexboxLayout
-                    android:visibility="gone"
-                    android:layout_width="match_parent"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:background="@drawable/avatar_circle"
+                    fresco:roundAsCircle="true" />
+                <LinearLayout
+                    android:id="@+id/main_layout"
+                    android:layout_width="0dp"
+                    android:layout_weight=".9"
                     android:layout_height="wrap_content"
-                    app:flexWrap="wrap"
-                    app:alignItems="stretch"
-                    app:alignContent="stretch">
+                    android:orientation="vertical"
+                    android:layout_marginStart="@dimen/margin_small">
                     <TextView
-                        android:id="@+id/postedBy"
+                        android:id="@+id/sentence_recents_item_format"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/link"
-                        android:textStyle="bold"
-                        android:text="Somebody"/>
+                        android:text="somebody did this"/>
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:flexWrap="wrap"
+                        app:alignItems="stretch"
+                        app:alignContent="stretch">
+                        <TextView
+                            android:id="@+id/postedBy"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/link"
+                            android:textStyle="bold"
+                            android:text="Somebody"/>
 
-                    <TextView
-                        android:id="@+id/postConjunction"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/secondaryText"
-                        android:text=" posted a "/>
+                        <TextView
+                            android:id="@+id/postConjunction"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/secondaryText"
+                            android:text=" posted a "/>
 
-                    <TextView
-                        android:id="@+id/post"
+                        <TextView
+                            android:id="@+id/post"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/link"
+                            android:textStyle="bold"
+                            android:text="Post"/>
+                    </com.google.android.flexbox.FlexboxLayout>
+                    <!--<LinearLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content">-->
+                        <!---->
+                    <!--</LinearLayout>-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <FrameLayout
+                            android:id="@+id/layout_feature_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/avatarCircle"
+                            android:layout_alignEnd="@+id/avatarCircle">
+                            <com.facebook.drawee.view.SimpleDraweeView
+                                android:id="@+id/featureCircle"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"/>
+                            <ImageView
+                                android:id="@+id/recents_featIcon"
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
+                                android:src="@drawable/ic_home_white_18dp"
+                                android:scaleType="centerCrop"
+                                android:layout_gravity="center"/>
+                        </FrameLayout>
+                        <TextView
+                            android:id="@+id/postTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Unknown time ago"
+                            android:textColor="@color/secondaryText"
+                            android:textSize="12sp"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="@dimen/margin_x_small"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/delete_layout"
+                    android:layout_width="0dp"
+                    android:layout_weight=".1"
+                    android:layout_height="wrap_content">
+
+                    <ImageButton
+                        android:id="@+id/recents_post_options"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/link"
-                        android:textStyle="bold"
-                        android:text="Post"/>
-                </com.google.android.flexbox.FlexboxLayout>
-                <!--<LinearLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content">-->
-                    <!---->
-                <!--</LinearLayout>-->
+                        android:src="@drawable/ic_more_vert_black_24dp"
+                        android:background="@color/transparent"
+                        android:tint="@color/icon_color"
+                        android:visibility="gone"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:id="@+id/pollFormat">
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <FrameLayout
-                        android:id="@+id/layout_feature_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/avatarCircle"
-                        android:layout_alignEnd="@+id/avatarCircle">
-                        <com.facebook.drawee.view.SimpleDraweeView
-                            android:id="@+id/featureCircle"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"/>
-                        <ImageView
-                            android:id="@+id/recents_featIcon"
-                            android:layout_width="12dp"
-                            android:layout_height="12dp"
-                            android:src="@drawable/ic_home_white_18dp"
-                            android:scaleType="centerCrop"
-                            android:layout_gravity="center"/>
-                    </FrameLayout>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_10">
+
                     <TextView
-                        android:id="@+id/postTime"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Unknown time ago"
-                        android:textColor="@color/secondaryText"
-                        android:textSize="12sp"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="@dimen/margin_x_small"/>
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:text="@string/question"
+                        android:id="@+id/poll_question"/>
+
+                    <!--CHANGE COLOR OF MOST VOTED POLL TO deepPurple500-->
+                    <!--AND LEAVE OTHERS AT deeppurple200-->
+
+                    <!--OPTION A-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:id="@+id/option_a_fullLayout">
+                        <FrameLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="0.85"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/margin_x_small"
+                            android:id="@+id/optionA_Layout">
+
+                            <!--CHANGE VISIBILITY OF THE poll_results LINEARLAYOUT-->
+                            <!--TO VISIBLE ON CLICK FOR ALL OPTIONS-->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal"
+                                android:weightSum="1"
+                                android:id="@+id/poll_results_optionA"
+                                android:visibility="invisible">
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/left_rounded_corner_full_purple_border"
+                                    android:id="@+id/optionA_result_success"
+                                    android:orientation="horizontal"
+                                    android:layout_weight="0.5"/>
+                                <!--change this to required successFraction-->
+
+                                <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/right_rounded_corner_purple_border"
+                                android:id="@+id/optionA_result_failure"
+                                android:layout_weight="0.5"
+                                android:orientation="horizontal"/>
+                                <!--change layout_weight to (1 - successFraction)-->
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal">
+                                <!--CHANGE textColor OF BOTH TEXTVIEWs TO WHITE-->
+                                <!--ON CLICK OF THE OPTION FOR ALL OPTIONS-->
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="A."
+                                    android:textColor="@color/primaryText"
+                                    android:textSize="16sp"
+                                    android:layout_marginTop="7dp"
+                                    android:layout_marginBottom="2dp"
+                                    android:layout_marginStart="10dp"
+                                    android:id="@+id/optionA_placeHolder"
+                                    android:layout_weight="9"/>
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Option A"
+                                    android:textColor="@color/primaryText"
+                                    android:textSize="16sp"
+                                    android:layout_margin="7dp"
+                                    android:id="@+id/optionA_option_text"
+                                    android:layout_weight="1"/>
+                            </LinearLayout>
+
+
+                        </FrameLayout>
+                        <TextView
+                            android:id="@+id/option_a_percent"
+                            android:visibility="gone"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.15"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/primaryText"
+                            android:text="100%"
+                            android:textSize="16sp"
+                            android:gravity="end"
+                            android:layout_gravity="center"/>
+                    </LinearLayout>
+
+                    <!--OPTION B-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:id="@+id/option_b_fullLayout">
+                        <FrameLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="0.85"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_x_small"
+                            android:id="@+id/optionB_Layout">
+
+                            <!--CHANGE VISIBILITY OF THE poll_results LINEARLAYOUT-->
+                            <!--TO VISIBLE ON CLICK FOR ALL OPTIONS-->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal"
+                                android:weightSum="1"
+                                android:id="@+id/poll_results_optionB"
+                                android:visibility="invisible">
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/left_rounded_corner_full_purple_border"
+                                    android:id="@+id/optionB_result_success"
+                                    android:orientation="horizontal"
+                                    android:layout_weight="0.5"/>
+                                <!--change this to required successFraction-->
+
+                                <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/right_rounded_corner_purple_border"
+                                android:id="@+id/optionB_result_failure"
+                                android:layout_weight="0.5"
+                                android:orientation="horizontal"/>
+                                <!--change layout_weight to (1 - successFraction)-->
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal">
+
+                                <!--CHANGE textColor OF BOTH TEXTVIEWs TO WHITE-->
+                                <!--ON CLICK OF THE OPTION FOR ALL OPTIONS-->
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="B."
+                                    android:textColor="@color/primaryText"
+                                    android:textSize="16sp"
+                                    android:layout_marginTop="7dp"
+                                    android:layout_marginBottom="2dp"
+                                    android:layout_marginStart="10dp"
+                                    android:id="@+id/optionB_placeHolder"
+                                    android:layout_weight="9"/>
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Option B"
+                                    android:textColor="@color/primaryText"
+                                    android:textSize="16sp"
+                                    android:layout_margin="7dp"
+                                    android:id="@+id/optionB_option_text"
+                                    android:layout_weight="1"/>
+                            </LinearLayout>
+                        </FrameLayout>
+                        <TextView
+                            android:id="@+id/option_b_percent"
+                            android:visibility="gone"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.15"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/primaryText"
+                            android:text="100%"
+                            android:textSize="16sp"
+                            android:gravity="end"
+                            android:layout_gravity="center"/>
+                    </LinearLayout>
+
+                    <!--OPTION C-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:id="@+id/option_c_fullLayout">
+                        <FrameLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="0.85"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_x_small"
+                            android:id="@+id/optionC_Layout">
+
+                            <!--CHANGE VISIBILITY OF THE poll_results LINEARLAYOUT-->
+                            <!--TO VISIBLE ON CLICK FOR ALL OPTIONS-->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal"
+                                android:weightSum="1"
+                                android:id="@+id/poll_results_optionC"
+                                android:visibility="invisible">
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/left_rounded_corner_full_purple_border"
+                                    android:id="@+id/optionC_result_success"
+                                    android:orientation="horizontal"
+                                    android:layout_weight="0.5"/>
+                                <!--change this to required successFraction-->
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/right_rounded_corner_purple_border"
+                                    android:id="@+id/optionC_result_failure"
+                                    android:layout_weight="0.5"
+                                    android:orientation="horizontal"/>
+                                <!--change layout_weight to (1 - successFraction)-->
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal">
+                                <!--CHANGE textColor OF BOTH TEXTVIEWs TO WHITE-->
+                                <!--ON CLICK OF THE OPTION FOR ALL OPTIONS-->
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="C."
+                                    android:textColor="@color/primaryText"
+                                    android:textSize="16sp"
+                                    android:layout_marginTop="7dp"
+                                    android:layout_marginBottom="2dp"
+                                    android:layout_marginStart="10dp"
+                                    android:id="@+id/optionC_placeHolder"
+                                    android:layout_weight="9"/>
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Option C"
+                                    android:layout_margin="7dp"
+                                    android:textColor="@color/primaryText"
+                                    android:textSize="16sp"
+                                    android:id="@+id/optionC_option_text"
+                                    android:layout_weight="1"/>
+                            </LinearLayout>
+                        </FrameLayout>
+                        <TextView
+                            android:id="@+id/option_c_percent"
+                            android:visibility="gone"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.15"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/primaryText"
+                            android:text="100%"
+                            android:textSize="16sp"
+                            android:gravity="end"
+                            android:layout_gravity="center"/>
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/total_vote_count"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="1234 Votes"
+                        android:textSize="14sp"
+                        android:gravity="end"
+                        android:textColor="@color/secondaryText" />
                 </LinearLayout>
             </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/delete_layout"
-                android:layout_width="0dp"
-                android:layout_weight=".1"
-                android:layout_height="wrap_content">
-
-                <ImageButton
-                    android:id="@+id/recents_post_options"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_more_vert_black_24dp"
-                    android:background="@color/transparent"
-                    android:tint="@color/icon_color"
-                    android:visibility="gone"/>
-            </LinearLayout>
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:id="@+id/pollFormat">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="@dimen/padding_10">
+                android:layout_marginBottom="-5dp"
+                android:layout_marginTop="-5dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:text="@string/question"
-                    android:id="@+id/poll_question"/>
-
-                <!--CHANGE COLOR OF MOST VOTED POLL TO deepPurple500-->
-                <!--AND LEAVE OTHERS AT deeppurple200-->
-
-                <!--OPTION A-->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:id="@+id/option_a_fullLayout">
-                    <FrameLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="0.85"
-                        android:layout_height="wrap_content"
-                        android:layout_marginVertical="@dimen/margin_x_small"
-                        android:id="@+id/optionA_Layout">
+                    android:orientation="vertical"
+                    android:id="@+id/youtubelinklinearlayout"
+                    android:visibility="gone">
 
-                        <!--CHANGE VISIBILITY OF THE poll_results LINEARLAYOUT-->
-                        <!--TO VISIBLE ON CLICK FOR ALL OPTIONS-->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal"
-                            android:weightSum="1"
-                            android:id="@+id/poll_results_optionA"
-                            android:visibility="invisible">
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:background="@drawable/left_rounded_corner_full_purple_border"
-                                android:id="@+id/optionA_result_success"
-                                android:orientation="horizontal"
-                                android:layout_weight="0.5"/>
-                            <!--change this to required successFraction-->
-
-                            <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/right_rounded_corner_purple_border"
-                            android:id="@+id/optionA_result_failure"
-                            android:layout_weight="0.5"
-                            android:orientation="horizontal"/>
-                            <!--change layout_weight to (1 - successFraction)-->
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
-                            <!--CHANGE textColor OF BOTH TEXTVIEWs TO WHITE-->
-                            <!--ON CLICK OF THE OPTION FOR ALL OPTIONS-->
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="A."
-                                android:textColor="@color/primaryText"
-                                android:textSize="16sp"
-                                android:layout_marginTop="7dp"
-                                android:layout_marginBottom="2dp"
-                                android:layout_marginStart="10dp"
-                                android:id="@+id/optionA_placeHolder"
-                                android:layout_weight="9"/>
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Option A"
-                                android:textColor="@color/primaryText"
-                                android:textSize="16sp"
-                                android:layout_margin="7dp"
-                                android:id="@+id/optionA_option_text"
-                                android:layout_weight="1"/>
-                        </LinearLayout>
-
-
-                    </FrameLayout>
-                    <TextView
-                        android:id="@+id/option_a_percent"
-                        android:visibility="gone"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.15"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/primaryText"
-                        android:text="100%"
-                        android:textSize="16sp"
-                        android:gravity="end"
-                        android:layout_gravity="center"/>
-                </LinearLayout>
-
-                <!--OPTION B-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:id="@+id/option_b_fullLayout">
-                    <FrameLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="0.85"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_x_small"
-                        android:id="@+id/optionB_Layout">
-
-                        <!--CHANGE VISIBILITY OF THE poll_results LINEARLAYOUT-->
-                        <!--TO VISIBLE ON CLICK FOR ALL OPTIONS-->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal"
-                            android:weightSum="1"
-                            android:id="@+id/poll_results_optionB"
-                            android:visibility="invisible">
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:background="@drawable/left_rounded_corner_full_purple_border"
-                                android:id="@+id/optionB_result_success"
-                                android:orientation="horizontal"
-                                android:layout_weight="0.5"/>
-                            <!--change this to required successFraction-->
-
-                            <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/right_rounded_corner_purple_border"
-                            android:id="@+id/optionB_result_failure"
-                            android:layout_weight="0.5"
-                            android:orientation="horizontal"/>
-                            <!--change layout_weight to (1 - successFraction)-->
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
-
-                            <!--CHANGE textColor OF BOTH TEXTVIEWs TO WHITE-->
-                            <!--ON CLICK OF THE OPTION FOR ALL OPTIONS-->
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="B."
-                                android:textColor="@color/primaryText"
-                                android:textSize="16sp"
-                                android:layout_marginTop="7dp"
-                                android:layout_marginBottom="2dp"
-                                android:layout_marginStart="10dp"
-                                android:id="@+id/optionB_placeHolder"
-                                android:layout_weight="9"/>
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Option B"
-                                android:textColor="@color/primaryText"
-                                android:textSize="16sp"
-                                android:layout_margin="7dp"
-                                android:id="@+id/optionB_option_text"
-                                android:layout_weight="1"/>
-                        </LinearLayout>
-                    </FrameLayout>
-                    <TextView
-                        android:id="@+id/option_b_percent"
-                        android:visibility="gone"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.15"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/primaryText"
-                        android:text="100%"
-                        android:textSize="16sp"
-                        android:gravity="end"
-                        android:layout_gravity="center"/>
-                </LinearLayout>
-
-                <!--OPTION C-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:id="@+id/option_c_fullLayout">
-                    <FrameLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="0.85"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_x_small"
-                        android:id="@+id/optionC_Layout">
-
-                        <!--CHANGE VISIBILITY OF THE poll_results LINEARLAYOUT-->
-                        <!--TO VISIBLE ON CLICK FOR ALL OPTIONS-->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal"
-                            android:weightSum="1"
-                            android:id="@+id/poll_results_optionC"
-                            android:visibility="invisible">
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:background="@drawable/left_rounded_corner_full_purple_border"
-                                android:id="@+id/optionC_result_success"
-                                android:orientation="horizontal"
-                                android:layout_weight="0.5"/>
-                            <!--change this to required successFraction-->
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:background="@drawable/right_rounded_corner_purple_border"
-                                android:id="@+id/optionC_result_failure"
-                                android:layout_weight="0.5"
-                                android:orientation="horizontal"/>
-                            <!--change layout_weight to (1 - successFraction)-->
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
-                            <!--CHANGE textColor OF BOTH TEXTVIEWs TO WHITE-->
-                            <!--ON CLICK OF THE OPTION FOR ALL OPTIONS-->
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="C."
-                                android:textColor="@color/primaryText"
-                                android:textSize="16sp"
-                                android:layout_marginTop="7dp"
-                                android:layout_marginBottom="2dp"
-                                android:layout_marginStart="10dp"
-                                android:id="@+id/optionC_placeHolder"
-                                android:layout_weight="9"/>
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Option C"
-                                android:layout_margin="7dp"
-                                android:textColor="@color/primaryText"
-                                android:textSize="16sp"
-                                android:id="@+id/optionC_option_text"
-                                android:layout_weight="1"/>
-                        </LinearLayout>
-                    </FrameLayout>
-                    <TextView
-                        android:id="@+id/option_c_percent"
-                        android:visibility="gone"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.15"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/primaryText"
-                        android:text="100%"
-                        android:textSize="16sp"
-                        android:gravity="end"
-                        android:layout_gravity="center"/>
-                </LinearLayout>
-                <TextView
-                    android:id="@+id/total_vote_count"
-                    android:visibility="gone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="1234 Votes"
-                    android:textSize="14sp"
-                    android:gravity="end"
-                    android:textColor="@color/secondaryText" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="-5dp"
-            android:layout_marginTop="-5dp">
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:id="@+id/youtubelinklinearlayout"
-                android:visibility="gone">
-
-                <RelativeLayout
-                    android:id="@+id/webvideo_layout"
-                    android:layout_width="250dp"
-                    android:layout_height="180dp"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp">
-                    <ImageView
-                        android:id="@+id/img_thumnail"
+                    <RelativeLayout
+                        android:id="@+id/webvideo_layout"
                         android:layout_width="250dp"
                         android:layout_height="180dp"
-                        android:layout_centerInParent="true"
-                        android:scaleType="fitXY" />
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp">
+                        <ImageView
+                            android:id="@+id/img_thumnail"
+                            android:layout_width="250dp"
+                            android:layout_height="180dp"
+                            android:layout_centerInParent="true"
+                            android:scaleType="fitXY" />
 
-                    <!-- <ImageView
-                        android:id="@+id/iv_play_pause"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:src="@drawable/mr_media_play_dark" /> -->
-                </RelativeLayout>
+                        <!-- <ImageView
+                            android:id="@+id/iv_play_pause"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/mr_media_play_dark" /> -->
+                    </RelativeLayout>
 
-            </LinearLayout>
+                </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/bannerRecentItem"
@@ -707,377 +720,378 @@
                     android:padding="10dp"/>
 
 
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/cabpoolRecentItem"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_small"
-                    android:layout_marginEnd="@dimen/margin_small"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-                    <TextView
-                        android:id="@+id/cabpoolRecentItem_source"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Source"
-                        android:textSize="16sp"
-                        android:textColor="@color/primaryText"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=" to "
-                        android:textSize="16sp"
-                        android:textColor="@color/primaryText"/>
-                    <TextView
-                        android:id="@+id/cabpoolRecentItem_destination"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Destination"
-                        android:textSize="16sp"
-                        android:textColor="@color/primaryText"/>
                 </LinearLayout>
                 <LinearLayout
+                    android:id="@+id/cabpoolRecentItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_small"
-                    android:layout_marginEnd="@dimen/margin_small"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-                    <TextView
-                        android:id="@+id/cabpoolRecentItem_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Date"
-                        android:textSize="16sp"
-                        android:textColor="@color/primaryText"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=", "
-                        android:textSize="16sp"
-                        android:textColor="@color/primaryText" />
-                    <TextView
-                        android:id="@+id/cabpoolRecentItem_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Time"
-                        android:textSize="16sp"
-                        android:textColor="@color/primaryText" />
-                </LinearLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/secondaryText"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginTop="10dp"
-                    android:visibility="gone"/>
-                <!--<LinearLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:paddingTop="5dp"-->
-                    <!--android:paddingBottom="5dp" >-->
-                    <!--<Button-->
-                        <!--android:id="@+id/cabpoolRecentItem_call"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="30dp"-->
-                        <!--android:layout_weight="0.33"-->
-                        <!--android:textColor="@color/primaryText"-->
-                        <!--android:background="@color/transparent"-->
-                        <!--android:textAllCaps="false"-->
-                        <!--android:text="Call"/>-->
-                    <!--<Button-->
-                        <!--android:id="@+id/cabpoolRecentItem_chat"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="30dp"-->
-                        <!--android:layout_weight="0.33"-->
-                        <!--android:textColor="@color/primaryText"-->
-                        <!--android:background="@color/transparent"-->
-                        <!--android:text="Chat"-->
-                        <!--android:textAllCaps="false"/>-->
-                    <!--<Button-->
-                        <!--android:id="@+id/cabpoolRecentItem_join"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="30dp"-->
-                        <!--android:layout_weight="0.33"-->
-                        <!--android:text="Join"-->
-                        <!--android:textAllCaps="false"-->
-                        <!--android:textColor="@color/primaryText"-->
-                        <!--android:background="@color/transparent"/>-->
-                <!--</LinearLayout>-->
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/eventsRecentItem"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="5dp"
-                    android:paddingTop="5dp"
-                    android:layout_marginStart="@dimen/margin_small"
-                    android:layout_marginEnd="@dimen/margin_small"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/eventsRecentItem_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Event name"
-                        android:textSize="16sp"
-                        android:textColor="@color/primaryText"/>
+                    android:orientation="vertical"
+                    android:visibility="gone">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_top_between_similar_views">
+                        android:layout_marginStart="@dimen/margin_small"
+                        android:layout_marginEnd="@dimen/margin_small"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp">
                         <TextView
-                            android:id="@+id/eventsRecentItem_date"
+                            android:id="@+id/cabpoolRecentItem_source"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Event Date"
+                            android:text="Source"
                             android:textSize="16sp"
                             android:textColor="@color/primaryText"/>
                         <TextView
-                            android:id="@+id/eventsRecentItem_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/margin_small"
+                            android:text=" to "
                             android:textSize="16sp"
-                            android:text="Event Time"
+                            android:textColor="@color/primaryText"/>
+                        <TextView
+                            android:id="@+id/cabpoolRecentItem_destination"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Destination"
+                            android:textSize="16sp"
+                            android:textColor="@color/primaryText"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_small"
+                        android:layout_marginEnd="@dimen/margin_small"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp">
+                        <TextView
+                            android:id="@+id/cabpoolRecentItem_date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Date"
+                            android:textSize="16sp"
+                            android:textColor="@color/primaryText"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=", "
+                            android:textSize="16sp"
+                            android:textColor="@color/primaryText" />
+                        <TextView
+                            android:id="@+id/cabpoolRecentItem_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Time"
+                            android:textSize="16sp"
                             android:textColor="@color/primaryText" />
                     </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:background="@color/secondaryText"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginTop="10dp"
+                        android:visibility="gone"/>
+                    <!--<LinearLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:paddingTop="5dp"-->
+                        <!--android:paddingBottom="5dp" >-->
+                        <!--<Button-->
+                            <!--android:id="@+id/cabpoolRecentItem_call"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="30dp"-->
+                            <!--android:layout_weight="0.33"-->
+                            <!--android:textColor="@color/primaryText"-->
+                            <!--android:background="@color/transparent"-->
+                            <!--android:textAllCaps="false"-->
+                            <!--android:text="Call"/>-->
+                        <!--<Button-->
+                            <!--android:id="@+id/cabpoolRecentItem_chat"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="30dp"-->
+                            <!--android:layout_weight="0.33"-->
+                            <!--android:textColor="@color/primaryText"-->
+                            <!--android:background="@color/transparent"-->
+                            <!--android:text="Chat"-->
+                            <!--android:textAllCaps="false"/>-->
+                        <!--<Button-->
+                            <!--android:id="@+id/cabpoolRecentItem_join"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="30dp"-->
+                            <!--android:layout_weight="0.33"-->
+                            <!--android:text="Join"-->
+                            <!--android:textAllCaps="false"-->
+                            <!--android:textColor="@color/primaryText"-->
+                            <!--android:background="@color/transparent"/>-->
+                    <!--</LinearLayout>-->
                 </LinearLayout>
-                <TextView
-                    android:id="@+id/eventsRecentItem_description"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/primaryText"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:textSize="16sp"
-                    android:layout_marginStart="@dimen/margin_small"
-                    android:layout_marginEnd="@dimen/margin_small"
-                    android:maxLines="2"/>
-                <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+
+                <LinearLayout
+                    android:id="@+id/eventsRecentItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:contentDescription="Event Image"
-                    fresco:viewAspectRatio="1.33"
-                    android:id="@+id/eventsRecentItem_image"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"/>
-                <View
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:layout_marginStart="@dimen/margin_small"
+                        android:layout_marginEnd="@dimen/margin_small"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/eventsRecentItem_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Event name"
+                            android:textSize="16sp"
+                            android:textColor="@color/primaryText"/>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_top_between_similar_views">
+                            <TextView
+                                android:id="@+id/eventsRecentItem_date"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Event Date"
+                                android:textSize="16sp"
+                                android:textColor="@color/primaryText"/>
+                            <TextView
+                                android:id="@+id/eventsRecentItem_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/margin_small"
+                                android:textSize="16sp"
+                                android:text="Event Time"
+                                android:textColor="@color/primaryText" />
+                        </LinearLayout>
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/eventsRecentItem_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/primaryText"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:textSize="16sp"
+                        android:layout_marginStart="@dimen/margin_small"
+                        android:layout_marginEnd="@dimen/margin_small"
+                        android:maxLines="2"/>
+                    <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="Event Image"
+                        fresco:viewAspectRatio="1.33"
+                        android:id="@+id/eventsRecentItem_image"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:background="@color/secondaryText"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginTop="10dp"
+                        android:visibility="gone"/>
+                    <!--<LinearLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginStart="0dp"-->
+                        <!--android:paddingTop="5dp"-->
+                        <!--android:paddingBottom="5dp" >-->
+                        <!--<Button-->
+                            <!--android:id="@+id/eventsRecentItem_boost"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="30dp"-->
+                            <!--android:layout_weight="0.33"-->
+                            <!--android:text="Boost"-->
+                            <!--android:textAllCaps="false"-->
+                            <!--android:background="@color/transparent"-->
+                            <!--android:textColor="@color/primaryText"/>-->
+                        <!--<Button-->
+                            <!--android:id="@+id/eventsRecentItem_chat"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="30dp"-->
+                            <!--android:layout_weight="0.33"-->
+                            <!--android:text="Chat"-->
+                            <!--android:textAllCaps="false"-->
+                            <!--android:textColor="@color/primaryText"-->
+                            <!--android:background="@color/transparent"/>-->
+                        <!--<Button-->
+                            <!--android:id="@+id/eventsRecentItem_reminder"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="30dp"-->
+                            <!--android:layout_weight="0.33"-->
+                            <!--android:text="Reminder"-->
+                            <!--android:textAllCaps="false"-->
+                            <!--android:textColor="@color/primaryText"-->
+                            <!--android:background="@color/transparent"/>-->
+                    <!--</LinearLayout>-->
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/storeroomRecentItem"
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/secondaryText"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginTop="10dp"
-                    android:visibility="gone"/>
-                <!--<LinearLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginStart="0dp"-->
-                    <!--android:paddingTop="5dp"-->
-                    <!--android:paddingBottom="5dp" >-->
-                    <!--<Button-->
-                        <!--android:id="@+id/eventsRecentItem_boost"-->
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:layout_marginStart="@dimen/margin_small"
+                        android:layout_marginEnd="@dimen/margin_small">
+                        <TextView
+                            android:id="@+id/storeroomRecentItem_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Product name"
+                            android:textSize="16sp"
+                            android:textColor="@color/primaryText"/>
+                        <TextView
+                            android:id="@+id/storeroomRecentItem_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Price"
+                            android:textSize="16sp"
+                            android:layout_marginStart="10dp"
+                            android:textColor="@color/primaryText"/>
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/storeroomRecentItem_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/primaryText"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:textSize="16sp"
+                        android:layout_marginStart="@dimen/margin_small"
+                        android:layout_marginEnd="@dimen/margin_small"
+                        android:maxLines="2"/>
+                    <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="Product Image"
+                        fresco:viewAspectRatio="1.33"
+                        android:id="@+id/storeroomRecentItem_image"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"/>
+                    <!--<LinearLayout-->
                         <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="30dp"-->
-                        <!--android:layout_weight="0.33"-->
-                        <!--android:text="Boost"-->
-                        <!--android:textAllCaps="false"-->
-                        <!--android:background="@color/transparent"-->
-                        <!--android:textColor="@color/primaryText"/>-->
-                    <!--<Button-->
-                        <!--android:id="@+id/eventsRecentItem_chat"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="30dp"-->
-                        <!--android:layout_weight="0.33"-->
-                        <!--android:text="Chat"-->
-                        <!--android:textAllCaps="false"-->
-                        <!--android:textColor="@color/primaryText"-->
-                        <!--android:background="@color/transparent"/>-->
-                    <!--<Button-->
-                        <!--android:id="@+id/eventsRecentItem_reminder"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="30dp"-->
-                        <!--android:layout_weight="0.33"-->
-                        <!--android:text="Reminder"-->
-                        <!--android:textAllCaps="false"-->
-                        <!--android:textColor="@color/primaryText"-->
-                        <!--android:background="@color/transparent"/>-->
-                <!--</LinearLayout>-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginStart="0dp"-->
+                        <!--android:paddingTop="5dp"-->
+                        <!--android:paddingBottom="5dp" >-->
+                        <!--<Button-->
+                            <!--android:id="@+id/storeroomRecentItem_call"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="30dp"-->
+                            <!--android:layout_weight="0.33"-->
+                            <!--android:text="Call"-->
+                            <!--android:textAllCaps="false"-->
+                            <!--android:background="@color/transparent"-->
+                            <!--android:textColor="@color/primaryText"/>-->
+                        <!--<Button-->
+                            <!--android:id="@+id/storeroomRecentItem_chat"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="30dp"-->
+                            <!--android:layout_weight="0.33"-->
+                            <!--android:text="Chat"-->
+                            <!--android:textAllCaps="false"-->
+                            <!--android:textColor="@color/primaryText"-->
+                            <!--android:background="@color/transparent"/>-->
+                        <!--<Button-->
+                            <!--android:id="@+id/storeroomRecentItem_save"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="30dp"-->
+                            <!--android:layout_weight="0.33"-->
+                            <!--android:text="Save"-->
+                            <!--android:textAllCaps="false"-->
+                            <!--android:textColor="@color/primaryText"-->
+                            <!--android:background="@color/transparent"/>-->
+                    <!--</LinearLayout>-->
+                </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/storeroomRecentItem"
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginHorizontal="10dp"
+                android:background="@color/horizontalLine"/>
+
+            <!--old ui-->
+            <TextView
+                android:id="@+id/recentname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:background="@color/teal600"
+                android:maxLines="1"
+                android:padding="6dp"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                tools:text="Name"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:visibility="gone">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:layout_marginStart="@dimen/margin_small"
-                    android:layout_marginEnd="@dimen/margin_small">
-                    <TextView
-                        android:id="@+id/storeroomRecentItem_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Product name"
-                        android:textSize="16sp"
-                        android:textColor="@color/primaryText"/>
-                    <TextView
-                        android:id="@+id/storeroomRecentItem_price"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Price"
-                        android:textSize="16sp"
-                        android:layout_marginStart="10dp"
-                        android:textColor="@color/primaryText"/>
-                </LinearLayout>
-                <TextView
-                    android:id="@+id/storeroomRecentItem_description"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/primaryText"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:textSize="16sp"
-                    android:layout_marginStart="@dimen/margin_small"
-                    android:layout_marginEnd="@dimen/margin_small"
-                    android:maxLines="2"/>
-                <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="Product Image"
-                    fresco:viewAspectRatio="1.33"
-                    android:id="@+id/storeroomRecentItem_image"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"/>
-                <!--<LinearLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginStart="0dp"-->
-                    <!--android:paddingTop="5dp"-->
-                    <!--android:paddingBottom="5dp" >-->
-                    <!--<Button-->
-                        <!--android:id="@+id/storeroomRecentItem_call"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="30dp"-->
-                        <!--android:layout_weight="0.33"-->
-                        <!--android:text="Call"-->
-                        <!--android:textAllCaps="false"-->
-                        <!--android:background="@color/transparent"-->
-                        <!--android:textColor="@color/primaryText"/>-->
-                    <!--<Button-->
-                        <!--android:id="@+id/storeroomRecentItem_chat"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="30dp"-->
-                        <!--android:layout_weight="0.33"-->
-                        <!--android:text="Chat"-->
-                        <!--android:textAllCaps="false"-->
-                        <!--android:textColor="@color/primaryText"-->
-                        <!--android:background="@color/transparent"/>-->
-                    <!--<Button-->
-                        <!--android:id="@+id/storeroomRecentItem_save"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="30dp"-->
-                        <!--android:layout_weight="0.33"-->
-                        <!--android:text="Save"-->
-                        <!--android:textAllCaps="false"-->
-                        <!--android:textColor="@color/primaryText"-->
-                        <!--android:background="@color/transparent"/>-->
-                <!--</LinearLayout>-->
-            </LinearLayout>
-        </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginHorizontal="10dp"
-            android:background="@color/horizontalLine"/>
-
-        <!--old ui-->
-        <TextView
-            android:id="@+id/recentname"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/teal600"
-            android:maxLines="1"
-            android:padding="6dp"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            tools:text="Name"
-            android:visibility="gone"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/recents_image"
-                android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_weight=".25"
-                android:scaleType="centerCrop" />
-
-            <RelativeLayout
-                android:id="@+id/descTitle"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".75"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/recentdesc"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:ellipsize="end"
-                    android:maxLines="3"
-                    android:padding="5dp"
-                    android:scrollbars="vertical"
-                    android:textColor="@color/black"
-                    android:textSize="12sp"
-                    tools:text="Desc" />
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/recents_image"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_weight=".25"
+                    android:scaleType="centerCrop" />
 
                 <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_below="@id/recentdesc">
+                    android:id="@+id/descTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".75"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/featurename"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="end"
-                        android:paddingEnd="10dp"
-                        android:paddingStart="0dp"
-                        android:textColor="@color/teal900"
+                        android:id="@+id/recentdesc"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:ellipsize="end"
+                        android:maxLines="3"
+                        android:padding="5dp"
+                        android:scrollbars="vertical"
+                        android:textColor="@color/black"
                         android:textSize="12sp"
-                        android:textStyle="bold"
-                        tools:text="Feature" />
+                        tools:text="Desc" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_below="@id/recentdesc">
+
+                        <TextView
+                            android:id="@+id/featurename"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="end"
+                            android:paddingEnd="10dp"
+                            android:paddingStart="0dp"
+                            android:textColor="@color/teal900"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            tools:text="Feature" />
+                    </RelativeLayout>
                 </RelativeLayout>
-            </RelativeLayout>
+            </LinearLayout>
+
         </LinearLayout>
 
-    </LinearLayout>
-
+    </FrameLayout>
 
 </android.support.v7.widget.CardView>
