@@ -1406,7 +1406,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                             metadata.put("key",statusDetails.getKey());
                                             metadata.put("featurePID", statusDetails.getKey());
 
-                                            GlobalFunctions.inAppNotifications("liked your status", statusDetails.getMessage(), userItem, false, "status", null, statusDetails.getUuid());
+                                            GlobalFunctions.inAppNotifications("liked your status", statusDetails.getMessage(), userItem, false, "status", metadata, statusDetails.getUuid());
                                             notificationSender.execute(statusLikeNotification);
                                         }
 
