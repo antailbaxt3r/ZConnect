@@ -51,8 +51,6 @@ public class InfoneFragment extends Fragment {
     DatabaseReference databaseReferenceCat, mUserDetails;
     ValueEventListener listener;
     InfoneCategoriesRVAdapter infoneCategoriesRVAdapter;
-    private static final int REQUEST_PHONE_CALL = 1;
-    private static final int REQUEST_READ_CONTACTS = 2;
     private SharedPreferences communitySP;
     public String communityReference;
     private ShimmerFrameLayout shimmerFrameLayout;
@@ -199,8 +197,6 @@ public class InfoneFragment extends Fragment {
             }
         });
 
-
-        askCallPermissions();
         return view;
     }
 
@@ -404,44 +400,6 @@ public class InfoneFragment extends Fragment {
         databaseReferenceCat.removeEventListener(listener);
     }
 
-    private void askCallPermissions() {
 
-        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.CALL_PHONE}, REQUEST_PHONE_CALL);
-        }
 
-        if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.PROCESS_OUTGOING_CALLS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.PROCESS_OUTGOING_CALLS}, REQUEST_READ_CONTACTS);
-        }
-        if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_READ_CONTACTS);
-        }
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_PHONE_CALL: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //startActivity(intent);
-                } else {
-                    askCallPermissions();
-                }
-                return;
-            }
-            case REQUEST_READ_CONTACTS: {
-                if(grantResults.length > 0 && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-
-                } else {
-                    askCallPermissions();
-                }
-                return;
-            }
-        }
-    }
 }
