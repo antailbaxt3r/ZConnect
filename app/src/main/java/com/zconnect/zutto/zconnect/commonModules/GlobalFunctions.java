@@ -77,15 +77,9 @@ public class GlobalFunctions {
         String key;
         HashMap<String, Object> notificationMap = new HashMap<>();
         HashMap<String, Boolean> seenmap = new HashMap<>();
-        Log.d("COMMUNITYREF",communityReference);
 
-        Log.d("dddinggg", "productShortlistNotification: ");
-        /*
-        audience true - Community specific notifications
-        audience false - User specific notifications
-        */
-        Log.d("SASASA", uid + "");
         if (audience) {
+
             if (!type.equals("statusNestedComment")) {
                 notificationsRef = FirebaseDatabase.getInstance().getReference().child("communities").
                         child(communityReference).child("globalNotifications");
@@ -204,6 +198,8 @@ public class GlobalFunctions {
             }
         }
     }
+
+
     //ONLY TO CREATE FORUM IN OTHERS TAB
     public static  void createForumWithDetails(final String catName,
                                                  final String forumUID,

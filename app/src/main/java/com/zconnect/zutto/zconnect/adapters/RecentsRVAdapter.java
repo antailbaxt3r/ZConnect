@@ -1737,9 +1737,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         counterPush.pushValues();
 
                         Intent intent = new Intent(context, OpenStatus.class);
-                        intent.putExtra("desc",recentsItemFormats.get(getAdapterPosition()).getDesc());
                         intent.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getKey());
-                        intent.putExtra("uid", recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUID());
                         System.out.println(recentsItemFormats.get(getAdapterPosition()).getKey());
                         context.startActivity(intent);
                     }
@@ -1838,8 +1836,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                     counterPush.pushValues();
                     Intent intent = new Intent(context, OpenStatus.class);
-                    intent.putExtra("desc",recentsItemFormats.get(getAdapterPosition()).getDesc());
-                    intent.putExtra("uid",recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUID());
                     intent.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getKey());
                     intent.putExtra("isFromCommentBtn", true);
                     Log.d("username" , " "+recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUsername());
