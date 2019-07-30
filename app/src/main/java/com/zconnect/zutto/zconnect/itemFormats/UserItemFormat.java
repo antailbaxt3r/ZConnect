@@ -11,7 +11,11 @@ public class UserItemFormat {
     private String username, email,mobileNumber,whatsAppNumber, about,imageURL,imageURLThumbnail,infoneType,skillTags,userUID,userType;
 
     public String getAnonymousUsername() {
-        return anonymousUsername;
+        if (anonymousUsername!=null) {
+            return anonymousUsername;
+        }else {
+            return "Anonymous";
+        }
     }
 
     public void setAnonymousUsername(String anonymousUsername) {
