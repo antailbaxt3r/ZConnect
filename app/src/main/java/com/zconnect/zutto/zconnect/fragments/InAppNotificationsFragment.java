@@ -127,6 +127,7 @@ public class InAppNotificationsFragment extends Fragment {
                 Integer index = 0;
                 if(lastNotifID==null)
                 {
+                    Log.d("IIIIII", "HERE");
                     totalnotificationsList.clear();
                 }
                 Vector<InAppNotificationsItemFormat> notificationsListTemp = new Vector<>();
@@ -200,11 +201,18 @@ public class InAppNotificationsFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         if (UserUtilities.currentUser != null) {
             if (!UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || !UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
                 Log.d("MMMMM", "MMMM");
+                Log.d("AAAAAAAAA", "RESUME");
+                if(!totalnotificationsList.isEmpty())
+                {
+                    inAppNotifsQuery = userNotifReference.orderByChild("PostTimeMillis").limitToLast(20);
+                    lastNotifID=null;
+                    lastPostTimeMillis=0L;
+                }
                 inAppNotifsQuery.addValueEventListener(inAppNotifsListener);
             }
         }

@@ -25,6 +25,7 @@ import com.zconnect.zutto.zconnect.itemFormats.PostedByDetails;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.FeatureNamesUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
@@ -116,7 +117,13 @@ public class GlobalFunctions {
                 dbref.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        DatabaseReference statusInFeatureRef = dataSnapshot.getRef().getRoot()
+                                .child("communities").child(communityReference).child("features")
+                                .child(FeatureNamesUtilities.KEY_STATUSES).child("inAppNotifications")
+                                .child(metadata.get("key").toString());
                         for (DataSnapshot childsnap : dataSnapshot.getChildren()) {
+                            if(uid.equals(childsnap.getKey()))
+                                continue;
                             Log.d("keyyyy", notifiedby.getUserUID()+"");
                             if(!notifiedby.getUserUID().equals(childsnap.getKey())) {
                                 notificationsRef = FirebaseDatabase.getInstance().getReference().child("communities").
@@ -134,7 +141,13 @@ public class GlobalFunctions {
                                 notificationMap.put("metadata",metamap);
                                 notificationMap.put("notifiedBy", notifiedby);
                                 newNotifRef.setValue(notificationMap);
-
+                                //following code stores the notif key and receiver UID inside of
+                                //feature/statuses/{statusKey}/{notifKey} node
+                                //used to handle deletion of in app notifs upon deletion on status
+                                HashMap<String, Object> _notifMap = new HashMap<>();
+                                _notifMap.put("key", newNotifRef.getKey());
+                                _notifMap.put("receiverUID", childsnap.getKey());
+                                statusInFeatureRef.child(newNotifRef.getKey()).setValue(_notifMap);
                             }
                         }
                     }
@@ -177,6 +190,13 @@ public class GlobalFunctions {
                     case "eventAdd":
                         FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/events/inAppNotifications/" + metadata.get("featurePID")).child(newNotifRef.getKey()).child("key").setValue(newNotifRef.getKey());
                         break;
+                    case "status":
+                    case "statusComment":
+                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/statuses/inAppNotifications/" + metadata.get("featurePID")).child(newNotifRef.getKey()).child("key").setValue(newNotifRef.getKey());
+                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/statuses/inAppNotifications/" + metadata.get("featurePID")).child(newNotifRef.getKey()).child("receiverUID").setValue(uid);
+                        break;
+
+
                 }
                 for (HashMap.Entry<String, Object> entry : metadata.entrySet()) {
                     newNotifRef.child("metadata").child(entry.getKey()).setValue(entry.getValue());

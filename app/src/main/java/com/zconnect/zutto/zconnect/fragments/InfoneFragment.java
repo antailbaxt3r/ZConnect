@@ -118,7 +118,8 @@ public class InfoneFragment extends Fragment {
                         int totalContacts = childSnapShot.child("totalContacts").getValue(Integer.class);
                         String thumbImageurl = childSnapShot.child("thumbnail").getValue(String.class);
                         InfoneCategoryModel infoneCategoryModel = new InfoneCategoryModel(name, imageurl, admin, catId,thumbImageurl,totalContacts);
-                        categoriesList.add(infoneCategoryModel);
+                        if(name!=null && imageurl!=null && thumbImageurl!=null)
+                            categoriesList.add(infoneCategoryModel);
                     }catch (Exception e){}
 
                     new Handler().postDelayed(new Runnable() {
