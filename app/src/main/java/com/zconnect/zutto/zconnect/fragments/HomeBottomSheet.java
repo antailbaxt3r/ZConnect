@@ -3,14 +3,17 @@ package com.zconnect.zutto.zconnect.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -133,125 +136,152 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
             @Override
             public void onSingleClick(View view) {
 
-                try {
-                    HomeBottomSheet.this.dismiss();
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
+                if (!isNetworkAvailable(view.getContext())) {
+                    Snackbar snackbar = Snackbar.make(view, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimaryDark));
+                    snackbar.show();
+                } else {
+
+                    try {
+                        HomeBottomSheet.this.dismiss();
+                    } catch (Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+
+                    Intent intent;
+                    intent = new Intent(view.getContext(), AddEvent.class);
+                    startActivity(intent);
                 }
-
-                Intent intent;
-                intent = new Intent(view.getContext(), AddEvent.class);
-                startActivity(intent);
-
             }
         };
         View.OnClickListener addProductListener = new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
+                if (!isNetworkAvailable(view.getContext())) {
+                    Snackbar snackbar = Snackbar.make(view, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimaryDark));
+                    snackbar.show();
+                } else {
+                    try {
+                        HomeBottomSheet.this.dismiss();
+                    } catch (Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                    FirebaseDatabase.getInstance().getReference().child("minimumClientVersion")
+                            .child("storeroom").addListenerForSingleValueEvent(
+                            new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Log.d("VERSIONN", dataSnapshot.getValue(Integer.class) + "");
+                                    if (dataSnapshot.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
+                                        Intent intent = new Intent(view.getContext(), UpdateAppActivity.class);
+                                        intent.putExtra("feature", "shops");
+                                        view.getContext().startActivity(intent);
 
-                try {
-                    HomeBottomSheet.this.dismiss();
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                }
-                FirebaseDatabase.getInstance().getReference().child("minimumClientVersion")
-                        .child("storeroom").addListenerForSingleValueEvent(
-                        new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                Log.d("VERSIONN", dataSnapshot.getValue(Integer.class) + "");
-                                if (dataSnapshot.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
-                                    Intent intent = new Intent(view.getContext(), UpdateAppActivity.class);
-                                    intent.putExtra("feature", "shops");
-                                   view.getContext().startActivity(intent);
+                                    } else {
 
-                                } else {
+                                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                        HashMap<String, String> meta = new HashMap<>();
 
-                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                    HashMap<String, String> meta = new HashMap<>();
+                                        meta.put("type", "fromRecents");
 
-                                    meta.put("type", "fromRecents");
+                                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                        counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_PRODUCT_ADD_OPEN);
+                                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                        counterItemFormat.setMeta(meta);
 
-                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_PRODUCT_ADD_OPEN);
-                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
-                                    counterItemFormat.setMeta(meta);
+                                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                        counterPush.pushValues();
 
-                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                                    counterPush.pushValues();
-                                    //TODO app crashes on line 163/171
-                                    //TODO UPDATE: FIXED
-                                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mHomeActivity);
-                                    Dialog addAskDialog = new Dialog(view.getContext());
-                                    addAskDialog.setContentView(R.layout.new_dialog_box);
-                                    addAskDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                                    addAskDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(view.getContext(),R.drawable.ic_outline_store_24px));
-                                    TextView heading =  addAskDialog.findViewById(R.id.dialog_box_heading);
-                                    heading.setText("Sell/Ask");
-                                    TextView body = addAskDialog.findViewById(R.id.dialog_box_body);
-                                    body.setText("Do you want to sell a product or ask for a product?");
-                                    Button addButton = addAskDialog.findViewById(R.id.dialog_box_positive_button);
-                                    addButton.setText("Sell");
-                                    addButton.setOnClickListener(new OnSingleClickListener() {
-                                        @Override
-                                        public void onSingleClick(View v) {
-                                            Intent intent = new Intent(view.getContext(), AddProduct.class);
-                                            intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
-                                            view.getContext().startActivity(intent);
-                                            addAskDialog.dismiss();
 
-                                        }
-                                    });
-                                    Button askButton = addAskDialog.findViewById(R.id.dialog_box_negative_button);
-                                    askButton.setText("Ask");
-                                    askButton.setOnClickListener(new OnSingleClickListener() {
-                                        @Override
-                                        public void onSingleClick(View v) {
-                                            Intent intent = new Intent(view.getContext(), AddProduct.class);
-                                            intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
-                                            view.getContext().startActivity(intent);
-                                            addAskDialog.dismiss();
+                                        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mHomeActivity);
+                                        Dialog addAskDialog = new Dialog(view.getContext());
+                                        addAskDialog.setContentView(R.layout.new_dialog_box);
+                                        addAskDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                        addAskDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(view.getContext(), R.drawable.ic_outline_store_24px));
+                                        TextView heading = addAskDialog.findViewById(R.id.dialog_box_heading);
+                                        heading.setText("Sell/Ask");
+                                        TextView body = addAskDialog.findViewById(R.id.dialog_box_body);
+                                        body.setText("Do you want to sell a product or ask for a product?");
+                                        Button addButton = addAskDialog.findViewById(R.id.dialog_box_positive_button);
+                                        addButton.setText("Sell");
+                                        addButton.setOnClickListener(new OnSingleClickListener() {
+                                            @Override
+                                            public void onSingleClick(View v) {
+                                                Intent intent = new Intent(view.getContext(), AddProduct.class);
+                                                intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
+                                                view.getContext().startActivity(intent);
+                                                addAskDialog.dismiss();
 
-                                        }
-                                    });
+                                            }
+                                        });
+                                        Button askButton = addAskDialog.findViewById(R.id.dialog_box_negative_button);
+                                        askButton.setText("Ask");
+                                        askButton.setOnClickListener(new OnSingleClickListener() {
+                                            @Override
+                                            public void onSingleClick(View v) {
+                                                Intent intent = new Intent(view.getContext(), AddProduct.class);
+                                                intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
+                                                view.getContext().startActivity(intent);
+                                                addAskDialog.dismiss();
 
-                                    addAskDialog.show();
+                                            }
+                                        });
+
+                                        addAskDialog.show();
+
+                                    }
+
 
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                            }
-                                 });
+                                }
+                            });
+                }
 
-        }
+            }
         };
 
         View.OnClickListener addMessageListener = new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
 
-                try {
-                    HomeBottomSheet.this.dismiss();
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
+                if (!isNetworkAvailable(view.getContext())) {
+                    Snackbar snackbar = Snackbar.make(view, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimaryDark));
+                    snackbar.show();
+                } else {
+                    try {
+                        HomeBottomSheet.this.dismiss();
+                    } catch (Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+
+
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta = new HashMap<>();
+                    meta.put("type", "fromRecents");
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_ADD_STATUS);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
+
+                    Intent intent;
+                    intent = new Intent(view.getContext(), AddStatus.class);
+                    startActivity(intent);
+
                 }
-
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
-                meta.put("type","fromRecents");
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_ADD_STATUS);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
-
-                Intent intent;
-                intent = new Intent(view.getContext(), AddStatus.class);
-                startActivity(intent);
             }
         };
 
@@ -259,15 +289,23 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
             @Override
             public void onSingleClick(View view) {
 
-                try {
-                    HomeBottomSheet.this.dismiss();
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                }
+                if (!isNetworkAvailable(view.getContext())) {
+                    Snackbar snackbar = Snackbar.make(view, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimaryDark));
+                    snackbar.show();
+                } else {
+                    try {
+                        HomeBottomSheet.this.dismiss();
+                    } catch (Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
 
-                Intent intent;
-                intent = new Intent(view.getContext(), CreatePoll.class);
-                startActivity(intent);
+                    Intent intent;
+                    intent = new Intent(view.getContext(), CreatePoll.class);
+                    startActivity(intent);
+                }
             }
         };
 
@@ -275,110 +313,139 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
             @Override
             public void onSingleClick(View view) {
 
-                try {
-                    HomeBottomSheet.this.dismiss();
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                }
-                FirebaseDatabase.getInstance().getReference().child("minimumClientVersion")
-                        .child("cabpool").addListenerForSingleValueEvent(
-                        new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                Log.d("VERSIONN", dataSnapshot.getValue(Integer.class) + "");
-                                if (dataSnapshot.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
-                                    Intent intent = new Intent(view.getContext(), UpdateAppActivity.class);
-                                    intent.putExtra("feature", "shops");
-                                    view.getContext().startActivity(intent);
+                if (!isNetworkAvailable(view.getContext())) {
+                    Snackbar snackbar = Snackbar.make(view, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimaryDark));
+                    snackbar.show();
+                } else {
+                    try {
+                        HomeBottomSheet.this.dismiss();
+                    } catch (Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                    FirebaseDatabase.getInstance().getReference().child("minimumClientVersion")
+                            .child("cabpool").addListenerForSingleValueEvent(
+                            new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Log.d("VERSIONN", dataSnapshot.getValue(Integer.class) + "");
+                                    if (dataSnapshot.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
+                                        Intent intent = new Intent(view.getContext(), UpdateAppActivity.class);
+                                        intent.putExtra("feature", "shops");
+                                        view.getContext().startActivity(intent);
 
-                                } else {
+                                    } else {
 
-                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                    HashMap<String, String> meta = new HashMap<>();
+                                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                        HashMap<String, String> meta = new HashMap<>();
 
-                                    meta.put("type", "fromRecents");
+                                        meta.put("type", "fromRecents");
 
 
-                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_SEARCH_POOL_OPEN);
-                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
-                                    counterItemFormat.setMeta(meta);
+                                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                        counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_SEARCH_POOL_OPEN);
+                                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                        counterItemFormat.setMeta(meta);
 
-                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                                    counterPush.pushValues();
-                                    Intent intent;
-                                    intent = new Intent(view.getContext(), CabPooling.class);
-                                    view.getContext().startActivity(intent);
+                                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                        counterPush.pushValues();
+                                        Intent intent;
+                                        intent = new Intent(view.getContext(), CabPooling.class);
+                                        view.getContext().startActivity(intent);
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                            }
-                        });
+                                }
+                            });
+
+                }
         }};
 
         View.OnClickListener noticesListener = new OnSingleClickListener() {
             @Override
             public void onSingleClick(View v) {
-                try {
-                    HomeBottomSheet.this.dismiss();
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                }
-                FirebaseDatabase.getInstance().getReference().child("minimumClientVersion").
-                        child("notices").addListenerForSingleValueEvent(
-                        new ValueEventListener() {
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                            }
+                if (!isNetworkAvailable(v.getContext())) {
+                    Snackbar snackbar = Snackbar.make(v, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimaryDark));
+                    snackbar.show();
+                } else {
+                    try {
+                        HomeBottomSheet.this.dismiss();
+                    } catch (Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                    FirebaseDatabase.getInstance().getReference().child("minimumClientVersion").
+                            child("notices").addListenerForSingleValueEvent(
+                            new ValueEventListener() {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot d) {
-                                Log.d("VERSIONN", d.getValue(Integer.class) + "");
-                                if (d.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
-                                    Intent intent = new Intent(v.getContext(), UpdateAppActivity.class);
-                                    intent.putExtra("feature", "shops");
-                                    v.getContext().startActivity(intent);
-
-                                } else {
-
-                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                    HashMap<String, String> meta = new HashMap<>();
-                                    meta.put("type", "fromRecents");
-                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTICES_ADD_NOTICES);
-                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
-                                    counterItemFormat.setMeta(meta);
-                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                                    counterPush.pushValues();
-
-                                    Intent intent;
-                                    intent = new Intent(v.getContext(), AddNotices.class);
-                                    v.getContext()
-                                            .startActivity(intent);
-                                }}});
                                 }
+
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot d) {
+                                    Log.d("VERSIONN", d.getValue(Integer.class) + "");
+                                    if (d.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
+                                        Intent intent = new Intent(v.getContext(), UpdateAppActivity.class);
+                                        intent.putExtra("feature", "shops");
+                                        v.getContext().startActivity(intent);
+
+                                    } else {
+
+                                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                        HashMap<String, String> meta = new HashMap<>();
+                                        meta.put("type", "fromRecents");
+                                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                        counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTICES_ADD_NOTICES);
+                                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                        counterItemFormat.setMeta(meta);
+                                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                        counterPush.pushValues();
+
+                                        Intent intent;
+                                        intent = new Intent(v.getContext(), AddNotices.class);
+                                        v.getContext()
+                                                .startActivity(intent);
+                                    }
+                                }
+                            });
+                }
+            }
         };
 
         View.OnClickListener addContactListener = new OnSingleClickListener() {
             @Override
             public void onSingleClick(View v) {
-                try {
-                    HomeBottomSheet.this.dismiss();
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                }
+
+                if (!isNetworkAvailable(v.getContext())) {
+                    Snackbar snackbar = Snackbar.make(v, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimaryDark));
+                    snackbar.show();
+                } else {
+                    try {
+                        HomeBottomSheet.this.dismiss();
+                    } catch (Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
 
 //                Intent intent;
 //                intent = new Intent(getContext(), InfoneFragment.class);
 //                startActivity(intent);
-                mHomeActivity.setActionBarTitle("Infone");
-                mHomeActivity.tabs.getTabAt(3).select();
-                getFragmentManager().beginTransaction().show(mHomeActivity.infone).commit();
-                Toast.makeText(v.getContext(), "Choose a category to add a contact", Toast.LENGTH_LONG).show();
+                    mHomeActivity.setActionBarTitle("Infone");
+                    mHomeActivity.tabs.getTabAt(3).select();
+                    getFragmentManager().beginTransaction().show(mHomeActivity.infone).commit();
+                    Toast.makeText(v.getContext(), "Choose a category to add a contact", Toast.LENGTH_LONG).show();
+                }
             }
         };
 
@@ -393,6 +460,10 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
         return bottomSheetView;
     }
 
+    public boolean isNetworkAvailable(final Context context) {
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager != null && connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+    }
     @Override
     public void onAttach(Activity activity) {
         mHomeActivity = (HomeActivity) activity;
