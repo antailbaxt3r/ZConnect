@@ -206,7 +206,6 @@ public class InAppNotificationsFragment extends Fragment {
         if (UserUtilities.currentUser != null) {
             if (!UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || !UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
                 Log.d("MMMMM", "MMMM");
-                Log.d("AAAAAAAAA", "RESUME");
                 if(!totalnotificationsList.isEmpty())
                 {
                     inAppNotifsQuery = userNotifReference.orderByChild("PostTimeMillis").limitToLast(20);

@@ -2946,19 +2946,23 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     shops.setOnClickListener(new OnSingleClickListener() {
                         @Override
                         public void onSingleClick(View v) {
+                            Log.d("JJJJJ", "inside click");
                             FirebaseDatabase.getInstance().getReference().child("minimumClientVersion")
                                     .child("shops").addListenerForSingleValueEvent(
                                     new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
                                             try {
-                                                Log.d("VERSIONN", dataSnapshot.getValue(Integer.class) + "");
+                                                Log.d("JJJJJ", "inside try");
+                                                Log.d("VERSIONN", dataSnapshot2.getValue(Integer.class) + "");
                                                 if (dataSnapshot2.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
+                                                    Log.d("JJJJJ", "inside if");
                                                     Intent intent = new Intent(context, UpdateAppActivity.class);
                                                     intent.putExtra("feature", "shops");
                                                     context.startActivity(intent);
 
                                                 } else {
+                                                    Log.d("JJJJJ", "inside else");
                                                     if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
                                                         resetFeaturesUnreadCount(FeatureDBName.KEY_SHOPS, dataSnapshot);
                                                         Intent intent = new Intent(context, PoolActivity.class);
@@ -2974,11 +2978,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                                         CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                                                         counterPush.pushValues();
                                                     } else {
-                                                        newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Storeroom", context);
+                                                        newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Shop", context);
                                                     }
 
                                                 }
-                                            }catch (Exception e){}
+                                            }catch (Exception e){
+                                                Log.d("JJJJJ", "inside catch" + e.getMessage());
+                                            }
                                         }
 
                                         @Override
