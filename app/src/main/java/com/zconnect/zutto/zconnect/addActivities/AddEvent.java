@@ -28,8 +28,10 @@ import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.google.android.gms.location.places.Place;
@@ -96,7 +98,8 @@ public class AddEvent extends BaseActivity {
     boolean flag = false;
     DatabaseReference mFeaturesStats;
     private Uri mImageUri = null;
-    private ImageView mAddImage;
+    private SimpleDraweeView mAddImage;
+    private RelativeLayout mAddImageLayout;
     private MaterialEditText mEventName;
     private MaterialEditText mEventDescription;
     private MaterialEditText mVenue;
@@ -185,11 +188,13 @@ public class AddEvent extends BaseActivity {
 //            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-        mAddImage = (ImageView) findViewById(R.id.imageButton);
+
+        mAddImageLayout = findViewById(R.id.image_layout);
+        mAddImage =  findViewById(R.id.imageButton);
         mEventName = (MaterialEditText) findViewById(R.id.name);
         mEventDescription = (MaterialEditText) findViewById(R.id.description);
         mStorage = FirebaseStorage.getInstance().getReference();
-        mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
+
         gmapLocationTaken = (CheckBox) findViewById(R.id.add_events_location_checkbox);
         mDatabaseVerified = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents");
         //mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/NotVerifiedPosts");
@@ -203,7 +208,6 @@ public class AddEvent extends BaseActivity {
             EventID = bundle.getString("eventID");
         }
 
-        mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         CalendarButton = (LinearLayout) findViewById(R.id.dateAndTime);
         mVenue = (MaterialEditText) findViewById(R.id.VenueText);
         mDirections = (ImageView) findViewById(R.id.venuePicker);
@@ -215,7 +219,7 @@ public class AddEvent extends BaseActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        mAddImage.setOnClickListener(new View.OnClickListener() {
+        mAddImageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (ContextCompat.checkSelfPermission(
@@ -833,7 +837,8 @@ public class AddEvent extends BaseActivity {
 
                     mImageUri = Uri.parse(path);
                     editImageflag = true;
-                    mAddImage.setImageURI(mImageUri);
+
+                    Picasso.with(this).load(mImageUri).into(mAddImage);
 
                 } catch (IOException e) {
                     e.printStackTrace();

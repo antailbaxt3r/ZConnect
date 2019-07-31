@@ -193,7 +193,7 @@ public class OpenUserDetail extends BaseActivity {
 
 
 
-                        if(shot2.child("tabUID").toString().equals("personalChats") || shot2.child("tabUID").toString().equals("others")){
+                        if(shot2.child("tabUID").getValue().toString().equals("personalChats") || shot2.child("tabUID").getValue().toString().equals("others")|| shot2.child("tabUID").getValue().toString().equals("cabpools") || shot2.child("tabUID").getValue().toString().equals("events")){
                             continue;
                         }
                        joinedForumsList.add(temp);

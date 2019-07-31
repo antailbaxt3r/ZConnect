@@ -32,6 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.google.android.gms.tasks.Continuation;
@@ -48,6 +49,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.R;
@@ -56,6 +58,7 @@ import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.commonModules.NumberNotificationForFeatures;
+import com.zconnect.zutto.zconnect.commonModules.SquareImageView;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
@@ -78,15 +81,16 @@ import static com.zconnect.zutto.zconnect.utilities.RequestCodes.GALLERY_REQUEST
 
 public class AddNotices extends BaseActivity {
 
-    ImageButton mAddPhoto;
-    TextView mName;
-    String key;
-    Intent galleryIntent;
-    IntentHandle intentHandle;
+    private SimpleDraweeView mAddPhoto;
+    private RelativeLayout mAddPhotoLayout;
+    private TextView mName;
+    private String key;
+    private Intent galleryIntent;
+    private IntentHandle intentHandle;
     private StorageReference mStorage;
     private DatabaseReference mDatabase,mPostedByDetails;
     private ProgressDialog mProgress;
-    Button submit;
+    private Button submit;
     private Long postTimeMillis;
     private DatabaseReference mUsername;
     private FirebaseAuth mAuth;
@@ -126,8 +130,8 @@ public class AddNotices extends BaseActivity {
 //            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-
-        mAddPhoto = (ImageButton)findViewById(R.id.imageButton);
+        mAddPhotoLayout = findViewById(R.id.image_layout);
+        mAddPhoto = findViewById(R.id.imageButton);
         mName=(TextView)findViewById(R.id.name);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("notices").child("activeNotices");
         submit=(Button)findViewById(R.id.submit);
@@ -139,7 +143,7 @@ public class AddNotices extends BaseActivity {
 
         intentHandle = new IntentHandle();
 
-        mAddPhoto.setOnClickListener(new View.OnClickListener() {
+        mAddPhotoLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (ContextCompat.checkSelfPermission(
@@ -221,7 +225,8 @@ public class AddNotices extends BaseActivity {
 
                     mImageUri = Uri.parse(path);
                     mImageUriSmall = Uri.parse(pathSmall);
-                    mAddPhoto.setImageURI(mImageUri);
+
+                    Picasso.with(this).load(mImageUri).into(mAddPhoto);
 
                 } catch (IOException e) {
                     e.printStackTrace();

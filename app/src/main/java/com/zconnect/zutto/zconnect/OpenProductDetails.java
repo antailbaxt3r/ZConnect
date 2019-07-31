@@ -33,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -73,7 +74,7 @@ import static com.zconnect.zutto.zconnect.commonModules.GlobalFunctions.combineI
 
 public class OpenProductDetails extends BaseActivity {
 
-    private ImageView productImage;
+    private SimpleDraweeView productImage;
     private TextView productName, productPrice, productPriceType, productDescription, productSellerName, productDate;
     private Button productShortlist, productCall;
     private String productCategory;
@@ -142,7 +143,7 @@ public class OpenProductDetails extends BaseActivity {
         Intent intent = getIntent();
         productKey = intent.getStringExtra("key");
 
-        productImage = (ImageView) findViewById(R.id.product_image);
+        productImage = findViewById(R.id.product_image);
         productName = (TextView) findViewById(R.id.product_name);
         productPrice = (TextView) findViewById(R.id.product_price);
         productPriceType = (TextView) findViewById(R.id.product_price_type);
