@@ -20,7 +20,7 @@
         android:layout_gravity="end"
         android:layout_marginEnd="20dp"
         android:layout_marginStart="20dp"
-        android:text="Add a status, a poll, a cabpool or whatever you want!"
+        android:text="Here you'll find options to add a status, create a poll and much more! The more things you add the more value you'll generate for your community!"
         android:textColor="@color/white"
         android:textSize="16sp"/>
 
@@ -34,6 +34,4 @@
         android:layout_marginBottom="50dp"
         android:textColor="@color/white"
         android:textSize="20sp"/>
-
-
 </LinearLayout>

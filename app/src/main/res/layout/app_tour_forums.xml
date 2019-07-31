@@ -20,7 +20,7 @@
         android:layout_gravity="end"
         android:layout_marginEnd="20dp"
         android:layout_marginStart="20dp"
-        android:text="Forums are conversation hubs for talking with like-minded people in your community"
+        android:text="Forums are discussion groups. Here you'll find like-minded people from your community."
         android:textColor="@color/white"
         android:textSize="16sp"/>
 
