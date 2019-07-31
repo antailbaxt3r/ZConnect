@@ -5,6 +5,7 @@ import android.accessibilityservice.GestureDescription;
 import android.app.AlertDialog;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -150,6 +151,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
     private LinearLayout joinLayout, chatLayout;
     private Menu menu;
     private ProgressBar progressBar;
+    private ProgressDialog progressDialog;
     private DatabaseReference mUserReference;
     private FirebaseAuth mAuth;
     private static boolean unseenFlag, unseenFlag2;
@@ -1085,7 +1087,9 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
     }
 
     private void postPhoto() {
-
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Posting Image...");
+        progressDialog.show();
         mStorage = FirebaseStorage.getInstance().getReference();
 
         final ChatItemFormats message = new ChatItemFormats();
@@ -1215,7 +1219,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                                     notificationSender.execute(cabChatNotification);
                                 }
 
-
+                                progressDialog.dismiss();
                             }
 
                             @Override

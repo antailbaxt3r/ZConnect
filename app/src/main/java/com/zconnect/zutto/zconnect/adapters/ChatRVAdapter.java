@@ -25,30 +25,44 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ChatActivity;
+import com.zconnect.zutto.zconnect.OpenStatus;
 import com.zconnect.zutto.zconnect.commonModules.DBHelper;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
+import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.custom.MentionsClickableSpan;
 import com.zconnect.zutto.zconnect.holders.EmptyRVViewHolder;
 import com.zconnect.zutto.zconnect.holders.otherForumsRVViewHolder;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
 import com.zconnect.zutto.zconnect.commonModules.viewImage;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
+
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityTitle;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -65,8 +79,9 @@ import java.util.regex.Pattern;
 
 public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    ArrayList<ChatItemFormats> chatFormats;
-    Context ctx;
+    private ArrayList<ChatItemFormats> chatFormats;
+    private Context ctx;
+    private OpenStatus statusActivity;
 
     private DatabaseReference databaseref;
     private DatabaseReference forumRef;
@@ -82,6 +97,16 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.databaseref = databaseref;
         this.forumRef = reference;
         this.forumType = forumType;
+    }
+
+    //for status Activity
+    public ChatRVAdapter(ArrayList<ChatItemFormats> chatFormats, DatabaseReference databaseref,DatabaseReference reference,Context ctx, OpenStatus statusActivity, String forumType) {
+        this.chatFormats = chatFormats;
+        this.ctx = ctx;
+        this.databaseref = databaseref;
+        this.forumRef = reference;
+        this.forumType = forumType;
+        this.statusActivity = statusActivity;
     }
 
     @Override
@@ -103,10 +128,9 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             return MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE;
         }else if(chatFormats.get(position).getMessageType().equals(MessageTypeUtilities.KEY_MATCHED_MESSAGE_STR)){
             return MessageTypeUtilities.KEY_MATCHED_MESSAGE;
+        }else if(chatFormats.get(position).getMessageType().equals(MessageTypeUtilities.KEY_STATUS_STR)){
+            return MessageTypeUtilities.KEY_STATUS;
         }
-//        else if(chatFormats.get(position).getMessageType().equals(MessageTypeUtilities.KEY_PHOTO_SENDING_STR)){
-//            return MessageTypeUtilities.KEY_PHOTO_SENDING;
-//        }
         else{
             return -1;
         }
@@ -135,6 +159,9 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         } else if(viewType == MessageTypeUtilities.KEY_MATCHED_MESSAGE){
             View messageContactView = inflater.inflate(R.layout.chat_message_format, parent, false);
             return new messageViewHolder(messageContactView, parent.getContext());
+        }else if(viewType == MessageTypeUtilities.KEY_STATUS){
+            View statusView = inflater.inflate(R.layout.status_layout, parent, false);
+            return new statusViewHolder(statusView, parent.getContext());
         }
 //        else if(viewType == MessageTypeUtilities.KEY_PHOTO_SENDING){
 //            View photoContactView = inflater.inflate(R.layout.chat_photo_format, parent, false);
@@ -810,6 +837,11 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
 
         }
+        else if(message.getMessageType().equals(MessageTypeUtilities.KEY_STATUS_STR)){
+            statusViewHolder holder = (statusViewHolder) rvHolder;
+            holder.setStatusDetails(chatFormats.get(position),statusActivity);
+
+        }
         else{
             final otherForumsRVViewHolder otherForumsRVViewHolder = (otherForumsRVViewHolder) rvHolder;
             otherForumsRVViewHolder.itemView.setOnClickListener(v -> {
@@ -879,6 +911,77 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         final ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, productImage, ctx.getResources().getString(R.string.transition_string));
 
         ctx.startActivity(i, optionsCompat.toBundle());
+    }
+
+    private void deleteFromDatabase(final ChatItemFormats Message) {
+
+        try
+        {
+            forumRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.hasChild("lastMessage"))
+                    {
+                        if (dataSnapshot.child("lastMessage").child("key").getValue().toString().equals(Message.getKey()))
+                        {
+                            forumRef.child("lastMessage").removeValue();
+                            isLastMessage = true;
+                        }
+                        else
+                            isLastMessage = false;
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) { }
+            });
+        }
+        catch (Exception e)
+        { e.printStackTrace(); }
+
+        if (isLastMessage)
+        {
+            forumRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.hasChild("lastMessage"))
+                    {
+                        Toast.makeText(ctx, "Unable to delete message.Try again later.", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                        databaseref.child("Chat").child(Message.getKey()).removeValue();
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) { }
+            });
+        }
+        else
+            databaseref.child("Chat").child(Message.getKey()).removeValue();
+
+        // After deleting , chat needs to be refreshed
+        loadMessagesListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                chatFormats.clear();
+                for (DataSnapshot snapshot:dataSnapshot.getChildren()) {
+                    ChatItemFormats temp = new ChatItemFormats();
+
+                    temp = snapshot.getValue(ChatItemFormats.class);
+
+                    temp.setKey(snapshot.getKey());
+
+                    if (!snapshot.hasChild("messageType")) {
+                        temp.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
+                    }
+                    chatFormats.add(temp);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+        databaseref.child("Chat").addValueEventListener(loadMessagesListener);
     }
 
     @Override
@@ -986,78 +1089,6 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             });
         }
     }
-
-    private void deleteFromDatabase(final ChatItemFormats Message) {
-
-        try
-        {
-            forumRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChild("lastMessage"))
-                {
-                    if (dataSnapshot.child("lastMessage").child("key").getValue().toString().equals(Message.getKey()))
-                    {
-                        forumRef.child("lastMessage").removeValue();
-                        isLastMessage = true;
-                    }
-                    else
-                        isLastMessage = false;
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
-            });
-        }
-        catch (Exception e)
-        { e.printStackTrace(); }
-
-        if (isLastMessage)
-        {
-            forumRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.hasChild("lastMessage"))
-                    {
-                        Toast.makeText(ctx, "Unable to delete message.Try again later.", Toast.LENGTH_SHORT).show();
-                    }
-                    else
-                        databaseref.child("Chat").child(Message.getKey()).removeValue();
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) { }
-            });
-        }
-        else
-            databaseref.child("Chat").child(Message.getKey()).removeValue();
-
-        // After deleting , chat needs to be refreshed
-        loadMessagesListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                chatFormats.clear();
-                for (DataSnapshot snapshot:dataSnapshot.getChildren()) {
-                    ChatItemFormats temp = new ChatItemFormats();
-
-                    temp = snapshot.getValue(ChatItemFormats.class);
-
-                    temp.setKey(snapshot.getKey());
-
-                    if (!snapshot.hasChild("messageType")) {
-                        temp.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
-                    }
-                    chatFormats.add(temp);
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        };
-        databaseref.child("Chat").addValueEventListener(loadMessagesListener);
-    }
-
 
     class photoViewHolder extends RecyclerView.ViewHolder {
 
@@ -1167,7 +1198,6 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-
     class photoShopViewHolder extends RecyclerView.ViewHolder {
 
         TextView name, time, timeGroupText;
@@ -1196,5 +1226,228 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             name.setTypeface(quicksandBold);
             time.setTypeface(quicksandLight);
         }
+    }
+
+    class statusViewHolder extends RecyclerView.ViewHolder{
+
+        private SimpleDraweeView userImage;
+        private TextView username, timePosted, content, likes, comments;
+        private ImageView postedImage, likeButton;
+        private RelativeLayout likeLayout;
+
+        private String usernameText, timePostedText, contentText, userImageURL, postedImageURL, likeText, commentText;
+        private int likeCount, commentCount;
+        private long timeInMillis;
+        private boolean statusLikeFlag;
+
+        private DatabaseReference ref;
+        private FirebaseUser user;
+        private String currentUserID;
+
+        private DatabaseReference mUserReference;
+        private ImageView commentButton;
+        private RelativeLayout commentLayout;
+
+        public statusViewHolder(View itemView, Context ctx) {
+            super(itemView);
+
+            username = itemView.findViewById(R.id.sentence_open_status_item_format);
+            timePosted = itemView.findViewById(R.id.postTime_open_status);
+            userImage = itemView.findViewById(R.id.user_image_open_status);
+            content = itemView.findViewById(R.id.content_open_status);
+            likeButton = itemView.findViewById(R.id.like_image_open_status);
+            likeLayout = itemView.findViewById(R.id.messagesRecentItem_like_layout);
+            commentLayout = itemView.findViewById(R.id.messagesRecentItem_comment_layout);
+            commentButton = itemView.findViewById(R.id.comment_image_open_status);
+            postedImage = itemView.findViewById(R.id.open_status_image);
+            likes = itemView.findViewById(R.id.like_text_open_status);
+            comments = itemView.findViewById(R.id.comment_text_open_status);
+
+            user = FirebaseAuth.getInstance().getCurrentUser();
+            currentUserID = user.getUid();
+
+            mUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(currentUserID);
+
+
+
+        }
+
+        public void  setStatusDetails(ChatItemFormats statusDetails,OpenStatus statusActivity){
+
+            ref= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(statusDetails.getKey());
+
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    //attach basic details in card
+                    usernameText = dataSnapshot.child("PostedBy").child("Username").getValue().toString();
+                    userImageURL = dataSnapshot.child("PostedBy").child("ImageThumb").getValue().toString();
+                    timeInMillis = Long.parseLong(dataSnapshot.child("PostTimeMillis").getValue().toString());
+                    contentText = dataSnapshot.child("desc").getValue().toString();
+                    postedImageURL = dataSnapshot.child("imageurl").getValue().toString();
+
+                    username.setText(usernameText);
+                    content.setText(contentText);
+
+                    if (timeInMillis > 0){
+                        TimeUtilities ta = new TimeUtilities(timeInMillis, System.currentTimeMillis());
+                        timePostedText = ta.calculateTimeAgo();
+                        timePosted.setText(timePostedText);
+                    }
+
+                    System.out.println("likeCount is");
+                    if (dataSnapshot.hasChild("likeCount")){
+                        likeCount = Integer.parseInt(dataSnapshot.child("likeCount").getValue().toString());
+                        if (likeCount > 0){
+                            likes.setVisibility(View.VISIBLE);
+                            likeText =  Integer.toString(likeCount);
+                            likes.setText(likeText);
+                        }else {
+                            likes.setVisibility(View.GONE);
+                        }
+                    }
+
+                    if (dataSnapshot.hasChild("msgComments")){
+                        commentCount = Integer.parseInt(dataSnapshot.child("msgComments").getValue().toString());
+                        if (commentCount > 0){
+                            comments.setVisibility(View.VISIBLE);
+                            commentText = Integer.toString(commentCount);
+                            comments.setText(commentText);
+                        }else {
+                            comments.setVisibility(View.GONE);
+                        }
+                    }
+
+                    userImage.setImageURI(userImageURL);
+
+                    if (!(postedImageURL.equals("No Image") || postedImageURL.isEmpty())){
+                        postedImage.setVisibility(View.VISIBLE);
+                        Picasso.with(itemView.getContext()).load(postedImageURL).into(postedImage);
+                    }else{
+                        postedImage.setVisibility(View.GONE);
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+            ref.child("likeUids").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
+
+                    if(dataSnapshot.hasChild(user.getUid())){
+
+                        if(dataSnapshot.getChildrenCount()>0)
+                            likes.setText(String.valueOf(dataSnapshot.getChildrenCount()));
+                        else
+                            likes.setText("");
+                        likes.setTextColor(itemView.getContext().getResources().getColor(R.color.black));
+                        likeButton.setImageDrawable(itemView.getContext().getResources().getDrawable(R.drawable.baseline_thumb_up_alt_white_24));
+                        likeButton.setColorFilter(itemView.getContext().getResources().getColor(R.color.deepPurple500));
+                        statusLikeFlag=true;
+                    }else {
+                        if(dataSnapshot.getChildrenCount()>0)
+                            likes.setText(String.valueOf(dataSnapshot.getChildrenCount()));
+                        else
+                            likes.setText("");
+                        likes.setTextColor(itemView.getContext().getResources().getColor(R.color.icon_color));
+                        likeButton.setImageDrawable(itemView.getContext().getResources().getDrawable(R.drawable.outline_thumb_up_alt_white_24));
+                        likeButton.setColorFilter(content.getResources().getColor(R.color.icon_color));
+                        statusLikeFlag=false;
+                    }
+
+                    likeLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if(statusLikeFlag == true){
+                                statusLikeFlag = false;
+                                likes.setText(String.valueOf(Integer.valueOf(likes.getText().toString())-1));
+                                if(likes.getText().toString().equals("0")){
+                                    likes.setText("");
+                                }
+                                ref.child("likeUids").child(user.getUid()).removeValue();
+                                likeButton.setColorFilter(itemView.getContext().getResources().getColor(R.color.icon_color));
+                                likeButton.setImageDrawable(itemView.getContext().getResources().getDrawable(R.drawable.outline_thumb_up_alt_white_24));
+                            }else{
+                                statusLikeFlag = true;
+                                likes.setTextColor(itemView.getContext().getResources().getColor(R.color.black));
+                                likeButton.setImageDrawable(itemView.getContext().getResources().getDrawable(R.drawable.baseline_thumb_up_alt_white_24));
+                                likeButton.setColorFilter(itemView.getContext().getResources().getColor(R.color.deepPurple500));
+                                if(likes.getText().toString().equals("")){
+                                    likes.setText("1");
+                                }else {
+                                    likes.setText(String.valueOf(Integer.valueOf(likes.getText().toString()) + 1));
+                                }
+                                Map<String, Object> taskMap = new HashMap<String, Object>();
+                                taskMap.put(user.getUid(), user.getUid());
+                                ref.child("likeUids").updateChildren(taskMap);
+                                try {
+                                    final NotificationSender notificationSender = new NotificationSender(itemView.getContext(), FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                    final NotificationItemFormat statusLikeNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_STATUS_LIKED, FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                    // HashMap<String,Object> hashmap=new HashMap<>();
+                                    // hashmap.put("meta",1);
+                                    statusLikeNotification.setItemKey(statusDetails.getKey());
+                                    DatabaseReference mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                    mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
+                                            statusLikeNotification.setUserImage(userItem.getImageURLThumbnail());
+                                            statusLikeNotification.setUserName(userItem.getUsername());
+                                            statusLikeNotification.setUserKey(userItem.getUserUID());
+                                            statusLikeNotification.setCommunityName(communityTitle);
+                                            statusLikeNotification.setItemLikeCount(Integer.parseInt(likes.getText().toString()));
+                                            HashMap<String,Object> metadata = new HashMap<>();
+                                            metadata.put("key",statusDetails.getKey());
+                                            metadata.put("featurePID", statusDetails.getKey());
+
+                                            GlobalFunctions.inAppNotifications("liked your status", statusDetails.getMessage(), userItem, false, "status", metadata, statusDetails.getUuid());
+                                            notificationSender.execute(statusLikeNotification);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+                                catch (Exception e){
+                                    Toast.makeText(itemView.getContext(),"Could not send notification",Toast.LENGTH_LONG).show();
+                                }
+
+                            }
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+            commentLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    statusActivity.recyclerView.scrollToPosition(chatFormats.size()-1);
+                    statusActivity.findViewById(R.id.typer).requestFocus();
+                    InputMethodManager imm = (InputMethodManager) statusActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(statusActivity.findViewById(R.id.typer), InputMethodManager.SHOW_IMPLICIT);
+
+                }
+            });
+
+        }
+
+
+
+
     }
 }

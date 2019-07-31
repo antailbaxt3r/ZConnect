@@ -42,6 +42,7 @@ import com.zconnect.zutto.zconnect.InfoneContactListActivity;
 import com.zconnect.zutto.zconnect.Notices;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.OpenProductDetails;
+import com.zconnect.zutto.zconnect.OpenStatus;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.ShortlistedPeopleList;
@@ -272,12 +273,22 @@ public class NotificationService extends FirebaseMessagingService {
                     .setContentTitle(communityName)
                     .setContentText("A new notice for " + noticeName + "is added, click to check");
 
+
             Intent intentInfoneList = new Intent(NotificationService.this, Notices.class);
-            PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intentInfoneList, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+            intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+            Intent[] intents = new Intent[]{intent0,intentInfoneList};
+
+
+            PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_ONE_SHOT);
             mBuilder.setContentIntent(intent1);
 
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.notify(20, mBuilder.build());
+
+
     }
 
     private void statusLikeNotification() {
@@ -310,10 +321,15 @@ public class NotificationService extends FirebaseMessagingService {
         if(likeCount.length()>0)
             mBuilder.setContentText(userName + " and " + likeCount + " others " + " like your status");
 
-        Intent intent = new Intent(NotificationService.this, HomeActivity.class);
-//        intent.putExtra("id",eventKey);
+        Intent intent = new Intent(NotificationService.this, OpenStatus.class);
+        intent.putExtra("key",statusKey);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        Intent[] intents = new Intent[]{intent0,intent};
+
+        PendingIntent pendingIntent = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_ONE_SHOT);
         mBuilder.setContentIntent(pendingIntent);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -350,7 +366,12 @@ public class NotificationService extends FirebaseMessagingService {
 
         Intent intent = new Intent(NotificationService.this, VerificationPage.class);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, 0);
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        Intent[] intents = new Intent[]{intent0,intent};
+
+        PendingIntent pendingIntent = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_ONE_SHOT);
         mBuilder.setContentIntent(pendingIntent);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -530,7 +551,12 @@ public class NotificationService extends FirebaseMessagingService {
         Intent intent = new Intent(NotificationService.this, OpenUserDetail.class);
         intent.putExtra("Uid",userKey);
 
-        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        Intent[] intents = new Intent[]{intent0,intent};
+
+        PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -583,7 +609,12 @@ public class NotificationService extends FirebaseMessagingService {
         intent.putExtra("key",postKey);
         intent.putExtra("type","post");
 
-        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        Intent[] intents = new Intent[]{intent0,intent};
+
+        PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -634,7 +665,12 @@ public class NotificationService extends FirebaseMessagingService {
         intent.putExtra("name",eventName);
         intent.putExtra("ref", "https://zconnectmulticommunity.firebaseio.com/communities/" + communityReference + "/features/events/activeEvents"+ eventKey);
 
-        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        Intent[] intents = new Intent[]{intent0,intent};
+
+        PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -685,7 +721,12 @@ public class NotificationService extends FirebaseMessagingService {
         intent.putExtra("key",cabKey);
         intent.putExtra("ref", "https://zconnectmulticommunity.firebaseio.com/communities/"+ communityReference +"/features/cabPool/allCabs/"+cabKey);
 
-        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        Intent[] intents = new Intent[]{intent0,intent};
+
+        PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -736,8 +777,12 @@ public class NotificationService extends FirebaseMessagingService {
         intent.putExtra("name",productName);
         intent.putExtra("ref", "https://zconnectmulticommunity.firebaseio.com/communities/" + communityReference +"/features/storeroom/products/"+productKey);
 
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
-        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent[] intents = new Intent[]{intent0,intent};
+
+        PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -840,7 +885,12 @@ public class NotificationService extends FirebaseMessagingService {
         Intent intent = new Intent(NotificationService.this, OpenUserDetail.class);
         intent.putExtra("Uid",userKey);
 
-        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        Intent[] intents = new Intent[]{intent0,intent};
+
+        PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -884,7 +934,12 @@ public class NotificationService extends FirebaseMessagingService {
         Intent intent = new Intent(NotificationService.this, OpenUserDetail.class);
         intent.putExtra("Uid",userKey);
 
-        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        Intent[] intents = new Intent[]{intent0,intent};
+
+        PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -930,8 +985,12 @@ public class NotificationService extends FirebaseMessagingService {
         intentInfoneList.putExtra("catImageurl",categoryName);
         intentInfoneList.putExtra("catAdmin",categoryAdmin);
 
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
-        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intentInfoneList, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent[] intents = new Intent[]{intent0,intentInfoneList};
+
+        PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -988,7 +1047,12 @@ public class NotificationService extends FirebaseMessagingService {
         intent.putExtra("tab",forumCategoryUID);
         intent.putExtra("key",forumKey);
 
-        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        Intent[] intents = new Intent[]{intent0,intent};
+
+        PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -1064,7 +1128,12 @@ public class NotificationService extends FirebaseMessagingService {
             intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
         }
 
-        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        Intent[] intents = new Intent[]{intent0,intent};
+
+        PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -1106,7 +1175,12 @@ public class NotificationService extends FirebaseMessagingService {
         Intent intent = new Intent(NotificationService.this, OpenEventDetail.class);
         intent.putExtra("id", eventKey);
 
-        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        Intent[] intents = new Intent[]{intent0,intent};
+
+        PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -1132,7 +1206,13 @@ public class NotificationService extends FirebaseMessagingService {
 
 
         Intent intent = new Intent(NotificationService.this, CabPoolAll.class);
-        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        Intent[] intents = new Intent[]{intent0,intent};
+
+        PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -1177,7 +1257,12 @@ public class NotificationService extends FirebaseMessagingService {
         Intent intent = new Intent(NotificationService.this, ShortlistedPeopleList.class);
         intent.putExtra("Key", productKey);
 
-        PendingIntent pendingIntent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        Intent[] intents = new Intent[]{intent0,intent};
+
+        PendingIntent pendingIntent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pendingIntent1);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -1216,8 +1301,12 @@ public class NotificationService extends FirebaseMessagingService {
         Intent intent = new Intent(NotificationService.this, CabPoolListOfPeople.class);
         intent.putExtra("key", cabKey);
 
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent[] intents = new Intent[]{intent0,intent};
+
+        PendingIntent pendingIntent = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pendingIntent);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -1255,7 +1344,12 @@ public class NotificationService extends FirebaseMessagingService {
         Intent intent = new Intent(NotificationService.this, CabPoolListOfPeople.class);
         intent.putExtra("key", cabKey);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        Intent[] intents = new Intent[]{intent0,intent};
+
+        PendingIntent pendingIntent = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pendingIntent);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -1295,7 +1389,12 @@ public class NotificationService extends FirebaseMessagingService {
         Intent intent = new Intent(NotificationService.this, OpenEventDetail.class);
         intent.putExtra("id",eventKey);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        Intent[] intents = new Intent[]{intent0,intent};
+
+        PendingIntent pendingIntent = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pendingIntent);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

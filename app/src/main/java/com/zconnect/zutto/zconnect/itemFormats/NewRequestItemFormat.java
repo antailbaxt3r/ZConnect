@@ -6,14 +6,6 @@ public class NewRequestItemFormat {
     private Long PostTimeMillis;
     private PostedByDetails PostedBy;
 
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
     private String link;
 
     public NewRequestItemFormat()
@@ -21,7 +13,7 @@ public class NewRequestItemFormat {
 
     }
 
-    public NewRequestItemFormat(String locationName,String imageurl,String thumbnail,String key,String type,Long postTimeMillis,PostedByDetails postedBy)
+    public NewRequestItemFormat(String locationName,String imageurl,String thumbnail,String key,String type,Long postTimeMillis,PostedByDetails postedBy, String link)
     {
         this.Name = locationName;
         this.key = key;
@@ -30,6 +22,7 @@ public class NewRequestItemFormat {
         this.Type=type;
         this.imageurl = imageurl;
         this.thumbnail = thumbnail;
+        this.link = link;
     }
 
     public String getName() {
@@ -86,5 +79,13 @@ public class NewRequestItemFormat {
 
     public void setThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 }

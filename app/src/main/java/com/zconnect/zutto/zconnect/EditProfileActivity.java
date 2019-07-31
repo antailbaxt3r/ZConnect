@@ -446,7 +446,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         mProgress.show();
 
         userName = userNameText.getText().toString().trim();
-        userEmail = userEmailText.getText().toString();
+        userEmail = userEmailText.getText().toString().trim();
         userAbout = userAboutText.getText().toString();
         userWhatsapp = userWhatsappNumberText.getText().toString();
         userMobile = userMobileNumberText.getText().toString();

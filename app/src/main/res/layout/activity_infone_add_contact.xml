@@ -34,6 +34,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_add_a_photo_black_24"
+                android:tint="@color/secondaryText2"
+                android:layout_centerInParent="true"/>
+
             <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/image_add_infone_add"
                 android:layout_width="wrap_content"
@@ -43,12 +50,7 @@
                 fresco:actualImageScaleType="centerCrop"
                 fresco:roundAsCircle="true"
                 fresco:roundingBorderPadding="2dp" />
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/baseline_add_a_photo_black_24"
-                android:tint="@color/secondaryText2"
-                android:layout_centerInParent="true"/>
+
         </RelativeLayout>
 
         <TextView
