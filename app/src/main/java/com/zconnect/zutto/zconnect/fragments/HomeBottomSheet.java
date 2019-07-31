@@ -71,11 +71,11 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
         final View bottomSheetView = inflater.inflate(R.layout.content_home_bottomsheet, null);
         final LinearLayout bottomSheetAddEvent = (LinearLayout) bottomSheetView.findViewById(R.id.addEvent_bottomSheet);
         final LinearLayout bottomSheetAddProduct = (LinearLayout) bottomSheetView.findViewById(R.id.addProduct_bottomSheet);
-        LinearLayout bottomSheetAddMessage = (LinearLayout) bottomSheetView.findViewById(R.id.addMessage_bottomSheet);
-        LinearLayout bottomSheetCreatePoll = (LinearLayout) bottomSheetView.findViewById(R.id.createPoll_bottomSheet);
+        final LinearLayout bottomSheetAddMessage = (LinearLayout) bottomSheetView.findViewById(R.id.addMessage_bottomSheet);
+        final LinearLayout bottomSheetCreatePoll = (LinearLayout) bottomSheetView.findViewById(R.id.createPoll_bottomSheet);
         final LinearLayout bottomSheetSearchPool = (LinearLayout) bottomSheetView.findViewById(R.id.searchPool_bottomSheet);
         final LinearLayout bottomSheetAddNotices = bottomSheetView.findViewById(R.id.add_notices_bottomSheet);
-        LinearLayout bottomSheetAddContact = (LinearLayout) bottomSheetView.findViewById(R.id.addContact_bottomSheet);
+        final LinearLayout bottomSheetAddContact = (LinearLayout) bottomSheetView.findViewById(R.id.addContact_bottomSheet);
 
         communityFeaturesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("communityFeatures");
 
@@ -83,6 +83,8 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 CommunityFeatures communityFeatures = dataSnapshot.getValue(CommunityFeatures.class);
+
+                //shop feature and links not required
 
                 try {
 
@@ -92,13 +94,22 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                         bottomSheetSearchPool.setVisibility(View.GONE);
                     }
 
+                }catch (Exception e){
 
+                }
+
+                try{
                     if (communityFeatures.getEvents().equals("true")){
                         bottomSheetAddEvent.setVisibility(View.VISIBLE);
                     }else {
                         bottomSheetAddEvent.setVisibility(View.GONE);
                     }
 
+                }catch (Exception e){
+
+                }
+
+                try{
 
                     if (communityFeatures.getNotices().equals("true")){
                         bottomSheetAddNotices.setVisibility(View.VISIBLE);
@@ -107,11 +118,11 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                     }
 
 
-                    if (communityFeatures.getLinks().equals("true")){
+                }catch (Exception e){
 
-                    }else {
+                }
 
-                    }
+                try{
 
                     if (communityFeatures.getStoreroom().equals("true")){
                         bottomSheetAddProduct.setVisibility(View.VISIBLE);
