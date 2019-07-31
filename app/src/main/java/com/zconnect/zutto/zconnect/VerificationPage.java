@@ -81,15 +81,10 @@ public class VerificationPage extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verfication_page);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setToolbar();
+        setToolbar();
+        toolbar.setTitle("Verification");
         setSupportActionBar(toolbar);
-
-        progressDialog = new ProgressDialog(this);
-        progressDialogInitial = new ProgressDialog(this);
-        progressDialogInitial.setMessage("Loading");
-
-        progressDialogInitial.show();
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -111,6 +106,12 @@ public class VerificationPage extends BaseActivity {
 //            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
+
+        progressDialog = new ProgressDialog(this);
+        progressDialogInitial = new ProgressDialog(this);
+        progressDialogInitial.setMessage("Loading");
+
+        progressDialogInitial.show();
 
         statusTextView = (TextView) findViewById(R.id.verification_status);
         mAddImageLayout = findViewById(R.id.image_layout);
