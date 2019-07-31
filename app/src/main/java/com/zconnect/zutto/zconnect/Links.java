@@ -37,6 +37,8 @@ import com.zconnect.zutto.zconnect.utilities.RequestTypeUtilities;
 import java.util.HashMap;
 import java.util.Vector;
 
+import static com.zconnect.zutto.zconnect.R.drawable.ic_arrow_back_black_24dp;
+
 public class Links extends BaseActivity {
 
     ValueEventListener mValueEventListener ;
@@ -49,6 +51,32 @@ public class Links extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_links);
+
+        setToolbar();
+        toolbar.setTitle("Links");
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+//            getWindow().setStatusBarColor(colorDarkPrimary);
+//            getWindow().setNavigationBarColor(colorPrimary);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
 
         final Vector<ListItem> LinksList=new Vector<ListItem>();
 
