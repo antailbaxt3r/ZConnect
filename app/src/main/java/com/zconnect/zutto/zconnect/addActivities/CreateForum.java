@@ -680,7 +680,6 @@ public class CreateForum extends BaseActivity {
             counterPush.pushValues();
 
             //Home
-        Log.d("DATABASEREFHOME",databaseReferenceHome.toString());
         if(databaseReferenceHome!=null) {
                 databaseReferenceHome.child(newPush.getKey()).child("feature").setValue("Forums");
                 databaseReferenceHome.child(newPush.getKey()).child("name").setValue(catName);
