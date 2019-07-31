@@ -160,7 +160,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             } else if (recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR)) {
                 return RecentTypeUtilities.KEY_RECENT_NORMAL_POST_INT;
             } else {
-                return -1;
+                return RecentTypeUtilities.KEY_UPDATE_APP_INT;
             }
         } catch (NullPointerException e) {
             Log.d("Exception", "adding type");
@@ -184,8 +184,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             View contactView = inflater.inflate(R.layout.recents_item_format, parent, false);
             return new RecentsRVAdapter.Viewholder(contactView);
         } else {
-            View blankLayout = inflater.inflate(R.layout.row_blank_layout, parent, false);
-            return new RecentsRVAdapter.BlankViewHolder(blankLayout);
+            View updateAppLayout = inflater.inflate(R.layout.recents_update_app_item, parent, false);
+            return new RecentsRVAdapter.UpdateAppViewHolder(updateAppLayout);
         }
     }
 
@@ -1375,8 +1375,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 holder.sentence.setMovementMethod(LinkMovementMethod.getInstance());
                 break;
             default:
-                BlankViewHolder blankViewHolder = (BlankViewHolder) holder2;
-//                blankViewHolder = (BlankViewHolder)holder2;
+                UpdateAppViewHolder updateAppViewHolder = (UpdateAppViewHolder) holder2;
                 break;
         }
 
@@ -2410,6 +2409,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     }
 
+    private class UpdateAppViewHolder extends RecyclerView.ViewHolder {
+
+        public UpdateAppViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
     private class FeaturesViewHolder extends RecyclerView.ViewHolder {
 
         private String TAG = FeaturesViewHolder.class.getSimpleName();
@@ -2940,19 +2946,23 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     shops.setOnClickListener(new OnSingleClickListener() {
                         @Override
                         public void onSingleClick(View v) {
+                            Log.d("JJJJJ", "inside click");
                             FirebaseDatabase.getInstance().getReference().child("minimumClientVersion")
                                     .child("shops").addListenerForSingleValueEvent(
                                     new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
                                             try {
-                                                Log.d("VERSIONN", dataSnapshot.getValue(Integer.class) + "");
+                                                Log.d("JJJJJ", "inside try");
+                                                Log.d("VERSIONN", dataSnapshot2.getValue(Integer.class) + "");
                                                 if (dataSnapshot2.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
+                                                    Log.d("JJJJJ", "inside if");
                                                     Intent intent = new Intent(context, UpdateAppActivity.class);
                                                     intent.putExtra("feature", "shops");
                                                     context.startActivity(intent);
 
                                                 } else {
+                                                    Log.d("JJJJJ", "inside else");
                                                     if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
                                                         resetFeaturesUnreadCount(FeatureDBName.KEY_SHOPS, dataSnapshot);
                                                         Intent intent = new Intent(context, PoolActivity.class);
@@ -2968,11 +2978,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                                         CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                                                         counterPush.pushValues();
                                                     } else {
-                                                        newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Storeroom", context);
+                                                        newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Shop", context);
                                                     }
 
                                                 }
-                                            }catch (Exception e){}
+                                            }catch (Exception e){
+                                                Log.d("JJJJJ", "inside catch" + e.getMessage());
+                                            }
                                         }
 
                                         @Override

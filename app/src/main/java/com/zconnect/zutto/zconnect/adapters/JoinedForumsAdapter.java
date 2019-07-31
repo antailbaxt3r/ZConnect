@@ -167,50 +167,50 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         else if (forumCategory.getForumType().equals(ForumUtilities.VALUE_SHARE_FORUM_STR)) {
             final JoinedForumsRVViewHolder holderMain = (JoinedForumsRVViewHolder) holder;
             Log.d("In here", forumCategoriesItemFormats.get(position).getTabUID().toString());
-            if (forumCategoriesItemFormats.get(position).getTabUID().toString().equals("personalChats")) {
-                Log.d("In here inside", forumCategoriesItemFormats.get(position).getTabUID().toString());
+//            if (forumCategoriesItemFormats.get(position).getTabUID().toString().equals("personalChats")) {
+//                Log.d("In here inside", forumCategoriesItemFormats.get(position).getTabUID().toString());
 
-                final ForumCategoriesItemFormat itemFormat = forumCategoriesItemFormats.get(position);
-                DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("personalChats").child(forumCategoriesItemFormats.get(position).getCatUID());
-                db.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        dataSnapshot = dataSnapshot.child("users");
-                        Log.d("user:details", dataSnapshot.toString());
-
-                        for (DataSnapshot user : dataSnapshot.getChildren()) {
-                            Log.d("user:details", user.toString());
-                            if (user.child("userUID").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                                continue;
-                            }
-                            ForumCategoriesItemFormat itemFormat1 = itemFormat;
-                            itemFormat1.setName(user.child("name").getValue().toString());
-                            itemFormat1.setImageThumb(user.child("imageThumb").getValue().toString());
-                            itemFormat1.setImage(user.child("imageThumb").getValue().toString());
-                            Log.d("Try:inside dataChange", user.child("name").getValue().toString());
-                            holderMain.setDetailsForShare(itemFormat1);
-                            holderMain.openChat(itemFormat1.getCatUID(), itemFormat1.getTabUID(), user.child("name").getValue().toString(),
-                                    itemFormat1.getMessage(), itemFormat1.getMessageType());
-
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d("error", databaseError.toString());
-                    }
-                });
-            } else {
-                ForumCategoriesRVAdapter.blankViewHolder blankViewHolder = (ForumCategoriesRVAdapter.blankViewHolder) holder;
-                Log.d("Setting View", Integer.toString(position));
-           /* holderMain.setDetailsForShare(forumCategoriesItemFormats.get(position));
+//                final ForumCategoriesItemFormat itemFormat = forumCategoriesItemFormats.get(position);
+//                DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("personalChats").child(forumCategoriesItemFormats.get(position).getCatUID());
+//                db.addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        dataSnapshot = dataSnapshot.child("users");
+//                        Log.d("user:details", dataSnapshot.toString());
+//
+//                        for (DataSnapshot user : dataSnapshot.getChildren()) {
+//                            Log.d("user:details", user.toString());
+//                            if (user.child("userUID").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+//                                continue;
+//                            }
+//                            ForumCategoriesItemFormat itemFormat1 = itemFormat;
+//                            itemFormat1.setName(user.child("name").getValue().toString());
+//                            itemFormat1.setImageThumb(user.child("imageThumb").getValue().toString());
+//                            itemFormat1.setImage(user.child("imageThumb").getValue().toString());
+//                            Log.d("Try:inside dataChange", user.child("name").getValue().toString());
+//                            holderMain.setDetailsForShare(itemFormat1);
+//                            holderMain.openChat(itemFormat1.getCatUID(), itemFormat1.getTabUID(), user.child("name").getValue().toString(),
+//                                    itemFormat1.getMessage(), itemFormat1.getMessageType());
+//
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//                        Log.d("error", databaseError.toString());
+//                    }
+//                });
+//            } else {
+//                ForumCategoriesRVAdapter.blankViewHolder blankViewHolder = (ForumCategoriesRVAdapter.blankViewHolder) holder;
+//                Log.d("Setting View", Integer.toString(position));
+            holderMain.setDetailsForShare(forumCategoriesItemFormats.get(position));
             holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID()
                     , forumCategoriesItemFormats.get(position).getTabUID()
                     , forumCategoriesItemFormats.get(position).getName()
                     ,forumCategoriesItemFormats.get(position).getMessage()
                     ,forumCategoriesItemFormats.get(position).getMessageType());
-*/
-            }
+
+//            }
         }
     }
 

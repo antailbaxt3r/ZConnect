@@ -1,19 +1,24 @@
 package com.zconnect.zutto.zconnect;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -24,10 +29,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Adapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -205,19 +212,60 @@ public class OpenStatus extends BaseActivity {
                 user.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
-                        if (dataSnapshot.hasChild("userType")) {
-                            if (userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
-                                newUserVerificationAlert.buildAlertCheckNewUser(userItemFormat.getUserType(), "Chat", OpenStatus.this);
-                            } else {
+                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(OpenStatus.this);
+                        boolean preferencesBoolean = preferences.getBoolean("isAnonymousFirstTime", true);
+                        if(dataSnapshot.child("anonymousUsername").getValue() != null && !preferencesBoolean) {
+                            UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
 
+                            if (dataSnapshot.hasChild("userType")) {
+                                if (userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
+                                    newUserVerificationAlert.buildAlertCheckNewUser(userItemFormat.getUserType(), "Chat", OpenStatus.this);
+                                } else {
+
+                                    postMessage(true);
+                                }
+                            } else {
                                 postMessage(true);
                             }
-                        } else {
-                            postMessage(true);
+                        }
+                        else{
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putBoolean("isAnonymousFirstTime",false);
+                            editor.apply();
+                            final Dialog anonymousModeDialog = new Dialog(OpenStatus.this);
+                            anonymousModeDialog.setContentView(R.layout.dialog_confirm_anonymous_mode);
+                            anonymousModeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            Button cancelButton = anonymousModeDialog.findViewById(R.id.anonymous_cancel_button);
+                            cancelButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    anonymousModeDialog.dismiss();
+                                }
+                            });
+
+                            String username = "";
+
+                            final EditText usernameEt = anonymousModeDialog.findViewById(R.id.anonymous_username_et);
+                            Button enterButton = anonymousModeDialog.findViewById(R.id.anonymous_enter_button);
+
+                            enterButton.setOnTouchListener(new View.OnTouchListener() {
+                                @Override
+                                public boolean onTouch(View v, MotionEvent mv) {
+                                    if(usernameEt.getText().toString().trim().equals("")){
+                                        Toast.makeText(OpenStatus.this, "Enter username", Toast.LENGTH_SHORT).show();
+                                        return false;
+                                    }
+                                    mUserReference.child("anonymousUsername").setValue(usernameEt.getText().toString().trim());
+                                    anonymousModeDialog.dismiss();
+                                    postMessage(true);
+
+                                    return false;
+                                }
+                            });
+                            anonymousModeDialog.show();
+
                         }
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
