@@ -1461,6 +1461,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 anonymousSendBtn.setVisibility(View.GONE);
                 menu.findItem(R.id.action_edit_forum).setVisible(false);
                 menu.findItem(R.id.action_list_people).setVisible(false);
+                menu.findItem(R.id.anonymous_mode_toggle).setVisible(false);
                 Log.d("Menu Setting", getIntent().getStringExtra("name"));
                 setActionBarTitle(getIntent().getStringExtra("name"));
                 toolbar.setTitle(getIntent().getStringExtra("name"));
