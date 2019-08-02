@@ -18,7 +18,9 @@ public class CommunityFeatures {
     }
 
     public String getStoreroom() {
-        return storeroom;
+        if(storeroom!=null) {
+            return storeroom;
+        }else return "false";
     }
 
     public void setStoreroom(String storeroom) {
@@ -26,7 +28,9 @@ public class CommunityFeatures {
     }
 
     public String getEvents() {
-        return events;
+        if(events!=null) {
+            return events;
+        }else return "false";
     }
 
     public void setEvents(String events) {
@@ -34,7 +38,9 @@ public class CommunityFeatures {
     }
 
     public String getLinks() {
-        return links;
+        if(links!=null) {
+            return links;
+        }else return "false";
     }
 
     public void setLinks(String links) {
@@ -42,7 +48,11 @@ public class CommunityFeatures {
     }
 
     public String getCabpool() {
-        return cabpool;
+        if(cabpool!=null) {
+            return cabpool;
+        }else {
+            return "false";
+        }
     }
 
     public void setCabpool(String cabpool) {
@@ -50,7 +60,9 @@ public class CommunityFeatures {
     }
 
     public String getNotices() {
-        return notices;
+        if(notices!=null) {
+            return notices;
+        }else return "false";
     }
 
     public void setNotices(String notices) {
@@ -58,7 +70,9 @@ public class CommunityFeatures {
     }
 
     public String getShops() {
-        return shops;
+        if(shops!=null) {
+            return shops;
+        }else return "false";
     }
 
     public void setShops(String shops) {
@@ -66,7 +80,9 @@ public class CommunityFeatures {
     }
 
     public String getInternships() {
-        return internships;
+        if(internships!=null) {
+            return internships;
+        }else return "false";
     }
 
     public void setInternships(String internships) {

@@ -28,6 +28,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +49,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.TabStoreRoom;
@@ -81,7 +83,9 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
     Intent galleryIntent;
     DatabaseReference mFeaturesStats;
     private Uri mImageUri = null;
-    private ImageButton mAddImage;
+
+    private RelativeLayout mAddImageLayout;
+    private SimpleDraweeView mAddImage;
     private Button mPostBtn;
     String key;
     private MaterialEditText mProductName;
@@ -137,8 +141,8 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
 //            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-
-        mAddImage = (ImageButton) findViewById(R.id.imageButton);
+        mAddImageLayout = findViewById(R.id.image_layout);
+        mAddImage = findViewById(R.id.imageButton);
         mProductName = (MaterialEditText) findViewById(R.id.name);
         mProductDescription = (MaterialEditText) findViewById(R.id.description);
         mProductPrice = (MaterialEditText) findViewById(R.id.price);
@@ -153,7 +157,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mAddImage.setOnClickListener(new View.OnClickListener() {
+        mAddImageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (ContextCompat.checkSelfPermission(
@@ -215,7 +219,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     String path = MediaStore.Images.Media.insertImage(AddProduct.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
-                    mAddImage.setImageURI(mImageUri);
+                    Picasso.with(this).load(mImageUri).into(mAddImage);
 
                 } catch (IOException e) {
                     e.printStackTrace();

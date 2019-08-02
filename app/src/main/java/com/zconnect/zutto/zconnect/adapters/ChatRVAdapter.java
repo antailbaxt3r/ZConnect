@@ -1230,9 +1230,9 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     class statusViewHolder extends RecyclerView.ViewHolder{
 
-        private SimpleDraweeView userImage;
+        private SimpleDraweeView userImage,postedImage;
         private TextView username, timePosted, content, likes, comments;
-        private ImageView postedImage, likeButton;
+        private ImageView likeButton;
         private RelativeLayout likeLayout;
 
         private String usernameText, timePostedText, contentText, userImageURL, postedImageURL, likeText, commentText;

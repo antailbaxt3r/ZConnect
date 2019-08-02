@@ -135,13 +135,21 @@
                     android:textColor="@color/black"
                     android:id="@+id/content_open_status"
                     android:textSize="20sp"
-                    android:padding="@dimen/padding_10"/>
+                    android:padding="10dp"/>
 
-                <ImageView
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="visible"
-                    android:id="@+id/open_status_image"/>
+                    android:layout_height="wrap_content">
+
+                    <com.facebook.drawee.view.SimpleDraweeView
+                        android:layout_width="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_height="250dp"
+                        android:visibility="visible"
+                        android:id="@+id/open_status_image"/>
+
+                </RelativeLayout>
+
 
                 <View
                     android:layout_width="match_parent"
