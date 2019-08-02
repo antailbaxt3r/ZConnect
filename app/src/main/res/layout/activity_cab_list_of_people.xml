@@ -16,7 +16,9 @@
             app:titleTextColor="@color/black"
             android:id="@+id/toolbar_app_bar_home"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:popupTheme="@style/AppTheme.PopupOverlay"/>
+        <!--idhar-->
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/cabpool_onclick_details" />
