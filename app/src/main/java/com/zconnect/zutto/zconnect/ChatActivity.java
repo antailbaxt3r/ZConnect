@@ -1505,7 +1505,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
         chatView = (RecyclerView) findViewById(R.id.chatList);
         chatView.setBackgroundColor(ContextCompat.getColor(this,R.color.dark_theme_surface));
-        appBarLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.title_bar_dark));
+        appBarLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
         chatFrameLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.dark_theme_surface));
         chatLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.dark_theme_chat_layout));
         typer.setTextColor(ContextCompat.getColor(this,R.color.white));

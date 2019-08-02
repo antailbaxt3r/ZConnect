@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:duration="800"
+            android:visibility="gone"
             android:id="@+id/shimmer_view_container_recents_item_format">
 
             <include layout="@layout/shimmer_item_layout_recents"/>
@@ -153,7 +154,7 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:id="@+id/pollFormat">
 
                 <LinearLayout
@@ -178,12 +179,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:id="@+id/option_a_fullLayout">
+                        android:id="@+id/option_a_fullLayout"
+                        android:layout_marginTop="@dimen/margin_x_small"
+                        android:paddingHorizontal="@dimen/padding_small"
+                        android:background="@drawable/round_ouline_poll_bg">
                         <FrameLayout
                             android:layout_width="0dp"
                             android:layout_weight="0.85"
                             android:layout_height="wrap_content"
-                            android:layout_marginVertical="@dimen/margin_x_small"
                             android:id="@+id/optionA_Layout">
 
                             <!--CHANGE VISIBILITY OF THE poll_results LINEARLAYOUT-->
@@ -237,6 +240,8 @@
                                     android:text="Option A"
                                     android:textColor="@color/primaryText"
                                     android:textSize="16sp"
+                                    android:maxLines="1"
+                                    android:ellipsize="end"
                                     android:layout_margin="7dp"
                                     android:id="@+id/optionA_option_text"
                                     android:layout_weight="1"/>
@@ -262,12 +267,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:id="@+id/option_b_fullLayout">
+                        android:id="@+id/option_b_fullLayout"
+                        android:layout_marginTop="@dimen/margin_x_small"
+                        android:background="@drawable/round_ouline_poll_bg"
+                        android:paddingHorizontal="@dimen/padding_small">
                         <FrameLayout
                             android:layout_width="0dp"
                             android:layout_weight="0.85"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_x_small"
                             android:id="@+id/optionB_Layout">
 
                             <!--CHANGE VISIBILITY OF THE poll_results LINEARLAYOUT-->
@@ -322,6 +329,8 @@
                                     android:text="Option B"
                                     android:textColor="@color/primaryText"
                                     android:textSize="16sp"
+                                    android:maxLines="1"
+                                    android:ellipsize="end"
                                     android:layout_margin="7dp"
                                     android:id="@+id/optionB_option_text"
                                     android:layout_weight="1"/>
@@ -345,12 +354,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:id="@+id/option_c_fullLayout">
+                        android:id="@+id/option_c_fullLayout"
+                        android:layout_marginTop="@dimen/margin_x_small"
+                        android:background="@drawable/round_ouline_poll_bg"
+                        android:paddingHorizontal="@dimen/padding_small">
                         <FrameLayout
                             android:layout_width="0dp"
                             android:layout_weight="0.85"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_x_small"
                             android:id="@+id/optionC_Layout">
 
                             <!--CHANGE VISIBILITY OF THE poll_results LINEARLAYOUT-->
@@ -405,6 +416,8 @@
                                     android:layout_margin="7dp"
                                     android:textColor="@color/primaryText"
                                     android:textSize="16sp"
+                                    android:maxLines="1"
+                                    android:ellipsize="end"
                                     android:id="@+id/optionC_option_text"
                                     android:layout_weight="1"/>
                             </LinearLayout>
@@ -524,7 +537,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/padding_x_small"
                 android:paddingBottom="@dimen/padding_x_small"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:paddingStart="@dimen/padding_small"
                 android:paddingEnd="@dimen/padding_small">
                 <RelativeLayout
@@ -697,7 +710,7 @@
                 android:id="@+id/noticesRecentItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:layout_marginStart="@dimen/margin_small"
                 android:layout_marginEnd="@dimen/margin_small"
                 android:paddingTop="5dp"

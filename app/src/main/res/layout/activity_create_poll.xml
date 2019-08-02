@@ -82,7 +82,7 @@
                         android:textSize="16sp"
                         android:hint="Option A"
                         android:maxLines="1"
-                        android:maxLength="16"
+                        android:maxLength="22"
                         android:id="@+id/poll_add_optionA"/>
                     <TextView
                         android:layout_width="match_parent"
@@ -97,7 +97,7 @@
                         android:textSize="16sp"
                         android:hint="Option B"
                         android:maxLines="1"
-                        android:maxLength="16"
+                        android:maxLength="22"
                         android:id="@+id/poll_add_optionB"/>
                     <TextView
                         android:layout_width="match_parent"
@@ -112,7 +112,7 @@
                         android:textSize="16sp"
                         android:hint="Option C"
                         android:maxLines="1"
-                        android:maxLength="16"
+                        android:maxLength="22"
                         android:id="@+id/poll_add_optionC"/>
                 </LinearLayout>
 

@@ -633,6 +633,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             holder.votePercentageA.setTypeface(null, Typeface.NORMAL);
                             holder.votePercentageB.setTypeface(null, Typeface.NORMAL);
                             holder.votePercentageC.setTypeface(null, Typeface.NORMAL);
+                            holder.pollALL.setBackground(context.getResources().getDrawable(R.drawable.round_ouline_poll_bg));
+                            holder.pollBLL.setBackground(context.getResources().getDrawable(R.drawable.round_ouline_poll_bg));
+                            holder.pollCLL.setBackground(context.getResources().getDrawable(R.drawable.round_ouline_poll_bg));
                             if (dataSnapshot.hasChild("usersList"))
                             {
                                 if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
@@ -2102,6 +2105,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
 
                     //set background
+                    pollALL.setBackgroundResource(0);
+                    pollBLL.setBackgroundResource(0);
+                    pollCLL.setBackgroundResource(0);
                     if (optionACount == 0){
                         pollANo.setBackground(context.getResources().getDrawable(R.drawable.rounded_corner_purple_light));
                     }else{
