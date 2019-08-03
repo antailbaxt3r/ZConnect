@@ -1340,6 +1340,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     else
                     {
                         holder.forumDefaultIcon.setVisibility(View.VISIBLE);
+                        holder.forumImage.setImageResource(android.R.color.transparent);
                         holder.forumImage.setBackground(context.getResources().getDrawable(R.drawable.avatar_circle_128dp));
                     }
                     posted = " created a ";
