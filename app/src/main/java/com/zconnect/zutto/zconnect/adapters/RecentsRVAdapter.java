@@ -13,7 +13,6 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
@@ -30,11 +29,9 @@ import android.text.util.Linkify;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -78,7 +75,6 @@ import com.zconnect.zutto.zconnect.OpenStatus;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.ReferralCode;
-import com.zconnect.zutto.zconnect.Shop_detail;
 import com.zconnect.zutto.zconnect.TabStoreRoom;
 import com.zconnect.zutto.zconnect.TabbedEvents;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
@@ -91,13 +87,15 @@ import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
-import com.zconnect.zutto.zconnect.itemFormats.PostedByDetails;
 import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.pools.ActivePoolDetailsActivity;
 import com.zconnect.zutto.zconnect.pools.PoolActivity;
+import com.zconnect.zutto.zconnect.pools.UpcomingPoolDetailsActivity;
+import com.zconnect.zutto.zconnect.pools.holders.PoolViewHolder;
+import com.zconnect.zutto.zconnect.pools.models.Pool;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
-import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
@@ -118,8 +116,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Vector;
-
-import com.squareup.picasso.Picasso;
 
 import static android.graphics.Typeface.BOLD;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
@@ -159,6 +155,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 return RecentTypeUtilities.KEY_RECENT_FEATURES_INT;
             } else if (recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR)) {
                 return RecentTypeUtilities.KEY_RECENT_NORMAL_POST_INT;
+            } else if (recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_SHOP_POST_STR)) {
+                return RecentTypeUtilities.KEY_RECENT_SHOP_POST_INT;
             } else {
                 return RecentTypeUtilities.KEY_UPDATE_APP_INT;
             }
@@ -183,6 +181,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         } else if (viewType == RecentTypeUtilities.KEY_RECENT_NORMAL_POST_INT) {
             View contactView = inflater.inflate(R.layout.recents_item_format, parent, false);
             return new RecentsRVAdapter.Viewholder(contactView);
+        } else if  (viewType == RecentTypeUtilities.KEY_RECENT_SHOP_POST_INT) {
+            Log.d("SSSSS", "Here");
+            View shopPoolView = inflater.inflate(R.layout.item_pool, parent, false);
+            return new RecentsRVAdapter.ShopPoolViewHolder(shopPoolView);
         } else {
             View updateAppLayout = inflater.inflate(R.layout.recents_update_app_item, parent, false);
             return new RecentsRVAdapter.UpdateAppViewHolder(updateAppLayout);
@@ -198,6 +200,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             case 1:
                 FeaturesViewHolder featuresViewHolder = (FeaturesViewHolder) holder2;
                 featuresViewHolder.setFeatureVisibility(communityFeatures);
+                break;
+            case 3:
+                ShopPoolViewHolder shopPoolViewHolder = (ShopPoolViewHolder) holder2;
+                shopPoolViewHolder.populate(recentsItemFormats.get(position));
                 break;
             case 2:
                 final Viewholder holder = (Viewholder) holder2;
@@ -312,6 +318,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.VISIBLE);
                     holder.youtubeLink.setVisibility(View.GONE);
                     holder.pollLinearLayout.setVisibility(View.GONE);
+                    holder.updateAppRecentItem.setVisibility(View.GONE);
 
                     Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.bannerImage);
 //                    holder.bannerImage.setImageURI(recentsItemFormats.get(position).getImageurl());
@@ -377,6 +384,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.noticesRecentItem.setVisibility(View.GONE);
                     holder.youtubeLink.setVisibility(View.GONE);
                     holder.pollLinearLayout.setVisibility(View.GONE);
+                    holder.updateAppRecentItem.setVisibility(View.GONE);
 
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_people_white_24dp));
@@ -434,6 +442,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.noticesRecentItem.setVisibility(View.GONE);
                     holder.youtubeLink.setVisibility(View.GONE);
                     holder.pollLinearLayout.setVisibility(View.GONE);
+                    holder.updateAppRecentItem.setVisibility(View.GONE);
 
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_event_white_24dp));
@@ -594,7 +603,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.storeroomRecentItem.setVisibility(View.GONE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
-
+                    holder.updateAppRecentItem.setVisibility(View.GONE);
                     holder.postConjunction.setText(" created a ");
                     holder.post.setText("Poll");
                     holder.post.setTypeface(Typeface.DEFAULT);
@@ -678,6 +687,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.noticesRecentItem.setVisibility(View.GONE);
                     holder.youtubeLink.setVisibility(View.GONE);
                     holder.pollLinearLayout.setVisibility(View.GONE);
+                    holder.updateAppRecentItem.setVisibility(View.GONE);
 
 //            Drawable[] layers = new Drawable[2];
 //            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
@@ -866,6 +876,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.noticesRecentItem.setVisibility(View.GONE);
                     holder.youtubeLink.setVisibility(View.GONE);
                     holder.pollLinearLayout.setVisibility(View.GONE);
+                    holder.updateAppRecentItem.setVisibility(View.GONE);
 
                     holder.postConjunction.setText(" started a ");
                     holder.post.setText(recentsItemFormats.get(position).getFeature());
@@ -1029,32 +1040,33 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.shimmerFrameLayout.stopShimmerAnimation();
                     holder.shimmerFrameLayout.setVisibility(View.GONE);
                 }
-                else if (recentsItemFormats.get(position).getFeature().equals("Shop")) {
-                    holder.prePostDetails.setVisibility(View.VISIBLE);
-                    holder.post.setVisibility(View.VISIBLE);
-                    holder.infoneRecentItem.setVisibility(View.GONE);
-                    holder.eventsRecentItem.setVisibility(View.GONE);
-                    holder.storeroomRecentItem.setVisibility(View.GONE);
-                    holder.cabpoolRecentItem.setVisibility(View.GONE);
-                    holder.forumsRecentItem.setVisibility(View.GONE);
-                    holder.messagesRecentItem.setVisibility(View.GONE);
-                    holder.bannerRecentItem.setVisibility(View.GONE);
-                    holder.noticesRecentItem.setVisibility(View.GONE);
-                    holder.youtubeLink.setVisibility(View.GONE);
-                    holder.pollLinearLayout.setVisibility(View.GONE);
-
-                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_store_white_24dp));
-                    holder.postConjunction.setText(" put an ");
-                    holder.post.setText("Offer");
-                    holder.layoutFeatureIcon.setOnClickListener(null);
-
-                    posted = " put an ";
-                    post = "Offer";
-                    clickableSpanFeature = null;
-                    holder.shimmerFrameLayout.stopShimmerAnimation();
-                    holder.shimmerFrameLayout.setVisibility(View.GONE);
-                }
+//                else if (recentsItemFormats.get(position).getFeature().equals("Shop")) {
+//                    holder.prePostDetails.setVisibility(View.VISIBLE);
+//                    holder.post.setVisibility(View.VISIBLE);
+//                    holder.infoneRecentItem.setVisibility(View.GONE);
+//                    holder.eventsRecentItem.setVisibility(View.GONE);
+//                    holder.storeroomRecentItem.setVisibility(View.GONE);
+//                    holder.cabpoolRecentItem.setVisibility(View.GONE);
+//                    holder.forumsRecentItem.setVisibility(View.GONE);
+//                    holder.messagesRecentItem.setVisibility(View.GONE);
+//                    holder.bannerRecentItem.setVisibility(View.GONE);
+//                    holder.noticesRecentItem.setVisibility(View.GONE);
+//                    holder.youtubeLink.setVisibility(View.GONE);
+//                    holder.pollLinearLayout.setVisibility(View.GONE);
+//                    holder.updateAppRecentItem.setVisibility(View.GONE);
+//
+//                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+//                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_store_white_24dp));
+//                    holder.postConjunction.setText(" put an ");
+//                    holder.post.setText("Offer");
+//                    holder.layoutFeatureIcon.setOnClickListener(null);
+//
+//                    posted = " put an ";
+//                    post = "Offer";
+//                    clickableSpanFeature = null;
+//                    holder.shimmerFrameLayout.stopShimmerAnimation();
+//                    holder.shimmerFrameLayout.setVisibility(View.GONE);
+//                }
                 else if (recentsItemFormats.get(position).getFeature().equals("Message")) {
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
@@ -1067,6 +1079,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
                     holder.pollLinearLayout.setVisibility(View.GONE);
+                    holder.updateAppRecentItem.setVisibility(View.GONE);
                     holder.setLike(recentsItemFormats.get(position).getKey());
                     if (recentsItemFormats.get(position).getDesc().length() <= 0)
                         holder.messagesMessage.setVisibility(View.GONE);
@@ -1194,6 +1207,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.noticesRecentItem.setVisibility(View.VISIBLE);
                     holder.youtubeLink.setVisibility(View.GONE);
                     holder.pollLinearLayout.setVisibility(View.GONE);
+                    holder.updateAppRecentItem.setVisibility(View.GONE);
 
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.baseline_insert_photo_white_24));
@@ -1304,6 +1318,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.noticesRecentItem.setVisibility(View.GONE);
                     holder.youtubeLink.setVisibility(View.GONE);
                     holder.pollLinearLayout.setVisibility(View.GONE);
+                    holder.updateAppRecentItem.setVisibility(View.GONE);
 
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_forum_white_24dp));
@@ -1355,6 +1370,31 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     };
                     holder.shimmerFrameLayout.stopShimmerAnimation();
                     holder.shimmerFrameLayout.setVisibility(View.GONE);
+                }
+                else
+                {
+                    Log.d("AAAAAAAAAAA", "AAAAA");
+                    holder.updateAppRecentItem.setVisibility(View.VISIBLE);
+                    holder.prePostDetails.setVisibility(View.GONE);
+                    holder.infoneRecentItem.setVisibility(View.GONE);
+                    holder.eventsRecentItem.setVisibility(View.GONE);
+                    holder.cabpoolRecentItem.setVisibility(View.GONE);
+                    holder.messagesRecentItem.setVisibility(View.GONE);
+                    holder.forumsRecentItem.setVisibility(View.GONE);
+                    holder.storeroomRecentItem.setVisibility(View.GONE);
+                    holder.bannerRecentItem.setVisibility(View.GONE);
+                    holder.noticesRecentItem.setVisibility(View.GONE);
+                    holder.pollLinearLayout.setVisibility(View.GONE);
+                    holder.shimmerFrameLayout.stopShimmerAnimation();
+                    holder.shimmerFrameLayout.setVisibility(View.GONE);
+                    holder.updateAppRecentItem.setOnClickListener(new OnSingleClickListener() {
+                        @Override
+                        public void onSingleClick(View v) {
+                            Intent i = new Intent(android.content.Intent.ACTION_VIEW);
+                            i.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect"));
+                            context.startActivity(i);
+                        }
+                    });
                 }
                 String sentence = name + posted + post;
                 SpannableString spannableString = new SpannableString(sentence);
@@ -1409,7 +1449,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 noticesText,
                 pollQuestion,pollOptionA,pollOptionB,pollOptionC,
                 markerA, markerB, markerC,
-                totalVoteCount, votePercentageA, votePercentageB, votePercentageC;
+                totalVoteCount, votePercentageA, votePercentageB, votePercentageC,
+                poolName, poolDesc, poolDel;
 
         SimpleDraweeView featureCircle, avatarCircle,
                 eventImage,
@@ -1417,15 +1458,16 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 productImage,
                 bannerImage,
                 noticesImage,
-                forumImage;
+                forumImage,
+                poolImage;
         ImageView featureIcon, iv_youtube_thumnail, iv_play, forumDefaultIcon;
 
 
         ImageButton deleteButton;
 
 
-        LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails, noticesRecentItem,pollLinearLayout,
-                pollALL, pollAYes, pollANo, pollBLL, pollBYes, pollBNo, pollCLL, pollCYes, pollCNo, pollAResult, pollBResult, pollCResult, youtubeLink;
+        LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails, noticesRecentItem, pollLinearLayout,
+                pollALL, pollAYes, pollANo, pollBLL, pollBYes, pollBNo, pollCLL, pollCYes, pollCNo, pollAResult, pollBResult, pollCResult, youtubeLink, updateAppRecentItem;
 
         FrameLayout layoutFeatureIcon, bannerLinkLayout, optionALayout, optionBLayout, optionCLayout;
         //
@@ -1518,6 +1560,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             noticesRecentItem = (LinearLayout) itemView.findViewById(R.id.noticesRecentItem);
             noticesImage = (SimpleDraweeView) itemView.findViewById(R.id.noticesRecentItem_image);
             noticesText = (TextView) itemView.findViewById(R.id.noticesRecentItem_text);
+            updateAppRecentItem = itemView.findViewById(R.id.update_app_recent_item);
+
+
             mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
             deleteButton = (ImageButton) itemView.findViewById(R.id.recents_post_options);
@@ -1612,36 +1657,37 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                           } catch(Exception e) {
                               Log.d("Error Alert: ", e.getMessage());
                             }
-
-                    } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Shop")) {
-                        try {
-                            FirebaseDatabase.getInstance().getReference().child("minimumClientVersion").
-                                    child("shop").addListenerForSingleValueEvent(
-                                    new ValueEventListener() {
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                        }
-
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            Log.d("VERSIONN", dataSnapshot.getValue(Integer.class) + "");
-                                            if (dataSnapshot.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
-                                                Intent intent = new Intent(context, UpdateAppActivity.class);
-                                                intent.putExtra("feature", "shops");
-                                                context.startActivity(intent);
-
-                                            } else {
-                                                i = new Intent(context, Shop_detail.class);
-                                                i.putExtra("ShopId", recentsItemFormats.get(getAdapterPosition()).getId());
-                                                i.putExtra("Name", recentsItemFormats.get(getAdapterPosition()).getName());
-                                                i.putExtra("Imageurl", recentsItemFormats.get(getAdapterPosition()).getImageurl());
-                                                context.startActivity(i);
-                                            }}});
-                        } catch (Exception e) {
-                            Log.d("Error Alert: ", e.getMessage());
-                        }
-                    } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("CabPool")) {
+                    }
+//                    else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Shop")) {
+//                        try {
+//                            FirebaseDatabase.getInstance().getReference().child("minimumClientVersion").
+//                                    child("shop").addListenerForSingleValueEvent(
+//                                    new ValueEventListener() {
+//                                        @Override
+//                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                                        }
+//
+//                                        @Override
+//                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                            Log.d("VERSIONN", dataSnapshot.getValue(Integer.class) + "");
+//                                            if (dataSnapshot.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
+//                                                Intent intent = new Intent(context, UpdateAppActivity.class);
+//                                                intent.putExtra("feature", "shops");
+//                                                context.startActivity(intent);
+//
+//                                            } else {
+//                                                i = new Intent(context, Shop_detail.class);
+//                                                i.putExtra("ShopId", recentsItemFormats.get(getAdapterPosition()).getId());
+//                                                i.putExtra("Name", recentsItemFormats.get(getAdapterPosition()).getName());
+//                                                i.putExtra("Imageurl", recentsItemFormats.get(getAdapterPosition()).getImageurl());
+//                                                context.startActivity(i);
+//                                            }}});
+//                        } catch (Exception e) {
+//                            Log.d("Error Alert: ", e.getMessage());
+//                        }
+//                    }
+                    else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("CabPool")) {
 
                         FirebaseDatabase.getInstance().getReference().child("minimumClientVersion").
                                 child("cabpool").addListenerForSingleValueEvent(
@@ -2419,6 +2465,97 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         public UpdateAppViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(android.content.Intent.ACTION_VIEW);
+                    i.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect"));
+                    context.startActivity(i);
+                }
+            });
+        }
+    }
+
+    private class ShopPoolViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView name, description, count, orderDeadlineTime, orderDealineSubtext, deliveryDay, totalOrders;
+        private Button activateBtn, orderBtn;
+        private RelativeLayout countdownWrapper;
+        private LinearLayout orderDeadlineInfoLayout;
+        private SimpleDraweeView poolBgImage;
+
+        public ShopPoolViewHolder(View itemView) {
+            super(itemView);
+            attachID();
+            itemView.setOnClickListener(new OnSingleClickListener() {
+                @Override
+                public void onSingleClick(View v) {
+                    Intent intent = new Intent(context, PoolActivity.class);
+                    context.startActivity(intent);
+                }
+            });
+        }
+
+        private void attachID() {
+            name = itemView.findViewById(R.id.pool_name);
+            totalOrders = itemView.findViewById(R.id.total_orders);
+            description = itemView.findViewById(R.id.pool_description);
+            count = itemView.findViewById(R.id.pool_count);
+            orderDeadlineTime = itemView.findViewById(R.id.order_deadline_time);
+            orderDealineSubtext = itemView.findViewById(R.id.order_deadline_subtext);
+            deliveryDay = itemView.findViewById(R.id.delivery_day);
+            activateBtn = itemView.findViewById(R.id.activate_btn);
+            orderBtn = itemView.findViewById(R.id.order_btn);
+            countdownWrapper = itemView.findViewById(R.id.countdown_wrapper_layout);
+            orderDeadlineInfoLayout = itemView.findViewById(R.id.order_deadline_info_layout);
+            poolBgImage = itemView.findViewById(R.id.pool_bg_image);
+
+            //
+            countdownWrapper.setVisibility(View.GONE);
+            activateBtn.setVisibility(View.GONE);
+            orderBtn.setVisibility(View.GONE);
+            totalOrders.setVisibility(View.GONE);
+            count.setVisibility(View.GONE);
+        }
+
+        private void setBackgroundColors() {
+            switch (getAdapterPosition()%4)
+            {
+                case 0:
+                    name.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.lightgreen800), PorterDuff.Mode.SRC_ATOP);
+                    totalOrders.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.lightgreen800), PorterDuff.Mode.SRC_ATOP);
+                    orderDeadlineInfoLayout.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.red700), PorterDuff.Mode.SRC_ATOP);
+                    break;
+                case 1:
+                    name.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.indigo800), PorterDuff.Mode.SRC_ATOP);
+                    totalOrders.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.indigo800), PorterDuff.Mode.SRC_ATOP);
+                    orderDeadlineInfoLayout.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.green700), PorterDuff.Mode.SRC_ATOP);
+                    break;
+                case 2:
+                    name.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.red400), PorterDuff.Mode.SRC_ATOP);
+                    totalOrders.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.red400), PorterDuff.Mode.SRC_ATOP);
+                    orderDeadlineInfoLayout.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.yellow700), PorterDuff.Mode.SRC_ATOP);
+                    break;
+                case 3:
+                    name.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.lightblue600), PorterDuff.Mode.SRC_ATOP);
+                    totalOrders.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.lightblue600), PorterDuff.Mode.SRC_ATOP);
+                    orderDeadlineInfoLayout.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.deeppurple700), PorterDuff.Mode.SRC_ATOP);
+                    break;
+            }
+        }
+
+        public void populate(final RecentsItemFormat itemFormat) {
+            name.setText(itemFormat.getName());
+            description.setText(itemFormat.getDesc());
+            poolBgImage.setImageURI(itemFormat.getImageurl());
+
+            setBackgroundColors();
+            TimeUtilities tu = new TimeUtilities(itemFormat.getTimestampOrderReceivingDeadline());
+            String deliveryTimeText = tu.getWeekName("SHORT") + ", " + tu.getTimeInHHMMAPM();
+            String deliveryDayText = tu.getMonthName("SHORT") + " " + tu.getDateTime().getDayOfMonth();
+            orderDeadlineTime.setText(deliveryTimeText);
+            orderDealineSubtext.setVisibility(View.VISIBLE);
+            deliveryDay.setText(deliveryDayText);
         }
     }
 
