@@ -2,6 +2,10 @@ package com.zconnect.zutto.zconnect.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -238,18 +242,27 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             itemView.setOnClickListener(new OnSingleClickListener() {
                 @Override
                 public void onSingleClick(View v) {
-                    CounterItemFormat counterItemFormat = new CounterItemFormat();
-                    HashMap<String, String> meta= new HashMap<>();
-                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                    counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_CREATE_FORUM_OPEN);
-                    counterItemFormat.setTimestamp(System.currentTimeMillis());
-                    counterItemFormat.setMeta(meta);
-                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                    counterPush.pushValues();
-                    final Intent intent = new Intent(context, CreateForum.class);
-                    intent.putExtra("uid", uid);
-                    intent.putExtra("flag", "false");
-                    context.startActivity(intent);
+
+                    if (!isNetworkAvailable(v.getContext())) {
+                        Snackbar snack = Snackbar.make(createForum, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                        snackBarText.setTextColor(Color.WHITE);
+                        snack.getView().setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimaryDark));
+                        snack.show();
+                    } else {
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        HashMap<String, String> meta = new HashMap<>();
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_CREATE_FORUM_OPEN);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        counterItemFormat.setMeta(meta);
+                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                        counterPush.pushValues();
+                        final Intent intent = new Intent(context, CreateForum.class);
+                        intent.putExtra("uid", uid);
+                        intent.putExtra("flag", "false");
+                        context.startActivity(intent);
+                    }
                 }
             });
 
@@ -258,6 +271,12 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                 itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
             }
         }
+
+        public boolean isNetworkAvailable(final Context context) {
+            final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+            return connectivityManager != null && connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+        }
+
     }
 
     private class joinedViewHolder extends RecyclerView.ViewHolder {

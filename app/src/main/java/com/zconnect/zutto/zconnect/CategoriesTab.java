@@ -9,8 +9,10 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -55,44 +57,60 @@ public class CategoriesTab extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Dialog addAskDialog = new Dialog(getContext());
-                addAskDialog.setContentView(R.layout.new_dialog_box);
-                addAskDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                addAskDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(getContext(),R.drawable.ic_outline_store_24px));
-                TextView heading =  addAskDialog.findViewById(R.id.dialog_box_heading);
-                heading.setText("Sell/Ask");
-                TextView body = addAskDialog.findViewById(R.id.dialog_box_body);
-                body.setText("Do you want to sell a product or ask for a product?");
-                Button addButton = addAskDialog.findViewById(R.id.dialog_box_positive_button);
-                addButton.setText("Sell");
-                addButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getContext(), AddProduct.class);
-                        intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
-                        getContext().startActivity(intent);
-                        addAskDialog.dismiss();
+                if (!isNetworkAvailable(view.getContext())) {
+                    Snackbar snack = Snackbar.make(fab, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimaryDark));
+                    snack.show();
+                } else {
+                    Dialog addAskDialog = new Dialog(getContext());
+                    addAskDialog.setContentView(R.layout.new_dialog_box);
+                    addAskDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    addAskDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_outline_store_24px));
+                    TextView heading = addAskDialog.findViewById(R.id.dialog_box_heading);
+                    heading.setText("Sell/Ask");
+                    TextView body = addAskDialog.findViewById(R.id.dialog_box_body);
+                    body.setText("Do you want to sell a product or ask for a product?");
+                    Button addButton = addAskDialog.findViewById(R.id.dialog_box_positive_button);
+                    addButton.setText("Sell");
+                    addButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
 
-                    }
-                });
-                Button askButton = addAskDialog.findViewById(R.id.dialog_box_negative_button);
-                askButton.setText("Ask");
-                askButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getContext(), AddProduct.class);
-                        intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
-                        getContext().startActivity(intent);
-                        addAskDialog.dismiss();
+                            Intent intent = new Intent(getContext(), AddProduct.class);
+                            intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
+                            getContext().startActivity(intent);
+                            addAskDialog.dismiss();
+                        }
 
-                    }
-                });
+                    });
+                    Button askButton = addAskDialog.findViewById(R.id.dialog_box_negative_button);
+                    askButton.setText("Ask");
+                    askButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
 
-                addAskDialog.show();
+
+                            Intent intent = new Intent(getContext(), AddProduct.class);
+                            intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
+                            getContext().startActivity(intent);
+                            addAskDialog.dismiss();
+
+                        }
+                    });
+
+                    addAskDialog.show();
+                }
 
             }
         });
         return view;
+    }
+
+    public boolean isNetworkAvailable(final Context context) {
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager != null && connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 }
 

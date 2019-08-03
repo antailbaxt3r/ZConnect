@@ -9,8 +9,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -99,52 +101,59 @@ public class ProductsTab extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
+                if (!isNetworkAvailable(view.getContext())) {
+                    Snackbar snack = Snackbar.make(fab, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimaryDark));
+                    snack.show();
+                } else {
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta = new HashMap<>();
 
-                meta.put("type","fromFeature");
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_PRODUCT_ADD_OPEN);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
+                    meta.put("type", "fromFeature");
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_PRODUCT_ADD_OPEN);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
 
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
-                Context context;
-                Dialog addAskDialog = new Dialog(getContext());
-                addAskDialog.setContentView(R.layout.new_dialog_box);
-                addAskDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                addAskDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(getContext(),R.drawable.ic_outline_store_24px));
-                TextView heading =  addAskDialog.findViewById(R.id.dialog_box_heading);
-                heading.setText("Sell/Ask");
-                TextView body = addAskDialog.findViewById(R.id.dialog_box_body);
-                body.setText("Do you want to sell a product or ask for a product?");
-                Button addButton = addAskDialog.findViewById(R.id.dialog_box_positive_button);
-                addButton.setText("Sell");
-                addButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getContext(), AddProduct.class);
-                        intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
-                        getContext().startActivity(intent);
-                        addAskDialog.dismiss();
-                    }
-                });
-                Button askButton = addAskDialog.findViewById(R.id.dialog_box_negative_button);
-                askButton.setText("Ask");
-                askButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getContext(), AddProduct.class);
-                        intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
-                        getContext().startActivity(intent);
-                        addAskDialog.dismiss();
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
+                    Context context;
+                    Dialog addAskDialog = new Dialog(getContext());
+                    addAskDialog.setContentView(R.layout.new_dialog_box);
+                    addAskDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    addAskDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_outline_store_24px));
+                    TextView heading = addAskDialog.findViewById(R.id.dialog_box_heading);
+                    heading.setText("Sell/Ask");
+                    TextView body = addAskDialog.findViewById(R.id.dialog_box_body);
+                    body.setText("Do you want to sell a product or ask for a product?");
+                    Button addButton = addAskDialog.findViewById(R.id.dialog_box_positive_button);
+                    addButton.setText("Sell");
+                    addButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getContext(), AddProduct.class);
+                            intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
+                            getContext().startActivity(intent);
+                            addAskDialog.dismiss();
+                        }
+                    });
+                    Button askButton = addAskDialog.findViewById(R.id.dialog_box_negative_button);
+                    askButton.setText("Ask");
+                    askButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getContext(), AddProduct.class);
+                            intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
+                            getContext().startActivity(intent);
+                            addAskDialog.dismiss();
 
-                    }
-                });
+                        }
+                    });
 
-              addAskDialog.show();
-
+                    addAskDialog.show();
+                }
             }
         });
 
@@ -463,5 +472,11 @@ public class ProductsTab extends Fragment {
 //            });
 //        }
 //    }
+
+    public boolean isNetworkAvailable(final Context context) {
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager != null && connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+    }
+
 }
 

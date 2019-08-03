@@ -1317,14 +1317,24 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
     }
 
     public void launchEditForum() {
-        String tab = getIntent().getStringExtra("tab");
-        String key = getIntent().getStringExtra("key");
-        Intent i = new Intent(this, CreateForum.class);
-        i.putExtra("uid", tab);
-        i.putExtra("catUID", key);
-        i.putExtra("flag", "true");
-        startActivity(i);
+
+        if (!isNetworkAvailable(this) ){
+            Snackbar snack = Snackbar.make(chatLayout, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+            snack.show();
+        } else {
+            String tab = getIntent().getStringExtra("tab");
+            String key = getIntent().getStringExtra("key");
+            Intent i = new Intent(this, CreateForum.class);
+            i.putExtra("uid", tab);
+            i.putExtra("catUID", key);
+            i.putExtra("flag", "true");
+            startActivity(i);
 //        finish();
+
+        }
     }
 
     @Override

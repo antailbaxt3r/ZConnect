@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -90,26 +91,36 @@ public class MyProducts extends BaseActivity {
         openAddProduct = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(MyProducts.this);
-                alertBuilder.setTitle("Sell/Ask")
-                        .setMessage("Do you want to Sell a product or ask for a product?")
-                        .setPositiveButton("Sell", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(MyProducts.this, AddProduct.class);
-                                intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
-                                startActivity(intent);
-                            }
-                        })
-                        .setNegativeButton("Add", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(MyProducts.this, AddProduct.class);
-                                intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
-                                startActivity(intent);
-                            }
-                        })
-                        .show();
+
+                if (!isNetworkAvailable(MyProducts.this)) {
+                    Snackbar snack = Snackbar.make(noProductRL, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimaryDark));
+                    snack.show();
+                } else {
+                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(MyProducts.this);
+                    alertBuilder.setTitle("Sell/Ask")
+                            .setMessage("Do you want to Sell a product or ask for a product?")
+                            .setPositiveButton("Sell", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent(MyProducts.this, AddProduct.class);
+                                    intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
+                                    startActivity(intent);
+                                }
+                            })
+                            .setNegativeButton("Add", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent(MyProducts.this, AddProduct.class);
+                                    intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
+                                    startActivity(intent);
+                                }
+                            })
+                            .show();
+
+                }
             }
         };
 

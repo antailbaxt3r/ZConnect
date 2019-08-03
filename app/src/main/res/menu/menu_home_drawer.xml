@@ -14,7 +14,7 @@
         <item
             android:title="My Internships"
             android:id="@+id/MyInternships"
-            android:icon="@drawable/ic_outline_shopping_basket_purple"
+            android:icon="@drawable/ic_outline_work_outline_purple"
             android:name="My Internships"/>
         <item
             android:title="My Orders"

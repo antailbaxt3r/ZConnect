@@ -1,13 +1,17 @@
 package com.zconnect.zutto.zconnect.fragments;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -19,6 +23,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -168,31 +173,40 @@ public class InfoneFragment extends Fragment {
             @Override
             public void onSingleClick(View v) {
 
-                Log.e("tt", "data fab");
-
-                SharedPreferences sharedPref = getActivity().getSharedPreferences("guestMode", MODE_PRIVATE);
-                Boolean status = sharedPref.getBoolean("mode", false);
-
-                if (!status) {
-                    Intent addCatIntent = new Intent(getContext(),AddInfoneCat.class);
-                    Intent reqCatIntent = new Intent(getContext(),RequestInfoneCat.class);
-
-                    mUserDetails.child("userType").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.getValue().toString().equalsIgnoreCase("admin"))
-                                startActivity(addCatIntent);
-                            else
-                                startActivity(reqCatIntent);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
+                if (!isNetworkAvailable(view.getContext())) {
+                    Snackbar snack = Snackbar.make(fabCatAdd, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimaryDark));
+                    snack.show();
                 } else {
-                    Toast.makeText(getActivity().getApplicationContext(), "Log in to use this function", Toast.LENGTH_SHORT).show();
+
+                    Log.e("tt", "data fab");
+
+                    SharedPreferences sharedPref = getActivity().getSharedPreferences("guestMode", MODE_PRIVATE);
+                    Boolean status = sharedPref.getBoolean("mode", false);
+
+                    if (!status) {
+                        Intent addCatIntent = new Intent(getContext(), AddInfoneCat.class);
+                        Intent reqCatIntent = new Intent(getContext(), RequestInfoneCat.class);
+
+                        mUserDetails.child("userType").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.getValue().toString().equalsIgnoreCase("admin"))
+                                    startActivity(addCatIntent);
+                                else
+                                    startActivity(reqCatIntent);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    } else {
+                        Toast.makeText(getActivity().getApplicationContext(), "Log in to use this function", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -401,5 +415,9 @@ public class InfoneFragment extends Fragment {
     }
 
 
+    public boolean isNetworkAvailable(final Context context) {
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager != null && connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+    }
 
 }

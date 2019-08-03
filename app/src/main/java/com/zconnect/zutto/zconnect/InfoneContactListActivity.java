@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -35,6 +36,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -297,27 +299,45 @@ public class InfoneContactListActivity extends BaseActivity {
 
     private void addContact(String contactName, String contactNumber) {
 
-        Intent addContactIntent = new Intent(this, AddInfoneContact.class);
-        addContactIntent.putExtra("catId", catId);
-        addContactIntent.putExtra("catImageURL",catImageurl);
-        addContactIntent.putExtra("catName", catName);
-        addContactIntent.putExtra("totalContacts",totalContacts);
-        addContactIntent.putExtra("contactName", contactName);
-        addContactIntent.putExtra("contactNumber", contactNumber);
-        addContactIntent.putExtra("categoryadmin",catAdmin);
-//        addContactIntent.putExtra("contactPhoto", contactPhoto);
-        startActivity(addContactIntent);
+        if (!isNetworkAvailable(this)) {
+            Snackbar snack = Snackbar.make(recyclerViewContacts, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+            snack.show();
+        } else {
 
+            Intent addContactIntent = new Intent(this, AddInfoneContact.class);
+            addContactIntent.putExtra("catId", catId);
+            addContactIntent.putExtra("catImageURL", catImageurl);
+            addContactIntent.putExtra("catName", catName);
+            addContactIntent.putExtra("totalContacts", totalContacts);
+            addContactIntent.putExtra("contactName", contactName);
+            addContactIntent.putExtra("contactNumber", contactNumber);
+            addContactIntent.putExtra("categoryadmin", catAdmin);
+//        addContactIntent.putExtra("contactPhoto", contactPhoto);
+            startActivity(addContactIntent);
+
+        }
     }
 
     private void editCategory() {
+        if (!isNetworkAvailable(this)) {
+            Snackbar snack = Snackbar.make(recyclerViewContacts, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+            snack.show();
+        } else {
 
-        Intent editCatIntent=new Intent(InfoneContactListActivity.this,AddInfoneCat.class);
-        editCatIntent.putExtra("catId",catId);
-        editCatIntent.putExtra("catName",catName);
-        editCatIntent.putExtra("catImageurl",catImageurl);
-        startActivity(editCatIntent);
 
+            Intent editCatIntent = new Intent(InfoneContactListActivity.this, AddInfoneCat.class);
+            editCatIntent.putExtra("catId", catId);
+            editCatIntent.putExtra("catName", catName);
+            editCatIntent.putExtra("catImageurl", catImageurl);
+            startActivity(editCatIntent);
+
+        }
     }
 
     private void toolbarSetup() {
