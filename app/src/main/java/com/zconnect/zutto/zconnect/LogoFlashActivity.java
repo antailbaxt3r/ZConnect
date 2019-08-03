@@ -231,6 +231,7 @@ public class LogoFlashActivity extends BaseActivity {
                                         Log.d(TAG,"abc1 " + deepLink.getQueryParameter("key"));
                                         Intent intent = new Intent(LogoFlashActivity.this, OpenProductDetails.class);
                                         intent.putExtra("key", deepLink.getQueryParameter("key"));
+                                        intent.putExtra("type", deepLink.getQueryParameter("type"));
                                         startActivity(intent);
                                         flag = true;
                                     }

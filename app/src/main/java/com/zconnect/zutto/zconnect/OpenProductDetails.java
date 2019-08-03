@@ -241,8 +241,6 @@ public class OpenProductDetails extends BaseActivity {
 //        });
         chatEditText.setOnClickListener(onChat);
         mDatabaseProduct = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
-
-
         progressBar.setVisibility(VISIBLE);
         productContent.setVisibility(INVISIBLE);
 
@@ -485,6 +483,7 @@ public class OpenProductDetails extends BaseActivity {
             Uri BASE_URI = Uri.parse("http://www.zconnect.com/openproduct/");
 
             Uri APP_URI = BASE_URI.buildUpon().appendQueryParameter("key", productKey)
+                    .appendQueryParameter("type", type)
                     .appendQueryParameter("communityRef", communityReference)
                     .build();
             String encodedUri = null;
@@ -652,6 +651,7 @@ public class OpenProductDetails extends BaseActivity {
                     defaultSwitch(productKey, productCategory, productShortlist);
 
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
 
