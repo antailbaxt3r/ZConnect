@@ -47,6 +47,7 @@ import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.ShortlistedPeopleList;
 import com.zconnect.zutto.zconnect.VerificationPage;
+import com.zconnect.zutto.zconnect.pools.PoolActivity;
 import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
@@ -111,7 +112,9 @@ public class NotificationService extends FirebaseMessagingService {
                 }
 
             } else {
-                handleNotifications(type);
+                try {
+                    handleNotifications(type);
+                }catch (Exception e){}
             }
         }
 
@@ -169,6 +172,8 @@ public class NotificationService extends FirebaseMessagingService {
                 break;
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_ORDER_REACHED: orderReachedNotification();
                 break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_POOL_STARTED: orderPoolCreatedNotification();
+                break;
         }
 
     }
@@ -176,6 +181,56 @@ public class NotificationService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String s) {
         super.onNewToken(s);
+    }
+
+    private void orderPoolCreatedNotification(){
+
+        final String communityReference = data.get("communityReference").toString();
+
+        final String shopName = data.get("shopName").toString();
+        final String poolName = data.get("itemName").toString();
+        final String poolDate = data.get("poolDate").toString();
+        final String poolImage = data.get("itemImage").toString();
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,FORUMS_CHANNEL_ID);
+        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+        style.bigText("This pool will be delivered on " + poolDate).setBigContentTitle(shopName + " started a new Pool of " + poolName );
+        Bitmap bitmap = null;
+
+        try {
+            bitmap = getRoundedBitmap(poolImage);
+        }catch (Exception e){}
+
+
+        if (bitmap!=null){
+            mBuilder.setLargeIcon(bitmap);
+        }
+
+
+        mBuilder.setSmallIcon(R.drawable.ic_store_white_18dp)
+                .setStyle(style)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                .setContentTitle(shopName + " started a new pool of " + poolName)
+                .setContentText("This pool will be delivered on " + poolDate);
+
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+
+        Intent intent = new Intent(NotificationService.this, PoolActivity.class);
+
+        Intent[] intents = new Intent[]{intent0,intent};
+
+
+        PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_ONE_SHOT);
+        mBuilder.setContentIntent(intent1);
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(22, mBuilder.build());
+
     }
 
     private void orderReachedNotification() {

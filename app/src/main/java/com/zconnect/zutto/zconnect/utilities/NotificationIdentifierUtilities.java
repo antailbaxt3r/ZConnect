@@ -26,6 +26,7 @@ public class NotificationIdentifierUtilities {
 
     //Orders
     public static final String KEY_NOTIFICATION_ORDER_REACHED= "orderReached";
+    public static final String KEY_NOTIFICATION_POOL_STARTED= "orderPoolStarted";
 
     public static final String KEY_NOTIFICATION_REQUEST_CALL = "RequestCall";
     public static final String KEY_NOTIFICATION_NEW_USER_ACCEPT = "NewUserAccept";
