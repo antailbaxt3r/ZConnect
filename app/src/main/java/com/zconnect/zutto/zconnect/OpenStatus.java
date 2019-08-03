@@ -449,29 +449,57 @@ public class OpenStatus extends BaseActivity {
 
                         if(isAnonymous) {
                             UserItemFormat userItemFormat = userItem;
-                            userItemFormat.setUserUID(userItem.getUserUID());
+                            userItemFormat.setUserUID("ANON");
                             userItemFormat.setUsername(userItem.getAnonymousUsername());
                             userItemFormat.setImageURL("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/Icons%2Fbaseline_visibility_off_black_48.png?alt=media&token=c7c5524c-1a92-4367-b280-142633de3675");
                             userItemFormat.setImageURLThumbnail("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/Icons%2Fbaseline_visibility_off_black_48.png?alt=media&token=c7c5524c-1a92-4367-b280-142633de3675");
                             GlobalFunctions.inAppNotifications("commented on your status", "Comment: " + text, userItemFormat, false, "statusComment", metadata,temp.getUID());
+
+                           userItemFormat = new UserItemFormat();
+                            HashMap<String,Object> meta = new HashMap<>();
+                            meta.put("ref",ref);
+                            meta.put("key",key);
+                            Log.d("reference", ref+"");
+                            Log.d("ImageThumb",(String) dataSnapshot.child("Chat").child(messagePushID).child("imageThumb").getValue()+"");
+                            Log.d("Username",(String) dataSnapshot.child("Chat").child(messagePushID).child("name").getValue()+"");
+                            Log.d("UID",(String) dataSnapshot.child("Chat").child(messagePushID).child("uuid").getValue()+"");
+                            userItemFormat.setUserUID("ANON");
+                            userItemFormat.setImageURL("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/Icons%2Fbaseline_visibility_off_black_48.png?alt=media&token=c7c5524c-1a92-4367-b280-142633de3675");
+                            userItemFormat.setImageURLThumbnail("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/Icons%2Fbaseline_visibility_off_black_48.png?alt=media&token=c7c5524c-1a92-4367-b280-142633de3675");
+                            userItemFormat.setUsername((String) dataSnapshot.child("Chat").child(messagePushID).child("userName").getValue());
+                            GlobalFunctions.inAppNotifications("commented on a status you commented","Comment: "+text,userItemFormat,true,"statusNestedComment",meta,temp.getUID());
+
                         }
                         else{
                             GlobalFunctions.inAppNotifications("commented on your status", "Comment: " + text, userItem, false, "statusComment", metadata,temp.getUID());
+                            UserItemFormat userItemFormat = new UserItemFormat();
+                            HashMap<String,Object> meta = new HashMap<>();
+                            meta.put("ref",ref);
+                            meta.put("key",key);
+                            Log.d("reference", ref+"");
+                            Log.d("ImageThumb",(String) dataSnapshot.child("Chat").child(messagePushID).child("imageThumb").getValue()+"");
+                            Log.d("Username",(String) dataSnapshot.child("Chat").child(messagePushID).child("name").getValue()+"");
+                            Log.d("UID",(String) dataSnapshot.child("Chat").child(messagePushID).child("uuid").getValue()+"");
+                            userItemFormat.setUserUID((String) dataSnapshot.child("Chat").child(messagePushID).child("uuid").getValue());
+                            userItemFormat.setImageURL((String) dataSnapshot.child("Chat").child(messagePushID).child("imageThumb").getValue());
+                            userItemFormat.setUsername((String) dataSnapshot.child("Chat").child(messagePushID).child("name").getValue());
+                            GlobalFunctions.inAppNotifications("commented on a status you commented","Comment: "+text,userItemFormat,true,"statusNestedComment",meta,temp.getUID());
+
                         }
 
-                        UserItemFormat userItemFormat = new UserItemFormat();
-                        HashMap<String,Object> meta = new HashMap<>();
-                        meta.put("ref",ref);
-                        meta.put("key",key);
-                        Log.d("reference", ref+"");
-                        Log.d("ImageThumb",(String) dataSnapshot.child("Chat").child(messagePushID).child("imageThumb").getValue()+"");
-                        Log.d("Username",(String) dataSnapshot.child("Chat").child(messagePushID).child("name").getValue()+"");
-                        Log.d("UID",(String) dataSnapshot.child("Chat").child(messagePushID).child("uuid").getValue()+"");
-                        userItemFormat.setUserUID((String) dataSnapshot.child("Chat").child(messagePushID).child("uuid").getValue());
-                        userItemFormat.setImageURL((String) dataSnapshot.child("Chat").child(messagePushID).child("imageThumb").getValue());
-                        userItemFormat.setUsername((String) dataSnapshot.child("Chat").child(messagePushID).child("name").getValue());
-                        GlobalFunctions.inAppNotifications("commented on a status you commented","Comment: "+text,userItemFormat,true,"statusNestedComment",meta,temp.getUID());
-
+//                        UserItemFormat userItemFormat = new UserItemFormat();
+//                        HashMap<String,Object> meta = new HashMap<>();
+//                        meta.put("ref",ref);
+//                        meta.put("key",key);
+//                        Log.d("reference", ref+"");
+//                        Log.d("ImageThumb",(String) dataSnapshot.child("Chat").child(messagePushID).child("imageThumb").getValue()+"");
+//                        Log.d("Username",(String) dataSnapshot.child("Chat").child(messagePushID).child("name").getValue()+"");
+//                        Log.d("UID",(String) dataSnapshot.child("Chat").child(messagePushID).child("uuid").getValue()+"");
+//                        userItemFormat.setUserUID((String) dataSnapshot.child("Chat").child(messagePushID).child("uuid").getValue());
+//                        userItemFormat.setImageURL((String) dataSnapshot.child("Chat").child(messagePushID).child("imageThumb").getValue());
+//                        userItemFormat.setUsername((String) dataSnapshot.child("Chat").child(messagePushID).child("name").getValue());
+//                        GlobalFunctions.inAppNotifications("commented on a status you commented","Comment: "+text,userItemFormat,true,"statusNestedComment",meta,temp.getUID());
+//
 
                     }
 

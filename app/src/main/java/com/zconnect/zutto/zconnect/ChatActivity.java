@@ -973,7 +973,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
                     NotificationItemFormat forumChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_FORUM, userItem.getUserUID());
 
-                    forumChatNotification.setItemMessage(text);
+                    forumChatNotification.setItemMessage(typer.getText().toString().trim());
                     forumChatNotification.setItemCategoryUID(getIntent().getStringExtra("tab"));
                     forumChatNotification.setItemName(getIntent().getStringExtra("name"));
                     forumChatNotification.setItemKey(getIntent().getStringExtra("key"));
@@ -1015,7 +1015,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
                     NotificationItemFormat productChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_PRODUCT, userItem.getUserUID());
 
-                    productChatNotification.setItemMessage(text);
+                    productChatNotification.setItemMessage(typer.getText().toString().trim());
                     productChatNotification.setItemName(getIntent().getStringExtra("name"));
                     productChatNotification.setItemKey(getIntent().getStringExtra("key"));
 

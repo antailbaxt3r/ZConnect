@@ -123,6 +123,7 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<RecyclerView
                     @Override
                     public void onClick(@NonNull View widget) {
                         Intent intent = new Intent(context, OpenUserDetail.class);
+                        if(notificationsList.get(position).getNotifiedBy().getUserUID().equals("ANON")){return;}
                         intent.putExtra("Uid", notificationsList.get(position).getNotifiedBy().getUserUID());
                         context.startActivity(intent);
                     }
@@ -161,6 +162,7 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<RecyclerView
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(context, OpenUserDetail.class);
+                        if(notificationsList.get(position).getNotifiedBy().getUserUID().equals("ANON")){return;}
                         intent.putExtra("Uid", notificationsList.get(position).getNotifiedBy().getUserUID());
                         context.startActivity(intent);
                     }
