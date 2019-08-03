@@ -37,8 +37,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
-import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
@@ -131,15 +129,7 @@ public class AddEvent extends BaseActivity {
 
             eventDate = temp.toString();
             dateString = String.valueOf(c.getTime());
-            Date evdate = null;
 
-
-            try {
-                Log.i("DateCheck",eventDate);
-                evdate = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").parse(eventDate);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
             DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
             DateTime _date = new DateTime(c, indianZone);
             String minute = String.valueOf(_date.getMinuteOfHour());

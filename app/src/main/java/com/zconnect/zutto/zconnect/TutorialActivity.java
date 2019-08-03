@@ -107,7 +107,7 @@ public class TutorialActivity extends BaseActivity {
 
 //            image.setLayoutParams(layoutParams);
 //            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            image.setImageDrawable(pageData[position]);
+            image.setBackground(pageData[position]);
             //Add the page to the front of the queue
             ((ViewPager) container).addView(page, 0);
 

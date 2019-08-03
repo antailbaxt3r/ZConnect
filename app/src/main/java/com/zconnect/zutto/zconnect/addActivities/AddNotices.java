@@ -33,8 +33,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
-import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
