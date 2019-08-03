@@ -619,49 +619,48 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     databaseReferenceGetOptionSelected.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            //reset all views
-                            holder.totalVoteCount.setVisibility(View.GONE);
-                            holder.votePercentageA.setVisibility(View.GONE);
-                            holder.votePercentageB.setVisibility(View.GONE);
-                            holder.votePercentageC.setVisibility(View.GONE);
-                            holder.pollAYes.setVisibility(View.GONE);
-                            holder.pollANo.setVisibility(View.GONE);
-                            holder.pollBYes.setVisibility(View.GONE);
-                            holder.pollBNo.setVisibility(View.GONE);
-                            holder.pollCYes.setVisibility(View.GONE);
-                            holder.pollCNo.setVisibility(View.GONE);
-                            holder.pollAResult.setVisibility(View.GONE);
-                            holder.pollBResult.setVisibility(View.GONE);
-                            holder.pollCResult.setVisibility(View.GONE);
-                            holder.pollOptionA.setTypeface(null, Typeface.NORMAL);
-                            holder.pollOptionB.setTypeface(null, Typeface.NORMAL);
-                            holder.pollOptionC.setTypeface(null, Typeface.NORMAL);
-                            holder.markerA.setTypeface(null, Typeface.NORMAL);
-                            holder.markerB.setTypeface(null, Typeface.NORMAL);
-                            holder.markerC.setTypeface(null, Typeface.NORMAL);
-                            holder.votePercentageA.setTypeface(null, Typeface.NORMAL);
-                            holder.votePercentageB.setTypeface(null, Typeface.NORMAL);
-                            holder.votePercentageC.setTypeface(null, Typeface.NORMAL);
-                            holder.pollALL.setBackground(context.getResources().getDrawable(R.drawable.round_ouline_poll_bg));
-                            holder.pollBLL.setBackground(context.getResources().getDrawable(R.drawable.round_ouline_poll_bg));
-                            holder.pollCLL.setBackground(context.getResources().getDrawable(R.drawable.round_ouline_poll_bg));
-                            if (dataSnapshot.hasChild("usersList"))
-                            {
-                                if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                                {
-                                    holder.setPollResultsVisible(recentsItemFormats.get(position).getKey(),
-                                            recentsItemFormats.get(position).getUsersList().get(FirebaseAuth.getInstance().getCurrentUser().getUid()).getOptionSelected());
+                            try {
 
+
+                                //reset all views
+                                holder.totalVoteCount.setVisibility(View.GONE);
+                                holder.votePercentageA.setVisibility(View.GONE);
+                                holder.votePercentageB.setVisibility(View.GONE);
+                                holder.votePercentageC.setVisibility(View.GONE);
+                                holder.pollAYes.setVisibility(View.GONE);
+                                holder.pollANo.setVisibility(View.GONE);
+                                holder.pollBYes.setVisibility(View.GONE);
+                                holder.pollBNo.setVisibility(View.GONE);
+                                holder.pollCYes.setVisibility(View.GONE);
+                                holder.pollCNo.setVisibility(View.GONE);
+                                holder.pollAResult.setVisibility(View.GONE);
+                                holder.pollBResult.setVisibility(View.GONE);
+                                holder.pollCResult.setVisibility(View.GONE);
+                                holder.pollOptionA.setTypeface(null, Typeface.NORMAL);
+                                holder.pollOptionB.setTypeface(null, Typeface.NORMAL);
+                                holder.pollOptionC.setTypeface(null, Typeface.NORMAL);
+                                holder.markerA.setTypeface(null, Typeface.NORMAL);
+                                holder.markerB.setTypeface(null, Typeface.NORMAL);
+                                holder.markerC.setTypeface(null, Typeface.NORMAL);
+                                holder.votePercentageA.setTypeface(null, Typeface.NORMAL);
+                                holder.votePercentageB.setTypeface(null, Typeface.NORMAL);
+                                holder.votePercentageC.setTypeface(null, Typeface.NORMAL);
+                                holder.pollALL.setBackground(context.getResources().getDrawable(R.drawable.round_ouline_poll_bg));
+                                holder.pollBLL.setBackground(context.getResources().getDrawable(R.drawable.round_ouline_poll_bg));
+                                holder.pollCLL.setBackground(context.getResources().getDrawable(R.drawable.round_ouline_poll_bg));
+                                if (dataSnapshot.hasChild("usersList")) {
+                                    if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                        holder.setPollResultsVisible(recentsItemFormats.get(position).getKey(),
+                                                recentsItemFormats.get(position).getUsersList().get(FirebaseAuth.getInstance().getCurrentUser().getUid()).getOptionSelected());
+
+                                    } else {
+                                        Log.v("Create Poll", "No user found");
+                                    }
+                                } else {
+                                    Log.v("Create Poll", "No user list found");
                                 }
-                                else
-                                {
-                                    Log.v("Create Poll","No user found");
-                                }
-                            }
-                            else
-                            {
-                                Log.v("Create Poll","No user list found");
-                            }
+
+                            }catch (Exception e){}
                         }
 
                         @Override
