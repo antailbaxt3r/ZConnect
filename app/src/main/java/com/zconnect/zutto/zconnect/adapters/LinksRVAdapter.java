@@ -11,11 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.WebViewActivity;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ListItem;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 
+import java.util.HashMap;
 import java.util.Vector;
+
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class LinksRVAdapter extends RecyclerView.Adapter<LinksRVAdapter.ProgrammingViewHolder>{
 
@@ -54,6 +61,13 @@ public class LinksRVAdapter extends RecyclerView.Adapter<LinksRVAdapter.Programm
 //            intent.putExtra("url",LinksList.get(position).getLinkURL());
 //            intent.putExtra("title",LinksList.get(position).getTitle());
 //            context.startActivity(intent);
+
+            CounterItemFormat counterItemFormat = new CounterItemFormat();
+            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+            counterItemFormat.setUniqueID(CounterUtilities.KEY_LINKS_CLICK);
+            counterItemFormat.setTimestamp(System.currentTimeMillis());
+            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+            counterPush.pushValues();
         });
     }
 

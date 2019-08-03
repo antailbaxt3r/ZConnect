@@ -897,7 +897,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                             } else {
                                                 CounterItemFormat counterItemFormat = new CounterItemFormat();
                                                 HashMap<String, String> meta = new HashMap<>();
-                                                meta.put("type", "fromRecents");
+                                                meta.put("type", "fromRecentsRV");
                                                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                                                 counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_OPEN);
                                                 counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -1217,7 +1217,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         public void onSingleClick(View v) {
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
                             HashMap<String, String> meta = new HashMap<>();
-                            meta.put("type", "fromRecents");
+                            meta.put("type", "fromRecentsRV");
                             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                             counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTICES_OPEN);
                             counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -1242,7 +1242,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         public void onSingleClick(View v) {
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
                             HashMap<String, String> meta = new HashMap<>();
-                            meta.put("type", "fromRecents");
+                            meta.put("type", "fromRecentsRV");
                             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                             counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTICES_OPEN);
                             counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -1394,6 +1394,17 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             Intent i = new Intent(android.content.Intent.ACTION_VIEW);
                             i.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect"));
                             context.startActivity(i);
+
+                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                            HashMap<String, String> meta = new HashMap<>();
+                            meta.put("type", "fromRecentsRV");
+                            meta.put("not", "feature");
+                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                            counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_UPDATE_APP_CLICK);
+                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                            counterItemFormat.setMeta(meta);
+                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                            counterPush.pushValues();
                         }
                     });
                 }
@@ -2513,6 +2524,17 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     Intent i = new Intent(android.content.Intent.ACTION_VIEW);
                     i.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect"));
                     context.startActivity(i);
+
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta = new HashMap<>();
+                    meta.put("type", "fromRecentsRV");
+                    meta.put("not", "recentType");
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_UPDATE_APP_CLICK);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
                 }
             });
         }
@@ -2534,6 +2556,16 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 public void onSingleClick(View v) {
                     Intent intent = new Intent(context, PoolActivity.class);
                     context.startActivity(intent);
+
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta = new HashMap<>();
+                    meta.put("type", "fromRecentsRV");
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_SHOPS_OPEN);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
                 }
             });
         }
@@ -3065,9 +3097,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                                         resetFeaturesUnreadCount(FeatureDBName.KEY_INTERNSHIPS, dataSnapshot);
                                                         Intent intent = new Intent(context, Internships.class);
                                                         context.startActivity(intent);
+
                                                         CounterItemFormat counterItemFormat = new CounterItemFormat();
                                                         HashMap<String, String> meta = new HashMap<>();
-
                                                         counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                                                         counterItemFormat.setUniqueID(CounterUtilities.KEY_INTERNSHIPS_OPEN);
                                                         counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -3152,9 +3184,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                                         resetFeaturesUnreadCount(FeatureDBName.KEY_SHOPS, dataSnapshot);
                                                         Intent intent = new Intent(context, PoolActivity.class);
                                                         context.startActivity(intent);
+
                                                         CounterItemFormat counterItemFormat = new CounterItemFormat();
                                                         HashMap<String, String> meta = new HashMap<>();
-
                                                         counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                                                         counterItemFormat.setUniqueID(CounterUtilities.KEY_SHOPS_OPEN);
                                                         counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -3203,10 +3235,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                                         resetFeaturesUnreadCount(FeatureDBName.KEY_LINKS, dataSnapshot);
                                                         Intent intent = new Intent(context, Links.class);
                                                         context.startActivity(intent);
+
                                                         CounterItemFormat counterItemFormat = new CounterItemFormat();
                                                         HashMap<String, String> meta = new HashMap<>();
-
-
                                                         counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                                                         counterItemFormat.setUniqueID(CounterUtilities.KEY_LINKS_OPEN);
                                                         counterItemFormat.setTimestamp(System.currentTimeMillis());

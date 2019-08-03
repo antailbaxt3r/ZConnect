@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,8 +22,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.adapters.CabPoolRVAdapter;
 import com.zconnect.zutto.zconnect.adapters.InternshipsRVAdapter;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.InternshipsItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 public class Internships extends BaseActivity {
@@ -112,6 +117,14 @@ public class Internships extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         startActivity(new Intent(getApplicationContext(), MyInternships.class));
+
+        CounterItemFormat counterItemFormat = new CounterItemFormat();
+        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+        counterItemFormat.setUniqueID(CounterUtilities.KEY_INTERNSHIPS_MY_INTERNSHIPS_OPEN);
+        counterItemFormat.setTimestamp(System.currentTimeMillis());
+        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+        counterPush.pushValues();
+
         return super.onOptionsItemSelected(item);
     }
 }

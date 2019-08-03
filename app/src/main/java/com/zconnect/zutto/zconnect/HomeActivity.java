@@ -1324,6 +1324,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             case R.id.MyInternships: {
                 Intent intent = new Intent(getApplicationContext(), MyInternships.class);
                 startActivity(intent);
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_INTERNSHIPS_MY_INTERNSHIPS_OPEN);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
                 break;
             }
             case R.id.admins: {

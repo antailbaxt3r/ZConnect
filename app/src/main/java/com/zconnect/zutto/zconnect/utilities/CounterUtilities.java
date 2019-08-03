@@ -32,6 +32,10 @@ public class CounterUtilities {
 
     public static final String KEY_INTERNSHIPS_OPEN = "internshipsOpen";
 
+    public static final String KEY_INTERNSHIPS_APPLY = "internshipsApply";
+
+    public static final String KEY_INTERNSHIPS_MY_INTERNSHIPS_OPEN = "internshipsMyInternshipsOpen";
+
     //cabPool
     //checked
     public static final String KEY_CABPOOL_OPEN = "cabpoolOpen";
@@ -146,6 +150,12 @@ public class CounterUtilities {
     //checked
     public static final String KEY_FORUMS_EDIT_FORUM_OPEN = "forumsEditForumOpen";
 
+    public static final String KEY_FORUMS_ANOYMOUS_MESSAGE_ADD = "forumsAnonymousMessageAdd";
+
+    public static final String KEY_FORUMS_ANOYMOUS_MESSAGE_VIEW = "forumsAnonymousMessageView";
+
+    public static final String KEY_FORUMS_DARK_CHAT_OPEN = "forumsDarkChatOpen";
+
     //profile
     //checked
     public static final String KEY_PROFILE_OPEN = "profileOpen";
@@ -164,6 +174,8 @@ public class CounterUtilities {
     //checked
     public static final String KEY_PROFILE_EDIT_OPEN = "profileEdit";
 
+    public static final String KEY_PROFILE_MATCHED = "profileMatched";
+
     //notifications
     public static final String KEY_NOTIFICATIONS_OPEN = "notificationsOpen";
 
@@ -179,6 +191,7 @@ public class CounterUtilities {
     //Links
     public static final String KEY_LINKS_OPEN = "linksOpen";
 
+    public static final String KEY_LINKS_CLICK = "linksClick";
 
     //Shops
     public static final String KEY_SHOPS_OPEN = "shopsOpen";
@@ -218,5 +231,8 @@ public class CounterUtilities {
     //for polls
     public static final String KEY_RECENTS_ADD_POLL = "recentsAddPoll";
     public static final String KEY_RECENTS_VOTE_POLL = "recentsVotePoll";
+
+    //for update app
+    public static final String KEY_RECENTS_UPDATE_APP_CLICK = "recentsUpdateAppClick";
 
 }

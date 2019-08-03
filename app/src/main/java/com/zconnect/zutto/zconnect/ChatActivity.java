@@ -807,6 +807,8 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                         String messagePushID = databaseReference.child("Chat").push().getKey();
                         message.setKey(messagePushID);
                         databaseReference.child("Chat").child(messagePushID).setValue(message);
+
+
                             NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItem.getUserUID());
 
                             NotificationItemFormat
@@ -885,6 +887,13 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 message.setName(userItem.getUsername());
                 if(matchedMessage){
                     message.setMessage("\"" + "You guys matched!!" + "\"");
+
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_MATCHED);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
                 }
                 else{
                     message.setMessage("\"" + text + "\"");
@@ -912,6 +921,15 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 }
 
                 databaseReference.child("Chat").child(messagePushID).setValue(message);
+                if(anonymous)
+                {
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_ANOYMOUS_MESSAGE_ADD);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
+                }
                 if(type.equals("post"))
                 {
                     databaseReference.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
@@ -1409,6 +1427,14 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                         setAnonymousChat();
                         exitDialog.dismiss();
 
+                        HashMap<String, String> meta = new HashMap<>();
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_DARK_CHAT_OPEN);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        meta.put("option", "Just once");
+                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                        counterPush.pushValues();
 
                     }
                 });
@@ -1424,6 +1450,15 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                         editor.apply();
                         item.setTitle("Exit dark chats");
                         exitDialog.dismiss();
+
+                        HashMap<String, String> meta = new HashMap<>();
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_DARK_CHAT_OPEN);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        meta.put("option", "Always");
+                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                        counterPush.pushValues();
                     }
                 });
 
