@@ -215,4 +215,8 @@ public class CounterUtilities {
     //checked
     public static final String KEY_RECENTS_BANNER_CLICK = "recentsBannerClick";
 
+    //for polls
+    public static final String KEY_RECENTS_ADD_POLL = "recentsAddPoll";
+    public static final String KEY_RECENTS_VOTE_POLL = "recentsVotePoll";
+
 }

@@ -2244,6 +2244,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 reference.child("options").child("optionACount").setValue(count);
                                 String key1 = recentsItemFormats.get(getAdapterPosition()).getKey();
                                 setPollResultsVisible(key1, "optionA");
+
+                                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_VOTE_POLL);
+                                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                counterPush.pushValues();
                             }
                         }
                         else {
@@ -2254,6 +2261,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             String key1 = recentsItemFormats.get(getAdapterPosition()).getKey();
                             setPollResultsVisible(key1, "optionA");
 
+                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                            counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_VOTE_POLL);
+                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                            counterPush.pushValues();
 
                         }
                     }
@@ -2287,6 +2300,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                     String key  = recentsItemFormats.get(getAdapterPosition()).getKey();
                                     setPollResultsVisible(key, "optionB");
 
+                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_VOTE_POLL);
+                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                    counterPush.pushValues();
+
                                 }
                             }
                             else {
@@ -2296,6 +2316,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 reference.child("options").child("optionBCount").setValue(count);
                                 String key  = recentsItemFormats.get(getAdapterPosition()).getKey();
                                 setPollResultsVisible(key, "optionB");
+
+                                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_VOTE_POLL);
+                                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                counterPush.pushValues();
 
                             }
                         }
@@ -2329,6 +2356,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                     reference.child("options").child("optionCCount").setValue(count);
                                     String key  = recentsItemFormats.get(getAdapterPosition()).getKey();
                                     setPollResultsVisible(key, "optionC");
+
+                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_VOTE_POLL);
+                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                    counterPush.pushValues();
                                 }
                             }
                             else {
@@ -2338,6 +2372,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 reference.child("options").child("optionCCount").setValue(count);
                                 String key  = recentsItemFormats.get(getAdapterPosition()).getKey();
                                 setPollResultsVisible(key, "optionC");
+
+                                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_VOTE_POLL);
+                                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                counterPush.pushValues();
                             }
                         }
 
