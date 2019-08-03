@@ -55,7 +55,7 @@ public class GlobalFunctions {
                 if(mutableData == null){
                     mutableData.setValue(0);
                 }
-//                String temp = mutableData.getValue(String.class);
+
                 Integer existingPoints = mutableData.getValue(Integer.class);
                 Integer newPoints;
 
@@ -119,7 +119,7 @@ public class GlobalFunctions {
                             if(uid.equals(childsnap.getKey()))
                                 continue;
                             Log.d("keyyyy", notifiedby.getUserUID()+"");
-                            if(!notifiedby.getUserUID().equals(childsnap.getKey())) {
+                            if(!uid.equals(childsnap.getKey())) {
                                 notificationsRef = FirebaseDatabase.getInstance().getReference().child("communities").
                                         child(communityReference).child("Users1").child(childsnap.getKey())
                                         .child("notifications");

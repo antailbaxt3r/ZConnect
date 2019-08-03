@@ -180,10 +180,6 @@ public class InfoneContactListActivity extends BaseActivity {
 
         setAdapter("lite",false);
 
-
-        askCallPermissions();
-
-
     }
 
 
@@ -196,7 +192,7 @@ public class InfoneContactListActivity extends BaseActivity {
                 contactsRVItems = new ArrayList<>();
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
 
-//                    try {
+                    try {
                         InfoneContactsRVItem temp = new InfoneContactsRVItem();
 
                         String name = childSnapshot.child("name").getValue(String.class);
@@ -237,7 +233,7 @@ public class InfoneContactListActivity extends BaseActivity {
                         contactsRVItems.add(temp);
 
                         totalContacts = contactsRVItems.size();
-//                    }catch (Exception e){}
+                    }catch (Exception e){}
                 }
 
                 Collections.sort(contactsRVItems, new Comparator<InfoneContactsRVItem>() {
@@ -508,46 +504,4 @@ public class InfoneContactListActivity extends BaseActivity {
         }
     }
 
-    private void askCallPermissions() {
-
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(InfoneContactListActivity.this, new String[]{android.Manifest.permission.CALL_PHONE}, REQUEST_PHONE_CALL);
-        }
-
-        if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(InfoneContactListActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.PROCESS_OUTGOING_CALLS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(InfoneContactListActivity.this, new String[]{Manifest.permission.PROCESS_OUTGOING_CALLS}, REQUEST_READ_CONTACTS);
-        }
-        if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(InfoneContactListActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_READ_CONTACTS);
-        }
-
-    }
-
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_PHONE_CALL: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //startActivity(intent);
-                } else {
-                    askCallPermissions();
-                }
-                return;
-            }
-            case REQUEST_READ_CONTACTS: {
-                if(grantResults.length > 0 && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-
-                } else {
-                    askCallPermissions();
-                }
-                return;
-            }
-        }
-    }
 }

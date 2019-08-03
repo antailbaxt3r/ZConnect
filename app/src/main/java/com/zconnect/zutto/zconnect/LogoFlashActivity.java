@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -55,6 +56,7 @@ import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -70,6 +72,13 @@ public class LogoFlashActivity extends BaseActivity {
     private View bgColor;
     boolean flag = false;
     private String mReferrerUid;
+
+    String[] PERMISSIONS = {
+            android.Manifest.permission.READ_EXTERNAL_STORAGE,
+            android.Manifest.permission.CALL_PHONE,
+            android.Manifest.permission.READ_CONTACTS,
+    };
+
 
 
     @Override
@@ -319,9 +328,21 @@ public class LogoFlashActivity extends BaseActivity {
             @Override
             public void run() {
 
-                if (checkPermission()) {
-                    // Do not wait so that user doesn't realise this is a new launch.
-                    Log.d(TAG, " goint to home act 1");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (arePermissionsEnabled()) {
+                        // Do not wait so that user doesn't realise this is a new launch.
+                        Log.d(TAG, " goint to home act 1");
+                        Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
+                        intent.putExtra("isReferred", mReferrerUid!=null);
+                        intent.putExtra("referredBy", mReferrerUid);
+                        Log.d(TAG,"goint to home act 1 " + mReferrerUid);
+                        if(!flag)
+                            startActivity(intent);
+                        finish();
+                    }else {
+                        requestMultiplePermissions();
+                    }
+                }else {
                     Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
                     intent.putExtra("isReferred", mReferrerUid!=null);
                     intent.putExtra("referredBy", mReferrerUid);
@@ -733,46 +754,93 @@ public class LogoFlashActivity extends BaseActivity {
 //    }
 
 
-
-    public boolean checkPermission() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
-                || ContextCompat.checkSelfPermission(LogoFlashActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            return true;
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private boolean arePermissionsEnabled(){
+        for(String permission : PERMISSIONS){
+            if(checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED)
+                return false;
         }
-        if (ActivityCompat.shouldShowRequestPermissionRationale(LogoFlashActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(LogoFlashActivity.this);
-            alertBuilder.setCancelable(true);
-            alertBuilder.setTitle("Permission necessary");
-            alertBuilder.setMessage("Permission to read storage is required .");
-            alertBuilder.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
-                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                public void onClick(DialogInterface dialog, int which) {
-                    ActivityCompat.requestPermissions(LogoFlashActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 7);
-                }
-            });
-            AlertDialog alert = alertBuilder.create();
-            alert.show();
-        } else {
-            ActivityCompat.requestPermissions(LogoFlashActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, RC_PERM_REQ_EXT_STORAGE);
-        }
-        return false;
+        return true;
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == RC_PERM_REQ_EXT_STORAGE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
-                Log.d(TAG,"goint to home act 2");
-                intent.putExtra("isReferred", mReferrerUid!=null);
-                intent.putExtra("referredBy", mReferrerUid);
-                startActivity(intent);
-                finish();
-            } else {
-                Toast.makeText(this, "Permission Denied !, Retrying.", Toast.LENGTH_SHORT).show();
-                checkPermission();
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestMultiplePermissions(){
+        List<String> remainingPermissions = new ArrayList<>();
+        for (String permission : PERMISSIONS) {
+            if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                remainingPermissions.add(permission);
             }
         }
+        requestPermissions(remainingPermissions.toArray(new String[remainingPermissions.size()]), 101);
     }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == 101){
+            for(int i=0;i<grantResults.length;i++){
+                if(grantResults[i] != PackageManager.PERMISSION_GRANTED){
+                    if(shouldShowRequestPermissionRationale(permissions[i])){
+                        new AlertDialog.Builder(this)
+                                .setMessage("The application needs all the permission")
+                                .setPositiveButton("Allow", (dialog, which) -> requestMultiplePermissions())
+                                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                                .create()
+                                .show();
+                    }
+                    return;
+                }
+            }
+            Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
+            intent.putExtra("isReferred", mReferrerUid!=null);
+            intent.putExtra("referredBy", mReferrerUid);
+            startActivity(intent);
+            finish();
+        }
+    }
+//
+//
+//    public boolean checkPermission() {
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+//                || ContextCompat.checkSelfPermission(LogoFlashActivity.this, PERMISSIONS) == PackageManager.PERMISSION_GRANTED) {
+//            return true;
+//        }
+//        if (ActivityCompat.shouldShowRequestPermissionRationale(LogoFlashActivity.this, PERMISSIONS)) {
+//            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(LogoFlashActivity.this);
+//            alertBuilder.setCancelable(true);
+//            alertBuilder.setTitle("Permission necessary");
+//            alertBuilder.setMessage("Permission to read storage is required .");
+//            alertBuilder.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
+//                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+//                public void onClick(DialogInterface dialog, int which) {
+//                    ActivityCompat.requestPermissions(LogoFlashActivity.this, PERMISSIONS, 7);
+//                }
+//            });
+//            AlertDialog alert = alertBuilder.create();
+//            alert.show();
+//        } else {
+//            ActivityCompat.requestPermissions(LogoFlashActivity.this, PERMISSIONS, RC_PERM_REQ_EXT_STORAGE);
+//        }
+//        return false;
+//    }
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        if (requestCode == RC_PERM_REQ_EXT_STORAGE) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
+//                Log.d(TAG,"goint to home act 2");
+//                intent.putExtra("isReferred", mReferrerUid!=null);
+//                intent.putExtra("referredBy", mReferrerUid);
+//                startActivity(intent);
+//                finish();
+//            } else {
+//                Toast.makeText(this, "Permission Denied !, Retrying.", Toast.LENGTH_SHORT).show();
+//                checkPermission();
+//            }
+//        }
+//    }
 }
 

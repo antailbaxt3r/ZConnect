@@ -137,6 +137,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
     NotificationItemFormat notificationItemFormat;
     private static final String BUCKET = "people-network";
 
+    private String tempText;
 
     private static final int GALLERY_REQUEST = 7;
     private String ref = "Misc";
@@ -868,7 +869,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                             //TODO, FIX IMAGEURL
                             if(anonymous){
                                 forumChatNotification.setUserName(userItem.getAnonymousUsername());
-                                forumChatNotification.setUserImage(userItem.getImageURLThumbnail());
+                                forumChatNotification.setUserImage("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/Icons%2Fbaseline_visibility_off_black_48.png?alt=media&token=c7c5524c-1a92-4367-b280-142633de3675");
 
                             }
                             else{
@@ -904,6 +905,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
             }
         } else {
             String text1 = typer.getText().toString().trim();
+            tempText = typer.getMentionsText().toString().trim();
             String textCopy = text1;
 
                 for(UserMentionsFormat user : mentionedUsersList){
@@ -973,14 +975,14 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
                     NotificationItemFormat forumChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_FORUM, userItem.getUserUID());
 
-                    forumChatNotification.setItemMessage(typer.getText().toString().trim());
+                    forumChatNotification.setItemMessage(tempText);
                     forumChatNotification.setItemCategoryUID(getIntent().getStringExtra("tab"));
                     forumChatNotification.setItemName(getIntent().getStringExtra("name"));
                     forumChatNotification.setItemKey(getIntent().getStringExtra("key"));
 
                     if(anonymous) {
 
-                        forumChatNotification.setUserImage(null);
+                        forumChatNotification.setUserImage("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/Icons%2Fbaseline_visibility_off_black_48.png?alt=media&token=c7c5524c-1a92-4367-b280-142633de3675");
                         forumChatNotification.setUserName(userItem.getAnonymousUsername());
                     }
                     else{
@@ -1032,11 +1034,9 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                     postChatNotification.setItemMessage(text);
                     postChatNotification.setItemKey(getIntent().getStringExtra("key"));
                     if(anonymous){
-                        postChatNotification.setUserImage(userItem.getImageURLThumbnail());
+                        postChatNotification.setUserImage("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/Icons%2Fbaseline_visibility_off_black_48.png?alt=media&token=c7c5524c-1a92-4367-b280-142633de3675");
                         postChatNotification.setUserName(userItem.getAnonymousUsername());
                         metadata.put("uid",getIntent().getStringExtra("uid"));
-
-
                     }
                     else{
                         postChatNotification.setUserImage(userItem.getImageURLThumbnail());
@@ -1049,31 +1049,6 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                     metadata.put("ref",getIntent().getStringExtra("ref"));
                     metadata.put("type",getIntent().getStringExtra("type"));
                     GlobalFunctions.inAppNotifications("commented on your status","Comment: "+text,userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
-                    FirebaseDatabase.getInstance().getReference().child(communityReference).child("Users1").child(getIntent().getStringExtra("uid")).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            UserItemFormat userItemFormat = new UserItemFormat();
-                            HashMap<String,Object> meta = new HashMap<>();
-                            meta.put("ref",databaseReference);
-                            if(anonymous){
-                                userItemFormat.setUserUID(null);
-                                userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
-                                userItem.setUsername((String) dataSnapshot.child("anonymousUsername").getValue());
-                            }
-                            else{
-                                userItemFormat.setUserUID(getIntent().getStringExtra("uid"));
-                                userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
-                                userItem.setUsername((String) dataSnapshot.child("username").getValue());
-                            }
-
-                            GlobalFunctions.inAppNotifications("Someone just commented on a status that you commented on","Comment: "+text,userItemFormat,false,"statusNestedComment",meta,null);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
                     notificationSender.execute(postChatNotification);
 
                 } else if (type.equals("messages")) {
