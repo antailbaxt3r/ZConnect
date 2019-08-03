@@ -455,7 +455,7 @@ public class OpenStatus extends BaseActivity {
                             userItemFormat.setImageURLThumbnail("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/Icons%2Fbaseline_visibility_off_black_48.png?alt=media&token=c7c5524c-1a92-4367-b280-142633de3675");
                             GlobalFunctions.inAppNotifications("commented on your status", "Comment: " + text, userItemFormat, false, "statusComment", metadata,temp.getUID());
 
-                           userItemFormat = new UserItemFormat();
+                            userItemFormat = new UserItemFormat();
                             HashMap<String,Object> meta = new HashMap<>();
                             meta.put("ref",ref);
                             meta.put("key",key);
@@ -467,7 +467,7 @@ public class OpenStatus extends BaseActivity {
                             userItemFormat.setImageURL("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/Icons%2Fbaseline_visibility_off_black_48.png?alt=media&token=c7c5524c-1a92-4367-b280-142633de3675");
                             userItemFormat.setImageURLThumbnail("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/Icons%2Fbaseline_visibility_off_black_48.png?alt=media&token=c7c5524c-1a92-4367-b280-142633de3675");
                             userItemFormat.setUsername((String) dataSnapshot.child("Chat").child(messagePushID).child("userName").getValue());
-                            GlobalFunctions.inAppNotifications("commented on a status you commented","Comment: "+text,userItemFormat,true,"statusNestedComment",meta,temp.getUID());
+                            GlobalFunctions.inAppNotifications("commented on a status you commented","Comment: "+text,userItemFormat,true,"statusNestedComment",meta,FirebaseAuth.getInstance().getUid());
 
                         }
                         else{
