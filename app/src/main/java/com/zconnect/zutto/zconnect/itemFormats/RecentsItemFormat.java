@@ -52,6 +52,9 @@ public class RecentsItemFormat {
         //for Forums
     private String imageThumb;
 
+        //for Shops
+    private long timestampOrderReceivingDeadline;
+
     private PostedByDetails PostedBy;
     //
 
@@ -62,7 +65,7 @@ public class RecentsItemFormat {
                              String cabpoolTime, int cabpoolTimeFrom, int cabpoolTimeTo, String eventDate, String productPrice, String Key, long PostTimeMillis,
                              PostedByDetails PostedBy, String infoneContactName, String infoneContactCategoryName,
                              String communityName, String message, String recentType, int msgLikes, int msgComments, String productType,
-                             HashMap<String, CabItemFormat> cabItemFormat,String question,int totalCount,CreatePollOptionsItemFormat optionsItemFormat, HashMap<String, UsersListItemPollFormat> usersList, String imageThumb) {
+                             HashMap<String, CabItemFormat> cabItemFormat,String question,int totalCount,CreatePollOptionsItemFormat optionsItemFormat, HashMap<String, UsersListItemPollFormat> usersList, String imageThumb, long timestampOrderReceivingDeadline) {
         this.name = name;
         this.desc = desc;
         this.desc2 = desc2;
@@ -97,6 +100,7 @@ public class RecentsItemFormat {
         this.options = optionsItemFormat;
         this.usersList = usersList;
         this.imageThumb = imageThumb;
+        this.timestampOrderReceivingDeadline = timestampOrderReceivingDeadline;
     }
 
     public RecentsItemFormat() {
@@ -320,6 +324,14 @@ public class RecentsItemFormat {
 
     public void setUsersList(HashMap<String, UsersListItemPollFormat> usersList) {
         this.usersList = usersList;
+    }
+
+    public long getTimestampOrderReceivingDeadline() {
+        return timestampOrderReceivingDeadline;
+    }
+
+    public void setTimestampOrderReceivingDeadline(long timestampOrderReceivingDeadline) {
+        this.timestampOrderReceivingDeadline = timestampOrderReceivingDeadline;
     }
 }
 
