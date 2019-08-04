@@ -190,95 +190,102 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<RecyclerView
                         notificationsList.get(position).setSeen(seenmap);
                         String type = notificationsList.get(position).getType();
                         Log.d("NOTIFICATIONTYPE",type);
-                        switch (type) {
-                            case "acceptforum":
-                                intent = new Intent(context, ExploreForumsActivity.class);
-                                context.startActivity(intent);
-                                break;
-                            case "infonevalidate":
-                                intent = new Intent(context, InfoneProfileActivity.class);
-                                intent.putExtra("infoneUserId", notificationsList.get(position).getNotifiedBy().getUserUID());
-                                intent.putExtra("catID", String.valueOf(notificationsList.get(position).getMetadata().get("catID")));
-                                context.startActivity(intent);
-                                break;
-                            case "addforum":
-                                intent = new Intent(context, ExploreForumsActivity.class);
-                                context.startActivity(intent);
-                                break;
-                            case "contactAdd":
-                                intent = new Intent(context, InfoneProfileActivity.class);
-                                intent.putExtra("infoneUserId", String.valueOf(notificationsList.get(position).getMetadata().get("infoneUserId")));
-                                intent.putExtra("catID", String.valueOf(notificationsList.get(position).getMetadata().get("catID")));
-                                context.startActivity(intent);
-                                break;
-                            case "productAdd":
-                                intent = new Intent(context, OpenProductDetails.class);
-                                intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
-                                intent.putExtra("type", String.valueOf(notificationsList.get(position).getMetadata().get("type")));
-                                context.startActivity(intent);
-                                break;
+                        try
+                        {
+                            switch (type) {
+                                case "acceptforum":
+                                    intent = new Intent(context, ExploreForumsActivity.class);
+                                    context.startActivity(intent);
+                                    break;
+                                case "infonevalidate":
+                                    intent = new Intent(context, InfoneProfileActivity.class);
+                                    intent.putExtra("infoneUserId", notificationsList.get(position).getNotifiedBy().getUserUID());
+                                    intent.putExtra("catID", String.valueOf(notificationsList.get(position).getMetadata().get("catID")));
+                                    context.startActivity(intent);
+                                    break;
+                                case "addforum":
+                                    intent = new Intent(context, ExploreForumsActivity.class);
+                                    context.startActivity(intent);
+                                    break;
+                                case "contactAdd":
+                                    intent = new Intent(context, InfoneProfileActivity.class);
+                                    intent.putExtra("infoneUserId", String.valueOf(notificationsList.get(position).getMetadata().get("infoneUserId")));
+                                    intent.putExtra("catID", String.valueOf(notificationsList.get(position).getMetadata().get("catID")));
+                                    context.startActivity(intent);
+                                    break;
+                                case "productAdd":
+                                    intent = new Intent(context, OpenProductDetails.class);
+                                    intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                                    intent.putExtra("type", String.valueOf(notificationsList.get(position).getMetadata().get("type")));
+                                    context.startActivity(intent);
+                                    break;
 
-                            case "cabpoolLeave":
-                                intent = new Intent(context, CabPoolListOfPeople.class);
-                                intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
-                                context.startActivity(intent);
-                                break;
-                            case "eventAdd":
-                                intent = new Intent(context, OpenEventDetail.class);
-                                intent.putExtra("id", String.valueOf(notificationsList.get(position).getMetadata().get("id")));
-                                context.startActivity(intent);
-                                break;
+                                case "cabpoolLeave":
+                                    intent = new Intent(context, CabPoolListOfPeople.class);
+                                    intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                                    context.startActivity(intent);
+                                    break;
+                                case "eventAdd":
+                                    intent = new Intent(context, OpenEventDetail.class);
+                                    intent.putExtra("id", String.valueOf(notificationsList.get(position).getMetadata().get("id")));
+                                    context.startActivity(intent);
+                                    break;
 
-                            case "cabpoolAdd":
-                                intent = new Intent(context, CabPoolAll.class);
-                                intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
-                                context.startActivity(intent);
-                                break;
+                                case "cabpoolAdd":
+                                    intent = new Intent(context, CabPoolAll.class);
+                                    intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                                    context.startActivity(intent);
+                                    break;
 
-                            case "cabpoolJoin":
-                                intent = new Intent(context, CabPoolListOfPeople.class);
+                                case "cabpoolJoin":
+                                    intent = new Intent(context, CabPoolListOfPeople.class);
 
 //                            Log.d("METADATAAA",String.valueOf(notificationsList.get(position).getMetadata()));
-                                intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
-                                context.startActivity(intent);
-                                break;
+                                    intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                                    context.startActivity(intent);
+                                    break;
 
-                            case "eventBoost":
-                                intent = new Intent(context, OpenEventDetail.class);
-                                intent.putExtra("id", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
-                                context.startActivity(intent);
-                                break;
-                            case "productShortlist":
-                                intent = new Intent(context, OpenProductDetails.class);
-                                intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
-                                intent.putExtra("type", String.valueOf(notificationsList.get(position).getMetadata().get("type")));
-                                context.startActivity(intent);
-                                break;
-                            case "infoneinvalidate":
-                                intent = new Intent(context, InfoneProfileActivity.class);
-                                intent.putExtra("infoneUserId", notificationsList.get(position).getNotifiedBy().getUserUID());
-                                intent.putExtra("catID", String.valueOf(notificationsList.get(position).getMetadata().get("catID")));
-                                context.startActivity(intent);
-                                break;
-                            case "verification":
-                                intent = new Intent(context, VerificationPage.class);
-                                context.startActivity(intent);
-                                break;
-                            case "statusComment":
-                                intent = new Intent(context, OpenStatus.class);
-                                intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
-                                context.startActivity(intent);
-                                break;
-                            case "statusNestedComment":
-                                intent = new Intent(context, OpenStatus.class);
-                                intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
-                                context.startActivity(intent);
-                                break;
-                            case "status":
-                                intent = new Intent(context, OpenStatus.class);
-                                intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
-                                context.startActivity(intent);
-                                break;
+                                case "eventBoost":
+                                    intent = new Intent(context, OpenEventDetail.class);
+                                    intent.putExtra("id", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                                    context.startActivity(intent);
+                                    break;
+                                case "productShortlist":
+                                    intent = new Intent(context, OpenProductDetails.class);
+                                    intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                                    intent.putExtra("type", String.valueOf(notificationsList.get(position).getMetadata().get("type")));
+                                    context.startActivity(intent);
+                                    break;
+                                case "infoneinvalidate":
+                                    intent = new Intent(context, InfoneProfileActivity.class);
+                                    intent.putExtra("infoneUserId", notificationsList.get(position).getNotifiedBy().getUserUID());
+                                    intent.putExtra("catID", String.valueOf(notificationsList.get(position).getMetadata().get("catID")));
+                                    context.startActivity(intent);
+                                    break;
+                                case "verification":
+                                    intent = new Intent(context, VerificationPage.class);
+                                    context.startActivity(intent);
+                                    break;
+                                case "statusComment":
+                                    intent = new Intent(context, OpenStatus.class);
+                                    intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                                    context.startActivity(intent);
+                                    break;
+                                case "statusNestedComment":
+                                    intent = new Intent(context, OpenStatus.class);
+                                    intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                                    context.startActivity(intent);
+                                    break;
+                                case "status":
+                                    intent = new Intent(context, OpenStatus.class);
+                                    intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                                    context.startActivity(intent);
+                                    break;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
                         }
 
                         if (notificationsList.get(position).getTitle().equals("tried contacting you")) {
