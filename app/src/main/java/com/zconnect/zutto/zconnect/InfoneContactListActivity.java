@@ -15,6 +15,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -189,6 +190,18 @@ public class InfoneContactListActivity extends BaseActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+                Parcelable recyclerViewState = null;
+
+
+                try {
+                    if (recyclerViewContacts != null) {
+                        recyclerViewState = recyclerViewContacts.getLayoutManager().onSaveInstanceState();
+                    }
+                }
+                catch (Exception e){
+                    recyclerViewState = null;
+                }
+
                 contactsRVItems = new ArrayList<>();
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
 
@@ -243,9 +256,12 @@ public class InfoneContactListActivity extends BaseActivity {
                     }
                 });
 
-
                 infoneContactsRVAdapter = new InfoneContactsRVAdapter(InfoneContactListActivity.this, contactsRVItems, catId);
                 recyclerViewContacts.setAdapter(infoneContactsRVAdapter);
+
+                if (recyclerViewContacts != null && recyclerViewState != null) {
+                    recyclerViewContacts.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+                }
                 shimmerFrameLayout.stopShimmerAnimation();
                 shimmerFrameLayout.setVisibility(View.INVISIBLE);
                 recyclerViewContacts.setVisibility(View.VISIBLE);
@@ -353,22 +369,24 @@ public class InfoneContactListActivity extends BaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        //databaseReferenceList.removeEventListener(listener);
+        databaseReferenceList.removeEventListener(listener);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        databaseReferenceList.removeEventListener(listener);
     }
 
-    /**
-     * Dispatch onPause() to fragments.
-     */
     @Override
     protected void onPause() {
-
         super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        databaseReferenceList.addValueEventListener(listener);
     }
 
     @Override

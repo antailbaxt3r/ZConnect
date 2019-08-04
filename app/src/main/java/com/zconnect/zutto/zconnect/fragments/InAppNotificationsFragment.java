@@ -51,7 +51,8 @@ public class InAppNotificationsFragment extends Fragment {
     private ShimmerFrameLayout shimmerFrameLayout;
     private SharedPreferences communitySP;
     public String communityRef;
-    private DatabaseReference notificationsReference;
+    private DatabaseReference inAppNotificationCountReference;
+
     private DatabaseReference globalReference;
     private DatabaseReference userNotifReference;
     private ValueEventListener listener;
@@ -88,6 +89,9 @@ public class InAppNotificationsFragment extends Fragment {
         totalnotificationsList = new Vector<>();
         globalReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityRef);
         userNotifReference = globalReference.child("Users1").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("notifications");
+
+        inAppNotificationCountReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityRef).child("Users1").child(Objects.requireNonNull(FirebaseAuth.getInstance().getUid())).child("notificationStatus");
+
         inAppNotifsQuery = userNotifReference.orderByChild("PostTimeMillis").limitToLast(20);
         defineListerners();
         notifRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
@@ -157,40 +161,17 @@ public class InAppNotificationsFragment extends Fragment {
                     noNotif.setVisibility(View.GONE);
                     notifRecyclerView.setVisibility(View.VISIBLE);
                     inAppNotificationsAdapter.notifyDataSetChanged();
-                    boolean isUnread = false;
-                    for(InAppNotificationsItemFormat notificationsItemFormat : totalnotificationsList){
-                        try{
-                            Log.d("NOTIFICATION",notificationsItemFormat.isSeen().get(UserUtilities.currentUser.getUserUID()).toString());
-                            if(!notificationsItemFormat.isSeen().get(UserUtilities.currentUser.getUserUID())){
-                                TabLayout tabs = getActivity().findViewById(R.id.navigation);
-                                tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
-                                isUnread = true;
-                            }
-                        }
-                        catch (Exception e){
-                            TabLayout tabs = getActivity().findViewById(R.id.navigation);
-                            tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
-                            Log.d("NOTIFICATIONERROR",e.toString());
-                        }
-                    }
-
-                    if(!isUnread){
-                        TabLayout tabs = getActivity().findViewById(R.id.navigation);
-                        tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
-
-                    }
 
                 } else {
                     noNotif.setVisibility(View.VISIBLE);
                     notifRecyclerView.setVisibility(View.GONE);
-                    TabLayout tabs = getActivity().findViewById(R.id.navigation);
-                    tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
+
                 }
+
                 if(lastNotifID!=null)
                 {
                     inAppNotificationsAdapter.getLoadMoreUtility().setLoaded();
                 }
-
             }
 
             @Override

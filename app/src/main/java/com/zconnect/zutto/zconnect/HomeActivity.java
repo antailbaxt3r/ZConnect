@@ -70,6 +70,7 @@ import com.zconnect.zutto.zconnect.fragments.UpdateAppActivity;
 import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UserSeenNotifItemFormat;
 import com.zconnect.zutto.zconnect.pools.MyOrdersActivity;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
@@ -107,7 +108,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private boolean doubleBackToExitPressedOnce = false;
     private ValueEventListener editProfileValueEventListener;
     private ValueEventListener popupsListener;
-    private ValueEventListener uiDbListener;
+    private ValueEventListener inAppNotificationCountListener;
     private TextView navHeaderUserNameTv;
     private SimpleDraweeView navHeaderBackground;
     private MenuItem editProfileItem;
@@ -122,13 +123,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private DatabaseReference communityFeaturesRef;
     private Menu nav_Menu;
 
-    private Boolean isFabOpen;
-    private FloatingActionButton fab, fab1, fab2, fab3;
-    private Animation fab_open, fab_close, rotate_forward, rotate_backward;
 
     private DatabaseReference uiDbRef;
+    private DatabaseReference inAppNotificationCountReference;
     private FirebaseUser mUser;
-    private boolean guestMode;
     private SharedPreferences defaultPrefs;
     private SharedPreferences guestPrefs;
     private AlertDialog addContactDialog;
@@ -136,7 +134,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     public Fragment infone;
     private FragmentManager fm;
     LinearLayout recentView;
-    private BottomNavigationItemView home, forum, add, infoneb,noti;
 
     public Boolean flag = false;
     public Boolean setTitleFlag = true;
@@ -149,6 +146,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private String Title;
     Context context;
 
+    private Boolean isFabOpen;
     TextView[] tabTitle = new TextView[6];
     SimpleDraweeView[] tabImage = new SimpleDraweeView[6];
     ImageView[] tabNotificationCircle = new ImageView[6];
@@ -666,6 +664,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     }
                     case 4: {
 
+                        TabLayout tabs = findViewById(R.id.navigation);
+                        tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
+
+
                         tabImage[0].setImageResource(R.drawable.ic_home_outline_24dp);
                         tabImage[1].setImageResource(R.drawable.ic_forum_outline_24dp);
                         tabImage[2].setImageResource(R.drawable.ic_control_point_outline_24dp);
@@ -675,6 +677,25 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         findViewById(R.id.fab_cat_infone).setVisibility(View.GONE);
                         //setActionBarTitle("You");
                         setActionBarTitle("Notifications");
+
+                        inAppNotificationCountReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot notificationSnapshot) {
+                                try {
+                                    UserSeenNotifItemFormat temp = notificationSnapshot.getValue(UserSeenNotifItemFormat.class);
+                                    inAppNotificationCountReference.child("seenNotifications").setValue(temp.getTotalNotifications());
+                                }catch (Exception e){
+
+                                    inAppNotificationCountReference.child("seenNotifications").setValue(0);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
 
                         CounterItemFormat counterItemFormat = new CounterItemFormat();
                         HashMap<String, String> meta = new HashMap<>();
@@ -719,9 +740,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     findViewById(R.id.fab_cat_infone).setVisibility(View.VISIBLE);
 
                 }
-
-
-
 
                 switch (pos) {
                     case 0:
@@ -845,55 +863,42 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     //All ValueEventListener used in this class are defined here.
     private void initListeners() {
 
-//        TotalStats = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                if (dataSnapshot.child("TotalNumbers").getValue() != null)
-//                    TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
-//                if (dataSnapshot.child("TotalEvents").getValue() != null)
-//                    TotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
-////                if (dataSnapshot.child("TotalOffers").getValue() != null)
-////                    TotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue(String.class));
-//                if (dataSnapshot.child("TotalProducts").getValue() != null)
-//                    TotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
-//                if (dataSnapshot.child("TotalCabpools").getValue() != null)
-//                    TotalCabpools = Integer.parseInt(dataSnapshot.child("TotalCabpools").getValue().toString());
-//
-////                setNotificationCircle();
-//            }
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.e(TAG, "onCancelled: ", databaseError.toException());
-//            }
-//        };
-////
-//        UserStats = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                if (dataSnapshot.child("TotalNumbers").getValue() != null) {
-//                    UsersTotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
-//                }
-//                if (dataSnapshot.child("TotalEvents").getValue() != null) {
-//                    UsersTotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
-//                }
-////                if (dataSnapshot.child("TotalOffers").getValue() != null) {
-////                    UsersTotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue(String.class));
-////                }
-//                if (dataSnapshot.child("TotalProducts").getValue() != null) {
-//                    UsersTotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
-//                }
-//                if (dataSnapshot.child("TotalCabpools").getValue() != null) {
-//                    UsersTotalCabpools = Integer.parseInt(dataSnapshot.child("TotalCabpools").getValue().toString());
-//                }
-//
-//                setNotificationCircle();
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.e(TAG, "onCancelled: ", databaseError.toException());
-//            }
-//        };
+        inAppNotificationCountListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                try {
+
+                    UserSeenNotifItemFormat temp = dataSnapshot.getValue(UserSeenNotifItemFormat.class);
+                    Log.d("testing",dataSnapshot.toString() + "  "+  temp.getTotalNotifications() + " ");
+
+                    if (temp.getSeenNotifications()<temp.getTotalNotifications()) {
+                        TabLayout tabs = findViewById(R.id.navigation);
+                        tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
+
+                        Log.d("testing","1");
+                    } else {
+                        TabLayout tabs = findViewById(R.id.navigation);
+                        tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
+
+                        Log.d("testing","2");
+                    }
+
+
+                }catch (Exception e){
+
+                    Log.d("testing","3");
+                    TabLayout tabs = findViewById(R.id.navigation);
+                    tabs.getTabAt(4).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
 
         popupsListener = new ValueEventListener() {
             @Override
@@ -1064,6 +1069,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 Log.e(TAG, "onCancelled: ", databaseError.toException());
             }
         };
+
 
     }
 
@@ -1245,6 +1251,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 currentUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mUser.getUid());
                 currentUserReference.keepSynced(true);
                 currentUserReference.addListenerForSingleValueEvent(editProfileValueEventListener);
+
+                inAppNotificationCountReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mUser.getUid()).child("notificationStatus");
+                inAppNotificationCountReference.addValueEventListener(inAppNotificationCountListener);
             } else if (communityReference == null) {
                 Log.d("RRRRR", "COMM REF IS NULL");
                 Intent i = new Intent(this, CommunitiesAround.class);
