@@ -143,10 +143,10 @@ public class newRequestViewHolder extends RecyclerView.ViewHolder {
                     try {
                         final HashMap<String, Object> map = new HashMap<>();
                         map.put("linkURL", dataSnapshot.child("link").getValue().toString().trim());
-                        map.put("title", dataSnapshot.child("Name").getValue().toString().trim());
-                        map.put("UID",dataSnapshot.getKey());
-
-                        linksRef.child(dataSnapshot.getKey()).setValue(map);
+                        map.put("linkTitle", dataSnapshot.child("Name").getValue().toString().trim());
+                        map.put("PostedBy",dataSnapshot.child("PostedBy").getValue());
+                        map.put("PostTimeMillis", dataSnapshot.child("PostTimeMillis").getValue(Long.class));
+                        linksRef.child(key).setValue(map);
                         requestLinks.child(key).removeValue();
                     }
                     catch (Exception e){

@@ -44,12 +44,11 @@ public class LinksRVAdapter extends RecyclerView.Adapter<LinksRVAdapter.Programm
 
     @Override
     public void onBindViewHolder(final ProgrammingViewHolder holder, int position) {
-        String title=LinksList.get(position).getTitle().toString();
+        String title=LinksList.get(position).getLinkTitle().toString();
         String link=LinksList.get(position).getLinkURL().toString();
         holder.link.setText(link);
         holder.title.setText(title);
         holder.link.setOnClickListener(view -> {
-            Intent intent = new Intent(context, WebViewActivity.class);
             CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
             intentBuilder.setToolbarColor(ContextCompat.getColor(context, R.color.colorPrimary));
             intentBuilder.setSecondaryToolbarColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
@@ -57,6 +56,11 @@ public class LinksRVAdapter extends RecyclerView.Adapter<LinksRVAdapter.Programm
             intentBuilder.setExitAnimations(context, android.R.anim.slide_in_left,
                     android.R.anim.slide_out_right);
             CustomTabsIntent customTabsIntent = intentBuilder.build();
+            String linkUrl = LinksList.get(position).getLinkURL();
+            if(!linkUrl.startsWith("http://") && !linkUrl.startsWith("https://"))
+            {
+                LinksList.get(position).setLinkURL("http://"+linkUrl);
+            }
             customTabsIntent.launchUrl(context, Uri.parse(LinksList.get(position).getLinkURL()));
 //            intent.putExtra("url",LinksList.get(position).getLinkURL());
 //            intent.putExtra("title",LinksList.get(position).getTitle());

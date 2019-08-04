@@ -21,9 +21,12 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".fragments.UpdateAppActivity"></activity>
-        <activity android:name=".OpenStatus" />
-        <activity android:name=".AddMembersToForumActivity">
+        <activity android:name=".fragments.UpdateAppActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".OpenStatus"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".AddMembersToForumActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -34,7 +37,8 @@
         </activity>
         <activity
             android:name=".ShareToForum"
-            android:label="Share to Forums">
+            android:label="Share to Forums"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
 
@@ -297,7 +301,8 @@
         <activity
             android:name=".Campus_Map"
             android:label="@string/title_activity_campus__map"
-            android:theme="@style/Map">
+            android:theme="@style/Map"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zconnect.zutto.zconnect.HomeActivity" />
@@ -509,7 +514,8 @@
             android:label="Send Notification"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Links" />
+        <activity android:name=".Links"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".pools.PoolActivity"
             android:label="Shop"
@@ -590,9 +596,6 @@
             android:label="Create a Poll"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
-
-
     </application>
 
 </manifest>

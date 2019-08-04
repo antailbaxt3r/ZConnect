@@ -9,14 +9,14 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/dialog_box_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add a link"
+        android:text="Request for a link"
         android:textSize="21sp"
         android:gravity="center"
         android:layout_marginBottom="10dp"
         android:textColor="@color/deepPurple500"/>
-
 
     <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
         android:id="@+id/image_profile_infone"
