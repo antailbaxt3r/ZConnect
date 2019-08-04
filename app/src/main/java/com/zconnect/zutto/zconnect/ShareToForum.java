@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.fragments.JoinedForums;
@@ -30,6 +31,12 @@ public class ShareToForum extends BaseActivity {
         Log.d("hereTry",receivedType);
         toolbar = findViewById(R.id.toolbar_share_to_forum);
         setSupportActionBar(toolbar);
+
+        if(communityReference==null)
+        {
+            Toast.makeText(getApplicationContext(), "Login to ZConnect to share", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
 
 //        For future in app sharing
@@ -64,7 +71,6 @@ public class ShareToForum extends BaseActivity {
     }
     private void toolbarSetup() {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-
     }
 
 

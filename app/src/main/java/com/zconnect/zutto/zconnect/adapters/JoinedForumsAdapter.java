@@ -203,7 +203,7 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 //            } else {
 //                ForumCategoriesRVAdapter.blankViewHolder blankViewHolder = (ForumCategoriesRVAdapter.blankViewHolder) holder;
 //                Log.d("Setting View", Integer.toString(position));
-            holderMain.setDetailsForShare(forumCategoriesItemFormats.get(position));
+            holderMain.setDetailsForShare(forumCategoriesItemFormats.get(position), true);
             holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID()
                     , forumCategoriesItemFormats.get(position).getTabUID()
                     , forumCategoriesItemFormats.get(position).getName()
