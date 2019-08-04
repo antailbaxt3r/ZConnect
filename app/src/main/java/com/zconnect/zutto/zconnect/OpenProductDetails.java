@@ -175,34 +175,35 @@ public class OpenProductDetails extends BaseActivity {
                         if (!dataSnapshot.child("userChats").hasChild(productSellerUserUID)) {
 //                            userImageURL = dataSnapshot.child("imageURL").getValue().toString();
                             Log.d("Try", createPersonalChat(mAuth.getCurrentUser().getUid(), productSellerUserUID));
+                        }else {
+                            databaseReferenceUser.child("userChats").child(productSellerUserUID).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
+                                    String key = dataSnapshot1.getValue().toString();
+                                    Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                                    intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
+                                    intent.putExtra("type", "forums");
+                                    intent.putExtra("store_room_message", "Hey there, I was checking out the following product:\nProduct Name: " +
+                                            productName.getText().toString() + "\nProduct Category:" + productCategory + "\nPrice:" +
+                                            productPrice.getText().toString());
+                                    intent.putExtra("store_room_image", mImageUri);
+
+                                    intent.putExtra("name", productSellerName.getText());
+                                    intent.putExtra("tab", "personalChats");
+                                    intent.putExtra("key", key);
+                                    startActivity(intent);
+                                    overridePendingTransition(0, 0);
+
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
                         }
-                        databaseReferenceUser.child("userChats").child(productSellerUserUID).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                String key = dataSnapshot.getValue().toString();
-                                Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
-                                intent.putExtra("type", "forums");
-                                intent.putExtra("store_room_message", "Hey there, I was checking out the following product:\nProduct Name: " +
-                                        productName.getText().toString() + "\nProduct Category:" + productCategory + "\nPrice:" +
-                                        productPrice.getText().toString());
-                                intent.putExtra("store_room_image",mImageUri);
-
-                                intent.putExtra("name", productSellerName.getText());
-                                intent.putExtra("tab", "personalChats");
-                                intent.putExtra("key", key);
-                                startActivity(intent);
-                                overridePendingTransition(0, 0);
-
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
 
                     }
 

@@ -400,19 +400,40 @@ public class OpenUserDetail extends BaseActivity {
                     currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.child("Loves").hasChild(Uid)){
-                                databaseReferenceUser.child("userChats").child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                            if (dataSnapshot.child("Loves").hasChild(Uid)) {
+                                Toast.makeText(OpenUserDetail.this, "WOW, now you both love each other, we recommend you to start a conversation", Toast.LENGTH_LONG).show();
+
+                                databaseReferenceUser.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        String key = dataSnapshot.getValue().toString();
-                                        Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
-                                        intent.putExtra("type", "forums");
-                                        intent.putExtra("name", name);
-                                        intent.putExtra("tab", "personalChats");
-                                        intent.putExtra("key", key);
-                                        intent.putExtra("match",true);
-                                        startActivity(intent);
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
+
+                                        if (!dataSnapshot1.child("userChats").hasChild(Uid)) {
+                                            userImageURL = dataSnapshot1.child("imageURL").getValue().toString();
+                                            Log.d("Try", createPersonalChat(mAuth.getCurrentUser().getUid(), Uid));
+                                        }else {
+
+                                            databaseReferenceUser.child("userChats").child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
+                                                    String key = dataSnapshot2.getValue().toString();
+                                                    Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                                                    intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
+                                                    intent.putExtra("type", "forums");
+                                                    intent.putExtra("name", name);
+                                                    intent.putExtra("tab", "personalChats");
+                                                    intent.putExtra("key", key);
+                                                    intent.putExtra("match",true);
+                                                    startActivity(intent);
+
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                }
+                                            });
+                                        }
+
 
                                     }
 
@@ -422,30 +443,7 @@ public class OpenUserDetail extends BaseActivity {
                                     }
                                 });
 
-                                Toast.makeText(OpenUserDetail.this, "WOW, now you both love each other, we recommend you to start a conversation", Toast.LENGTH_LONG).show();
                             }
-
-                            if (databaseReferenceUser == null) {
-                                Toast.makeText(v.getContext(), "The user does not exist!", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                            databaseReferenceUser.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                                    if (!dataSnapshot.child("userChats").hasChild(Uid)) {
-                                        userImageURL = dataSnapshot.child("imageURL").getValue().toString();
-                                        Log.d("Try", createPersonalChat(mAuth.getCurrentUser().getUid(), Uid));
-                                    }
-
-
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
 
                         }
 
@@ -548,27 +546,27 @@ public class OpenUserDetail extends BaseActivity {
                         if (!dataSnapshot.child("userChats").hasChild(Uid)) {
                             userImageURL = dataSnapshot.child("imageURL").getValue().toString();
                             Log.d("Try", createPersonalChat(mAuth.getCurrentUser().getUid(), Uid));
+                        }else {
+                            databaseReferenceUser.child("userChats").child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
+                                    String key = dataSnapshot1.getValue().toString();
+                                    Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                                    intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
+                                    intent.putExtra("type", "forums");
+                                    intent.putExtra("name", name);
+                                    intent.putExtra("tab", "personalChats");
+                                    intent.putExtra("key", key);
+                                    startActivity(intent);
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
                         }
-                        databaseReferenceUser.child("userChats").child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                String key = dataSnapshot.getValue().toString();
-                                Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
-                                intent.putExtra("type", "forums");
-                                intent.putExtra("name", name);
-                                intent.putExtra("tab", "personalChats");
-                                intent.putExtra("key", key);
-                                startActivity(intent);
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
 
                     }
 

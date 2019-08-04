@@ -128,7 +128,7 @@ public class AddEvent extends BaseActivity {
             Date temp = new Date(c.getTimeInMillis());
 
             eventDate = temp.toString();
-            dateString = String.valueOf(c.getTime());
+            dateString = String.valueOf(c.getTimeInMillis());
 
             DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
             DateTime _date = new DateTime(c, indianZone);

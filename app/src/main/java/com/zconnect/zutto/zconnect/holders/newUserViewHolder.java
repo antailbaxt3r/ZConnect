@@ -64,8 +64,6 @@ public class newUserViewHolder extends RecyclerView.ViewHolder{
                 final DatabaseReference newUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("newUsers").child(UID);
                 newUserReference.child("statusCode").setValue(VerificationUtilities.KEY_APPROVED);
 
-
-
                 DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 user.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

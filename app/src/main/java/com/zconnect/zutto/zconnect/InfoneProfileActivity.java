@@ -291,27 +291,27 @@ public class InfoneProfileActivity extends BaseActivity {
                         if (!dataSnapshot.child("userChats").hasChild(infoneUserUID)) {
                             userImageURL = dataSnapshot.child("imageURL").getValue().toString();
                             Log.d("Try", createPersonalChat(mAuth.getCurrentUser().getUid(), infoneUserUID));
+                        }else {
+                            databaseReferenceUser.child("userChats").child(infoneUserUID).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
+                                    String key = dataSnapshot1.getValue().toString();
+                                    Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                                    intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
+                                    intent.putExtra("type", "forums");
+                                    intent.putExtra("name", name);
+                                    intent.putExtra("tab", "personalChats");
+                                    intent.putExtra("key", key);
+                                    startActivity(intent);
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
                         }
-                        databaseReferenceUser.child("userChats").child(infoneUserUID).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                String key = dataSnapshot.getValue().toString();
-                                Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
-                                intent.putExtra("type", "forums");
-                                intent.putExtra("name", name);
-                                intent.putExtra("tab", "personalChats");
-                                intent.putExtra("key", key);
-                                startActivity(intent);
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
 
                     }
 

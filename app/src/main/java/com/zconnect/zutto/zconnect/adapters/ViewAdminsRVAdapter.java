@@ -103,8 +103,8 @@ public class ViewAdminsRVAdapter extends RecyclerView.Adapter<ViewAdminsRVAdapte
                             }else {
                                 databaseReferenceUser.child("userChats").child(adiminUID.get(position)).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        String key = dataSnapshot.getValue().toString();
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
+                                        String key = dataSnapshot1.getValue().toString();
                                         Intent intent = new Intent(holder.itemView.getContext(), ChatActivity.class);
                                         intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
                                         intent.putExtra("type", "forums");

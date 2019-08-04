@@ -986,10 +986,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 navHeaderImageUrl = dataSnapshot.child("imageURL").getValue(String.class);
                 if(navHeaderImageUrl!= null){
                     navHeaderImage = findViewById(R.id.iv_z_connect_logo_nav_header1);
+                    try {
+                        navHeaderImage.setImageURI(Uri.parse(navHeaderImageUrl));
+                    }catch (Exception e){
 
-                    Picasso.with(context).load(navHeaderImageUrl).into(navHeaderImage);
-
-                    //navHeaderImage.setImageURI(Uri.parse(navHeaderImageUrl));
+                    }
                 }
                 if(!dataSnapshot.hasChild("mobileNumber")){
                     DatabaseReference referredUsersRef = FirebaseDatabase.getInstance().getReference().child("referredUsers");
