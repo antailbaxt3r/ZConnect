@@ -301,25 +301,41 @@ public class OpenStatus extends BaseActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 messages.clear();
 
-                ChatItemFormats temp1 = new ChatItemFormats();
-                temp1.setMessageType(MessageTypeUtilities.KEY_STATUS_STR);
-                temp1.setKey(key);
-                temp1.setUuid(" ");
-                messages.add(temp1);
+                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    ChatItemFormats temp = new ChatItemFormats();
+                        RecentsItemFormat recentsItemFormatTemp = dataSnapshot.getValue(RecentsItemFormat.class);
 
-                    temp = snapshot.getValue(ChatItemFormats.class);
+                        ChatItemFormats temp1 = new ChatItemFormats();
+                        temp1.setMessageType(MessageTypeUtilities.KEY_STATUS_STR);
+                        temp1.setKey(key);
+                        temp1.setUuid(recentsItemFormatTemp.getPostedBy().getUID());
+                        messages.add(temp1);
 
-                    temp.setKey(snapshot.getKey());
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            ChatItemFormats temp = new ChatItemFormats();
 
-                    if (!snapshot.hasChild("messageType")) {
-                        temp.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
+                            temp = snapshot.getValue(ChatItemFormats.class);
+
+                            temp.setKey(snapshot.getKey());
+
+                            if (!snapshot.hasChild("messageType")) {
+                                temp.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
+                            }
+                            messages.add(temp);
+                        }
+                        adapter.notifyDataSetChanged();
+
                     }
-                    messages.add(temp);
-                }
-                adapter.notifyDataSetChanged();
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
 //                recyclerView.scrollToPosition(messages.size()-1);
             }
 

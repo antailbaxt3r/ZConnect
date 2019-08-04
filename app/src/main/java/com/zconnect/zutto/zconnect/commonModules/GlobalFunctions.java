@@ -188,6 +188,8 @@ public class GlobalFunctions {
                             FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/events/inAppNotifications/" + metadata.get("featurePID")).child(newNotifRef.getKey()).child("key").setValue(newNotifRef.getKey());
                             break;
                         case "status":
+                            FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/statuses/inAppNotifications/" + metadata.get("featurePID")).child(newNotifRef.getKey()).child("key").setValue(newNotifRef.getKey());
+                            break;
                         case "statusComment":
                             FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/statuses/inAppNotifications/" + metadata.get("featurePID")).child(newNotifRef.getKey()).child("key").setValue(newNotifRef.getKey());
                             FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("/features/statuses/inAppNotifications/" + metadata.get("featurePID")).child(newNotifRef.getKey()).child("receiverUID").setValue(uid);
