@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -139,6 +140,11 @@ public class Links extends BaseActivity {
                     public void onClick(View v) {
                         if(linkTitle.getText().toString().trim().equals( "" ) || linkText.getText().toString().trim().equals("")){
                             Toast.makeText(Links.this,"Fields are empty",Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        if(!Patterns.WEB_URL.matcher(linkText.getText()).matches())
+                        {
+                            Toast.makeText(Links.this, "Invalid URL", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         NewRequestItemFormat requestItemFormat = new NewRequestItemFormat();
