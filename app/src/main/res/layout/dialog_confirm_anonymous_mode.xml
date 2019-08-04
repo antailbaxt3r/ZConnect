@@ -21,7 +21,7 @@
 
     <TextView
         android:id="@+id/validate_infone_text"
-        style="@style/TextAppearance.AppCompat.Title"
+        android:textSize="16sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginEnd="@dimen/margin_small8dp"
-            android:background="@color/deepPurple500"
+            android:background="@drawable/round_button_primary"
             android:maxLength="10"
             android:text="Done"
             android:textColor="@color/white"

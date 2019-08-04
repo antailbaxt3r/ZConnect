@@ -234,11 +234,6 @@ public class NotificationImage extends BaseActivity{
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         final Uri downloadUri = task.getResult();
-                        UserItemFormat userItemFormat= new UserItemFormat();
-                        userItemFormat.setUserUID(UserUtilities.currentUser.getUserUID());
-                        userItemFormat.setImageURL(UserUtilities.currentUser.getImageURL());
-                        userItemFormat.setUsername(UserUtilities.currentUser.getUsername());
-
                         NotificationSender notificationSender = new NotificationSender(NotificationImage.this, userId);
                         NotificationItemFormat addImageNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_IMAGE_URL, userId);
                         addImageNotification.setItemMessage(notificationDescription.getText().toString());
@@ -272,12 +267,59 @@ public class NotificationImage extends BaseActivity{
             addImageNotification.setItemMessage(notificationDescription.getText().toString());
             addImageNotification.setItemTitle(notificationTitle.getText().toString());
             addImageNotification.setItemURL(nottificationURL.getText().toString());
-            UserItemFormat userItemFormat= new UserItemFormat();
-            userItemFormat.setUserUID(UserUtilities.currentUser.getUserUID());
-            userItemFormat.setImageURL(UserUtilities.currentUser.getImageURL());
-            userItemFormat.setUsername(UserUtilities.currentUser.getUsername());
             notificationSender.execute(addImageNotification);
+            mProgress.dismiss();
+            finish();
+        }
+        else if (!TextUtils.isEmpty(notificationDescription.getText()) && mImageUri != null && !TextUtils.isEmpty(notificationTitle.getText())) {
+            mProgress.setMessage("Sending Notification..");
+            mProgress.show();
+            final StorageReference filepath = mStorage.child("NotificationImage").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
+            UploadTask uploadTask = filepath.putFile(mImageUri);
+            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if(!task.isSuccessful())
+                    {
+                        throw task.getException();
+                    }
+                    return filepath.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        final Uri downloadUri = task.getResult();
 
+                        NotificationSender notificationSender = new NotificationSender(NotificationImage.this, userId);
+                        NotificationItemFormat addImageNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_IMAGE, userId);
+                        addImageNotification.setItemMessage(notificationDescription.getText().toString());
+                        addImageNotification.setItemTitle(notificationTitle.getText().toString());
+                        addImageNotification.setItemImage(downloadUri.toString());
+                        notificationSender.execute(addImageNotification);
+                        Toast.makeText(NotificationImage.this, "Notification Sent", Toast.LENGTH_SHORT).show();
+                        mProgress.dismiss();
+                        finish();
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    mProgress.dismiss();
+                    finish();
+                    Toast.makeText(NotificationImage.this, "Notication Failed, try again", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else if(!TextUtils.isEmpty(notificationDescription.getText()) && !TextUtils.isEmpty(notificationTitle.getText()))
+        {
+            mProgress.setMessage("Sending Notification..");
+            mProgress.show();
+            NotificationSender notificationSender = new NotificationSender(NotificationImage.this, userId);
+            NotificationItemFormat addImageNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_TEXT, userId);
+            addImageNotification.setItemMessage(notificationDescription.getText().toString());
+            addImageNotification.setItemTitle(notificationTitle.getText().toString());
+            notificationSender.execute(addImageNotification);
             mProgress.dismiss();
             finish();
         }

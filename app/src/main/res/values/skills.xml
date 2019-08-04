@@ -1,49 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <array name="productTags">
-        <item>electronics</item>
-        <item>fiction</item>
-        <item>course book(s)</item>
-        <item>novel</item>
-        <item>biography</item>
-        <item>bags</item>
-        <item>shoes</item>
-        <item>watches</item>
-        <item>clothing</item>
-        <item>phone charger</item>
-        <item>pendrive</item>
-        <item>bean bag</item>
-        <item>refrigerator</item>
-        <item>gym stuff</item>
-        <item>monitor</item>
-        <item>accessories</item>
-        <item>earphones</item>
-        <item>head phones</item>
-        <item>torch</item>
-        <item>ornaments</item>
-        <item>memory cards</item>
-        <item>fidget spinner</item>
-        <item>hats</item>
-        <item>speakers</item>
-        <item>mattress</item>
-        <item>table fan</item>
-        <item>kettle</item>
-        <item>table fan</item>
-        <item>raspberry pie</item>
-        <item>tennis gear</item>
-        <item>cricket gear</item>
-        <item>football gear</item>
-        <item>storage devices</item>
-        <item>instrument</item>
-        <item>music</item>
-        <item>prop</item>
-        <item>cheap</item>
-        <item>exclusive</item>
-        <item> negotiable</item>
-
-    </array>
-
     <array name="skills">
         <item>Android App Dev</item>
         <item>iOS App Dev</item>
