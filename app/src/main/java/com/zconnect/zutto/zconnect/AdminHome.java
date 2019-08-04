@@ -314,7 +314,7 @@ public class AdminHome extends BaseActivity {
                 }
             };
 
-            newRequestsDataReference.addValueEventListener(requestsDataListener);
+            newRequestsDataReference.addListenerForSingleValueEvent(requestsDataListener);
 
             requestsRVAdapter = new NewRequestRVAdapter(rootView.getContext(),newRequestItemFormats);
             newRequestsRV.setAdapter(requestsRVAdapter);

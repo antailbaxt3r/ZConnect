@@ -1,5 +1,7 @@
 package com.zconnect.zutto.zconnect.adapters;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,7 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.zconnect.zutto.zconnect.R;
@@ -73,6 +77,12 @@ public class LinksRVAdapter extends RecyclerView.Adapter<LinksRVAdapter.Programm
             CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
             counterPush.pushValues();
         });
+        holder.copyIcon.setOnClickListener(view -> {
+            ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clipData = ClipData.newPlainText("link", link);
+            clipboardManager.setPrimaryClip(clipData);
+            Toast.makeText(context, "Link copied to clipboard", Toast.LENGTH_SHORT).show();
+        });
     }
 
 
@@ -84,12 +94,14 @@ public class LinksRVAdapter extends RecyclerView.Adapter<LinksRVAdapter.Programm
     }
 
     public class ProgrammingViewHolder extends RecyclerView.ViewHolder{
-        TextView link;
-        TextView title;
+        private TextView link;
+        private TextView title;
+        private ImageView copyIcon;
         public ProgrammingViewHolder(View itemView) {
             super(itemView);
             link=(TextView)itemView.findViewById(R.id.link);
             title=(TextView)itemView.findViewById(R.id.title);
+            copyIcon = itemView.findViewById(R.id.link_copy_to_clipboard);
         }
     }
 }

@@ -51,8 +51,7 @@ public class GlobalFunctions {
         pointsRef.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
-
-                if(mutableData == null){
+                if(mutableData.getValue() == null){
                     mutableData.setValue(0);
                 }
 
