@@ -238,13 +238,13 @@ public class AddInfoneContact extends BaseActivity {
                                 //Inside Recents
                                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
 
                                         UserItemFormat userItemFormat = new UserItemFormat();
                                         HashMap<String,Object> metadata = new HashMap<>();
-                                        userItemFormat.setUsername(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("username").getValue()));
-                                        userItemFormat.setImageURL(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("imageURL").getValue()));
-                                        userItemFormat.setUserUID(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("userUID").getValue()));
+                                        userItemFormat.setUsername(String.valueOf(dataSnapshot2.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("username").getValue()));
+                                        userItemFormat.setImageURL(String.valueOf(dataSnapshot2.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("imageURL").getValue()));
+                                        userItemFormat.setUserUID(String.valueOf(dataSnapshot2.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("userUID").getValue()));
                                         metadata.put("infoneUserId",key);
                                         Log.d("helloosohsohsh", "onDataChange: "+catId);
                                         metadata.put("catID",catId);
@@ -267,14 +267,6 @@ public class AddInfoneContact extends BaseActivity {
 
                                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                                 counterPush.pushValues();
-                                Intent intent = new Intent(AddInfoneContact.this,InfoneContactListActivity.class);
-                                intent.putExtra("catId",catId);
-                                intent.putExtra("catName",catName);
-                                intent.putExtra("catImageurl",catImageURL);
-                                intent.putExtra("catAdmin",catAdmin);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);
-
                             }
                             else{finish();}
 
@@ -424,6 +416,10 @@ public class AddInfoneContact extends BaseActivity {
 
     public void customFinish(){
         if(flag1&&flag2){
+
+            flag1=false;
+            flag2=false;
+
             GlobalFunctions.addPoints(10);
             mProgress.dismiss();
             finish();

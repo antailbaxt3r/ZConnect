@@ -313,7 +313,7 @@ public class NotificationService extends FirebaseMessagingService {
         Intent[] intents = new Intent[]{intent0,intent};
 
 
-        PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -370,7 +370,7 @@ public class NotificationService extends FirebaseMessagingService {
         Intent[] intents = new Intent[]{intent0,intent};
 
 
-        PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -425,7 +425,7 @@ public class NotificationService extends FirebaseMessagingService {
             Intent[] intents = new Intent[]{intent0,intentInfoneList};
 
 
-            PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_ONE_SHOT);
+            PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(intent1);
 
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -472,7 +472,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         Intent[] intents = new Intent[]{intent0,intent};
 
-        PendingIntent pendingIntent = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pendingIntent);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -514,7 +514,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         Intent[] intents = new Intent[]{intent0,intent};
 
-        PendingIntent pendingIntent = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pendingIntent);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -996,7 +996,7 @@ public class NotificationService extends FirebaseMessagingService {
             Intent[] intents = new Intent[]{intent0,intent};
 
 
-            PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_ONE_SHOT);
+            PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(intent1);
 
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
