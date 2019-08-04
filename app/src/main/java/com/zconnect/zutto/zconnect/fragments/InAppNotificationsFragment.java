@@ -115,7 +115,7 @@ public class InAppNotificationsFragment extends Fragment {
                         inAppNotificationsAdapter.notifyItemRemoved(totalnotificationsList.size());
                         //load data
                         inAppNotifsQuery = userNotifReference.orderByChild("PostTimeMillis").endAt(lastPostTimeMillis, lastNotifID).limitToLast(20);
-                        inAppNotifsQuery.addValueEventListener(inAppNotifsListener);
+                        inAppNotifsQuery.addListenerForSingleValueEvent(inAppNotifsListener);
                     }
                 }, 1000);
             }
@@ -193,7 +193,7 @@ public class InAppNotificationsFragment extends Fragment {
                     lastNotifID=null;
                     lastPostTimeMillis=0L;
                 }
-                inAppNotifsQuery.addValueEventListener(inAppNotifsListener);
+                inAppNotifsQuery.addListenerForSingleValueEvent(inAppNotifsListener);
             }
         }
     }
