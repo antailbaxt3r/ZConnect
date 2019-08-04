@@ -220,8 +220,6 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<RecyclerView
                                 intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
                                 context.startActivity(intent);
                                 break;
-
-
                             case "eventAdd":
                                 intent = new Intent(context, OpenEventDetail.class);
                                 intent.putExtra("id", String.valueOf(notificationsList.get(position).getMetadata().get("id")));
@@ -269,6 +267,11 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<RecyclerView
                                 context.startActivity(intent);
                                 break;
                             case "statusNestedComment":
+                                intent = new Intent(context, OpenStatus.class);
+                                intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                                context.startActivity(intent);
+                                break;
+                            case "status":
                                 intent = new Intent(context, OpenStatus.class);
                                 intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
                                 context.startActivity(intent);

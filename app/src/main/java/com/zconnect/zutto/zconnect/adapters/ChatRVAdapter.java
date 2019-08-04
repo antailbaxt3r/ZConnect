@@ -1396,11 +1396,9 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                 Map<String, Object> taskMap = new HashMap<String, Object>();
                                 taskMap.put(user.getUid(), user.getUid());
                                 ref.child("likeUids").updateChildren(taskMap);
-                                try {
+
                                     final NotificationSender notificationSender = new NotificationSender(itemView.getContext(), FirebaseAuth.getInstance().getCurrentUser().getUid());
                                     final NotificationItemFormat statusLikeNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_STATUS_LIKED, FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                    // HashMap<String,Object> hashmap=new HashMap<>();
-                                    // hashmap.put("meta",1);
                                     statusLikeNotification.setItemKey(statusDetails.getKey());
                                     DatabaseReference mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                     mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -1416,6 +1414,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                             metadata.put("key",statusDetails.getKey());
                                             metadata.put("featurePID", statusDetails.getKey());
 
+                                            Log.d("test",metadata.toString()  + " " + statusDetails.getUuid());
                                             GlobalFunctions.inAppNotifications("liked your status", statusDetails.getMessage(), userItem, false, "status", metadata, statusDetails.getUuid());
                                             notificationSender.execute(statusLikeNotification);
                                         }
@@ -1425,10 +1424,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                                         }
                                     });
-                                }
-                                catch (Exception e){
-                                    Toast.makeText(itemView.getContext(),"Could not send notification",Toast.LENGTH_LONG).show();
-                                }
+
 
                             }
                         }

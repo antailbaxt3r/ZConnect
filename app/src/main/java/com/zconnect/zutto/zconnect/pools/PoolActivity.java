@@ -45,33 +45,9 @@ public class PoolActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FirebaseDatabase.getInstance().getReference().child("communities").
-                child(communityReference).child("features").child("shops").
-                child("minimumClientVersion").addValueEventListener(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Log.d("VERSIONN",dataSnapshot.getValue(Integer.class)+"");
-                        if (dataSnapshot.getValue(Integer.class) > BuildConfig.VERSION_CODE) {
-                            Intent intent = new Intent(PoolActivity.this, UpdateAppActivity.class);
-                            intent.putExtra("feature", "shops");
-                            startActivity(intent);
-                            finish();
 
-                        } else {
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                }
-        );
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pool);
-        //TODO  set proper commmunityID from preference
-
         setToolbar();
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
