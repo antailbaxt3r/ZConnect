@@ -3,10 +3,12 @@ package com.zconnect.zutto.zconnect;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.firebase.auth.FirebaseAuth;
@@ -228,11 +231,19 @@ public class ExploreForumsActivity extends BaseActivity{
             finish();
         }
         if(id == R.id.action_add_tab) {
-            if (flag==1)
-            startActivity(new Intent(getApplicationContext(), AddForumTab.class));
-            else
-            {
-                startActivity(new Intent(getApplicationContext(), RequestForumTab.class));
+
+            if (!isNetworkAvailable(this)) {
+                Snackbar snack = Snackbar.make(fab, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                snackBarText.setTextColor(Color.WHITE);
+                snack.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+                snack.show();
+            } else {
+                if (flag == 1)
+                    startActivity(new Intent(getApplicationContext(), AddForumTab.class));
+                else {
+                    startActivity(new Intent(getApplicationContext(), RequestForumTab.class));
+                }
             }
         }
         return super.onOptionsItemSelected(item);

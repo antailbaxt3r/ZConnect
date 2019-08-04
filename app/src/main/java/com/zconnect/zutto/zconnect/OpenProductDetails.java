@@ -287,21 +287,25 @@ public class OpenProductDetails extends BaseActivity {
 
     }
 
-    private String createPersonalChat(final String uid, final String sellingUserUID) {
+    private String createPersonalChat(final String senderUID, final String receiverUserUUID) {
         final DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
         final DatabaseReference databaseReferenceTabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("personalChats");
+
+        final DatabaseReference databaseReferenceReceiver = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(receiverUserUUID);
+        final DatabaseReference databaseReferenceSender = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(senderUID);
+
         final DatabaseReference newPush = databaseReferenceCategories.push();
-        final DatabaseReference databaseReferenceUserForums = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("userForums");
+
+
         newPush.child("name").setValue(false);
         Long postTimeMillis = System.currentTimeMillis();
         newPush.child("PostTimeMillis").setValue(postTimeMillis);
         newPush.child("UID").setValue(newPush.getKey());
         newPush.child("tab").setValue("personalChats");
         newPush.child("Chat");
-        final UserItemFormat[] user = {null};
 
 
-        databaseReferenceSellingUser.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReferenceReceiver.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
@@ -317,16 +321,42 @@ public class OpenProductDetails extends BaseActivity {
 
 
                 HashMap<String,UsersListItemFormat> userList = new HashMap<String,UsersListItemFormat>();
-                userList.put(sellingUserUID,userDetails);
-                Log.d("USEROBJECT",UserUtilities.currentUser.toString());
-                UsersListItemFormat currentUser = new UsersListItemFormat();
-                currentUser.setImageThumb(UserUtilities.currentUser.getImageURLThumbnail());
-                currentUser.setName(UserUtilities.currentUser.getUsername());
-                currentUser.setPhonenumber(UserUtilities.currentUser.getMobileNumber());
-                currentUser.setUserUID(UserUtilities.currentUser.getUserUID());
-                currentUser.setUserType(UserUtilities.currentUser.getUserType());
-                userList.put(uid,currentUser);
-                databaseReferenceTabsCategories.child(newPush.getKey()).child("users").setValue(userList);
+                userList.put(receiverUserUUID,userDetails);
+
+               databaseReferenceSender.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        UserItemFormat temp = dataSnapshot.getValue(UserItemFormat.class);
+
+
+                        UsersListItemFormat currentUser = new UsersListItemFormat();
+                        currentUser.setImageThumb(temp.getImageURLThumbnail());
+                        currentUser.setName(temp.getUsername());
+                        currentUser.setPhonenumber(temp.getMobileNumber());
+                        currentUser.setUserUID(temp.getUserUID());
+                        currentUser.setUserType(temp.getUserType());
+                        userList.put(senderUID,currentUser);
+                        databaseReferenceTabsCategories.child(newPush.getKey()).child("users").setValue(userList);
+
+                        HashMap<String,Object> forumTabs = new HashMap<>();
+                        forumTabs.put("name",false);
+                        forumTabs.put("catUID",newPush.getKey());
+                        forumTabs.put("tabUID","personalChats");
+                        forumTabs.put("lastMessage","Null");
+                        forumTabs.put("users",userList);
+                        databaseReferenceTabsCategories.child(newPush.getKey()).setValue(forumTabs);
+
+
+                        databaseReferenceSender.child("userChats").child(receiverUserUUID).setValue(newPush.getKey());
+                        databaseReferenceReceiver.child("userChats").child(senderUID).setValue(newPush.getKey());
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
 
             }
@@ -339,13 +369,6 @@ public class OpenProductDetails extends BaseActivity {
         });
 
 
-        databaseReferenceUser.child("userChats").child(sellingUserUID).setValue(newPush.getKey());
-        databaseReferenceSellingUser.child("userChats").child(uid).setValue(newPush.getKey());
-
-        databaseReferenceTabsCategories.child(newPush.getKey()).child("name").setValue(false);
-        databaseReferenceTabsCategories.child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
-        databaseReferenceTabsCategories.child(newPush.getKey()).child("tabUID").setValue("personalChats");
-        databaseReferenceTabsCategories.child(newPush.getKey()).child("lastMessage").setValue("Null");
 
 
 
@@ -403,11 +426,6 @@ public class OpenProductDetails extends BaseActivity {
                 CounterPush counterPush2 = new CounterPush(counterItemFormat, communityReference);
                 counterPush2.pushValues();
 
-//                Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
-//                intent.putExtra("type","storeroom");
-//                intent.putExtra("key",productKey);
-//                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
-//                startActivity(intent);
                 databaseReferenceUser.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

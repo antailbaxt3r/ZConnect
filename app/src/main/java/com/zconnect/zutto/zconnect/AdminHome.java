@@ -1,6 +1,9 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -226,23 +229,33 @@ public class AdminHome extends BaseActivity {
             View.OnClickListener listener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int option = v.getTag().toString().charAt(v.getTag().toString().length()-1) - '0';
-                    switch (option)
-                    {
-                        case 0:
-                            startActivity(new Intent(getContext(), CabPoolLocations.class));
-                            break;
-                        case 1:
-                            startActivity(new Intent(getContext(), AddForumTab.class));
-                            break;
-                        case 2:
-                            startActivity(new Intent(getContext(),MakeAdmin.class));
-                            break;
-                        case 3:
-                            startActivity(new Intent(getContext(),NotificationImage.class));
-                            break;
-                        default:
-                            break;
+
+                    if (!isNetworkAvailable2(v.getContext())) {
+                        Snackbar snack = Snackbar.make(rootView, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                        snackBarText.setTextColor(Color.WHITE);
+                        snack.getView().setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimaryDark));
+                        snack.show();
+                    } else {
+
+                        int option = v.getTag().toString().charAt(v.getTag().toString().length() - 1) - '0';
+                        switch (option) {
+                            case 0:
+                                startActivity(new Intent(getContext(), CabPoolLocations.class));
+                                break;
+                            case 1:
+                                startActivity(new Intent(getContext(), AddForumTab.class));
+                                break;
+                            case 2:
+                                startActivity(new Intent(getContext(), MakeAdmin.class));
+                                break;
+                            case 3:
+                                startActivity(new Intent(getContext(), NotificationImage.class));
+                                break;
+                            default:
+                                break;
+                        }
+
                     }
                 }
             };
@@ -468,4 +481,10 @@ public class AdminHome extends BaseActivity {
             return 3;
         }
     }
+
+    public static boolean isNetworkAvailable2(final Context context) {
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager != null && connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+    }
+
 }

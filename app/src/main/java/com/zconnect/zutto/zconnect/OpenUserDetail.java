@@ -155,14 +155,7 @@ public class OpenUserDetail extends BaseActivity {
 //            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-//
-//        name = getIntent().getStringExtra("name");
-//        desc = getIntent().getStringExtra("desc");
-//        mobileNumber = getIntent().getStringExtra("contactDescTv");
-//        imagelink = getIntent().getStringExtra("image");
-//        email = getIntent().getStringExtra("uid");
-//        skills=getIntent().getStringExtra("skills");
-//        category=getIntent().getStringExtra("category");
+
         Uid=getIntent().getStringExtra("Uid");
         adapter = new UserDetailsJoinedForumsAdapter(joinedForumsList);
         forumsJoined.setLayoutManager(new LinearLayoutManager(OpenUserDetail.this,LinearLayoutManager.HORIZONTAL,false));
@@ -431,18 +424,6 @@ public class OpenUserDetail extends BaseActivity {
 
                                 Toast.makeText(OpenUserDetail.this, "WOW, now you both love each other, we recommend you to start a conversation", Toast.LENGTH_LONG).show();
                             }
-                            UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
-//                            NotificationSender notificationSender = new NotificationSender(OpenUserDetail.this, userItemFormat.getUserUID());
-//
-//                            NotificationItemFormat infoneLoveNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_LOVE,userItemFormat.getUserUID());
-//
-//                            infoneLoveNotification.setItemKey(userProfile.getUserUID());
-//                            infoneLoveNotification.setUserImage(userItemFormat.getImageURLThumbnail());
-//                            infoneLoveNotification.setUserName(userItemFormat.getUsername());
-//                            infoneLoveNotification.setCommunityName(communityTitle);
-//                            GlobalFunctions.inAppNotifications("has loved your profile","Your profile is loved",userItemFormat,false,"status",null,userProfile.getUserUID());
-//                            notificationSender.execute(infoneLoveNotification);
-                            Log.d("Try", "clicked");
 
                             if (databaseReferenceUser == null) {
                                 Toast.makeText(v.getContext(), "The user does not exist!", Toast.LENGTH_SHORT).show();
@@ -454,7 +435,7 @@ public class OpenUserDetail extends BaseActivity {
 
                                     if (!dataSnapshot.child("userChats").hasChild(Uid)) {
                                         userImageURL = dataSnapshot.child("imageURL").getValue().toString();
-                                        Log.d("Try", createPersonalChat(mAuth.getCurrentUser().getUid(), Uid,databaseReferenceUser));
+                                        Log.d("Try", createPersonalChat(mAuth.getCurrentUser().getUid(), Uid));
                                     }
 
 
@@ -566,7 +547,7 @@ public class OpenUserDetail extends BaseActivity {
 
                         if (!dataSnapshot.child("userChats").hasChild(Uid)) {
                             userImageURL = dataSnapshot.child("imageURL").getValue().toString();
-                            Log.d("Try", createPersonalChat(mAuth.getCurrentUser().getUid(), Uid,databaseReferenceUser));
+                            Log.d("Try", createPersonalChat(mAuth.getCurrentUser().getUid(), Uid));
                         }
                         databaseReferenceUser.child("userChats").child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -601,51 +582,94 @@ public class OpenUserDetail extends BaseActivity {
 
     }
 
-    private String createPersonalChat(final String uid, final String infoneUserUID, DatabaseReference databaseReferenceUser) {
+    private String createPersonalChat(final String senderUID, final String receiverUserUUID) {
         final DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
         final DatabaseReference databaseReferenceTabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("personalChats");
+
+        final DatabaseReference databaseReferenceReceiver = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(receiverUserUUID);
+        final DatabaseReference databaseReferenceSender = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(senderUID);
+
         final DatabaseReference newPush = databaseReferenceCategories.push();
-        final DatabaseReference databaseReferenceInfoneUser = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB)
-                .child(communityReference).child(ZConnectDetails.USERS_DB).child(infoneUserUID);
+
+
         newPush.child("name").setValue(false);
         Long postTimeMillis = System.currentTimeMillis();
         newPush.child("PostTimeMillis").setValue(postTimeMillis);
         newPush.child("UID").setValue(newPush.getKey());
         newPush.child("tab").setValue("personalChats");
         newPush.child("Chat");
-        final UserItemFormat[] user = {null};
 
 
-        HashMap<String,UsersListItemFormat> userList = new HashMap<String,UsersListItemFormat>();
-        userList.put(infoneUserUID,userDetails);
-        Log.d("USEROBJECT", UserUtilities.currentUser.toString());
-        UsersListItemFormat currentUser = new UsersListItemFormat();
-        currentUser.setImageThumb(UserUtilities.currentUser.getImageURLThumbnail());
-        currentUser.setName(UserUtilities.currentUser.getUsername());
-        currentUser.setPhonenumber(UserUtilities.currentUser.getMobileNumber());
-        currentUser.setUserUID(UserUtilities.currentUser.getUserUID());
-        currentUser.setUserType(UserUtilities.currentUser.getUserType());
-        userList.put(uid,currentUser);
+        databaseReferenceReceiver.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
 
-        HashMap<String,Object> forumTabs = new HashMap<>();
-        forumTabs.put("name",false);
-        forumTabs.put("catUID",newPush.getKey());
-        forumTabs.put("tabUID","personalChats");
-        forumTabs.put("lastMessage","Null");
-        forumTabs.put("users",userList);
-        databaseReferenceTabsCategories.child(newPush.getKey()).setValue(forumTabs);
+                UsersListItemFormat userDetails = new UsersListItemFormat();
+
+                userDetails.setImageThumb(userItem.getImageURLThumbnail());
+
+                userDetails.setName(userItem.getUsername());
+                userDetails.setPhonenumber(userItem.getMobileNumber());
+                userDetails.setUserUID(userItem.getUserUID());
+                userDetails.setUserType(ForumsUserTypeUtilities.KEY_ADMIN);
 
 
-        databaseReferenceUser.child("userChats").child(infoneUserUID).setValue(newPush.getKey());
-        databaseReferenceInfoneUser.child("userChats").child(uid).setValue(newPush.getKey());
+                HashMap<String,UsersListItemFormat> userList = new HashMap<String,UsersListItemFormat>();
+                userList.put(receiverUserUUID,userDetails);
+
+                databaseReferenceSender.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        UserItemFormat temp = dataSnapshot.getValue(UserItemFormat.class);
+
+
+                        UsersListItemFormat currentUser = new UsersListItemFormat();
+                        currentUser.setImageThumb(temp.getImageURLThumbnail());
+                        currentUser.setName(temp.getUsername());
+                        currentUser.setPhonenumber(temp.getMobileNumber());
+                        currentUser.setUserUID(temp.getUserUID());
+                        currentUser.setUserType(temp.getUserType());
+                        userList.put(senderUID,currentUser);
+                        databaseReferenceTabsCategories.child(newPush.getKey()).child("users").setValue(userList);
+
+                        HashMap<String,Object> forumTabs = new HashMap<>();
+                        forumTabs.put("name",false);
+                        forumTabs.put("catUID",newPush.getKey());
+                        forumTabs.put("tabUID","personalChats");
+                        forumTabs.put("lastMessage","Null");
+                        forumTabs.put("users",userList);
+                        databaseReferenceTabsCategories.child(newPush.getKey()).setValue(forumTabs);
+
+
+                        databaseReferenceSender.child("userChats").child(receiverUserUUID).setValue(newPush.getKey());
+                        databaseReferenceReceiver.child("userChats").child(senderUID).setValue(newPush.getKey());
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+
+            }
+        });
+
+
 
 
 
         return newPush.getKey();
 
     }
-
-
     public void setUserDetails(final DatabaseReference currentUser){
         //        name = getIntent().getStringExtra("name");
 //        desc = getIntent().getStringExtra("desc");

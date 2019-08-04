@@ -1,10 +1,12 @@
 package com.zconnect.zutto.zconnect;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -85,7 +88,15 @@ public class Notices extends BaseActivity {
         add_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Notices.this.startActivity(new Intent(Notices.this,AddNotices.class));
+                if (!isNetworkAvailable(view.getContext())) {
+                    Snackbar snack = Snackbar.make(add_photo, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimaryDark));
+                    snack.show();
+                } else {
+                    Notices.this.startActivity(new Intent(Notices.this, AddNotices.class));
+                }
             }
         });
 

@@ -148,11 +148,9 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
             public void onSingleClick(View view) {
 
                 if (!isNetworkAvailable(view.getContext())) {
-                    Snackbar snackbar = Snackbar.make(view, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
-                    TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
-                    snackBarText.setTextColor(Color.WHITE);
-                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimaryDark));
-                    snackbar.show();
+
+                    Toast.makeText(mHomeActivity, "Check Internet Connection.", Toast.LENGTH_SHORT).show();
+
                 } else {
 
                     try {
@@ -171,11 +169,9 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
             @Override
             public void onSingleClick(View view) {
                 if (!isNetworkAvailable(view.getContext())) {
-                    Snackbar snackbar = Snackbar.make(view, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
-                    TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
-                    snackBarText.setTextColor(Color.WHITE);
-                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimaryDark));
-                    snackbar.show();
+
+                    Toast.makeText(mHomeActivity, "Check Internet Connection.", Toast.LENGTH_SHORT).show();
+
                 } else {
                     try {
                         HomeBottomSheet.this.dismiss();
@@ -265,11 +261,9 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
             public void onSingleClick(View view) {
 
                 if (!isNetworkAvailable(view.getContext())) {
-                    Snackbar snackbar = Snackbar.make(view, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
-                    TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
-                    snackBarText.setTextColor(Color.WHITE);
-                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimaryDark));
-                    snackbar.show();
+
+                    Toast.makeText(mHomeActivity, "Check Internet Connection.", Toast.LENGTH_SHORT).show();
+
                 } else {
                     try {
                         HomeBottomSheet.this.dismiss();
@@ -301,11 +295,9 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
             public void onSingleClick(View view) {
 
                 if (!isNetworkAvailable(view.getContext())) {
-                    Snackbar snackbar = Snackbar.make(view, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
-                    TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
-                    snackBarText.setTextColor(Color.WHITE);
-                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimaryDark));
-                    snackbar.show();
+
+                    Toast.makeText(mHomeActivity, "Check Internet Connection.", Toast.LENGTH_SHORT).show();
+
                 } else {
                     try {
                         HomeBottomSheet.this.dismiss();
@@ -325,11 +317,8 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
             public void onSingleClick(View view) {
 
                 if (!isNetworkAvailable(view.getContext())) {
-                    Snackbar snackbar = Snackbar.make(view, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
-                    TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
-                    snackBarText.setTextColor(Color.WHITE);
-                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimaryDark));
-                    snackbar.show();
+                    Toast.makeText(mHomeActivity, "Check Internet Connection.", Toast.LENGTH_SHORT).show();
+
                 } else {
                     try {
                         HomeBottomSheet.this.dismiss();
@@ -382,11 +371,9 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
             public void onSingleClick(View v) {
 
                 if (!isNetworkAvailable(v.getContext())) {
-                    Snackbar snackbar = Snackbar.make(v, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
-                    TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
-                    snackBarText.setTextColor(Color.WHITE);
-                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimaryDark));
-                    snackbar.show();
+
+                    Toast.makeText(mHomeActivity, "Check Internet Connection.", Toast.LENGTH_SHORT).show();
+
                 } else {
                     try {
                         HomeBottomSheet.this.dismiss();
@@ -437,11 +424,9 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
             public void onSingleClick(View v) {
 
                 if (!isNetworkAvailable(v.getContext())) {
-                    Snackbar snackbar = Snackbar.make(v, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
-                    TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
-                    snackBarText.setTextColor(Color.WHITE);
-                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimaryDark));
-                    snackbar.show();
+
+                    Toast.makeText(mHomeActivity, "Check Internet Connection.", Toast.LENGTH_SHORT).show();
+
                 } else {
                     try {
                         HomeBottomSheet.this.dismiss();

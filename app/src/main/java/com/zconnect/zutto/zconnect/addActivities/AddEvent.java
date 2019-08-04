@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect.addActivities;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -25,15 +26,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
-import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
@@ -82,6 +85,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -119,19 +123,15 @@ public class AddEvent extends BaseActivity {
     //new reference created
     private DatabaseReference mPostedByDetails;
 
-    private SlideDateTimeListener listener = new SlideDateTimeListener() {
-        @Override
-        public void onDateTimeSet(Date date) {
-            eventDate = date.toString();
-            dateString = String.valueOf(date.getTime());
-            Date evdate = null;
-            try {
-                evdate = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").parse(eventDate);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+    public void setDate (Calendar c) {
+
+            Date temp = new Date(c.getTimeInMillis());
+
+            eventDate = temp.toString();
+            dateString = String.valueOf(c.getTime());
+
             DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
-            DateTime _date = new DateTime(evdate, indianZone);
+            DateTime _date = new DateTime(c, indianZone);
             String minute = String.valueOf(_date.getMinuteOfHour());
             if(_date.getMinuteOfHour() < 10) {
                 minute = "0" + minute;
@@ -140,8 +140,6 @@ public class AddEvent extends BaseActivity {
             dateTime.setText(dateTimeText);
 
         }
-
-    };
 
     ArrayList<String> venueOptions = new ArrayList<>();
 
@@ -248,15 +246,62 @@ public class AddEvent extends BaseActivity {
         CalendarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new SlideDateTimePicker.Builder(getSupportFragmentManager())
-                        .setListener(listener)
-                        .setInitialDate(new Date())
-                        .setIs24HourTime(true)
-                        .setMinDate(new Date(System.currentTimeMillis()))
-                        .build()
-                        .show();
+
+                final View dialogView = View.inflate(view.getContext(), R.layout.date_time_picker, null);
+                final AlertDialog alertDialog = new AlertDialog.Builder(view.getContext()).create();
 
 
+                DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
+                TimePicker timePicker = (TimePicker) dialogView.findViewById(R.id.time_picker);
+
+                Button dateButton = dialogView.findViewById(R.id.date_button);
+                Button timeButton = dialogView.findViewById(R.id.time_button);
+
+                dialogView.findViewById(R.id.date_button).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        datePicker.setVisibility(View.VISIBLE);
+                        timePicker.setVisibility(View.GONE);
+
+                        dateButton.setBackground(view.getResources().getDrawable(R.drawable.primary_button));
+                        timeButton.setBackground(view.getResources().getDrawable(R.drawable.secondary_button));
+
+                        dateButton.setTextColor(view.getResources().getColor(R.color.white));
+                        timeButton.setTextColor(view.getResources().getColor(R.color.colorPrimaryDark));
+
+                    }
+                });
+
+                dialogView.findViewById(R.id.time_button).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        datePicker.setVisibility(View.GONE);
+                        timePicker.setVisibility(View.VISIBLE);
+
+                        dateButton.setBackground(view.getResources().getDrawable(R.drawable.secondary_button));
+                        timeButton.setBackground(view.getResources().getDrawable(R.drawable.primary_button));
+
+                        dateButton.setTextColor(view.getResources().getColor(R.color.colorPrimaryDark));
+                        timeButton.setTextColor(view.getResources().getColor(R.color.white));
+                    }
+                });
+
+                dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Calendar calendar = new GregorianCalendar(datePicker.getYear(),
+                                datePicker.getMonth(),
+                                datePicker.getDayOfMonth(),
+                                timePicker.getCurrentHour(),
+                                timePicker.getCurrentMinute());
+
+                        setDate(calendar);
+                        alertDialog.dismiss();
+
+                    }});
+                alertDialog.setView(dialogView);
+                alertDialog.show();
             }
         });
         if (EventID != null) {

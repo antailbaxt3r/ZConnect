@@ -137,6 +137,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
     NotificationItemFormat notificationItemFormat;
     private static final String BUCKET = "people-network";
 
+    private String tempText;
 
     private static final int GALLERY_REQUEST = 7;
     private String ref = "Misc";
@@ -587,10 +588,11 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 user.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
                         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ChatActivity.this);
                         boolean preferencesBoolean = preferences.getBoolean("isAnonymousFirstTime", true);
                         if(dataSnapshot.child("anonymousUsername").getValue() != null && !preferencesBoolean) {
-                            UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+
 
                             if (dataSnapshot.hasChild("userType")) {
                                 if (userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
@@ -604,40 +606,88 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                             }
                         }
                         else{
+
                             SharedPreferences.Editor editor = preferences.edit();
                             editor.putBoolean("isAnonymousFirstTime",false);
                             editor.apply();
-                            final Dialog anonymousModeDialog = new Dialog(ChatActivity.this);
-                            anonymousModeDialog.setContentView(R.layout.dialog_confirm_anonymous_mode);
-                            anonymousModeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                            Button cancelButton = anonymousModeDialog.findViewById(R.id.anonymous_cancel_button);
-                            cancelButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    anonymousModeDialog.dismiss();
-                                }
-                            });
 
-                            String username = "";
+                            if(dataSnapshot.child("anonymousUsername").getValue() == null){
 
-                            final EditText usernameEt = anonymousModeDialog.findViewById(R.id.anonymous_username_et);
-                            Button enterButton = anonymousModeDialog.findViewById(R.id.anonymous_enter_button);
+                                final Dialog anonymousModeDialog = new Dialog(ChatActivity.this);
+                                anonymousModeDialog.setContentView(R.layout.dialog_set_anonymous_nick);
+                                anonymousModeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                Button cancelButton = anonymousModeDialog.findViewById(R.id.anonymous_cancel_button);
+                                cancelButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        anonymousModeDialog.dismiss();
+                                    }
+                                });
 
-                            enterButton.setOnTouchListener(new View.OnTouchListener() {
-                                @Override
-                                public boolean onTouch(View v, MotionEvent mv) {
-                                    if(usernameEt.getText().toString().trim().equals("")){
-                                        Toast.makeText(ChatActivity.this, "Enter username", Toast.LENGTH_SHORT).show();
+                                String username = "";
+
+                                final EditText usernameEt = anonymousModeDialog.findViewById(R.id.anonymous_username_et);
+
+                                usernameEt.setText(userItemFormat.getAnonymousUsername());
+
+                                Button enterButton = anonymousModeDialog.findViewById(R.id.anonymous_enter_button);
+
+                                enterButton.setOnTouchListener(new View.OnTouchListener() {
+                                    @Override
+                                    public boolean onTouch(View v, MotionEvent mv) {
+                                        if(usernameEt.getText().toString().trim().equals("")){
+                                            Toast.makeText(ChatActivity.this, "Enter username", Toast.LENGTH_SHORT).show();
+                                            return false;
+                                        }
+                                        mUserReference.child("anonymousUsername").setValue(usernameEt.getText().toString().trim());
+                                        anonymousModeDialog.dismiss();
+                                        postMessage(true);
+
                                         return false;
                                     }
-                                    mUserReference.child("anonymousUsername").setValue(usernameEt.getText().toString().trim());
-                                    anonymousModeDialog.dismiss();
-                                    postMessage(true);
+                                });
+                                anonymousModeDialog.show();
 
-                                    return false;
-                                }
-                            });
-                            anonymousModeDialog.show();
+                            }else if(preferencesBoolean){
+
+                                final Dialog anonymousModeDialog = new Dialog(ChatActivity.this);
+                                anonymousModeDialog.setContentView(R.layout.dialog_confirm_anonymous_mode);
+                                anonymousModeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                Button cancelButton = anonymousModeDialog.findViewById(R.id.anonymous_cancel_button);
+                                cancelButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        anonymousModeDialog.dismiss();
+                                    }
+                                });
+
+                                String username = "";
+
+                                final EditText usernameEt = anonymousModeDialog.findViewById(R.id.anonymous_username_et);
+
+                                usernameEt.setText(userItemFormat.getAnonymousUsername());
+
+                                Button enterButton = anonymousModeDialog.findViewById(R.id.anonymous_enter_button);
+
+                                enterButton.setOnTouchListener(new View.OnTouchListener() {
+                                    @Override
+                                    public boolean onTouch(View v, MotionEvent mv) {
+                                        if(usernameEt.getText().toString().trim().equals("")){
+                                            Toast.makeText(ChatActivity.this, "Enter username", Toast.LENGTH_SHORT).show();
+                                            return false;
+                                        }
+                                        mUserReference.child("anonymousUsername").setValue(usernameEt.getText().toString().trim());
+                                        anonymousModeDialog.dismiss();
+                                        postMessage(true);
+
+                                        return false;
+                                    }
+                                });
+                                anonymousModeDialog.show();
+
+                            }
+
+
 
                         }
                     }
@@ -821,7 +871,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                             //TODO, FIX IMAGEURL
                             if(anonymous){
                                 forumChatNotification.setUserName(userItem.getAnonymousUsername());
-                                forumChatNotification.setUserImage(userItem.getImageURLThumbnail());
+                                forumChatNotification.setUserImage("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/Icons%2Fbaseline_visibility_off_black_48.png?alt=media&token=c7c5524c-1a92-4367-b280-142633de3675");
 
                             }
                             else{
@@ -857,6 +907,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
             }
         } else {
             String text1 = typer.getText().toString().trim();
+            tempText = typer.getMentionsText().toString().trim();
             String textCopy = text1;
 
                 for(UserMentionsFormat user : mentionedUsersList){
@@ -942,14 +993,14 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
                     NotificationItemFormat forumChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_FORUM, userItem.getUserUID());
 
-                    forumChatNotification.setItemMessage(text);
+                    forumChatNotification.setItemMessage(tempText);
                     forumChatNotification.setItemCategoryUID(getIntent().getStringExtra("tab"));
                     forumChatNotification.setItemName(getIntent().getStringExtra("name"));
                     forumChatNotification.setItemKey(getIntent().getStringExtra("key"));
 
                     if(anonymous) {
 
-                        forumChatNotification.setUserImage(null);
+                        forumChatNotification.setUserImage("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/Icons%2Fbaseline_visibility_off_black_48.png?alt=media&token=c7c5524c-1a92-4367-b280-142633de3675");
                         forumChatNotification.setUserName(userItem.getAnonymousUsername());
                     }
                     else{
@@ -984,7 +1035,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
                     NotificationItemFormat productChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_PRODUCT, userItem.getUserUID());
 
-                    productChatNotification.setItemMessage(text);
+                    productChatNotification.setItemMessage(typer.getText().toString().trim());
                     productChatNotification.setItemName(getIntent().getStringExtra("name"));
                     productChatNotification.setItemKey(getIntent().getStringExtra("key"));
 
@@ -1001,11 +1052,9 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                     postChatNotification.setItemMessage(text);
                     postChatNotification.setItemKey(getIntent().getStringExtra("key"));
                     if(anonymous){
-                        postChatNotification.setUserImage(userItem.getImageURLThumbnail());
+                        postChatNotification.setUserImage("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/Icons%2Fbaseline_visibility_off_black_48.png?alt=media&token=c7c5524c-1a92-4367-b280-142633de3675");
                         postChatNotification.setUserName(userItem.getAnonymousUsername());
                         metadata.put("uid",getIntent().getStringExtra("uid"));
-
-
                     }
                     else{
                         postChatNotification.setUserImage(userItem.getImageURLThumbnail());
@@ -1018,31 +1067,6 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                     metadata.put("ref",getIntent().getStringExtra("ref"));
                     metadata.put("type",getIntent().getStringExtra("type"));
                     GlobalFunctions.inAppNotifications("commented on your status","Comment: "+text,userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
-                    FirebaseDatabase.getInstance().getReference().child(communityReference).child("Users1").child(getIntent().getStringExtra("uid")).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            UserItemFormat userItemFormat = new UserItemFormat();
-                            HashMap<String,Object> meta = new HashMap<>();
-                            meta.put("ref",databaseReference);
-                            if(anonymous){
-                                userItemFormat.setUserUID(null);
-                                userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
-                                userItem.setUsername((String) dataSnapshot.child("anonymousUsername").getValue());
-                            }
-                            else{
-                                userItemFormat.setUserUID(getIntent().getStringExtra("uid"));
-                                userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
-                                userItem.setUsername((String) dataSnapshot.child("username").getValue());
-                            }
-
-                            GlobalFunctions.inAppNotifications("Someone just commented on a status that you commented on","Comment: "+text,userItemFormat,false,"statusNestedComment",meta,null);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
                     notificationSender.execute(postChatNotification);
 
                 } else if (type.equals("messages")) {
@@ -1286,14 +1310,24 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
     }
 
     public void launchEditForum() {
-        String tab = getIntent().getStringExtra("tab");
-        String key = getIntent().getStringExtra("key");
-        Intent i = new Intent(this, CreateForum.class);
-        i.putExtra("uid", tab);
-        i.putExtra("catUID", key);
-        i.putExtra("flag", "true");
-        startActivity(i);
+
+        if (!isNetworkAvailable(this) ){
+            Snackbar snack = Snackbar.make(chatLayout, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+            snack.show();
+        } else {
+            String tab = getIntent().getStringExtra("tab");
+            String key = getIntent().getStringExtra("key");
+            Intent i = new Intent(this, CreateForum.class);
+            i.putExtra("uid", tab);
+            i.putExtra("catUID", key);
+            i.putExtra("flag", "true");
+            startActivity(i);
 //        finish();
+
+        }
     }
 
     @Override
@@ -1536,6 +1570,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
     }
 
     public void setAnonymousChat() {
+
         isAnonymousEnabled = true;
 
         chatView = (RecyclerView) findViewById(R.id.chatList);

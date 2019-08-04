@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -35,6 +36,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -178,10 +180,6 @@ public class InfoneContactListActivity extends BaseActivity {
 
         setAdapter("lite",false);
 
-
-        askCallPermissions();
-
-
     }
 
 
@@ -194,7 +192,7 @@ public class InfoneContactListActivity extends BaseActivity {
                 contactsRVItems = new ArrayList<>();
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
 
-//                    try {
+                    try {
                         InfoneContactsRVItem temp = new InfoneContactsRVItem();
 
                         String name = childSnapshot.child("name").getValue(String.class);
@@ -235,7 +233,7 @@ public class InfoneContactListActivity extends BaseActivity {
                         contactsRVItems.add(temp);
 
                         totalContacts = contactsRVItems.size();
-//                    }catch (Exception e){}
+                    }catch (Exception e){}
                 }
 
                 Collections.sort(contactsRVItems, new Comparator<InfoneContactsRVItem>() {
@@ -297,27 +295,45 @@ public class InfoneContactListActivity extends BaseActivity {
 
     private void addContact(String contactName, String contactNumber) {
 
-        Intent addContactIntent = new Intent(this, AddInfoneContact.class);
-        addContactIntent.putExtra("catId", catId);
-        addContactIntent.putExtra("catImageURL",catImageurl);
-        addContactIntent.putExtra("catName", catName);
-        addContactIntent.putExtra("totalContacts",totalContacts);
-        addContactIntent.putExtra("contactName", contactName);
-        addContactIntent.putExtra("contactNumber", contactNumber);
-        addContactIntent.putExtra("categoryadmin",catAdmin);
-//        addContactIntent.putExtra("contactPhoto", contactPhoto);
-        startActivity(addContactIntent);
+        if (!isNetworkAvailable(this)) {
+            Snackbar snack = Snackbar.make(recyclerViewContacts, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+            snack.show();
+        } else {
 
+            Intent addContactIntent = new Intent(this, AddInfoneContact.class);
+            addContactIntent.putExtra("catId", catId);
+            addContactIntent.putExtra("catImageURL", catImageurl);
+            addContactIntent.putExtra("catName", catName);
+            addContactIntent.putExtra("totalContacts", totalContacts);
+            addContactIntent.putExtra("contactName", contactName);
+            addContactIntent.putExtra("contactNumber", contactNumber);
+            addContactIntent.putExtra("categoryadmin", catAdmin);
+//        addContactIntent.putExtra("contactPhoto", contactPhoto);
+            startActivity(addContactIntent);
+
+        }
     }
 
     private void editCategory() {
+        if (!isNetworkAvailable(this)) {
+            Snackbar snack = Snackbar.make(recyclerViewContacts, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+            snack.show();
+        } else {
 
-        Intent editCatIntent=new Intent(InfoneContactListActivity.this,AddInfoneCat.class);
-        editCatIntent.putExtra("catId",catId);
-        editCatIntent.putExtra("catName",catName);
-        editCatIntent.putExtra("catImageurl",catImageurl);
-        startActivity(editCatIntent);
 
+            Intent editCatIntent = new Intent(InfoneContactListActivity.this, AddInfoneCat.class);
+            editCatIntent.putExtra("catId", catId);
+            editCatIntent.putExtra("catName", catName);
+            editCatIntent.putExtra("catImageurl", catImageurl);
+            startActivity(editCatIntent);
+
+        }
     }
 
     private void toolbarSetup() {
@@ -488,46 +504,4 @@ public class InfoneContactListActivity extends BaseActivity {
         }
     }
 
-    private void askCallPermissions() {
-
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(InfoneContactListActivity.this, new String[]{android.Manifest.permission.CALL_PHONE}, REQUEST_PHONE_CALL);
-        }
-
-        if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(InfoneContactListActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.PROCESS_OUTGOING_CALLS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(InfoneContactListActivity.this, new String[]{Manifest.permission.PROCESS_OUTGOING_CALLS}, REQUEST_READ_CONTACTS);
-        }
-        if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(InfoneContactListActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_READ_CONTACTS);
-        }
-
-    }
-
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_PHONE_CALL: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //startActivity(intent);
-                } else {
-                    askCallPermissions();
-                }
-                return;
-            }
-            case REQUEST_READ_CONTACTS: {
-                if(grantResults.length > 0 && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-
-                } else {
-                    askCallPermissions();
-                }
-                return;
-            }
-        }
-    }
 }

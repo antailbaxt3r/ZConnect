@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:gravity="center"
-        android:text="Please confirm the name which will be used for your hidden identity"
+        android:text="Please enter a name which will be used for your hidden identity"
         android:textColor="@color/deepPurple500" />
 
     <EditText

@@ -22,6 +22,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -117,33 +118,46 @@ public class CapPoolSearchList extends BaseActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            Intent intent = new Intent(CapPoolSearchList.this, AddCabPool.class);
-            try {
-                intent.putExtra("source", String.valueOf(source));
-                intent.putExtra("destination", String.valueOf(destination));
-                intent.putExtra("date", String.valueOf(date));
-                intent.putExtra("time_from", String.valueOf(time_from));
-                intent.putExtra("time_to", String.valueOf(time_to));
-            }catch (Exception e){
-                Log.e("TAG","Intent not successfull");
-            }
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
 
-                meta.put("type","fromFab");
+                if (!isNetworkAvailable(view.getContext())) {
+                    Snackbar snack = Snackbar.make(fab, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
+                    snack.show();
+                } else {
+                    Intent intent = new Intent(CapPoolSearchList.this, AddCabPool.class);
+                    try {
+                        intent.putExtra("source", String.valueOf(source));
+                        intent.putExtra("destination", String.valueOf(destination));
+                        intent.putExtra("date", String.valueOf(date));
+                        intent.putExtra("time_from", String.valueOf(time_from));
+                        intent.putExtra("time_to", String.valueOf(time_to));
+                    }catch (Exception e){
+                        Log.e("TAG","Intent not successfull");
+                    }
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta= new HashMap<>();
+
+                    meta.put("type","fromFab");
 
 
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_ADD_OPEN);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_ADD_OPEN);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
 
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
-            startActivity(intent);
-            finish();
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
+                    startActivity(intent);
+                    finish();
+
+
+                }
             }
         });
+
+
 
         //getting present dates and defining format for input and output date
         final Calendar c = Calendar.getInstance();

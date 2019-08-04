@@ -722,8 +722,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
 
                                     DB_CURRENT.setValue(Long.valueOf(0));
                                     if(title!=null)
-                                    GlobalFunctions.inAppNotifications(title,desc,userItemFormat,true,type,metadata,null);
-                                    sendNotification(true,notificationIdentifier + communityReference);
+                                   sendNotification(true,notificationIdentifier + communityReference);
 
                                 }else{
                                     DB_CURRENT.setValue(current_frequency + 1);
