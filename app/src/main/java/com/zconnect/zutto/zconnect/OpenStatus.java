@@ -299,13 +299,14 @@ public class OpenStatus extends BaseActivity {
         loadMessagesListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                messages.clear();
+
 
                 FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
+                        messages.clear();
 
-                        RecentsItemFormat recentsItemFormatTemp = dataSnapshot.getValue(RecentsItemFormat.class);
+                        RecentsItemFormat recentsItemFormatTemp = dataSnapshot2.getValue(RecentsItemFormat.class);
 
                         ChatItemFormats temp1 = new ChatItemFormats();
                         temp1.setMessageType(MessageTypeUtilities.KEY_STATUS_STR);

@@ -84,6 +84,8 @@ public class newUserViewHolder extends RecyclerView.ViewHolder{
                         NotificationItemFormat newUserAcceptNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_ACCEPT,userItemFormat.getUserUID());
                         newUserAcceptNotification.setCommunityName(communityTitle);
                         newUserAcceptNotification.setItemKey(UID);
+                        newUserAcceptNotification.setUserImage(userItemFormat.getImageURL());
+                        newUserAcceptNotification.setUserName(userItemFormat.getUsername());
 
                         notificationSender.execute(newUserAcceptNotification);
 
@@ -130,7 +132,8 @@ public class newUserViewHolder extends RecyclerView.ViewHolder{
                         NotificationItemFormat newUserRejectNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_REJECT, userItemFormat.getUserUID());
                         newUserRejectNotification.setCommunityName(communityTitle);
                         newUserRejectNotification.setItemKey(UID);
-
+                        newUserRejectNotification.setUserName(userItemFormat.getUsername());
+                        newUserRejectNotification.setUserImage(userItemFormat.getImageURL());
                         notificationSender.execute(newUserRejectNotification);
                     }
 

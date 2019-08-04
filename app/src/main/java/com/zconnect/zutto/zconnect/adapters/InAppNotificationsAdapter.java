@@ -144,11 +144,14 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<RecyclerView
                         ds.setUnderlineText(false); // set to false to remove underline
                     }
                 };
+                try {
+                    StyleSpan styleSpan = new StyleSpan(BOLD);
+                    spannableString.setSpan(clickableSpan, 0, notificationsList.get(position).getNotifiedBy().getUsername().length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    spannableString.setSpan(styleSpan, 0, notificationsList.get(position).getNotifiedBy().getUsername().length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    spannableString.setSpan(normalSpan,  notificationsList.get(position).getNotifiedBy().getUsername().length(),spannableString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
-                StyleSpan styleSpan = new StyleSpan(BOLD);
-                spannableString.setSpan(clickableSpan, 0, notificationsList.get(position).getNotifiedBy().getUsername().length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                spannableString.setSpan(styleSpan, 0, notificationsList.get(position).getNotifiedBy().getUsername().length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                spannableString.setSpan(normalSpan,  notificationsList.get(position).getNotifiedBy().getUsername().length(),spannableString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                }catch (Exception e){}
+
                 holder.titletv.setText(spannableString);
                 holder.titletv.setClickable(true);
                 holder.titletv.setMovementMethod(LinkMovementMethod.getInstance());
