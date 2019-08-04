@@ -11,11 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.WebViewActivity;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ListItem;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 
+import java.util.HashMap;
 import java.util.Vector;
+
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class LinksRVAdapter extends RecyclerView.Adapter<LinksRVAdapter.ProgrammingViewHolder>{
 
@@ -37,12 +44,11 @@ public class LinksRVAdapter extends RecyclerView.Adapter<LinksRVAdapter.Programm
 
     @Override
     public void onBindViewHolder(final ProgrammingViewHolder holder, int position) {
-        String title=LinksList.get(position).getTitle().toString();
+        String title=LinksList.get(position).getLinkTitle().toString();
         String link=LinksList.get(position).getLinkURL().toString();
         holder.link.setText(link);
         holder.title.setText(title);
         holder.link.setOnClickListener(view -> {
-            Intent intent = new Intent(context, WebViewActivity.class);
             CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
             intentBuilder.setToolbarColor(ContextCompat.getColor(context, R.color.colorPrimary));
             intentBuilder.setSecondaryToolbarColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
@@ -50,10 +56,22 @@ public class LinksRVAdapter extends RecyclerView.Adapter<LinksRVAdapter.Programm
             intentBuilder.setExitAnimations(context, android.R.anim.slide_in_left,
                     android.R.anim.slide_out_right);
             CustomTabsIntent customTabsIntent = intentBuilder.build();
+            String linkUrl = LinksList.get(position).getLinkURL();
+            if(!linkUrl.startsWith("http://") && !linkUrl.startsWith("https://"))
+            {
+                LinksList.get(position).setLinkURL("http://"+linkUrl);
+            }
             customTabsIntent.launchUrl(context, Uri.parse(LinksList.get(position).getLinkURL()));
 //            intent.putExtra("url",LinksList.get(position).getLinkURL());
 //            intent.putExtra("title",LinksList.get(position).getTitle());
 //            context.startActivity(intent);
+
+            CounterItemFormat counterItemFormat = new CounterItemFormat();
+            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+            counterItemFormat.setUniqueID(CounterUtilities.KEY_LINKS_CLICK);
+            counterItemFormat.setTimestamp(System.currentTimeMillis());
+            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+            counterPush.pushValues();
         });
     }
 

@@ -57,8 +57,8 @@ public class InternshipsRVAdapter extends RecyclerView.Adapter<InternshipsRVAdap
                     if (dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                     {
                         holder.apply.setText("Applied");
-                        holder.apply.setBackground(ContextCompat.getDrawable(context,R.drawable.round_button_gray));
-                        holder.apply.setTextColor(ContextCompat.getColor(context,R.color.primaryText));
+                        holder.apply.setBackground(ContextCompat.getDrawable(context,R.drawable.round_button_simple));
+                        holder.apply.setTextColor(ContextCompat.getColor(context,R.color.secondaryText2));
                         holder.apply.setEnabled(false);
                         holder.apply.setVisibility(View.VISIBLE);
                     }

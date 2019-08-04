@@ -242,8 +242,8 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
                 holder.hiddentv.setVisibility(View.VISIBLE);
                 holder.whatsAppImageBtn.setVisibility(View.GONE);
                 holder.callImageBtn.setVisibility(View.GONE);
-                holder.nametv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.gray_holo_light));
-                holder.desctv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.gray_holo_light));
+                holder.nametv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.grey500));
+                holder.desctv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.grey500));
                 holder.hiddentv.setText("hidden");
             }
 
@@ -256,8 +256,8 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
             holder.hiddentv.setVisibility(View.VISIBLE);
             holder.whatsAppImageBtn.setVisibility(View.GONE);
             holder.callImageBtn.setVisibility(View.GONE);
-            holder.nametv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.gray_holo_light));
-            holder.desctv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.gray_holo_light));
+            holder.nametv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.grey500));
+            holder.desctv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.grey500));
             holder.hiddentv.setText("hidden");
         }
             holder.linearLayout.setOnClickListener(new OnSingleClickListener() {

@@ -18,10 +18,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
 
 import java.util.HashMap;
@@ -145,6 +149,13 @@ public class CreatePoll extends BaseActivity {
                             createPollMap.put("PostedBy",postedByDetails);
 
                             newPoll.setValue(createPollMap);
+
+                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                            counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_ADD_POLL);
+                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                            counterPush.pushValues();
 
                             /*newPoll.child("PostedBy").child("Username").setValue(user.getUsername());
                             newPoll.child("PostedBy").child("UID").setValue(user.getUserUID());
