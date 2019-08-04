@@ -2477,7 +2477,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
             });
 
-            totalMembersRef.addValueEventListener(new ValueEventListener() {
+            totalMembersRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     try {

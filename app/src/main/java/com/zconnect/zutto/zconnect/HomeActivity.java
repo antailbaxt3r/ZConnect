@@ -1471,21 +1471,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                 break;
             }
-            case R.id.share: {
-                Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
-                        .setMessage(getString(R.string.invitation_message))
-                        .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
-                        .setCallToActionText(getString(R.string.invitation_cta))
-                        .build();
-                startActivityForResult(intent, RequestCodes.REQUEST_INVITE);
-                break;
-//                Intent intent = new Intent();
-//                intent.setAction(Intent.ACTION_SEND);
-//                intent.putExtra(Intent.EXTRA_TEXT, "Download the ZConnect app on \n"
-//                        + url);
-//                intent.setType("text/plain");
-//                startActivity(Intent.createChooser(intent, "Share app url via ... "));
-            }
             case R.id.referral_code:
                 Intent intent = new Intent(this, ReferralCode.class);
                 startActivity(intent);

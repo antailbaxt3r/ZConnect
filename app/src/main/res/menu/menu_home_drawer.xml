@@ -61,11 +61,6 @@
             android:icon="@mipmap/ic_zc_material_icon"
             android:name="About Us" />
         <item
-            android:title="Invite friends"
-            android:id="@+id/share"
-            android:icon="@drawable/ic_share_purple_24dp"
-            android:name="Share" />
-        <item
             android:title="Referral Code"
             android:id="@+id/referral_code"
             android:icon="@drawable/ic_outline_group_add_purple"
