@@ -158,6 +158,10 @@ public class NotificationService extends FirebaseMessagingService {
                 break;
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_IMAGE_URL: imageURLNotification();
                 break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_TEXT: textNotification();
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_IMAGE: imageNotification();
+                break;
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_CACHE: cacheDeleteNotification();
                 break;
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL: requestCallNotification();
@@ -181,6 +185,90 @@ public class NotificationService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String s) {
         super.onNewToken(s);
+    }
+
+    private void textNotification() {
+        final String title = data.get("title").toString();
+        final String message = data.get("message").toString();
+
+        Bitmap appLogo = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,COMMUNITY_CHANNEL_ID);
+
+        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+        style.setBigContentTitle(title).bigText(message);
+
+        if (appLogo!=null){
+            mBuilder.setLargeIcon(appLogo);
+        }
+
+
+        mBuilder.setSmallIcon(R.drawable.ic_whatshot_white_24dp)
+                .setStyle(style)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setPriority(Notification.PRIORITY_MAX)
+                .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
+                .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                .setContentTitle(title)
+                .setContentText(message);
+
+        Intent intent = new Intent(NotificationService.this,HomeActivity.class);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, 0);
+        mBuilder.setContentIntent(contentIntent);
+
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(24, mBuilder.build());
+    }
+
+    private void imageNotification() {
+        final String imageURL = data.get("imageURL").toString();
+        final String URL = data.get("URL").toString();
+        final String title = data.get("title").toString();
+        final String message = data.get("message").toString();
+
+        Bitmap appLogo = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,COMMUNITY_CHANNEL_ID);
+
+        NotificationCompat.BigPictureStyle style = new android.support.v4.app.NotificationCompat.BigPictureStyle();
+        style.setBigContentTitle(title).setSummaryText(message);
+
+        Bitmap bitmap = null;
+        try {
+            URL url = new URL(imageURL);
+            bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+        } catch(IOException e) {
+            System.out.println(e);
+        }
+
+        if (appLogo!=null){
+            mBuilder.setLargeIcon(appLogo);
+        }
+
+        if(bitmap!=null){
+            style.bigPicture(bitmap);
+        }
+
+        mBuilder.setSmallIcon(R.drawable.ic_whatshot_white_24dp)
+                .setStyle(style)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setPriority(Notification.PRIORITY_MAX)
+                .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
+                .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                .setContentTitle(title)
+                .setContentText(message);
+
+        Intent intent = new Intent(NotificationService.this,HomeActivity.class);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, 0);
+        mBuilder.setContentIntent(contentIntent);
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(23, mBuilder.build());
     }
 
     private void orderPoolCreatedNotification(){
@@ -520,10 +608,15 @@ public class NotificationService extends FirebaseMessagingService {
                 .setContentTitle(title)
                 .setContentText(message);
 
-        Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(URL));
-        PendingIntent contentIntent = PendingIntent.getActivity(NotificationService.this, 0, notificationIntent, 0);
-        mBuilder.setContentIntent(contentIntent);
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
+        Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(URL));
+
+        Intent[] intents = new Intent[]{intent0,notificationIntent};
+
+        PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(intent1);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(17, mBuilder.build());
@@ -557,10 +650,15 @@ public class NotificationService extends FirebaseMessagingService {
                 .setContentTitle(title)
                 .setContentText(message);
 
-        Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(URL));
-        PendingIntent contentIntent = PendingIntent.getActivity(NotificationService.this, 0, notificationIntent, 0);
-        mBuilder.setContentIntent(contentIntent);
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
+        Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(URL));
+
+        Intent[] intents = new Intent[]{intent0,notificationIntent};
+
+        PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(intent1);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(16, mBuilder.build());

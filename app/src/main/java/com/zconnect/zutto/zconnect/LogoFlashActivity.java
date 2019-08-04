@@ -72,6 +72,7 @@ public class LogoFlashActivity extends BaseActivity {
     private View bgColor;
     boolean flag = false;
     private String mReferrerUid;
+            DatabaseReference communitiesInfoRef = FirebaseDatabase.getInstance().getReference().child("communitiesInfo");
 
     String[] PERMISSIONS = {
             android.Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -100,37 +101,6 @@ public class LogoFlashActivity extends BaseActivity {
         communityReference = communitySP.getString("communityReference", null);
 
         if (communityReference != null) {
-            /*temporary = FirebaseDatabase.getInstance().getReference().child("userCommunities");
-            temporary2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
-
-            temporary2.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot shot: dataSnapshot.getChildren())
-                    {
-                        if (shot.hasChild("userType"))
-                        {
-                            if ((shot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_VERIFIED)) || (shot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))) {
-                                try {
-                                    temporary.child(shot.child("userUID").getValue().toString()).child("communitiesJoined").child(communityReference).setValue(communityReference);
-
-                                }
-                                catch (Exception e){}
-                            }
-                            else
-                                continue;
-                        }
-                        else
-                            continue;
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });*/
-
 
             DatabaseReference duplicateCommunity = FirebaseDatabase.getInstance().getReference().child("communities").child("newTest");
 
@@ -471,21 +441,38 @@ public class LogoFlashActivity extends BaseActivity {
         }
     }
 
-    //script to transfers users from 'Users1' with type 'admin' to admin node
-//    private void createadminnode() {
-//        if(communityReference!=null) {
-//            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
-//            final DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("admins");
-//            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                    for (DataSnapshot childsnap : dataSnapshot.getChildren()) {
-//                        if (childsnap.hasChild("userType") && childsnap.child("userType").getValue().toString().equals("admin")) {
-//                            databaseReference1.child(childsnap.getKey()).child("UID").setValue(childsnap.getKey());
-//                            databaseReference1.child(childsnap.getKey()).child("Username").setValue(childsnap.child("username").getValue());
-//                            databaseReference1.child(childsnap.getKey()).child("ImageThumb").setValue(childsnap.child("imageURL").getValue());
-//                        }
-//                    }
+//    private void userCommunitiesScript() {
+//        temporary = FirebaseDatabase.getInstance().getReference().child("userCommunities");
+//        communitiesInfoRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot communitiesInfoSnapshot) {
+//                for(DataSnapshot communitySnapshot : communitiesInfoSnapshot.getChildren())
+//                {
+//                    String communityID = communitySnapshot.getKey();
+//                    Log.d("COMMMMMMM", communityID);
+//                    temporary2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityID).child("Users1");
+//                    temporary2.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                            for (DataSnapshot shot: dataSnapshot.getChildren())
+//                            {
+//                                if (shot.hasChild("userType"))
+//                                {
+//                                    if ((shot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_VERIFIED)) || (shot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))) {
+//                                        try {
+//                                            temporary.child(shot.getKey()).child("communitiesJoined").child(communityID).setValue(communityID);
+//
+//                                        }
+//                                        catch (Exception e){
+//                                            e.printStackTrace();
+//                                        }
+//                                    }
+//                                    else
+//                                        continue;
+//                                }
+//                                else
+//                                    continue;
+//                            }
 //                }
 //
 //                @Override
@@ -493,7 +480,119 @@ public class LogoFlashActivity extends BaseActivity {
 //
 //                }
 //            });
-//        }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
+
+//    private void createUserForumsForOldForums() {
+//        communitiesInfoRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot communitiesInfoSS) {
+//                for(DataSnapshot communitySS : communitiesInfoSS.getChildren())
+//                {
+//                    String communityID = communitySS.getKey();
+//                    DatabaseReference forumTabCatRef = communitiesInfoRef.getRoot().child("communities").child(communityID).child("features/forums/tabsCategories");
+//                    DatabaseReference userForumsRef = forumTabCatRef.getParent().child("userForums");
+//                    userForumsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot userForumSS) {
+//                            forumTabCatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(@NonNull DataSnapshot forumTabsSnapshot) {
+//                                    for(DataSnapshot tabSnapshot : forumTabsSnapshot.getChildren())
+//                                    {
+//                                        for(DataSnapshot forumSnapshot : tabSnapshot.getChildren())
+//                                        {
+////                                            HashMap<String, Object> forumObj = forumSnapshot.getValue(HashMap.class);
+////                                            Log.d("UUUUUUUUU", forumObj.get("users").toString()+"");
+////                                            forumObj.remove("users");
+////                                            Log.d("UUUUUUUUU", forumObj.get("users").toString()+"");
+//                                            for(DataSnapshot userSS : forumSnapshot.child("users").getChildren())
+//                                            {
+//                                                Log.d("UUUUUUUUU", userSS.getKey());
+//                                                Log.d("UUUUUUUUU", userForumSS.child(userSS.getKey()).child("joinedForums").hasChild(forumSnapshot.getKey())+"");
+//                                                if(!userForumSS.child(userSS.getKey()).child("joinedForums").hasChild(forumSnapshot.getKey()))
+//                                                {
+//                                                    Log.d("UUUUUUUUU", userForumSS.getKey() + "");
+//                                                }
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                                }
+//                            });
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                        }
+//                    });
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
+
+    //script to transfers users from 'Users1' with type 'admin' to admin node
+//    private void createadminnode() {
+//        communitiesInfoRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot communitiesInfoSS) {
+//                for(DataSnapshot communitySS : communitiesInfoSS.getChildren())
+//                {
+//                    String communityID = communitySS.getKey();
+//                    Log.d("COMMMMMMM", communityID);
+//                    if(communityID!=null) {
+//                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityID).child("Users1");
+//                        final DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityID).child("admins");
+//                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                for (DataSnapshot childsnap : dataSnapshot.getChildren()) {
+//                                    try{
+//                                        if (childsnap.hasChild("userType") && childsnap.child("userType").getValue().toString().equals("admin")) {
+//                                            databaseReference1.child(childsnap.getKey()).child("UID").setValue(childsnap.getKey());
+//                                            databaseReference1.child(childsnap.getKey()).child("Username").setValue(childsnap.child("username").getValue());
+//                                            databaseReference1.child(childsnap.getKey()).child("ImageThumb").setValue(childsnap.child("imageURL").getValue());
+//                                        }
+//                                    }
+//                                    catch (Exception e)
+//                                    {
+//                                        Log.d("COMMMMMM", "ERROR : "+childsnap.getKey() + " " + communityID);
+//                                        e.printStackTrace();
+//                                    }
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                            }
+//                        });
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
 //    }
 
 

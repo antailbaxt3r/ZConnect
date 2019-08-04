@@ -212,14 +212,15 @@ public class OpenStatus extends BaseActivity {
                 user.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
                         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(OpenStatus.this);
                         boolean preferencesBoolean = preferences.getBoolean("isAnonymousFirstTime", true);
                         if(dataSnapshot.child("anonymousUsername").getValue() != null && !preferencesBoolean) {
-                            UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+
 
                             if (dataSnapshot.hasChild("userType")) {
                                 if (userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
-                                    newUserVerificationAlert.buildAlertCheckNewUser(userItemFormat.getUserType(), "Chat", OpenStatus.this);
+                                    newUserVerificationAlert.buildAlertCheckNewUser(userItemFormat.getUserType(), "Status", OpenStatus.this);
                                 } else {
 
                                     postMessage(true);
@@ -229,40 +230,88 @@ public class OpenStatus extends BaseActivity {
                             }
                         }
                         else{
+
                             SharedPreferences.Editor editor = preferences.edit();
                             editor.putBoolean("isAnonymousFirstTime",false);
                             editor.apply();
-                            final Dialog anonymousModeDialog = new Dialog(OpenStatus.this);
-                            anonymousModeDialog.setContentView(R.layout.dialog_confirm_anonymous_mode);
-                            anonymousModeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                            Button cancelButton = anonymousModeDialog.findViewById(R.id.anonymous_cancel_button);
-                            cancelButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    anonymousModeDialog.dismiss();
-                                }
-                            });
 
-                            String username = "";
+                            if(dataSnapshot.child("anonymousUsername").getValue() == null){
 
-                            final EditText usernameEt = anonymousModeDialog.findViewById(R.id.anonymous_username_et);
-                            Button enterButton = anonymousModeDialog.findViewById(R.id.anonymous_enter_button);
+                                final Dialog anonymousModeDialog = new Dialog(OpenStatus.this);
+                                anonymousModeDialog.setContentView(R.layout.dialog_set_anonymous_nick);
+                                anonymousModeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                Button cancelButton = anonymousModeDialog.findViewById(R.id.anonymous_cancel_button);
+                                cancelButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        anonymousModeDialog.dismiss();
+                                    }
+                                });
 
-                            enterButton.setOnTouchListener(new View.OnTouchListener() {
-                                @Override
-                                public boolean onTouch(View v, MotionEvent mv) {
-                                    if(usernameEt.getText().toString().trim().equals("")){
-                                        Toast.makeText(OpenStatus.this, "Enter username", Toast.LENGTH_SHORT).show();
+                                String username = "";
+
+                                final EditText usernameEt = anonymousModeDialog.findViewById(R.id.anonymous_username_et);
+
+                                usernameEt.setText(userItemFormat.getAnonymousUsername());
+
+                                Button enterButton = anonymousModeDialog.findViewById(R.id.anonymous_enter_button);
+
+                                enterButton.setOnTouchListener(new View.OnTouchListener() {
+                                    @Override
+                                    public boolean onTouch(View v, MotionEvent mv) {
+                                        if(usernameEt.getText().toString().trim().equals("")){
+                                            Toast.makeText(OpenStatus.this, "Enter username", Toast.LENGTH_SHORT).show();
+                                            return false;
+                                        }
+                                        mUserReference.child("anonymousUsername").setValue(usernameEt.getText().toString().trim());
+                                        anonymousModeDialog.dismiss();
+                                        postMessage(true);
+
                                         return false;
                                     }
-                                    mUserReference.child("anonymousUsername").setValue(usernameEt.getText().toString().trim());
-                                    anonymousModeDialog.dismiss();
-                                    postMessage(true);
+                                });
+                                anonymousModeDialog.show();
 
-                                    return false;
-                                }
-                            });
-                            anonymousModeDialog.show();
+                            }else if(preferencesBoolean){
+
+                                final Dialog anonymousModeDialog = new Dialog(OpenStatus.this);
+                                anonymousModeDialog.setContentView(R.layout.dialog_confirm_anonymous_mode);
+                                anonymousModeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                Button cancelButton = anonymousModeDialog.findViewById(R.id.anonymous_cancel_button);
+                                cancelButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        anonymousModeDialog.dismiss();
+                                    }
+                                });
+
+                                String username = "";
+
+                                final EditText usernameEt = anonymousModeDialog.findViewById(R.id.anonymous_username_et);
+
+                                usernameEt.setText(userItemFormat.getAnonymousUsername());
+
+                                Button enterButton = anonymousModeDialog.findViewById(R.id.anonymous_enter_button);
+
+                                enterButton.setOnTouchListener(new View.OnTouchListener() {
+                                    @Override
+                                    public boolean onTouch(View v, MotionEvent mv) {
+                                        if(usernameEt.getText().toString().trim().equals("")){
+                                            Toast.makeText(OpenStatus.this, "Enter username", Toast.LENGTH_SHORT).show();
+                                            return false;
+                                        }
+                                        mUserReference.child("anonymousUsername").setValue(usernameEt.getText().toString().trim());
+                                        anonymousModeDialog.dismiss();
+                                        postMessage(true);
+
+                                        return false;
+                                    }
+                                });
+                                anonymousModeDialog.show();
+
+                            }
+
+
 
                         }
                     }
