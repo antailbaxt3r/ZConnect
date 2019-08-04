@@ -215,6 +215,12 @@ exports.countNumberOfForums = functions.database.ref('/communities/{communityID}
   return totalJoinedForumsRef.set(change.after.numChildren());
 });
 
+exports.countNumberOfInAppNotifs = functions.database.ref('/communities/{communityID}/Users1/{uid}/notifications')
+.onWrite((change, context) => {
+  const totalInAppNotifsRef = change.after.ref.parent.child('notificationStatus/totalNotifications');
+  return totalInAppNotifsRef.set(change.after.numChildren());
+});
+
 //for new apps
 exports.syncUserPointsAndUserPointsNum1 = functions.database.ref('/communities/{communityID}/Users1/{uid}/userPoints')
 .onUpdate((change, context) => {

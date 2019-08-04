@@ -184,6 +184,8 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
     boolean matchedMessage;
 
+    private boolean isShareToForums;
+
 
     //User Mentions
     UserMentionsFormat.MentionsLoader mentionsLoader;
@@ -285,6 +287,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         communityReference = communitySP.getString("communityReference", null);
         Intent callingActivityIntent = getIntent();
         if (callingActivityIntent.getStringExtra(ForumUtilities.KEY_MESSAGE_TYPE_STR) != null) {
+            isShareToForums = callingActivityIntent.getBooleanExtra("isShareToForum", false);
             shareMessage = callingActivityIntent.getStringExtra(ForumUtilities.KEY_MESSAGE);
             shareMessageType = callingActivityIntent.getStringExtra(ForumUtilities.KEY_MESSAGE_TYPE_STR);
         }
@@ -1286,6 +1289,12 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if(isShareToForums)
+        {
+            Intent intent = new Intent(ChatActivity.this, HomeActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
     }
 

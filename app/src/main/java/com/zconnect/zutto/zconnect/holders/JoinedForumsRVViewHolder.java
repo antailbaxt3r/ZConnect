@@ -44,6 +44,8 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
     ImageView defaultForumIcon;
     FrameLayout verifiedForumIconLayout;
     private int unseen_num;
+
+    private boolean isShareToForum = false;
     public JoinedForumsRVViewHolder(View itemView) {
         super(itemView);
         mView = itemView;
@@ -186,6 +188,7 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
                 intent.putExtra("tab",tabId);
                 intent.putExtra("key",uid);
                 intent.putExtra("unseen_num", String.valueOf(unseen_num));
+                intent.putExtra("isShareToForum", isShareToForum);
                 mView.getContext().startActivity(intent);
 
                 layoutUnseenMessages.setVisibility(View.GONE);
@@ -234,7 +237,8 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    public void setDetailsForShare(ForumCategoriesItemFormat forumCategoriesItemFormat) {
+    public void setDetailsForShare(ForumCategoriesItemFormat forumCategoriesItemFormat, boolean isShareToForum) {
+        this.isShareToForum = isShareToForum;
         catName.setText(forumCategoriesItemFormat.getName());
         Log.d("InsideSetDetails",catName.getText().toString());
         try
@@ -273,7 +277,7 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void openChat(final String uid, final String tabId, final String name, final String message, final String messageType) {
-        Log.d("inOpenChat",name);
+        Log.d("inOpenChat",name+"");
         mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -300,9 +304,13 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
                 intent.putExtra("tab",tabId);
                 intent.putExtra("key",uid);
                 intent.putExtra("unseen_num", String.valueOf(unseen_num));
+                intent.putExtra("isShareToForum", isShareToForum);
                 intent.putExtra(ForumUtilities.KEY_MESSAGE_TYPE_STR,messageType);
                 intent.putExtra(ForumUtilities.KEY_MESSAGE,message);
                 mView.getContext().startActivity(intent);
+                if(isShareToForum) {
+                    ((Activity) mView.getContext()).finish();
+                }
             }
 
         });
