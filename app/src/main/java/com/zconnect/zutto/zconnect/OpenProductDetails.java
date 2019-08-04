@@ -319,14 +319,13 @@ public class OpenProductDetails extends BaseActivity {
                 userDetails.setUserUID(userItem.getUserUID());
                 userDetails.setUserType(ForumsUserTypeUtilities.KEY_ADMIN);
 
-
                 HashMap<String,UsersListItemFormat> userList = new HashMap<String,UsersListItemFormat>();
                 userList.put(receiverUserUUID,userDetails);
 
                databaseReferenceSender.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        UserItemFormat temp = dataSnapshot.getValue(UserItemFormat.class);
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
+                        UserItemFormat temp = dataSnapshot1.getValue(UserItemFormat.class);
 
 
                         UsersListItemFormat currentUser = new UsersListItemFormat();
@@ -350,6 +349,14 @@ public class OpenProductDetails extends BaseActivity {
                         databaseReferenceSender.child("userChats").child(receiverUserUUID).setValue(newPush.getKey());
                         databaseReferenceReceiver.child("userChats").child(senderUID).setValue(newPush.getKey());
 
+                        String key = newPush.getKey();
+                        Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
+                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
+                        intent.putExtra("type", "forums");
+                        intent.putExtra("name", userDetails.getName());
+                        intent.putExtra("tab", "personalChats");
+                        intent.putExtra("key", key);
+                        startActivity(intent);
                     }
 
                     @Override

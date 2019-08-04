@@ -58,6 +58,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
@@ -985,7 +986,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 navHeaderImageUrl = dataSnapshot.child("imageURL").getValue(String.class);
                 if(navHeaderImageUrl!= null){
                     navHeaderImage = findViewById(R.id.iv_z_connect_logo_nav_header1);
-                    navHeaderImage.setImageURI(Uri.parse(navHeaderImageUrl));
+
+                    Picasso.with(context).load(navHeaderImageUrl).into(navHeaderImage);
+
+                    //navHeaderImage.setImageURI(Uri.parse(navHeaderImageUrl));
                 }
                 if(!dataSnapshot.hasChild("mobileNumber")){
                     DatabaseReference referredUsersRef = FirebaseDatabase.getInstance().getReference().child("referredUsers");

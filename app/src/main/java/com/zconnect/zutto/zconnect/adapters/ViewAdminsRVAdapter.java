@@ -99,28 +99,28 @@ public class ViewAdminsRVAdapter extends RecyclerView.Adapter<ViewAdminsRVAdapte
 
                             if (!dataSnapshot.child("userChats").hasChild(adiminUID.get(position))) {
                                 final String userImageURL = dataSnapshot.child("imageURL").getValue().toString();
-                                Log.d("Try", createPersonalChat(mAuth.getCurrentUser().getUid(), adiminUID.get(position)));
+                                Log.d("Try", createPersonalChat(mAuth.getCurrentUser().getUid(), adiminUID.get(position),v.getContext()));
+                            }else {
+                                databaseReferenceUser.child("userChats").child(adiminUID.get(position)).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        String key = dataSnapshot.getValue().toString();
+                                        Intent intent = new Intent(holder.itemView.getContext(), ChatActivity.class);
+                                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
+                                        intent.putExtra("type", "forums");
+                                        intent.putExtra("name", admname.get(position));
+                                        intent.putExtra("tab", "personalChats");
+                                        intent.putExtra("key", key);
+                                        holder.itemView.getContext().startActivity(intent);
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
                             }
-                            databaseReferenceUser.child("userChats").child(adiminUID.get(position)).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    String key = dataSnapshot.getValue().toString();
-                                    Intent intent = new Intent(holder.itemView.getContext(), ChatActivity.class);
-                                    intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
-                                    intent.putExtra("type", "forums");
-                                    intent.putExtra("name", admname.get(position));
-                                    intent.putExtra("tab", "personalChats");
-                                    intent.putExtra("key", key);
-                                    holder.itemView.getContext().startActivity(intent);
-
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-
 
                         }
 
@@ -161,7 +161,7 @@ public class ViewAdminsRVAdapter extends RecyclerView.Adapter<ViewAdminsRVAdapte
     }
 
 
-    private String createPersonalChat(final String senderUID, final String receiverUserUUID) {
+    private String createPersonalChat(final String senderUID, final String receiverUserUUID, Context ctx) {
         final DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
         final DatabaseReference databaseReferenceTabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("personalChats");
 
@@ -199,8 +199,8 @@ public class ViewAdminsRVAdapter extends RecyclerView.Adapter<ViewAdminsRVAdapte
 
                 databaseReferenceSender.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        UserItemFormat temp = dataSnapshot.getValue(UserItemFormat.class);
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
+                        UserItemFormat temp = dataSnapshot1.getValue(UserItemFormat.class);
 
 
                         UsersListItemFormat currentUser = new UsersListItemFormat();
@@ -223,6 +223,16 @@ public class ViewAdminsRVAdapter extends RecyclerView.Adapter<ViewAdminsRVAdapte
 
                         databaseReferenceSender.child("userChats").child(receiverUserUUID).setValue(newPush.getKey());
                         databaseReferenceReceiver.child("userChats").child(senderUID).setValue(newPush.getKey());
+
+                        String key = newPush.getKey();
+                        Intent intent = new Intent(ctx, ChatActivity.class);
+                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
+                        intent.putExtra("type", "forums");
+                        intent.putExtra("name", userDetails.getName());
+                        intent.putExtra("tab", "personalChats");
+                        intent.putExtra("key", key);
+                        ctx.startActivity(intent);
+
 
                     }
 
