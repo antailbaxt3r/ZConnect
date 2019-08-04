@@ -137,8 +137,6 @@ public class JoinedForums extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-//                Log.i("ttt",dataSnapshot.getValue(String.class));
-
                 forumCategoriesItemFormats.clear();
 
                 Parcelable recyclerViewState = null;
@@ -186,7 +184,6 @@ public class JoinedForums extends Fragment {
                                 shot.child("personalChatTitle");
                             }
 
-                            //
                             if (!shot.hasChild("totalMessages")) {
                                 temp.setTotalMessages(0);
                             }
@@ -203,7 +200,6 @@ public class JoinedForums extends Fragment {
                                     temp.setForumType(ForumUtilities.VALUE_SHARE_FORUM_STR);
                                     temp.setMessage(message);
                                     temp.setMessageType(messageType);
-
                                 }
                             } else {
                                 if (shot.child("forumType").getValue() == null)
@@ -244,7 +240,13 @@ public class JoinedForums extends Fragment {
                                 lastMessage.setMessageType("message");
                                 lastMessage.setUuid(" ");
                                 temp.setLastMessage(lastMessage);
-                                forumCategoriesItemFormats.add(temp);
+
+                                try {
+                                    if(temp.getName()!=null) {
+                                        forumCategoriesItemFormats.add(temp);
+                                    }
+                                }catch (Exception e){}
+
                             }
 
 //                        }

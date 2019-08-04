@@ -7,7 +7,7 @@ import java.util.Vector;
  */
 
 public class ForumCategoriesItemFormat {
-    private String name;
+    private String name = null;
     private String tabUID;
     private String catUID;
     private ChatItemFormats lastMessage;

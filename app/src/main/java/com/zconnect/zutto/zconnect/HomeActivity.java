@@ -723,10 +723,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
                 prePos = tab.getPosition();
-
-
             }
 
             @Override
