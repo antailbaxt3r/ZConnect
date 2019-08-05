@@ -1300,6 +1300,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     username.setText(usernameText);
                     content.setText(contentText);
 
+
                     if (timeInMillis > 0){
                         TimeUtilities ta = new TimeUtilities(timeInMillis, System.currentTimeMillis());
                         timePostedText = ta.calculateTimeAgo();
@@ -1329,7 +1330,13 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         }
                     }
 
-                    userImage.setImageURI(userImageURL);
+                    if(dataSnapshot.child("desc2").getValue().equals("y")){
+                        userImage.setImageURI("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/Icons%2Fanonymous.jpg?alt=media&token=259d06b2-626d-4df8-b8cc-f525195473ab");
+                    }else {
+
+                        userImage.setImageURI(userImageURL);
+                    }
+
 
                     if (!(postedImageURL.equals("No Image") || postedImageURL.isEmpty())){
                         postedImage.setVisibility(View.VISIBLE);
