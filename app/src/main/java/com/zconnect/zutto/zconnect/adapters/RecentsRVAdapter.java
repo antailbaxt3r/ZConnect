@@ -1139,9 +1139,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.messagesMessage.setLinkTextColor(Color.BLUE);
                     holder.messagesMessage.setTypeface(Typeface.SANS_SERIF);
                     if (recentsItemFormats.get(position).getDesc2().equals("y")) {
-                        holder.name.setText("Anonymous " + recentsItemFormats.get(position).getName());
-                        holder.avatarCircle.setImageResource(R.drawable.question_mark_icon);
-                        holder.avatarCircle.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.darkgreyforavatarbg)));
+                        holder.name.setText("Anonymous");
+                        holder.avatarCircle.setImageURI("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/Icons%2Fanonymous.jpg?alt=media&token=259d06b2-626d-4df8-b8cc-f525195473ab");
                         holder.avatarCircle.setOnClickListener(null);
 //                holder.avatarCircle.setBackground(context.getResources().getDrawable(R.drawable.question_mark_icon));
                     } else {

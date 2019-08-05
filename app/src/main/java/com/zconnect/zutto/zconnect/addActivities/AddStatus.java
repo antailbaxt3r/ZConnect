@@ -238,10 +238,12 @@ public class AddStatus extends BaseActivity {
                             UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
                             if (anonymousCheck.isChecked()){
                                 postedByMap.put("Username", "Anonymous");
+                                postedByMap.put("ImageThumb", "https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/Icons%2Fanonymous.jpg?alt=media&token=259d06b2-626d-4df8-b8cc-f525195473ab");
                             }else {
                                 postedByMap.put("Username", user.getUsername());
+                                postedByMap.put("ImageThumb", user.getImageURLThumbnail());
                             }
-                            postedByMap.put("ImageThumb", user.getImageURLThumbnail());
+
 
                             taskMap.put("PostedBy", postedByMap);
 
