@@ -986,6 +986,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 navHeaderImageUrl = dataSnapshot.child("imageURL").getValue(String.class);
+                String _username = dataSnapshot.getValue(UserItemFormat.class).getUsername();
+                if(_username!=null || !_username.isEmpty())
+                    navHeaderUserNameTv.setText(dataSnapshot.getValue(UserItemFormat.class).getUsername());
+                else
+                    navHeaderUserNameTv.setText("ZConnect");
                 if(navHeaderImageUrl!= null){
                     navHeaderImage = findViewById(R.id.iv_z_connect_logo_nav_header1);
                     try {
@@ -1133,7 +1138,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             editProfileItem.setEnabled(true);
             editProfileItem.setVisible(true);
 
-            navHeaderUserNameTv.setText(username != null ? username : "ZConnect");
+//            navHeaderUserNameTv.setText(username != null ? username : "ZConnect");
 
             if (!defaultPrefs.getBoolean("isReturningUser", false)) {
                 Intent tutIntent = new Intent(HomeActivity.this, TutorialActivity.class);
