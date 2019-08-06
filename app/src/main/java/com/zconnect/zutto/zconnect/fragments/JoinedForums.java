@@ -231,7 +231,11 @@ public class JoinedForums extends Fragment {
 
                                     temp.getLastMessage().setTimeDate(1388534400);
                                 }
-                                forumCategoriesItemFormats.add(temp);
+                                try {
+                                    if(temp.getName()!=null) {
+                                        forumCategoriesItemFormats.add(temp);
+                                    }
+                                }catch (Exception e){}
                             } else {
                                 ChatItemFormats lastMessage = new ChatItemFormats();
                                 lastMessage.setMessage(" ");
