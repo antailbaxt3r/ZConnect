@@ -1,6 +1,6 @@
 # ZConnect_v2 Android coding standards
 
-##Code
+## Code
 
 #### Firebsae Related
 Item Formats (Model classes), Adapters, View Holders must be located in their respective folders. Refer to an exisitng file to know the coding style of each.
@@ -11,7 +11,7 @@ Code should not have any trailing whitespace to avoid creating unnecessary diff 
 #### Imports
 Please setup your IDE to remove all unused imports as a save action.
 
-##XML
+## XML
 
 #### Structure
 XML tags should be ordered as follows: 'xmlns' first, then id, then layout_width and layout_height then alphabetically. 
