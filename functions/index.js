@@ -649,7 +649,6 @@ exports.syncCabForumsWithCabChats = functions.database.ref('communities/{communi
           return console.log("Already synced this message: ", change.after.child('message').val());
         }
         return cabChatRef.child(messageID).set(change.after.val());
->>>>>>> anshuman-test
     });
   });
 });
@@ -677,6 +676,5 @@ exports.createCommunity = functions.database.ref('createCommunity/{communityID}'
   const newCommunityInfoRef = snanpshot.ref.root.child(`communitiesInfo/${communityID}`);
   await snanpshot.ref.root.child('communitiesInfo/templateNew').once('value', templateSnapshot => {
     newCommunityInfoRef.set(templateSnapshot.val());
->>>>>>> anshuman-test
   });
 });
