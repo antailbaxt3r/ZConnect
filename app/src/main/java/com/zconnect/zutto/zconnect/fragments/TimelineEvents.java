@@ -1,17 +1,24 @@
 package com.zconnect.zutto.zconnect.fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,7 +41,9 @@ public class TimelineEvents extends Fragment {
     private EventsAdapter eventsAdapter;
     private Vector<Event> eventsVector = new Vector<Event>();
     private ValueEventListener mListener;
+    private RelativeLayout relativeLayout;
     private View lineView;
+    private ShimmerFrameLayout shimmerFrameLayout;
     private TextView noevents;
     private FloatingActionButton fab;
 
@@ -103,12 +112,30 @@ public class TimelineEvents extends Fragment {
         queryRef.keepSynced(true);
 
         noevents = (TextView) view.findViewById(R.id.noevents);
+        relativeLayout = view.findViewById(R.id.relativeLayoutTimeline);
+        shimmerFrameLayout = view.findViewById(R.id.shimmer_view_container_timeline_events);
         lineView = (View) view.findViewById(R.id.line_view);
         fab = (FloatingActionButton) view.findViewById(R.id.fab_timeline_events);
+        mEventList = (RecyclerView) view.findViewById(R.id.eventList);
+
+        shimmerFrameLayout.setVisibility(View.VISIBLE);
+        shimmerFrameLayout.startShimmerAnimation();
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getContext().startActivity(new Intent(getContext(), AddEvent.class));
+                if (!isNetworkAvailable(view.getContext())) {
+                    Snackbar snack = Snackbar.make(fab, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimaryDark));
+                    snack.show();
+                } else {
+
+
+                    getContext().startActivity(new Intent(getContext(), AddEvent.class));
+
+                }
             }
         });
 
@@ -139,6 +166,11 @@ public class TimelineEvents extends Fragment {
                     noevents.setVisibility(View.VISIBLE);
                     lineView.setVisibility(View.GONE);
                 }
+
+                mEventList.setVisibility(View.VISIBLE);
+                relativeLayout.setVisibility(View.VISIBLE);
+                shimmerFrameLayout.stopShimmerAnimation();
+                shimmerFrameLayout.setVisibility(View.GONE);
             }
 
             @Override
@@ -147,7 +179,7 @@ public class TimelineEvents extends Fragment {
             }
         };
 
-        mEventList = (RecyclerView) view.findViewById(R.id.eventList);
+
         mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(mlinearmanager);
 
@@ -164,7 +196,7 @@ public class TimelineEvents extends Fragment {
     public void onStart() {
         super.onStart();
 
-        queryRef.addValueEventListener(mListener);
+        queryRef.addListenerForSingleValueEvent(mListener);
 
 //        FirebaseRecyclerAdapter<Event, EventViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Event, EventViewHolder>(
 //                Event.class,
@@ -507,4 +539,9 @@ public class TimelineEvents extends Fragment {
 //            eventNumLit.setTypeface(customFont);
 //        }
 //    }
+
+    public boolean isNetworkAvailable(final Context context) {
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager != null && connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+    }
 }

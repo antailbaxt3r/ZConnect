@@ -26,6 +26,7 @@ public class NotificationIdentifierUtilities {
 
     //Orders
     public static final String KEY_NOTIFICATION_ORDER_REACHED= "orderReached";
+    public static final String KEY_NOTIFICATION_POOL_STARTED= "orderPoolStarted";
 
     public static final String KEY_NOTIFICATION_REQUEST_CALL = "RequestCall";
     public static final String KEY_NOTIFICATION_NEW_USER_ACCEPT = "NewUserAccept";
@@ -33,6 +34,8 @@ public class NotificationIdentifierUtilities {
 
     public static final String KEY_NOTIFICATION_TEXT_URL = "textURL";
     public static final String KEY_NOTIFICATION_IMAGE_URL = "imageURL";
+    public static final String KEY_NOTIFICATION_IMAGE = "image";
+    public static final String KEY_NOTIFICATION_TEXT = "text";
     public static final String KEY_NOTIFICATION_CACHE = "cacheRemove";
 
     public static final String KEY_NOTIFICATION_FORUM_ADD_FREQUENCY_STR = "AddForum";
@@ -43,5 +46,10 @@ public class NotificationIdentifierUtilities {
     public static final String KEY_NOTIFICATION_LINKS_ADD_FREQUENCY_STR = "AddLinks";
 
     public static final String KEY_NOTIFICATION_STATUS_LIKED = "StatusLiked";
+
+
+    //scope of in-app notif
+    public static final String KEY_GLOBAL = "global";
+    public static final String KEY_PERSONAL = "personal";
 
 }

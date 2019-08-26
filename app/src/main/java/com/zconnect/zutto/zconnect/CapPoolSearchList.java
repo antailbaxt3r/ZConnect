@@ -1,10 +1,12 @@
 package com.zconnect.zutto.zconnect;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,8 +19,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -65,7 +69,7 @@ public class CapPoolSearchList extends BaseActivity {
 
     Context mcontext;
 
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
+        private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
     private FirebaseAuth mUser;
 
     @Override
@@ -73,7 +77,7 @@ public class CapPoolSearchList extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_pool_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -103,40 +107,57 @@ public class CapPoolSearchList extends BaseActivity {
             time_to = getIntent().getStringExtra("time_to");
             time_from = getIntent().getStringExtra("time_from");
 
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            Log.d("FATAL E",e.toString());
+            finish();
+
+        }
 
         // Fab for creating this
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            Intent intent = new Intent(CapPoolSearchList.this, AddCabPool.class);
-            try {
-                intent.putExtra("source", String.valueOf(source));
-                intent.putExtra("destination", String.valueOf(destination));
-                intent.putExtra("date", String.valueOf(date));
-                intent.putExtra("time_from", String.valueOf(time_from));
-                intent.putExtra("time_to", String.valueOf(time_to));
-            }catch (Exception e){
-                Log.e("TAG","Intent not successfull");
-            }
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
 
-                meta.put("type","fromFab");
+                if (!isNetworkAvailable(view.getContext())) {
+                    Snackbar snack = Snackbar.make(fab, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
+                    snack.show();
+                } else {
+                    Intent intent = new Intent(CapPoolSearchList.this, AddCabPool.class);
+                    try {
+                        intent.putExtra("source", String.valueOf(source));
+                        intent.putExtra("destination", String.valueOf(destination));
+                        intent.putExtra("date", String.valueOf(date));
+                        intent.putExtra("time_from", String.valueOf(time_from));
+                        intent.putExtra("time_to", String.valueOf(time_to));
+                    }catch (Exception e){
+                        Log.e("TAG","Intent not successfull");
+                    }
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta= new HashMap<>();
+
+                    meta.put("type","fromFab");
 
 
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_ADD_OPEN);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_ADD_OPEN);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
 
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
-            startActivity(intent);
-            finish();
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
+                    startActivity(intent);
+                    finish();
+
+
+                }
             }
         });
+
+
 
         //getting present dates and defining format for input and output date
         final Calendar c = Calendar.getInstance();
@@ -206,7 +227,7 @@ public class CapPoolSearchList extends BaseActivity {
                     try {
 
                         CabItemFormat cabItemFormat = shot.getValue(CabItemFormat.class);
-                        if(!cabItemFormat.getDestination().equals(null)&& !cabItemFormat.getSource().equals(null)) {
+                        if(shot.child("destination").getValue() != null && shot.child("source").getValue() !=  null && shot.child("PostedBy").child("ImageThumb").getValue() != null) {
                             cabItemFormatVector.add(cabItemFormat);
                         }
                     }catch (Exception e){}
@@ -263,12 +284,19 @@ public class CapPoolSearchList extends BaseActivity {
                     defaultmsg.setVisibility(View.VISIBLE);
                     poolrv.setVisibility(View.INVISIBLE);
                     progressBar.setVisibility(View.INVISIBLE);
-                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(CapPoolSearchList.this);
-                    // 2. Chain together various setter methods to set the dialog characteristics
-                    builder.setMessage("No Cab pools found. \n Would you like to add one ?");
-
-                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
+                    Dialog noCabPoolsDialog = new Dialog(CapPoolSearchList.this);
+                    noCabPoolsDialog.setContentView(R.layout.new_dialog_box);
+                    noCabPoolsDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    noCabPoolsDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(CapPoolSearchList.this,R.drawable.ic_directions_car_white_24dp));
+                    TextView heading =  noCabPoolsDialog.findViewById(R.id.dialog_box_heading);
+                    heading.setText("No Cab pools found");
+                    TextView body = noCabPoolsDialog.findViewById(R.id.dialog_box_body);
+                    body.setText("Would you like to add one?");
+                    Button addButton = noCabPoolsDialog.findViewById(R.id.dialog_box_positive_button);
+                    addButton.setText("Add");
+                    addButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
                             if (isNetworkAvailable(getApplicationContext())) {
                                 if (name != null && number != null) {
 
@@ -312,26 +340,34 @@ public class CapPoolSearchList extends BaseActivity {
                                 snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                                 snack.show();
                             }
-                        }
-                    });
-                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
+                            noCabPoolsDialog.dismiss();
 
                         }
                     });
-                    android.app.AlertDialog dialog = builder.create();
-                    dialog.setCancelable(false);
-                    dialog.show();
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorHighlight));
+                    Button cancelButton = noCabPoolsDialog.findViewById(R.id.dialog_box_negative_button);
+                    cancelButton.setText("Cancel");
+                    cancelButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                           noCabPoolsDialog.dismiss();
+                        }
+                    });
+                    noCabPoolsDialog.setCancelable(false);
+                    noCabPoolsDialog.show();
+
+
 
                 } else {
                     progressBar.setVisibility(View.INVISIBLE);
                     poolrv.setHasFixedSize(true);
                     poolrv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
                    if(hasTime_from) {
-                       adapter = new CabPoolRVAdapter(mcontext, treeMap_double);
+                       Vector<CabItemFormat> vector = new Vector<>(treeMap_double.values());
+                       adapter = new CabPoolRVAdapter(mcontext, vector);
                    }else{
-                       adapter = new CabPoolRVAdapter(mcontext, treeMap_string,1);
+                       Vector<CabItemFormat> vector = new Vector<>(treeMap_string.values());
+
+                       adapter = new CabPoolRVAdapter(mcontext,vector);
 
                    }
                    poolrv.setAdapter(adapter);

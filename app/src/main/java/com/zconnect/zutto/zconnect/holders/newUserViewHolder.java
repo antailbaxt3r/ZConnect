@@ -64,8 +64,6 @@ public class newUserViewHolder extends RecyclerView.ViewHolder{
                 final DatabaseReference newUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("newUsers").child(UID);
                 newUserReference.child("statusCode").setValue(VerificationUtilities.KEY_APPROVED);
 
-
-
                 DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 user.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -84,6 +82,8 @@ public class newUserViewHolder extends RecyclerView.ViewHolder{
                         NotificationItemFormat newUserAcceptNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_ACCEPT,userItemFormat.getUserUID());
                         newUserAcceptNotification.setCommunityName(communityTitle);
                         newUserAcceptNotification.setItemKey(UID);
+                        newUserAcceptNotification.setUserImage(userItemFormat.getImageURL());
+                        newUserAcceptNotification.setUserName(userItemFormat.getUsername());
 
                         notificationSender.execute(newUserAcceptNotification);
 
@@ -130,7 +130,8 @@ public class newUserViewHolder extends RecyclerView.ViewHolder{
                         NotificationItemFormat newUserRejectNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_REJECT, userItemFormat.getUserUID());
                         newUserRejectNotification.setCommunityName(communityTitle);
                         newUserRejectNotification.setItemKey(UID);
-
+                        newUserRejectNotification.setUserName(userItemFormat.getUsername());
+                        newUserRejectNotification.setUserImage(userItemFormat.getImageURL());
                         notificationSender.execute(newUserRejectNotification);
                     }
 

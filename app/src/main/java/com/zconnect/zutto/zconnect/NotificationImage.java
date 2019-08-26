@@ -47,7 +47,9 @@ import com.zconnect.zutto.zconnect.commonModules.CustomSpinner;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.io.IOException;
 
@@ -79,6 +81,12 @@ public class NotificationImage extends BaseActivity{
 
         mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(mActionBarToolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mActionBarToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        mActionBarToolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+        mActionBarToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
+
 
         if (mActionBarToolbar != null) {
             mActionBarToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -132,17 +140,14 @@ public class NotificationImage extends BaseActivity{
             }
         });
 
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!isNetworkAvailable(getApplicationContext())) {
+        submit.setOnClickListener(view -> {
+            if (!isNetworkAvailable(getApplicationContext())) {
 
-                    Toast toast=Toast.makeText(getApplicationContext(),"No internet connection", Toast.LENGTH_SHORT);
-                    toast.show();
+                Toast toast=Toast.makeText(getApplicationContext(),"No internet connection", Toast.LENGTH_SHORT);
+                toast.show();
 
-                } else {
-                    startPosting();
-                }
+            } else {
+               startPosting();
             }
         });
 
@@ -204,9 +209,6 @@ public class NotificationImage extends BaseActivity{
 
     private void startPosting(){
 
-        mProgress.setMessage("Sending Notification..");
-        mProgress.show();
-
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         assert user != null;
@@ -214,6 +216,8 @@ public class NotificationImage extends BaseActivity{
         mUsername = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
 
         if (!TextUtils.isEmpty(notificationDescription.getText()) && mImageUri != null && !TextUtils.isEmpty(notificationTitle.getText()) && !TextUtils.isEmpty(nottificationURL.getText()) ) {
+            mProgress.setMessage("Sending Notification..");
+            mProgress.show();
             final StorageReference filepath = mStorage.child("NotificationImage").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
             UploadTask uploadTask = filepath.putFile(mImageUri);
             uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -230,7 +234,6 @@ public class NotificationImage extends BaseActivity{
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         final Uri downloadUri = task.getResult();
-
                         NotificationSender notificationSender = new NotificationSender(NotificationImage.this, userId);
                         NotificationItemFormat addImageNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_IMAGE_URL, userId);
                         addImageNotification.setItemMessage(notificationDescription.getText().toString());
@@ -254,7 +257,73 @@ public class NotificationImage extends BaseActivity{
             });
 
 
-        }else {
+        }
+        // Sending a notification without an image
+        else if (!TextUtils.isEmpty(notificationDescription.getText()) && !TextUtils.isEmpty(notificationTitle.getText()) && !TextUtils.isEmpty(nottificationURL.getText()) ) {
+            mProgress.setMessage("Sending Notification..");
+            mProgress.show();
+            NotificationSender notificationSender = new NotificationSender(NotificationImage.this, userId);
+            NotificationItemFormat addImageNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_TEXT_URL, userId);
+            addImageNotification.setItemMessage(notificationDescription.getText().toString());
+            addImageNotification.setItemTitle(notificationTitle.getText().toString());
+            addImageNotification.setItemURL(nottificationURL.getText().toString());
+            notificationSender.execute(addImageNotification);
+            mProgress.dismiss();
+            finish();
+        }
+        else if (!TextUtils.isEmpty(notificationDescription.getText()) && mImageUri != null && !TextUtils.isEmpty(notificationTitle.getText())) {
+            mProgress.setMessage("Sending Notification..");
+            mProgress.show();
+            final StorageReference filepath = mStorage.child("NotificationImage").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
+            UploadTask uploadTask = filepath.putFile(mImageUri);
+            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if(!task.isSuccessful())
+                    {
+                        throw task.getException();
+                    }
+                    return filepath.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        final Uri downloadUri = task.getResult();
+
+                        NotificationSender notificationSender = new NotificationSender(NotificationImage.this, userId);
+                        NotificationItemFormat addImageNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_IMAGE, userId);
+                        addImageNotification.setItemMessage(notificationDescription.getText().toString());
+                        addImageNotification.setItemTitle(notificationTitle.getText().toString());
+                        addImageNotification.setItemImage(downloadUri.toString());
+                        notificationSender.execute(addImageNotification);
+                        Toast.makeText(NotificationImage.this, "Notification Sent", Toast.LENGTH_SHORT).show();
+                        mProgress.dismiss();
+                        finish();
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    mProgress.dismiss();
+                    finish();
+                    Toast.makeText(NotificationImage.this, "Notication Failed, try again", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else if(!TextUtils.isEmpty(notificationDescription.getText()) && !TextUtils.isEmpty(notificationTitle.getText()))
+        {
+            mProgress.setMessage("Sending Notification..");
+            mProgress.show();
+            NotificationSender notificationSender = new NotificationSender(NotificationImage.this, userId);
+            NotificationItemFormat addImageNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_TEXT, userId);
+            addImageNotification.setItemMessage(notificationDescription.getText().toString());
+            addImageNotification.setItemTitle(notificationTitle.getText().toString());
+            notificationSender.execute(addImageNotification);
+            mProgress.dismiss();
+            finish();
+        }
+        else {
             Snackbar snack = Snackbar.make(mAddImage, "Fields are empty", Snackbar.LENGTH_LONG);
             TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
             snackBarText.setTextColor(Color.WHITE);

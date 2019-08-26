@@ -9,11 +9,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
@@ -26,11 +28,11 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
-import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -45,6 +47,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.R;
@@ -53,6 +56,7 @@ import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.commonModules.NumberNotificationForFeatures;
+import com.zconnect.zutto.zconnect.commonModules.SquareImageView;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
@@ -75,15 +79,16 @@ import static com.zconnect.zutto.zconnect.utilities.RequestCodes.GALLERY_REQUEST
 
 public class AddNotices extends BaseActivity {
 
-    ImageButton mAddPhoto;
-    TextView mName;
-    String key;
-    Intent galleryIntent;
-    IntentHandle intentHandle;
+    private SimpleDraweeView mAddPhoto;
+    private RelativeLayout mAddPhotoLayout;
+    private TextView mName;
+    private String key;
+    private Intent galleryIntent;
+    private IntentHandle intentHandle;
     private StorageReference mStorage;
     private DatabaseReference mDatabase,mPostedByDetails;
     private ProgressDialog mProgress;
-    Button submit;
+    private Button submit;
     private Long postTimeMillis;
     private DatabaseReference mUsername;
     private FirebaseAuth mAuth;
@@ -99,7 +104,7 @@ public class AddNotices extends BaseActivity {
 
         mProgress = new ProgressDialog(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
 
         if (toolbar != null) {
@@ -123,8 +128,8 @@ public class AddNotices extends BaseActivity {
 //            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-
-        mAddPhoto = (ImageButton)findViewById(R.id.imageButton);
+        mAddPhotoLayout = findViewById(R.id.image_layout);
+        mAddPhoto = findViewById(R.id.imageButton);
         mName=(TextView)findViewById(R.id.name);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("notices").child("activeNotices");
         submit=(Button)findViewById(R.id.submit);
@@ -136,7 +141,7 @@ public class AddNotices extends BaseActivity {
 
         intentHandle = new IntentHandle();
 
-        mAddPhoto.setOnClickListener(new View.OnClickListener() {
+        mAddPhotoLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (ContextCompat.checkSelfPermission(
@@ -218,7 +223,8 @@ public class AddNotices extends BaseActivity {
 
                     mImageUri = Uri.parse(path);
                     mImageUriSmall = Uri.parse(pathSmall);
-                    mAddPhoto.setImageURI(mImageUri);
+
+                    Picasso.with(this).load(mImageUri).into(mAddPhoto);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -243,7 +249,7 @@ public class AddNotices extends BaseActivity {
     private void startPosting() {
 
         mProgress.setMessage("Posting Notice..");
-        mProgress.show();
+
         final String noticeNameValue = mName.getText().toString().trim();
 
         mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -256,6 +262,7 @@ public class AddNotices extends BaseActivity {
 
 
         if ( !TextUtils.isEmpty(noticeNameValue) &&  mImageUri != null && mImageUriSmall !=null) {
+            mProgress.show();
             final StorageReference filepath = mStorage.child("NoticesImages").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
             UploadTask uploadTask = filepath.putFile(mImageUri);
             uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -392,6 +399,13 @@ public class AddNotices extends BaseActivity {
                     }
                 }
             });
+        }else{
+            RelativeLayout relativeLayout = findViewById(R.id.addNoticeLayout);
+            Snackbar snack = (Snackbar) Snackbar.make(relativeLayout, "Fields are empty. Can't Add Notice", Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
+            snack.show();
         }
     }
 

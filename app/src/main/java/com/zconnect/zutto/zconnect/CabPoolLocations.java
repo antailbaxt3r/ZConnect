@@ -36,6 +36,8 @@ import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 import java.util.HashMap;
 import java.util.Vector;
 
+import static com.zconnect.zutto.zconnect.R.drawable.ic_arrow_back_black_24dp;
+
 public class CabPoolLocations extends BaseActivity {
     private DatabaseReference databaseReferenceCabPool;
     private DatabaseReference databaseReferenceCabPool2;
@@ -54,8 +56,16 @@ public class CabPoolLocations extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_cab_pool_locations);
-        toolbar=(Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(ic_arrow_back_black_24dp);
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
+
+
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -143,6 +153,10 @@ public class CabPoolLocations extends BaseActivity {
                     builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            if(input.getText().toString().trim().equals("")){
+                                Toast.makeText(CabPoolLocations.this,"Location can not be empty!",Toast.LENGTH_LONG);
+                                return;
+                            }
                             addLocation(input.getText().toString());
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
                             HashMap<String, String> meta= new HashMap<>();
@@ -183,6 +197,7 @@ public class CabPoolLocations extends BaseActivity {
                     input.setInputType(InputType.TYPE_CLASS_TEXT);
                     builder.setView(input);
 
+                    builder.setTitle("Request Location");
                     builder.setPositiveButton("Request", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -287,6 +302,8 @@ public class CabPoolLocations extends BaseActivity {
 
             }
         });
+
+        Toast.makeText(this, "Location has been added!", Toast.LENGTH_SHORT).show();
     }
 
     public void requestLocation(String location){
@@ -314,6 +331,8 @@ public class CabPoolLocations extends BaseActivity {
 
             }
         });
+
+        Toast.makeText(this, "Your request has been sent to the admins. The location will be added soon.", Toast.LENGTH_SHORT).show();
     }
 
 }

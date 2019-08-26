@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -18,9 +19,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -60,11 +61,11 @@ public class Recents extends Fragment {
 
     private SwipeRefreshLayout swipeContainer;
 
-    private DatabaseReference homeDbRef,userReference,communityFeaturesRef;
+    private DatabaseReference homeDbRef, userReference, communityFeaturesRef;
     Query queryRef;
-    private ValueEventListener homeListener,userListener,communityFeaturesListener;
-    @BindView(R.id.recent_progress)
-    ProgressBar progressBar;
+    private ValueEventListener homeListener, userListener, communityFeaturesListener;
+    @BindView(R.id.shimmer_view_container_recents)
+    ShimmerFrameLayout shimmerFrameLayout;
 
     RecentsItemFormat addStatus = new RecentsItemFormat();
     RecentsItemFormat features = new RecentsItemFormat();
@@ -84,9 +85,11 @@ public class Recents extends Fragment {
     public void setOnHomeIconListener(Activity activity) {
         mCallback = (OnHomeIconListener) activity;
     }
+
     public interface OnHomeIconListener {
         public void getLayoutManager(LinearLayoutManager linearLayoutManager);
     }
+
     public Recents() {
         // Required empty public constructor
     }
@@ -122,13 +125,16 @@ public class Recents extends Fragment {
         userReference.keepSynced(true);
         //Keep databaseReference in sync even without needing to call valueEventListener
         homeDbRef.keepSynced(true);
-        queryRef = homeDbRef.limitToLast(100);
+        queryRef = homeDbRef.limitToLast(75);
         queryRef.keepSynced(true);
 
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshContainer);
-        swipeContainer.setColorSchemeResources(R.color.colorPrimary, R.color.colorHighlight);
+        swipeContainer.setColorSchemeResources(R.color.black, R.color.deepPurple500, R.color.colorHighlight);
 
-        progressBar.setVisibility(VISIBLE);
+        shimmerFrameLayout.startShimmerAnimation();
+        shimmerFrameLayout.setVisibility(VISIBLE);
+        getActivity().findViewById(R.id.fab_cat_infone).setVisibility(View.GONE);
+
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -138,6 +144,7 @@ public class Recents extends Fragment {
                     public void run() {
                         // cancel the Visual indication of a refresh
                         swipeContainer.setRefreshing(false);
+
                         queryRef.addListenerForSingleValueEvent(homeListener);
                         userReference.addListenerForSingleValueEvent(userListener);
                         communityFeaturesRef.addListenerForSingleValueEvent(communityFeaturesListener);
@@ -164,7 +171,7 @@ public class Recents extends Fragment {
                     tempUser = new RecentsItemFormat();
                     tempUser = shot.getValue(RecentsItemFormat.class);
                     tempUser.setPostID(shot.getKey());
-                    if(shot.hasChild("feature")) {
+                    if (shot.hasChild("feature")) {
                         if (shot.hasChild("recentType")) {
                             normalPostsUsers.add(tempUser);
                         } else {
@@ -184,7 +191,7 @@ public class Recents extends Fragment {
                 Collections.sort(normalPosts, new Comparator<RecentsItemFormat>() {
                     @Override
                     public int compare(RecentsItemFormat o1, RecentsItemFormat o2) {
-                        return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis()) ;
+                        return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis());
                     }
                 });
                 recentsItemFormats.addAll(normalPosts);
@@ -192,7 +199,22 @@ public class Recents extends Fragment {
                 addStatus.setRecentType(RecentTypeUtilities.KEY_RECENT_ADD_STATUS_STR);
                 features.setRecentType(RecentTypeUtilities.KEY_RECENT_FEATURES_STR);
                 adapter.notifyDataSetChanged();
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayout.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmerAnimation();
+                if(getActivity() instanceof  HomeActivity && getContext() != null){
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                    boolean preferencesBoolean = preferences.getBoolean("isFirstRun", true);
+                    if(preferencesBoolean)
+                    {
+                        ((HomeActivity)getActivity()).showAppTour();
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putBoolean("isFirstRun",false);
+                        editor.apply();
+                    }
+
+                }
+
+
 
 
             }
@@ -208,7 +230,7 @@ public class Recents extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 communityFeatures = dataSnapshot.getValue(CommunityFeatures.class);
 
-                adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity() ,communityFeatures, productLinearLayoutManager, recyclerView);
+                adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity(), communityFeatures, productLinearLayoutManager, recyclerView);
                 recyclerView.setAdapter(adapter);
 
             }
@@ -231,7 +253,7 @@ public class Recents extends Fragment {
                     tempUser = new RecentsItemFormat();
                     tempUser = shot.getValue(RecentsItemFormat.class);
                     tempUser.setPostID(shot.getKey());
-                    if(shot.hasChild("feature")) {
+                    if (shot.hasChild("feature")) {
                         if (shot.hasChild("recentType")) {
                             normalPostsHome.add(tempUser);
                         } else {
@@ -250,21 +272,23 @@ public class Recents extends Fragment {
                 Collections.sort(normalPosts, new Comparator<RecentsItemFormat>() {
                     @Override
                     public int compare(RecentsItemFormat o1, RecentsItemFormat o2) {
-                        return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis()) ;
+                        return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis());
                     }
                 });
                 recentsItemFormats.addAll(normalPosts);
                 addStatus.setRecentType(RecentTypeUtilities.KEY_RECENT_ADD_STATUS_STR);
                 features.setRecentType(RecentTypeUtilities.KEY_RECENT_FEATURES_STR);
                 adapter.notifyDataSetChanged();
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayout.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmerAnimation();
 
 
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayout.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmerAnimation();
             }
         };
 
@@ -282,7 +306,7 @@ public class Recents extends Fragment {
 //                productLinearLayoutManager.scrollToPositionWithOffset(0,0);
 //            }
 //        });
-        adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity() ,communityFeatures, productLinearLayoutManager, recyclerView);
+        adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity(), communityFeatures, productLinearLayoutManager, recyclerView);
         recyclerView.setAdapter(adapter);
         communityFeaturesRef.addListenerForSingleValueEvent(communityFeaturesListener);
 

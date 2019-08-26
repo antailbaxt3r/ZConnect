@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -55,6 +56,7 @@ import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -70,6 +72,15 @@ public class LogoFlashActivity extends BaseActivity {
     private View bgColor;
     boolean flag = false;
     private String mReferrerUid;
+            DatabaseReference communitiesInfoRef = FirebaseDatabase.getInstance().getReference().child("communitiesInfo");
+
+    String[] PERMISSIONS = {
+            android.Manifest.permission.READ_EXTERNAL_STORAGE,
+            android.Manifest.permission.CALL_PHONE,
+            android.Manifest.permission.READ_CONTACTS,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+    };
+
 
 
     @Override
@@ -90,36 +101,34 @@ public class LogoFlashActivity extends BaseActivity {
         communityReference = communitySP.getString("communityReference", null);
 
         if (communityReference != null) {
-            /*temporary = FirebaseDatabase.getInstance().getReference().child("userCommunities");
-            temporary2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
 
-            temporary2.addListenerForSingleValueEvent(new ValueEventListener() {
+            DatabaseReference duplicateCommunity = FirebaseDatabase.getInstance().getReference().child("communities").child("newTest");
+
+            duplicateCommunity.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot shot: dataSnapshot.getChildren())
-                    {
-                        if (shot.hasChild("userType"))
-                        {
-                            if ((shot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_VERIFIED)) || (shot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))) {
-                                try {
-                                    temporary.child(shot.child("userUID").getValue().toString()).child("communitiesJoined").child(communityReference).setValue(communityReference);
-
-                                }
-                                catch (Exception e){}
-                            }
-                            else
-                                continue;
-                        }
-                        else
-                            continue;
-                    }
+                    FirebaseDatabase.getInstance().getReference().child("communities").child("template").setValue(dataSnapshot.getValue());
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
-            });*/
+            });
+
+            DatabaseReference duplicateCommunityInfo = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child("newTest");
+
+            duplicateCommunityInfo.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child("template").setValue(dataSnapshot.getValue());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
 
 
             mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui/logoFlash");
@@ -172,6 +181,9 @@ public class LogoFlashActivity extends BaseActivity {
                                     if(path.equals("/openevent/"))
                                     {
                                         Log.d(TAG,"abc1 " + deepLink.getQueryParameter("eventID"));
+                                        Intent i = new Intent(LogoFlashActivity.this, HomeActivity.class);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                        startActivity(i);
                                         Intent intent = new Intent(LogoFlashActivity.this, OpenEventDetail.class);
                                         intent.putExtra("id", deepLink.getQueryParameter("eventID"));
                                         intent.putExtra("flag", true);
@@ -181,16 +193,25 @@ public class LogoFlashActivity extends BaseActivity {
                                     else if(path.equals("/cabpooling/"))
                                     {
                                         Log.d(TAG,"abc1 " + deepLink.getQueryParameter("key"));
-                                        Intent intent = new Intent(LogoFlashActivity.this, CabPoolAll.class);
+                                        Intent i = new Intent(LogoFlashActivity.this, HomeActivity.class);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                        startActivity(i);
+
+                                        Intent intent = new Intent(LogoFlashActivity.this, CabPoolListOfPeople.class);
                                         intent.putExtra("key", deepLink.getQueryParameter("key"));
                                         startActivity(intent);
                                         flag = true;
                                     }
                                     else if(path.equals("/openproduct/"))
                                     {
+                                        Intent i = new Intent(LogoFlashActivity.this, HomeActivity.class);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                        startActivity(i);
+
                                         Log.d(TAG,"abc1 " + deepLink.getQueryParameter("key"));
                                         Intent intent = new Intent(LogoFlashActivity.this, OpenProductDetails.class);
                                         intent.putExtra("key", deepLink.getQueryParameter("key"));
+                                        intent.putExtra("type", deepLink.getQueryParameter("type"));
                                         startActivity(intent);
                                         flag = true;
                                     }
@@ -278,9 +299,21 @@ public class LogoFlashActivity extends BaseActivity {
             @Override
             public void run() {
 
-                if (checkPermission()) {
-                    // Do not wait so that user doesn't realise this is a new launch.
-                    Log.d(TAG, " goint to home act 1");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (arePermissionsEnabled()) {
+                        // Do not wait so that user doesn't realise this is a new launch.
+                        Log.d(TAG, " goint to home act 1");
+                        Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
+                        intent.putExtra("isReferred", mReferrerUid!=null);
+                        intent.putExtra("referredBy", mReferrerUid);
+                        Log.d(TAG,"goint to home act 1 " + mReferrerUid);
+                        if(!flag)
+                            startActivity(intent);
+                        finish();
+                    }else {
+                        requestMultiplePermissions();
+                    }
+                }else {
                     Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
                     intent.putExtra("isReferred", mReferrerUid!=null);
                     intent.putExtra("referredBy", mReferrerUid);
@@ -408,21 +441,38 @@ public class LogoFlashActivity extends BaseActivity {
         }
     }
 
-    //script to transfers users from 'Users1' with type 'admin' to admin node
-//    private void createadminnode() {
-//        if(communityReference!=null) {
-//            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
-//            final DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("admins");
-//            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                    for (DataSnapshot childsnap : dataSnapshot.getChildren()) {
-//                        if (childsnap.hasChild("userType") && childsnap.child("userType").getValue().toString().equals("admin")) {
-//                            databaseReference1.child(childsnap.getKey()).child("UID").setValue(childsnap.getKey());
-//                            databaseReference1.child(childsnap.getKey()).child("Username").setValue(childsnap.child("username").getValue());
-//                            databaseReference1.child(childsnap.getKey()).child("ImageThumb").setValue(childsnap.child("imageURL").getValue());
-//                        }
-//                    }
+//    private void userCommunitiesScript() {
+//        temporary = FirebaseDatabase.getInstance().getReference().child("userCommunities");
+//        communitiesInfoRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot communitiesInfoSnapshot) {
+//                for(DataSnapshot communitySnapshot : communitiesInfoSnapshot.getChildren())
+//                {
+//                    String communityID = communitySnapshot.getKey();
+//                    Log.d("COMMMMMMM", communityID);
+//                    temporary2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityID).child("Users1");
+//                    temporary2.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                            for (DataSnapshot shot: dataSnapshot.getChildren())
+//                            {
+//                                if (shot.hasChild("userType"))
+//                                {
+//                                    if ((shot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_VERIFIED)) || (shot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))) {
+//                                        try {
+//                                            temporary.child(shot.getKey()).child("communitiesJoined").child(communityID).setValue(communityID);
+//
+//                                        }
+//                                        catch (Exception e){
+//                                            e.printStackTrace();
+//                                        }
+//                                    }
+//                                    else
+//                                        continue;
+//                                }
+//                                else
+//                                    continue;
+//                            }
 //                }
 //
 //                @Override
@@ -430,7 +480,119 @@ public class LogoFlashActivity extends BaseActivity {
 //
 //                }
 //            });
-//        }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
+
+//    private void createUserForumsForOldForums() {
+//        communitiesInfoRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot communitiesInfoSS) {
+//                for(DataSnapshot communitySS : communitiesInfoSS.getChildren())
+//                {
+//                    String communityID = communitySS.getKey();
+//                    DatabaseReference forumTabCatRef = communitiesInfoRef.getRoot().child("communities").child(communityID).child("features/forums/tabsCategories");
+//                    DatabaseReference userForumsRef = forumTabCatRef.getParent().child("userForums");
+//                    userForumsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot userForumSS) {
+//                            forumTabCatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(@NonNull DataSnapshot forumTabsSnapshot) {
+//                                    for(DataSnapshot tabSnapshot : forumTabsSnapshot.getChildren())
+//                                    {
+//                                        for(DataSnapshot forumSnapshot : tabSnapshot.getChildren())
+//                                        {
+////                                            HashMap<String, Object> forumObj = forumSnapshot.getValue(HashMap.class);
+////                                            Log.d("UUUUUUUUU", forumObj.get("users").toString()+"");
+////                                            forumObj.remove("users");
+////                                            Log.d("UUUUUUUUU", forumObj.get("users").toString()+"");
+//                                            for(DataSnapshot userSS : forumSnapshot.child("users").getChildren())
+//                                            {
+//                                                Log.d("UUUUUUUUU", userSS.getKey());
+//                                                Log.d("UUUUUUUUU", userForumSS.child(userSS.getKey()).child("joinedForums").hasChild(forumSnapshot.getKey())+"");
+//                                                if(!userForumSS.child(userSS.getKey()).child("joinedForums").hasChild(forumSnapshot.getKey()))
+//                                                {
+//                                                    Log.d("UUUUUUUUU", userForumSS.getKey() + "");
+//                                                }
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                                }
+//                            });
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                        }
+//                    });
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
+
+    //script to transfers users from 'Users1' with type 'admin' to admin node
+//    private void createadminnode() {
+//        communitiesInfoRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot communitiesInfoSS) {
+//                for(DataSnapshot communitySS : communitiesInfoSS.getChildren())
+//                {
+//                    String communityID = communitySS.getKey();
+//                    Log.d("COMMMMMMM", communityID);
+//                    if(communityID!=null) {
+//                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityID).child("Users1");
+//                        final DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityID).child("admins");
+//                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                for (DataSnapshot childsnap : dataSnapshot.getChildren()) {
+//                                    try{
+//                                        if (childsnap.hasChild("userType") && childsnap.child("userType").getValue().toString().equals("admin")) {
+//                                            databaseReference1.child(childsnap.getKey()).child("UID").setValue(childsnap.getKey());
+//                                            databaseReference1.child(childsnap.getKey()).child("Username").setValue(childsnap.child("username").getValue());
+//                                            databaseReference1.child(childsnap.getKey()).child("ImageThumb").setValue(childsnap.child("imageURL").getValue());
+//                                        }
+//                                    }
+//                                    catch (Exception e)
+//                                    {
+//                                        Log.d("COMMMMMM", "ERROR : "+childsnap.getKey() + " " + communityID);
+//                                        e.printStackTrace();
+//                                    }
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                            }
+//                        });
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
 //    }
 
 
@@ -692,46 +854,93 @@ public class LogoFlashActivity extends BaseActivity {
 //    }
 
 
-
-    public boolean checkPermission() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
-                || ContextCompat.checkSelfPermission(LogoFlashActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            return true;
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private boolean arePermissionsEnabled(){
+        for(String permission : PERMISSIONS){
+            if(checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED)
+                return false;
         }
-        if (ActivityCompat.shouldShowRequestPermissionRationale(LogoFlashActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(LogoFlashActivity.this);
-            alertBuilder.setCancelable(true);
-            alertBuilder.setTitle("Permission necessary");
-            alertBuilder.setMessage("Permission to read storage is required .");
-            alertBuilder.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
-                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                public void onClick(DialogInterface dialog, int which) {
-                    ActivityCompat.requestPermissions(LogoFlashActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 7);
-                }
-            });
-            AlertDialog alert = alertBuilder.create();
-            alert.show();
-        } else {
-            ActivityCompat.requestPermissions(LogoFlashActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, RC_PERM_REQ_EXT_STORAGE);
-        }
-        return false;
+        return true;
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == RC_PERM_REQ_EXT_STORAGE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
-                Log.d(TAG,"goint to home act 2");
-                intent.putExtra("isReferred", mReferrerUid!=null);
-                intent.putExtra("referredBy", mReferrerUid);
-                startActivity(intent);
-                finish();
-            } else {
-                Toast.makeText(this, "Permission Denied !, Retrying.", Toast.LENGTH_SHORT).show();
-                checkPermission();
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestMultiplePermissions(){
+        List<String> remainingPermissions = new ArrayList<>();
+        for (String permission : PERMISSIONS) {
+            if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                remainingPermissions.add(permission);
             }
         }
+        requestPermissions(remainingPermissions.toArray(new String[remainingPermissions.size()]), 101);
     }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == 101){
+            for(int i=0;i<grantResults.length;i++){
+                if(grantResults[i] != PackageManager.PERMISSION_GRANTED){
+                    if(shouldShowRequestPermissionRationale(permissions[i])){
+                        new AlertDialog.Builder(this)
+                                .setMessage("The application needs all the permission")
+                                .setPositiveButton("Allow", (dialog, which) -> requestMultiplePermissions())
+                                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                                .create()
+                                .show();
+                    }
+                    return;
+                }
+            }
+            Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
+            intent.putExtra("isReferred", mReferrerUid!=null);
+            intent.putExtra("referredBy", mReferrerUid);
+            startActivity(intent);
+            finish();
+        }
+    }
+//
+//
+//    public boolean checkPermission() {
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+//                || ContextCompat.checkSelfPermission(LogoFlashActivity.this, PERMISSIONS) == PackageManager.PERMISSION_GRANTED) {
+//            return true;
+//        }
+//        if (ActivityCompat.shouldShowRequestPermissionRationale(LogoFlashActivity.this, PERMISSIONS)) {
+//            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(LogoFlashActivity.this);
+//            alertBuilder.setCancelable(true);
+//            alertBuilder.setTitle("Permission necessary");
+//            alertBuilder.setMessage("Permission to read storage is required .");
+//            alertBuilder.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
+//                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+//                public void onClick(DialogInterface dialog, int which) {
+//                    ActivityCompat.requestPermissions(LogoFlashActivity.this, PERMISSIONS, 7);
+//                }
+//            });
+//            AlertDialog alert = alertBuilder.create();
+//            alert.show();
+//        } else {
+//            ActivityCompat.requestPermissions(LogoFlashActivity.this, PERMISSIONS, RC_PERM_REQ_EXT_STORAGE);
+//        }
+//        return false;
+//    }
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        if (requestCode == RC_PERM_REQ_EXT_STORAGE) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
+//                Log.d(TAG,"goint to home act 2");
+//                intent.putExtra("isReferred", mReferrerUid!=null);
+//                intent.putExtra("referredBy", mReferrerUid);
+//                startActivity(intent);
+//                finish();
+//            } else {
+//                Toast.makeText(this, "Permission Denied !, Retrying.", Toast.LENGTH_SHORT).show();
+//                checkPermission();
+//            }
+//        }
+//    }
 }
 

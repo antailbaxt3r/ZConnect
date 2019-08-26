@@ -5,26 +5,31 @@
         <item
             android:title="Edit Profile"
             android:id="@+id/edit_profile"
-            android:icon="@drawable/ic_person_grey_24dp"
+            android:icon="@drawable/ic_outline_person_purple"
             android:name="Edit Profile" />
     </group>
 
 
     <group android:id="@+id/group">
         <item
+            android:title="My Internships"
+            android:id="@+id/MyInternships"
+            android:icon="@drawable/ic_outline_work_outline_purple"
+            android:name="My Internships"/>
+        <item
             android:title="My Orders"
             android:id="@+id/MyOrders"
-            android:icon="@drawable/ic_shopping_basket_grey_24dp"
+            android:icon="@drawable/ic_outline_shopping_basket_purple"
             android:name="My Orders"/>
         <item
             android:title="My Products"
             android:id="@+id/MyProducts"
-            android:icon="@drawable/ic_local_mall_grey_24dp"
+            android:icon="@drawable/ic_outline_local_mall_purple"
             android:name="My Products" />
         <item
             android:title="My Rides"
             android:id="@+id/MyRides"
-            android:icon="@drawable/ic_local_taxi_grey_24dp"
+            android:icon="@drawable/ic_outline_taxi_purple"
             android:name="My Rides" />
         <!--<item-->
             <!--android:title="My Community Map"-->
@@ -32,9 +37,9 @@
             <!--android:icon="@drawable/ic_place_red"-->
             <!--android:name="Campus Map" />-->
         <item
-            android:title="My Notifications"
+            android:title="Notifications Settings"
             android:id="@+id/Noti_Settings"
-            android:icon="@drawable/ic_notifications_grey_24dp"
+            android:icon="@drawable/ic_notifications_outline_24dp"
             android:name="Notifications"/>
     </group>
     <group
@@ -48,7 +53,7 @@
         <item
             android:id="@+id/admins"
             android:name="View Admins"
-            android:icon="@drawable/baseline_people_24"
+            android:icon="@drawable/ic_outline_people_purple"
             android:title="View Admins" />
         <item
             android:title="About Us"
@@ -56,14 +61,9 @@
             android:icon="@mipmap/ic_zc_material_icon"
             android:name="About Us" />
         <item
-            android:title="Invite friends"
-            android:id="@+id/share"
-            android:icon="@drawable/ic_share_grey_24dp"
-            android:name="Share" />
-        <item
             android:title="Referral Code"
             android:id="@+id/referral_code"
-            android:icon="@drawable/ic_group_add_black_24dp"
+            android:icon="@drawable/ic_outline_group_add_purple"
             android:name="Referral Code" />
     </group>
     <group
@@ -72,12 +72,17 @@
         <item
             android:title="Sign Out"
             android:id="@+id/signOut"
-            android:icon="@drawable/ic_power_settings_new_grey_24dp"
+            android:icon="@drawable/ic_power_settings_new_purple_24dp"
             android:name="Sign Out" />
         <item
-            android:title="Report Bug"
+            android:title="Report Bug / Feedback"
             android:id="@+id/bugReport"
-            android:icon="@drawable/ic_bug_report_grey_24dp"
+            android:icon="@drawable/ic_outline_bug_report_purple"
             android:name="Report Bug / Feedback" />
     </group>
+    <item
+        android:title="App Tour"
+        android:id="@+id/app_tour_btn"
+        android:icon="@drawable/ic_info_outline_purple_24dp"
+        android:name="App Tour"/>
 </menu>

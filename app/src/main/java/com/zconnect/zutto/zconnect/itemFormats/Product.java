@@ -6,7 +6,7 @@ package com.zconnect.zutto.zconnect.itemFormats;
 
 public class Product {
     private String ProductName, ProductDescription, Image, Key, Price, Phone_no, Category, type;
-    private int NumberOfViews;
+    private int NumberOfViews = -1;
     private Boolean isNegotiable;
     private PostedByDetails PostedBy;
     private long PostTimeMillis;

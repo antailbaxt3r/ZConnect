@@ -4,18 +4,10 @@
     <color name="link">#673ab7</color>
     <color name="defaultAvatar">#BDBDBD</color>
 
-    <color name="users">#795548</color>
     <color name="infone">#9C27B0</color>
-    <color name="events">#8BC34A</color>
-    <color name="storeroom">#F44336</color>
     <color name="storeroom_ask">#B7673A</color>
-    <color name="cabpool">#FDD835</color>
-    <color name="shops">#01579B</color>
     <!--cyan 500-->
-    <color name="messages">#00BCD4</color>
     <!--orange 400-->
-    <color name="forums">#FFA726</color>
-    <color name="notices">#FFA726</color>
     <!--<color name="primaryText">#000</color>-->
     <color name="primaryText">#212121</color>
     <color name="secondaryText">#616161</color>

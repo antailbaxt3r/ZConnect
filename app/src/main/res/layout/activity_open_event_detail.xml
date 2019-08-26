@@ -23,8 +23,9 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar_app_bar_home"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <!--app:popupTheme="@style/AppTheme.PopupOverlay">-->
+                android:layout_height="wrap_content"
+                app:popupTheme="@style/AppTheme.PopupOverlay">
+                <!--idhar-->
 
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
@@ -42,13 +43,17 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <com.facebook.drawee.view.SimpleDraweeView
-                        android:id="@+id/od_EventImage"
+                    <RelativeLayout
+                        android:id="@+id/image_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:viewAspectRatio="1.33"
-                        android:adjustViewBounds="true"
-                        android:background="@color/grey500" />
+                        android:layout_height="200dp">
+
+                        <com.facebook.drawee.view.SimpleDraweeView
+                            android:id="@+id/od_EventImage"
+                            android:layout_width="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_height="match_parent" />
+                    </RelativeLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -62,7 +67,7 @@
                             android:layout_height="wrap_content"
                             android:text="Event Date"
                             android:textColor="@color/colorHighlight"
-                            android:textSize="16dp"
+                            android:textSize="16sp"
                             android:textStyle="bold" />
 
                         <LinearLayout
@@ -77,6 +82,7 @@
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:background="@drawable/ic_location_on_black_24dp"
+                                android:tint="@color/deepPurple500"
                                 android:scaleType="fitXY"/>
 
 
@@ -87,7 +93,7 @@
                                 android:text="Venue N/A"
                                 android:layout_marginLeft="0dp"
                                 android:textColor="@color/secondaryText"
-                                android:textSize="16dp"
+                                android:textSize="16sp"
                                 android:textStyle="bold"/>
                         </LinearLayout>
                     </LinearLayout>
@@ -101,7 +107,7 @@
                         android:paddingTop="5dp"
                         android:text="Event Description"
                         android:textColor="@color/primaryText"
-                        android:textSize="16dp"
+                        android:textSize="16sp"
                         android:linksClickable="true"
                         android:autoLink="web" />
 
@@ -119,7 +125,7 @@
                             android:layout_height="wrap_content"
                             android:text="Boost"
                             android:background="@drawable/round_button_simple"
-                            android:textColor="@color/primaryText"
+                            android:textColor="@color/black"
                             style="?android:attr/borderlessButtonStyle"/>
                         <Button
                             android:id="@+id/setReminder"
@@ -152,14 +158,15 @@
             android:paddingEnd="15dp"
             android:layout_margin="5dp">
             <ImageButton
-                android:id="@+id/chat_photo_button"
-                android:src="@drawable/ic_image_black_24dp"
+                android:id="@+id/ic_anonymous"
+                android:src="@drawable/ic_dark_chat_24dp"
                 android:layout_width="0dp"
-                android:tint="@color/colorPrimary"
+                android:tint="@color/deepPurple500"
                 android:background="@color/transparent"
                 android:layout_marginEnd="5dp"
                 android:layout_weight=".1"
                 android:layout_height="wrap_content" />
+
             <EditText
                 android:id="@+id/typer"
                 android:layout_width="0dp"
@@ -170,13 +177,24 @@
                 android:textColorHint="@color/secondaryText"
                 android:textColor="@color/black"
                 android:textSize="16sp"/>
+
+            <ImageButton
+                android:id="@+id/chat_photo_button"
+                android:src="@drawable/ic_image_black_24dp"
+                android:layout_width="0dp"
+                android:tint="@color/deepPurple500"
+                android:background="@color/transparent"
+                android:layout_marginEnd="5dp"
+                android:layout_weight=".1"
+                android:layout_height="wrap_content" />
+
             <ImageButton
                 android:id="@+id/sendBtn"
                 android:layout_width="0dp"
                 android:layout_weight="0.1"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_send_white_24dp"
-                android:tint="@color/colorPrimary"
+                android:tint="@color/deepPurple500"
                 android:background="@color/transparent"
                 android:layout_marginStart="5dp"/>
         </LinearLayout>

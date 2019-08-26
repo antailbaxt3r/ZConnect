@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,7 +33,7 @@ public class MyOrdersActivity extends BaseActivity {
     public final String TAG = getClass().getSimpleName();
 
     private RecyclerView recyclerView;
-    private LinearLayout ll_progressBar;
+    private ShimmerFrameLayout shimmerFrameLayout;
     private TextView loading_text, noOrders;
     private String userUID;
     private ValueEventListener orderListener;
@@ -48,6 +49,7 @@ public class MyOrdersActivity extends BaseActivity {
         setToolbar();
         attachID();
         loadOrderList();
+        shimmerFrameLayout.startShimmerAnimation();
 
         if (toolbar != null) {
 
@@ -80,7 +82,6 @@ public class MyOrdersActivity extends BaseActivity {
     }
 
     private void setProgressBarView(int visibility, String message) {
-        ll_progressBar.setVisibility(visibility);
         loading_text.setText(message);
 
     }
@@ -88,11 +89,11 @@ public class MyOrdersActivity extends BaseActivity {
     private void attachID() {
         toolbar.setTitle("Orders list");
         recyclerView = findViewById(R.id.recycleView);
-        ll_progressBar = findViewById(R.id.ll_progressBar);
+        shimmerFrameLayout = findViewById(R.id.shimmer_view_container_my_orders);
         loading_text = findViewById(R.id.loading_text);
         noOrders = findViewById(R.id.no_my_orders);
 
-        //setup adapter
+        //setup joinedForumsAdapter
         adapter = new PoolOrderItemAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
@@ -117,7 +118,8 @@ public class MyOrdersActivity extends BaseActivity {
                 else
                     noOrders.setVisibility(View.VISIBLE);
                 adapter.addAll(list);
-                setProgressBarView(View.GONE, "");
+                shimmerFrameLayout.stopShimmerAnimation();
+                shimmerFrameLayout.setVisibility(View.INVISIBLE);
             }
 
             @Override

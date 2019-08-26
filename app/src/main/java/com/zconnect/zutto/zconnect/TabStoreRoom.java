@@ -1,14 +1,20 @@
 package com.zconnect.zutto.zconnect;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -26,10 +32,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -49,9 +59,12 @@ import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 
 public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemClickListener {
 
@@ -86,8 +99,9 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
     private Product singleProduct;
     private Boolean flagNoProductsAvailable;
     private TextView noProductsAvailableText;
-    private ProgressBar progressBar;
+
     private FloatingActionButton fab;
+    private ShimmerFrameLayout shimmerContainer;
 
     private int OPT_ELEC = 0, OPT_SPK = 1, OPT_STG = 2, OPT_ACAD = 3, OPT_ROOM = 4, OPT_FIC = 5, OPT_OTH = 6, OPT_ALL = 7;
     private int currentOptionCategory = 7;
@@ -104,8 +118,10 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        Toolbar toolbar = findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
+        toolbar.setTitle("Storeroom");
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -129,7 +145,7 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
         }
 
 //        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-//        // Set up the ViewPager with the sections adapter.
+//        // Set up the ViewPager with the sections joinedForumsAdapter.
 //        mViewPager = (ViewPager) findViewById(R.id.view_pager);
 //        mViewPager.setAdapter(mSectionsPagerAdapter);
 
@@ -184,8 +200,8 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
         GridLayoutManager productGridLayout = new GridLayoutManager(this, 2);
 
         noProductsAvailableText = (TextView) findViewById(R.id.no_products_available_text);
-        progressBar = (ProgressBar) findViewById(R.id.products_tab_progress_bar);
 
+        shimmerContainer = (ShimmerFrameLayout) findViewById(R.id.shimmer_view_container1);
         mProductList = (RecyclerView) findViewById(R.id.productList);
         mProductList.setHasFixedSize(true);
         mProductList.setLayoutManager(productGridLayout);
@@ -195,44 +211,66 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
 
-                meta.put("type","fromFeature");
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_PRODUCT_ADD_OPEN);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
+                if (!isNetworkAvailable(v.getContext())) {
+                    Snackbar snack = Snackbar.make(fab, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimaryDark));
+                    snack.show();
+                } else {
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta = new HashMap<>();
 
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
+                    meta.put("type", "fromFeature");
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_PRODUCT_ADD_OPEN);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
 
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(TabStoreRoom.this);
-                alertBuilder.setTitle("Add/Ask")
-                        .setMessage("Do you want to add a product or ask for a product?")
-                        .setPositiveButton("Ask", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(TabStoreRoom.this, AddProduct.class);
-                                intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
-                                startActivity(intent);
-                            }
-                        })
-                        .setNegativeButton("Add", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(TabStoreRoom.this, AddProduct.class);
-                                intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
-                                startActivity(intent);
-                            }
-                        })
-                        .show();
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
 
+                    Dialog addAskDialog = new Dialog(TabStoreRoom.this);
+                    addAskDialog.setContentView(R.layout.new_dialog_box);
+                    addAskDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    addAskDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(TabStoreRoom.this, R.drawable.ic_outline_store_36));
+                    TextView heading = addAskDialog.findViewById(R.id.dialog_box_heading);
+                    heading.setText("Sell/Ask");
+                    TextView body = addAskDialog.findViewById(R.id.dialog_box_body);
+                    body.setText("Do you want to sell a product or ask for a product?");
+                    Button addButton = addAskDialog.findViewById(R.id.dialog_box_positive_button);
+                    addButton.setText("Sell");
+                    addButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(TabStoreRoom.this, AddProduct.class);
+                            intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
+                            startActivity(intent);
+                            addAskDialog.dismiss();
+
+                        }
+                    });
+                    Button askButton = addAskDialog.findViewById(R.id.dialog_box_negative_button);
+                    askButton.setText("Ask");
+                    askButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(TabStoreRoom.this, AddProduct.class);
+                            intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
+                            startActivity(intent);
+                            addAskDialog.dismiss();
+
+                        }
+                    });
+
+                    addAskDialog.show();
+                }
             }
         });
 
         mAuth = FirebaseAuth.getInstance();
-        progressBar.setVisibility(View.VISIBLE);
+        shimmerContainer.startShimmerAnimation();
 
         SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
@@ -328,13 +366,7 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                     }
                 }
 
-                progressBar.setVisibility(View.INVISIBLE);
 
-                if(flagNoProductsAvailable){
-                    noProductsAvailableText.setVisibility(View.VISIBLE);
-                }else{
-                    noProductsAvailableText.setVisibility(View.GONE);
-                }
 
                 Collections.sort(productVector, new Comparator<Product>() {
                     @Override
@@ -344,7 +376,10 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                 });
 
                 productAdapter.notifyDataSetChanged();
+                shimmerContainer.stopShimmerAnimation();
+                shimmerContainer.setVisibility(View.INVISIBLE);
             }
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -397,6 +432,7 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
     }
 
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
@@ -412,6 +448,11 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                     (SearchView) menu.findItem(R.id.search).getActionView();
             searchView.setSearchableInfo(
                     searchManager.getSearchableInfo(getComponentName()));
+            EditText searchEditText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+            ImageView searchClose = (ImageView) searchView.findViewById (android.support.v7.appcompat.R.id.search_close_btn);
+            searchClose.setColorFilter (Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
+            searchEditText.setTextColor(getResources().getColor(R.color.black));
+            searchEditText.setHintTextColor(getResources().getColor(R.color.secondaryText));
 
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
@@ -557,6 +598,8 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
     public void onPause() {
         super.onPause();
         productsQuery.removeEventListener(mListener);
+        shimmerContainer.stopShimmerAnimation();
+        shimmerContainer.setVisibility(View.INVISIBLE);
     }
 
     @Override

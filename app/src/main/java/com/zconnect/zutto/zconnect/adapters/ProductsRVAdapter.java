@@ -19,11 +19,16 @@ import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 
 import java.util.Vector;
 
+import uk.co.senab.photoview.gestures.EclairGestureDetector;
+
 /**
  * Created by Lokesh Garg on 28-03-2018.
  */
 
-public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsViewHolder>{
+public class
+
+
+ProductsRVAdapter extends RecyclerView.Adapter<ProductsViewHolder>{
 
     Vector<Product> productVector;
     Context ctx;
@@ -48,23 +53,8 @@ public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsViewHolder>{
 
     @Override
     public void onBindViewHolder(final ProductsViewHolder holder, final int position) {
-        try {
-            StoreRoomRef.child(productVector.get(position).getKey()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.hasChild("NumberOfViews"))
-                        holder.setNumberOfViewsInHolder(productVector.get(position).getNumberOfViews());
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        } catch (Exception e){
-            Log.e("Error Message","Null reference to Database");
-        }
-
+        if(productVector.get(position).getNumberOfViews()!=-1)
+            holder.setNumberOfViewsInHolder(productVector.get(position).getNumberOfViews());
         if(getItemViewType(position) == ProductUtilities.TYPE_ADD)
         {
             holder.setPrice(productVector.get(position).getPrice());
@@ -84,7 +74,7 @@ public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsViewHolder>{
             holder.setImage(ctx,null);
         }
         holder.setProductName(productVector.get(position).getProductName());
-        holder.defaultSwitch(productVector.get(position).getKey(),ctx,productVector.get(position).getCategory(),productVector.get(position).getProductName());
+        holder.defaultSwitch(productVector.get(position).getKey(),ctx,productVector.get(position).getCategory(),productVector.get(position).getProductName(),productVector.get(position));
         holder.openProduct(productVector.get(position).getKey(), productVector.get(position).getType());
         holder.setProductDate(productVector.get(position).getPostTimeMillis(), System.currentTimeMillis());
     }

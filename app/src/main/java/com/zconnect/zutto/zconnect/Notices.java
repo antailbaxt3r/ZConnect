@@ -1,10 +1,12 @@
 package com.zconnect.zutto.zconnect;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,8 +14,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,6 +39,7 @@ import java.util.Vector;
 public class Notices extends BaseActivity {
     private DatabaseReference noticesRef, mUserDetails;
     private RecyclerView noticesRV;
+    private ShimmerFrameLayout shimmerFrameLayout;
     private FirebaseAuth mAuth;
     private Vector<NoticeItemFormat> noticesItemFormats = new Vector<>();
     private NoticeRVAdapter noticeRVAdapter;
@@ -47,8 +52,9 @@ public class Notices extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notices);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -74,13 +80,23 @@ public class Notices extends BaseActivity {
         mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         noticesRV =(RecyclerView)findViewById(R.id.photos);
+        shimmerFrameLayout = findViewById(R.id.shimmer_view_container_notices);
         noticesRV.setLayoutManager(new GridLayoutManager(this, 2));
         noticesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("notices").child("activeNotices");
         add_photo =(FloatingActionButton)findViewById(R.id.add_photo);
+        shimmerFrameLayout.startShimmerAnimation();
         add_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Notices.this.startActivity(new Intent(Notices.this,AddNotices.class));
+                if (!isNetworkAvailable(view.getContext())) {
+                    Snackbar snack = Snackbar.make(add_photo, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimaryDark));
+                    snack.show();
+                } else {
+                    Notices.this.startActivity(new Intent(Notices.this, AddNotices.class));
+                }
             }
         });
 
@@ -135,11 +151,14 @@ public class Notices extends BaseActivity {
                        UserItemFormat currentUser = dataSnapshot.getValue(UserItemFormat.class);
                        noticeRVAdapter = new NoticeRVAdapter(noticesItemFormats,getApplicationContext(),currentUser.getUserType());
                        noticesRV.setAdapter(noticeRVAdapter);
+                       shimmerFrameLayout.stopShimmerAnimation();
+                       shimmerFrameLayout.setVisibility(View.INVISIBLE);
                    }
 
                    @Override
                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                        shimmerFrameLayout.startShimmerAnimation();
+                        shimmerFrameLayout.setVisibility(View.VISIBLE);
                    }
                });
             };

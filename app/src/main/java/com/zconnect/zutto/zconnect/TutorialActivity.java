@@ -47,7 +47,7 @@ public class TutorialActivity extends BaseActivity {
         inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         //Reference ViewPager defined in activity
         vp=(ViewPager)findViewById(R.id.viewPager);
-        //set the adapter that will create the individual pages
+        //set the joinedForumsAdapter that will create the individual pages
         vp.setAdapter(new MyPagesAdapter());
 
         doneButton(vp.getCurrentItem());
@@ -106,8 +106,9 @@ public class TutorialActivity extends BaseActivity {
            // RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(container.getWidth(),container.getHeight());
 
 //            image.setLayoutParams(layoutParams);
-//            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
             image.setImageDrawable(pageData[position]);
+            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
             //Add the page to the front of the queue
             ((ViewPager) container).addView(page, 0);
 

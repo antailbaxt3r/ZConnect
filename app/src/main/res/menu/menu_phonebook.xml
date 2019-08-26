@@ -7,6 +7,7 @@
         android:id="@+id/action_search_menu_phonebook"
         android:icon="@drawable/ic_action_action_search"
         android:orderInCategory="2"
+        android:iconTint="@color/black"
         android:name="Search Contact"
         app:showAsAction="ifRoom" />
 </menu>

@@ -45,6 +45,7 @@ public class PhonebookHostelWise extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phonebook_hostel_wise);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {

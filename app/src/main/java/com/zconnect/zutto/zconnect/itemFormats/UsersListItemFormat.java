@@ -1,20 +1,22 @@
 package com.zconnect.zutto.zconnect.itemFormats;
 
+import android.content.Intent;
+
 /**
  * Created by shubhamk on 27/7/17.
  */
 
 public class UsersListItemFormat {
-    String name;
-    String phonenumber;
-    String imageThumb;
-    String userUID;
-    String userType;
+    private String name;
+    private String phonenumber;
+    private String imageThumb;
+    private String userUID;
+    private String userType;
 
     public UsersListItemFormat(String name, String phonenumber, String imageThumb, String userUID, String userType) {
         this.name = name;
         this.phonenumber = phonenumber;
-        this.imageThumb = this.imageThumb;
+        this.imageThumb = imageThumb;
         this.userUID = userUID;
         this.userType = userType;
     }

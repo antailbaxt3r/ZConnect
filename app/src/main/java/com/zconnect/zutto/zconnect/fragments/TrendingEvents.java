@@ -1,19 +1,24 @@
 package com.zconnect.zutto.zconnect.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,7 +47,7 @@ public class TrendingEvents extends Fragment {
     private EventsAdapter eventsAdapter;
     private Vector<Event> eventsVector = new Vector<Event>();
     private ValueEventListener mListener;
-    private ProgressBar progressBar;
+    private ShimmerFrameLayout shimmerFrameLayout;
     private TextView noevents;
     private FloatingActionButton fab;
 
@@ -112,9 +117,10 @@ public class TrendingEvents extends Fragment {
         noevents = (TextView) view.findViewById(R.id.noevents);
 
 
-        progressBar = (ProgressBar) view.findViewById(R.id.fragment_trending_events_progress_circle);
+        shimmerFrameLayout = view.findViewById(R.id.shimmer_view_container_trending_events);
         mEventList = (RecyclerView) view.findViewById(R.id.eventList);
-        progressBar.setVisibility(View.VISIBLE);
+        shimmerFrameLayout.setVisibility(View.VISIBLE);
+        shimmerFrameLayout.startShimmerAnimation();
         mEventList.setVisibility(View.GONE);
         mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(mlinearmanager);
@@ -122,20 +128,29 @@ public class TrendingEvents extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
 
-                meta.put("type","fromTrending");
+                if (!isNetworkAvailable(view.getContext())) {
+                    Snackbar snack = Snackbar.make(fab, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimaryDark));
+                    snack.show();
+                } else {
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta = new HashMap<>();
 
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_ADD_EVENT_OPEN);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
+                    meta.put("type", "fromTrending");
 
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_ADD_EVENT_OPEN);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
 
-                getContext().startActivity(new Intent(getContext(), AddEvent.class));
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
+
+                    getContext().startActivity(new Intent(getContext(), AddEvent.class));
+                }
             }
         });
 
@@ -158,7 +173,8 @@ public class TrendingEvents extends Fragment {
                         }
                     }catch (Exception e){}
                 }
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayout.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmerAnimation();
                 mEventList.setVisibility(View.VISIBLE);
                 eventsAdapter.notifyDataSetChanged();
                 if (flag){
@@ -171,7 +187,8 @@ public class TrendingEvents extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayout.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmerAnimation();
                 mEventList.setVisibility(View.VISIBLE);
             }
         };
@@ -185,7 +202,7 @@ public class TrendingEvents extends Fragment {
     public void onStart() {
         super.onStart();
 
-        queryRef.addValueEventListener(mListener);
+        queryRef.addListenerForSingleValueEvent(mListener);
 
 //        final FirebaseRecyclerAdapter<Event, EventViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Event, TrendingEvents.EventViewHolder>(
 //                Event.class,
@@ -473,6 +490,11 @@ public class TrendingEvents extends Fragment {
 //        }
 //
 //    }
+
+    public boolean isNetworkAvailable(final Context context) {
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager != null && connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+    }
 
 
 }

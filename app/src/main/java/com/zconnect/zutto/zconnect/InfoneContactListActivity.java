@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
+import android.Manifest;
 import  android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -7,13 +8,18 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.os.Bundle;
@@ -27,10 +33,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -51,10 +61,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
+import static com.zconnect.zutto.zconnect.R.drawable.ic_arrow_back_black_24dp;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
+
 public class InfoneContactListActivity extends BaseActivity {
 
     private static final int RQS_PICK_CONTACT = 1;
-
+    private static final int REQUEST_PHONE_CALL = 1;
+    private static final int REQUEST_READ_CONTACTS = 2;
     Toolbar toolbar;
     String catId;
     RecyclerView recyclerViewContacts;
@@ -70,7 +84,8 @@ public class InfoneContactListActivity extends BaseActivity {
     private final String TAG = getClass().getSimpleName();
     private String catName, catImageurl;
     private String catAdmin;
-    ProgressBar progressBar;
+    private ShimmerFrameLayout shimmerFrameLayout;
+
     int totalContacts;
 
     //Dialog UI
@@ -87,6 +102,12 @@ public class InfoneContactListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_infone_contact_list);
         toolbar=(Toolbar) findViewById(R.id.toolbar_app_bar_infone);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(ic_arrow_back_black_24dp);
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -112,8 +133,8 @@ public class InfoneContactListActivity extends BaseActivity {
         communityReference = communitySP.getString("communityReference", null);
 
         databaseReferenceList = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone").child("categories").child(catId);
-        progressBar = (ProgressBar) findViewById(R.id.infone_contact_list_progress_circle);
-        progressBar.setVisibility(View.VISIBLE);
+        shimmerFrameLayout = findViewById(R.id.shimmer_view_container_infone_contacts);
+        shimmerFrameLayout.startShimmerAnimation();
         recyclerViewContacts = (RecyclerView) findViewById(R.id.rv_infone_contacts);
         recyclerViewContacts.setVisibility(View.GONE);
         fabAddContact = (FloatingActionButton) findViewById(R.id.fab_contacts_infone);
@@ -160,8 +181,6 @@ public class InfoneContactListActivity extends BaseActivity {
 
         setAdapter("lite",false);
 
-
-
     }
 
 
@@ -171,10 +190,22 @@ public class InfoneContactListActivity extends BaseActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+                Parcelable recyclerViewState = null;
+
+
+                try {
+                    if (recyclerViewContacts != null) {
+                        recyclerViewState = recyclerViewContacts.getLayoutManager().onSaveInstanceState();
+                    }
+                }
+                catch (Exception e){
+                    recyclerViewState = null;
+                }
+
                 contactsRVItems = new ArrayList<>();
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
 
-//                    try {
+                    try {
                         InfoneContactsRVItem temp = new InfoneContactsRVItem();
 
                         String name = childSnapshot.child("name").getValue(String.class);
@@ -215,7 +246,7 @@ public class InfoneContactListActivity extends BaseActivity {
                         contactsRVItems.add(temp);
 
                         totalContacts = contactsRVItems.size();
-//                    }catch (Exception e){}
+                    }catch (Exception e){}
                 }
 
                 Collections.sort(contactsRVItems, new Comparator<InfoneContactsRVItem>() {
@@ -225,17 +256,22 @@ public class InfoneContactListActivity extends BaseActivity {
                     }
                 });
 
-
                 infoneContactsRVAdapter = new InfoneContactsRVAdapter(InfoneContactListActivity.this, contactsRVItems, catId);
                 recyclerViewContacts.setAdapter(infoneContactsRVAdapter);
-                progressBar.setVisibility(View.GONE);
+
+                if (recyclerViewContacts != null && recyclerViewState != null) {
+                    recyclerViewContacts.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+                }
+                shimmerFrameLayout.stopShimmerAnimation();
+                shimmerFrameLayout.setVisibility(View.INVISIBLE);
                 recyclerViewContacts.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e(InfoneContactListActivity.class.getName(), "database error" + databaseError.toString());
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmerAnimation();
+                shimmerFrameLayout.setVisibility(View.INVISIBLE);
                 recyclerViewContacts.setVisibility(View.VISIBLE);
                 Toast.makeText(getApplicationContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
             }
@@ -256,12 +292,14 @@ public class InfoneContactListActivity extends BaseActivity {
 
                 infoneContactsRVAdapter = new InfoneContactsRVAdapter(InfoneContactListActivity.this, contactsRVSearchItems, catId);
                 recyclerViewContacts.setAdapter(infoneContactsRVAdapter);
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmerAnimation();
+                shimmerFrameLayout.setVisibility(View.INVISIBLE);
                 recyclerViewContacts.setVisibility(View.VISIBLE);
             }else {
                 infoneContactsRVAdapter = new InfoneContactsRVAdapter(InfoneContactListActivity.this, contactsRVItems, catId);
                 recyclerViewContacts.setAdapter(infoneContactsRVAdapter);
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmerAnimation();
+                shimmerFrameLayout.setVisibility(View.INVISIBLE);
                 recyclerViewContacts.setVisibility(View.VISIBLE);
             }
 
@@ -273,27 +311,45 @@ public class InfoneContactListActivity extends BaseActivity {
 
     private void addContact(String contactName, String contactNumber) {
 
-        Intent addContactIntent = new Intent(this, AddInfoneContact.class);
-        addContactIntent.putExtra("catId", catId);
-        addContactIntent.putExtra("catImageURL",catImageurl);
-        addContactIntent.putExtra("catName", catName);
-        addContactIntent.putExtra("totalContacts",totalContacts);
-        addContactIntent.putExtra("contactName", contactName);
-        addContactIntent.putExtra("contactNumber", contactNumber);
-        addContactIntent.putExtra("categoryadmin",catAdmin);
-//        addContactIntent.putExtra("contactPhoto", contactPhoto);
-        startActivity(addContactIntent);
+        if (!isNetworkAvailable(this)) {
+            Snackbar snack = Snackbar.make(recyclerViewContacts, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+            snack.show();
+        } else {
 
+            Intent addContactIntent = new Intent(this, AddInfoneContact.class);
+            addContactIntent.putExtra("catId", catId);
+            addContactIntent.putExtra("catImageURL", catImageurl);
+            addContactIntent.putExtra("catName", catName);
+            addContactIntent.putExtra("totalContacts", totalContacts);
+            addContactIntent.putExtra("contactName", contactName);
+            addContactIntent.putExtra("contactNumber", contactNumber);
+            addContactIntent.putExtra("categoryadmin", catAdmin);
+//        addContactIntent.putExtra("contactPhoto", contactPhoto);
+            startActivity(addContactIntent);
+
+        }
     }
 
     private void editCategory() {
+        if (!isNetworkAvailable(this)) {
+            Snackbar snack = Snackbar.make(recyclerViewContacts, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+            snack.show();
+        } else {
 
-        Intent editCatIntent=new Intent(InfoneContactListActivity.this,AddInfoneCat.class);
-        editCatIntent.putExtra("catId",catId);
-        editCatIntent.putExtra("catName",catName);
-        editCatIntent.putExtra("catImageurl",catImageurl);
-        startActivity(editCatIntent);
 
+            Intent editCatIntent = new Intent(InfoneContactListActivity.this, AddInfoneCat.class);
+            editCatIntent.putExtra("catId", catId);
+            editCatIntent.putExtra("catName", catName);
+            editCatIntent.putExtra("catImageurl", catImageurl);
+            startActivity(editCatIntent);
+
+        }
     }
 
     private void toolbarSetup() {
@@ -313,22 +369,24 @@ public class InfoneContactListActivity extends BaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        //databaseReferenceList.removeEventListener(listener);
+        databaseReferenceList.removeEventListener(listener);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        databaseReferenceList.removeEventListener(listener);
     }
 
-    /**
-     * Dispatch onPause() to fragments.
-     */
     @Override
     protected void onPause() {
-
         super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        databaseReferenceList.addValueEventListener(listener);
     }
 
     @Override
@@ -342,6 +400,11 @@ public class InfoneContactListActivity extends BaseActivity {
                 (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
+        EditText searchEditText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        ImageView searchClose = (ImageView) searchView.findViewById (android.support.v7.appcompat.R.id.search_close_btn);
+        searchClose.setColorFilter (Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
+        searchEditText.setTextColor(getResources().getColor(R.color.black));
+        searchEditText.setHintTextColor(getResources().getColor(R.color.secondaryText));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -458,4 +521,5 @@ public class InfoneContactListActivity extends BaseActivity {
             }
         }
     }
+
 }

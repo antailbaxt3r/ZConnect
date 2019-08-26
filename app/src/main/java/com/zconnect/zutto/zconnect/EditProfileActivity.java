@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -50,10 +52,12 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
+import com.zconnect.zutto.zconnect.addActivities.AddProduct;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.itemFormats.InfoneCategoryModel;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
@@ -80,12 +84,12 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     private final String TAG = getClass().getSimpleName();
     public ProgressDialog mProgress;
 
-    @BindView(R.id.toolbar_app_bar_home)
+
     Toolbar toolbar;
 
     private SimpleDraweeView userImageView;
-    private String userName,userEmail,userMobile,userWhatsapp,userAbout,userSkillTags,userInfoneType;
-    private MaterialEditText userNameText, userEmailText, userMobileNumberText, userWhatsappNumberText, userAboutText;
+    private String userName,userEmail,userMobile,userWhatsapp,userAbout,userSkillTags,userInfoneType, anonymousUserName;
+    private MaterialEditText userNameText, userEmailText, userMobileNumberText, userWhatsappNumberText, userAboutText,anonymousUserNameET;
     private Button userTypeText;
     private TagsEditText userSkillTagsText;
     private MaterialBetterSpinner userInfoneTypeSpinner;
@@ -110,26 +114,51 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     private DatabaseReference homePush;
     @Override
     public void onBackPressed() {
-        new AlertDialog.Builder(this)
-                .setTitle("Message")
-                .setMessage("Are you sure you want to go back")
-                .setNegativeButton("NO", null)
-                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        NavUtils.navigateUpFromSameTask(EditProfileActivity.this);
-                    }
-                }).create().show();
+        Dialog exitDialog = new Dialog(EditProfileActivity.this);
+        exitDialog.setContentView(R.layout.new_dialog_box);
+        exitDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        exitDialog.findViewById(R.id.dialog_box_image_sdv).setBackground(ContextCompat.getDrawable(EditProfileActivity.this,R.drawable.ic_profile_icon));
+        TextView heading =  exitDialog.findViewById(R.id.dialog_box_heading);
+        heading.setText("Unsaved Changes");
+        TextView body = exitDialog.findViewById(R.id.dialog_box_body);
+        body.setText("Are you sure you want to go back?");
+        Button positiveButton = exitDialog.findViewById(R.id.dialog_box_positive_button);
+        positiveButton.setText("YES");
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                exitDialog.dismiss();
+
+                NavUtils.navigateUpFromSameTask(EditProfileActivity.this);
+
+            }
+        });
+        Button askButton = exitDialog.findViewById(R.id.dialog_box_negative_button);
+        askButton.setText("NO");
+        askButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              exitDialog.dismiss();
+            }
+        });
+
+        exitDialog.show();
+
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-        ButterKnife.bind(this);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
 
         if (toolbar != null) {
-            setSupportActionBar(toolbar);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -152,6 +181,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         userInfoneTypeSpinner = (MaterialBetterSpinner) findViewById(R.id.user_infone_type);
         userSkillTagsText = (TagsEditText) findViewById(R.id.user_skill_tags);
         hideContactCB = (CheckBox) findViewById(R.id.hide_contact_check_box);
+        anonymousUserNameET = findViewById(R.id.anonymous_username_et);
 
         Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
         Typeface ralewaySemiBold = Typeface.createFromAsset(getAssets(), "fonts/Raleway-SemiBold.ttf");
@@ -247,6 +277,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             userEmailText.setText(mUser.getEmail());
             userTypeText.setVisibility(View.GONE);
 
+            anonymousUserNameET.setText("Unknown");
             hideContactCB.setChecked(false);
 
             userEmailText.setFocusable(false);
@@ -259,7 +290,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                         if(userInfo.getPhotoUrl() != null)
                             userImageView.setImageURI(userInfo.getPhotoUrl());
                         else
-                            userImageView.setImageURI(DEFAULT_PHOTO_URL);
+                            userImageView.setImageURI(Uri.parse(DEFAULT_PHOTO_URL));
                     }
                 }
             }
@@ -303,6 +334,12 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         userWhatsappNumberText.setText(userDetails.getWhatsAppNumber());
         userMobileNumberText.setText(userDetails.getMobileNumber());
         userAboutText.setText(userDetails.getAbout());
+        if(userDetails.getAnonymousUsername() != null){
+            anonymousUserNameET.setText(userDetails.getAnonymousUsername());
+        }
+        else{
+            anonymousUserNameET.setText("Unknown");
+        }
 
         hideContactCB.setChecked(userDetails.getContactHidden());
 
@@ -408,12 +445,13 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         mProgress.setMessage("Updating...");
         mProgress.show();
 
-        userName = userNameText.getText().toString();
-        userEmail = userEmailText.getText().toString();
+        userName = userNameText.getText().toString().trim();
+        userEmail = userEmailText.getText().toString().trim();
         userAbout = userAboutText.getText().toString();
         userWhatsapp = userWhatsappNumberText.getText().toString();
         userMobile = userMobileNumberText.getText().toString();
         userSkillTags = userSkillTagsText.getTags().toString();
+        anonymousUserName = anonymousUserNameET.getText().toString().trim();
         Boolean contactHidden = false;
         contactHidden = hideContactCB.isChecked();
 
@@ -428,7 +466,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         {
             photoUri = userInfo.getPhotoUrl();
         }
-        if (userName == null
+        if (userName == null || userName.equals("") || anonymousUserName == null || anonymousUserName.equals("")
                 || userEmail == null
                 || userMobile.length() <10 || userWhatsapp.length() <10 || userInfoneType ==null || ((photoUri == null)&& mImageUri==null)) {
 
@@ -470,6 +508,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             newPost.child("username").setValue(userName);
             newPost.child("email").setValue(userEmail);
             newPost.child("mobileNumber").setValue(userMobile);
+            newPost.child("anonymousUsername").setValue(anonymousUserName);
             if (userWhatsapp.length()==0){
                 newPost.child("whatsAppNumber").setValue(" ");
             }else {
@@ -523,6 +562,9 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             if(newUser){
 
                 newPost.child("userPoints").setValue(0);
+                newPost.child("notificationStatus").child("seenNotifications").setValue(0);
+                newPost.child("notificationStatus").child("totalNotifications").setValue(0);
+
                 SharedPreferences userVerification = getSharedPreferences("userType", MODE_PRIVATE);
                 Boolean userTypeBoolean = userVerification.getBoolean("userVerification", false);
 

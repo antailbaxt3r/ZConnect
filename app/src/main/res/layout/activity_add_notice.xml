@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/addNoticeLayout"
     tools:context=".addActivities.AddNotices">
 
     <android.support.design.widget.AppBarLayout
@@ -32,16 +33,29 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/imageButton"
+            <RelativeLayout
+                android:id="@+id/image_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="200dp"
-                android:maxHeight="300dp"
+                android:padding="5dp"
                 android:background="@drawable/dashed_border"
-                android:contentDescription="Product image"
-                android:scaleType="centerCrop"
-                android:layout_margin="7dp"/>
+                android:layout_height="200dp">
+
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/imageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:clickable="false"
+                    android:contentDescription="Notice image"/>
+
+            </RelativeLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Notice Title"
+                android:layout_below="@id/dateAndTime"
+                android:textColor="@color/primaryText" />
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/name"
@@ -56,6 +70,14 @@
                 android:padding="5dp"
                 android:layout_marginLeft="7dp"
                 android:layout_marginRight="7dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Expiry Date (Optional)"
+                android:layout_below="@id/dateAndTime"
+                android:textColor="@color/primaryText" />
 
             <LinearLayout
                 android:id="@+id/expiryDateLayout"

@@ -20,12 +20,17 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar_app_bar_home"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:popupTheme="@style/AppTheme.PopupOverlay"/>
+            <!--idhar-->
             <android.support.design.widget.TabLayout
                 android:id="@+id/tab_layout_app_bar_home"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 app:tabPaddingStart="20dp"
+                app:tabSelectedTextColor="@color/deepPurple500"
+                app:tabTextColor="@color/black"
+                app:tabIndicatorColor="@color/deepPurple500"
                 app:tabPaddingEnd="20dp"
                 android:layout_margin="0dp"
                 app:tabMode="scrollable"

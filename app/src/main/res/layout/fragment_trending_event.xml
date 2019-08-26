@@ -5,6 +5,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.zconnect.zutto.zconnect.fragments.TrendingEvents">
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/shimmer_view_container_trending_events"
+        app:duration="800">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <include layout="@layout/shimmer_item_layout_trending_events"/>
+            <include layout="@layout/shimmer_item_layout_trending_events"/>
+            <include layout="@layout/shimmer_item_layout_trending_events"/>
+        </LinearLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -17,15 +34,9 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="No Events Available"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
     </RelativeLayout>
 
-    <ProgressBar
-        android:id="@+id/fragment_trending_events_progress_circle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/eventList"
         android:layout_width="match_parent"

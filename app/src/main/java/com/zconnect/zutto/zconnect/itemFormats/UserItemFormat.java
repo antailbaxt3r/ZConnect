@@ -10,12 +10,26 @@ public class UserItemFormat {
 
     private String username, email,mobileNumber,whatsAppNumber, about,imageURL,imageURLThumbnail,infoneType,skillTags,userUID,userType;
 
+    public String getAnonymousUsername() {
+        if (anonymousUsername!=null) {
+            return anonymousUsername;
+        }else {
+            return "Anonymous";
+        }
+    }
+
+    public void setAnonymousUsername(String anonymousUsername) {
+        this.anonymousUsername = anonymousUsername;
+    }
+
+    private String anonymousUsername;
+
     Boolean contactHidden;
     public UserItemFormat(){
 
     }
 
-    public  UserItemFormat(String username, String email, String mobileNumber, String whatsAppNumber, String about, String imageURL, String imageURLThumbnail, String infoneType, String skillTags, String userUID, String userType, Boolean contactHidden){
+    public  UserItemFormat(String username, String email, String mobileNumber, String whatsAppNumber, String about, String imageURL, String imageURLThumbnail, String infoneType, String skillTags, String userUID, String userType, Boolean contactHidden,String forumUsername){
         this.username = username;
         this.email = email;
         this.mobileNumber = mobileNumber;
@@ -28,12 +42,18 @@ public class UserItemFormat {
         this.userUID = userUID;
         this.userType = userType;
         this.contactHidden = contactHidden;
+        this.anonymousUsername = forumUsername;
     }
 
 
 
     public String getUsername() {
-        return username;
+        if (username!=null)
+        {
+            return username;
+        } else {
+            return " ";
+        }
     }
 
     public void setUsername(String username) {

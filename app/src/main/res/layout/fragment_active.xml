@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".pools.ActiveFragment">
     <FrameLayout
         android:layout_width="match_parent"
@@ -12,6 +13,7 @@
             android:layout_width="210dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:visibility="invisible"
             android:text="Nothing here as of now. Check back soon!"
             android:gravity="center"
             android:textSize="16sp"/>
@@ -19,6 +21,28 @@
             android:id="@+id/active_pool_rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:duration="2000"
+            android:id="@+id/shimmer_view_container_pool_active">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/shimmer_item_layout_shop_pool_activity"/>
+                <include layout="@layout/shimmer_item_layout_shop_pool_activity"/>
+                <include layout="@layout/shimmer_item_layout_shop_pool_activity"/>
+                <include layout="@layout/shimmer_item_layout_shop_pool_activity"/>
+                <include layout="@layout/shimmer_item_layout_shop_pool_activity"/>
+                <include layout="@layout/shimmer_item_layout_shop_pool_activity"/>
+
+
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
     </FrameLayout>
 
 

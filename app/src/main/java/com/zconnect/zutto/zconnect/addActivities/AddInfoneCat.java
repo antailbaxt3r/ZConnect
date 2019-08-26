@@ -88,7 +88,7 @@ public class AddInfoneCat extends BaseActivity {
         super.onCreate(savedInstanceState);
         setTitle("Add Infone Category");
         setContentView(R.layout.activity_infone_add_cat);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -150,19 +150,33 @@ public class AddInfoneCat extends BaseActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.setMessage("Creating category");
-                saveChanges();
+                if (!nameEt.getText().toString().trim().equals("")) {
 
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
+                    if(mImageUri != null) {
 
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_ADDED_CATEGORY);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
+                        Log.d(String.valueOf(nameEt.getText()), "saveChanges: ");
+                        progressDialog.setMessage("Creating category");
+                        saveChanges();
 
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        HashMap<String, String> meta = new HashMap<>();
+
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_ADDED_CATEGORY);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        counterItemFormat.setMeta(meta);
+
+                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                        counterPush.pushValues();
+                    }
+                    else{
+                        Toast.makeText(AddInfoneCat.this, "Category image cannot be empty!", Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+                else{
+                    Toast.makeText(AddInfoneCat.this, "Category name cannot be empty!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

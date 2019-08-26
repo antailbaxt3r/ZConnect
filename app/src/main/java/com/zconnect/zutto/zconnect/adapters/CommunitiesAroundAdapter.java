@@ -52,6 +52,9 @@ public class CommunitiesAroundAdapter extends RecyclerView.Adapter<CommunitiesAr
 
         holder.communityName.setText(allCommunities.get(position).getName() + " Connect");
         try {
+            holder.communitySize.setVisibility(View.VISIBLE);
+            holder.communityImage.setVisibility(View.VISIBLE);
+            holder.communityLogin.setVisibility(View.VISIBLE);
             holder.communitySize.setText(allCommunities.get(position).getSize().toString() + " members");
 //        Picasso.with(context).load(allCommunities.get(position).getImage()).into(holder.communityImage);
             holder.communityImage.setImageURI(Uri.parse(allCommunities.get(position).getImage()));

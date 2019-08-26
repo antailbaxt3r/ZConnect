@@ -2,22 +2,27 @@ package com.zconnect.zutto.zconnect.itemFormats;
 
 public class NewRequestItemFormat {
 
-    private String Name,key,Type;
+    private String Name,key,Type,imageurl,thumbnail;
     private Long PostTimeMillis;
     private PostedByDetails PostedBy;
+
+    private String link;
 
     public NewRequestItemFormat()
     {
 
     }
 
-    public NewRequestItemFormat(String locationName,String key,String type,Long postTimeMillis,PostedByDetails postedBy)
+    public NewRequestItemFormat(String locationName,String imageurl,String thumbnail,String key,String type,Long postTimeMillis,PostedByDetails postedBy, String link)
     {
         this.Name = locationName;
         this.key = key;
         this.PostTimeMillis = postTimeMillis;
         this.PostedBy = postedBy;
         this.Type=type;
+        this.imageurl = imageurl;
+        this.thumbnail = thumbnail;
+        this.link = link;
     }
 
     public String getName() {
@@ -58,5 +63,29 @@ public class NewRequestItemFormat {
 
     public void setType(String type) {
         Type = type;
+    }
+
+    public String getImageurl() {
+        return imageurl;
+    }
+
+    public void setImageurl(String imageurl) {
+        this.imageurl = imageurl;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 }

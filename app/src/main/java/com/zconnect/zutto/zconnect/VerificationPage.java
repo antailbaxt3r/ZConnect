@@ -6,14 +6,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -24,12 +22,13 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -44,9 +43,9 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
-import com.zconnect.zutto.zconnect.commonModules.Drawables;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.commonModules.NumberNotificationForFeatures;
+import com.zconnect.zutto.zconnect.commonModules.SquareImageView;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
@@ -60,7 +59,8 @@ public class VerificationPage extends BaseActivity {
 
     private static final int GALLERY_REQUEST = 7;
     private TextView statusTextView;
-    private ImageButton idImageButton;
+    private RelativeLayout mAddImageLayout;
+    private SimpleDraweeView idImageButton;
     private EditText aboutNewUserEditText;
     private Button submitUserIDButton;
     private DatabaseReference newUsersDatabaseReference,userReference, currentUser;
@@ -81,14 +81,10 @@ public class VerificationPage extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verfication_page);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setToolbar();
+        toolbar.setTitle("Verification");
         setSupportActionBar(toolbar);
-
-        progressDialog = new ProgressDialog(this);
-        progressDialogInitial = new ProgressDialog(this);
-        progressDialogInitial.setMessage("Loading");
-
-        progressDialogInitial.show();
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -111,8 +107,15 @@ public class VerificationPage extends BaseActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
+        progressDialog = new ProgressDialog(this);
+        progressDialogInitial = new ProgressDialog(this);
+        progressDialogInitial.setMessage("Loading");
+
+        progressDialogInitial.show();
+
         statusTextView = (TextView) findViewById(R.id.verification_status);
-        idImageButton = (ImageButton) findViewById(R.id.verication_image);
+        mAddImageLayout = findViewById(R.id.image_layout);
+        idImageButton = findViewById(R.id.verification_image);
         aboutNewUserEditText = (EditText) findViewById(R.id.about_new_user);
         submitUserIDButton = (Button) findViewById(R.id.submit_verification_button);
 
@@ -155,53 +158,35 @@ public class VerificationPage extends BaseActivity {
                 if(dataSnapshot.hasChild("statusCode")){
                     if (Objects.requireNonNull(dataSnapshot.child("statusCode").getValue(String.class)).equals(VerificationUtilities.KEY_APPROVED)) {
                         statusTextView.setText("Your account has been approved you are a verified user now.");
-                        idImageButton.setOnClickListener(null);
-                        Bitmap bitmap = null;
+                        mAddImageLayout.setOnClickListener(null);
 
-                        try {
-                            URL url = new URL(dataSnapshot.child("idImageURL").getValue(String.class));
-                            bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                        } catch(IOException e) {
-                            System.out.println(e);
-                        }
-                        if(bitmap!=null){
-                            idImageButton.setImageBitmap(bitmap);
-                        }
+                        Picasso.with(getApplicationContext()).load(dataSnapshot.child("idImageURL").getValue(String.class)).into(idImageButton);
 
                         aboutNewUserEditText.setFocusable(false);
                         submitUserIDButton.setVisibility(View.GONE);
 
                     } else if (Objects.requireNonNull(dataSnapshot.child("statusCode").getValue(String.class)).equals(VerificationUtilities.KEY_NOT_APPROVED)) {
                         statusTextView.setText("Your account has been disapproved, please add relevant college admission related id.");
-                        idImageButton.setOnClickListener(imageClickListener);
+                        mAddImageLayout.setOnClickListener(imageClickListener);
                         aboutNewUserEditText.setFocusable(true);
                         aboutNewUserEditText.setText("");
                         submitUserIDButton.setVisibility(View.VISIBLE);
                     } else if (Objects.requireNonNull(dataSnapshot.child("statusCode").getValue(String.class)).equals(VerificationUtilities.KEY_PENDING)) {
                         statusTextView.setText("Verification pending! You can update your verification details.");
-                        idImageButton.setOnClickListener(imageClickListener);
+                        mAddImageLayout.setOnClickListener(imageClickListener);
                         aboutNewUserEditText.setText(dataSnapshot.child("about").getValue(String.class));
                         aboutNewUserEditText.setFocusable(true);
                         submitUserIDButton.setVisibility(View.VISIBLE);
 
-                        Bitmap bitmap = null;
+                        Picasso.with(getApplicationContext()).load(dataSnapshot.child("idImageURL").getValue(String.class)).into(idImageButton);
 
-                        try {
-                            URL url = new URL(dataSnapshot.child("idImageURL").getValue(String.class));
-                            bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                        } catch(IOException e) {
-                            System.out.println(e);
-                        }
-                       if(bitmap!=null){
-                           idImageButton.setImageBitmap(bitmap);
-                       }
 
 
                     }
                     progressDialogInitial.dismiss();
                 }else {
                     statusTextView.setText("Submit any document related to college admission!");
-                    idImageButton.setOnClickListener(imageClickListener);
+                    mAddImageLayout.setOnClickListener(imageClickListener);
                     aboutNewUserEditText.setFocusable(true);
                     submitUserIDButton.setVisibility(View.VISIBLE);
                     progressDialogInitial.dismiss();
@@ -338,7 +323,7 @@ public class VerificationPage extends BaseActivity {
                     String path = MediaStore.Images.Media.insertImage(VerificationPage.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
-                    idImageButton.setImageURI(mImageUri);
+                    Picasso.with(getApplicationContext()).load(mImageUri).into(idImageButton);
 
                 } catch (IOException e) {
                     e.printStackTrace();

@@ -1,41 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ll_notif"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="10dp">
-
-
+    android:layout_height="wrap_content">
 
     <LinearLayout
+        android:id="@+id/ll_notif"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_small">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_centerVertical="true">
-            <TextView
-                android:id="@+id/tv_notification_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10sp"
-                android:textColor="@color/primaryText"
-                android:text="Title"
-                android:textSize="18sp"/>
-            <TextView
-                android:id="@+id/tv_notification_desc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10sp"
-                android:text="Description"
-                android:textColor="@color/grey700"
-                android:textSize="12sp"/>
-        </LinearLayout>
+            android:layout_height="wrap_content">
 
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/imageView"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/banner_recent_item_link_bar"
+                app:roundAsCircle="true"
+                tools:srcCompat="@tools:sample/backgrounds/scenic[1]" />
+            <LinearLayout
+                android:id="@+id/ll_text_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/imageView"
+                android:layout_marginStart="@dimen/margin_small"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tv_notification_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:textColor="@color/primaryText" />
+                <TextView
+                    android:id="@+id/tv_notification_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:text="TextView"
+                    android:textColor="@color/primaryText"
+                    android:layout_marginBottom="@dimen/margin_x_small"/>
+                <TextView
+                    android:id="@+id/tv_notification_timeago"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:textColor="@color/secondaryText"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+            <ImageView
+                android:id="@+id/seen"
+                android:layout_width="7dp"
+                android:layout_height="7dp"
+                android:visibility="invisible"
+                android:layout_alignParentEnd="true"
+                android:layout_alignBottom="@+id/ll_text_group"
+                android:layout_marginBottom="@dimen/margin_small"
+                app:srcCompat="@drawable/circle_notification" />
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/margin_x_small"
+                android:background="@color/horizontalLine"
+                android:layout_below="@+id/ll_text_group"
+                android:visibility="gone"/>
+        </RelativeLayout>
     </LinearLayout>
 
-</LinearLayout>
+</android.support.v7.widget.CardView>

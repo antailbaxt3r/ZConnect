@@ -1,24 +1,31 @@
 package com.zconnect.zutto.zconnect;
 
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.adapters.UsersListRVAdapter;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.utilities.FeatureNamesUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -27,6 +34,32 @@ public class ShortlistedPeopleList extends BaseActivity {
 
     private Vector<UsersListItemFormat> usersListItemFormatVector = new Vector<UsersListItemFormat>();
     private ArrayList<String> names = new ArrayList<>(), nos = new ArrayList<>(), images = new ArrayList<>();
+    private String pName, pPrice, pDescription, pImage;
+    private TextView productName, productDescription, productPrice;
+    private ImageView productImage;
+     DatabaseReference productRef;
+    ValueEventListener listener;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(productRef!=null && listener!= null) {
+            productRef.addValueEventListener(listener);
+        }
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        productRef.removeEventListener(listener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        productRef.removeEventListener(listener);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +67,8 @@ public class ShortlistedPeopleList extends BaseActivity {
         setContentView(R.layout.activity_shortlisted);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
+        setTitle("Product Details");
         setSupportActionBar(toolbar);
 //        setTitle("List of people");
         if (toolbar != null) {
@@ -56,10 +91,15 @@ public class ShortlistedPeopleList extends BaseActivity {
 //            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-        setToolbarTitle("People who shortlisted");
+        setToolbarTitle("Product Details");
         showBackButton();
 
         showProgressDialog();
+
+        productName = findViewById(R.id.productNameInShortlist);
+        productDescription = findViewById(R.id.productDescriptionInShortlist);
+        productPrice = findViewById(R.id.priceInShortlist);
+        productImage = findViewById(R.id.postImgInShortlist);
 
         final String key = getIntent().getStringExtra("Key");
 
@@ -75,6 +115,41 @@ public class ShortlistedPeopleList extends BaseActivity {
 
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
                 .child("features").child("storeroom").child("products").child(key).child("UsersReserved");
+        productRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
+                .child("features").child("storeroom").child("products").child(key);
+
+
+        listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                try {
+                    pName = dataSnapshot.child("ProductName").getValue().toString();
+                    pDescription = dataSnapshot.child("ProductDescription").getValue().toString();
+                    pImage = dataSnapshot.child("Image").getValue().toString();
+
+                    Picasso.with(getApplicationContext()).load(pImage).into(productImage);
+                    productName.setText(pName);
+                    productDescription.setText(pDescription);
+                    if (!dataSnapshot.child("type").getValue(String.class).equals(ProductUtilities.TYPE_ASK_STR)) {
+                        pPrice = dataSnapshot.child("Price").getValue().toString();
+                        productPrice.setText("₹" + pPrice);
+
+                    }
+                }
+                catch (Exception e){
+                    Log.d("ShortlistedPeopleList","Product deleted but listener still intact: "+e.toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+
+
+
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -120,7 +195,7 @@ public class ShortlistedPeopleList extends BaseActivity {
 //                                            nos.add(item.getNumber());
 //                                            images.add(item.getImageurl());
 //                                        } catch (Exception e) {}
-//                                        adapter.notifyDataSetChanged();
+//                                        joinedForumsAdapter.notifyDataSetChanged();
 //
 //                                    }
 //                                }
@@ -169,7 +244,7 @@ public class ShortlistedPeopleList extends BaseActivity {
 //        }
 //
 //    }
-//    class adapter extends RecyclerView.Adapter<vh> {
+//    class joinedForumsAdapter extends RecyclerView.Adapter<vh> {
 //
 //        @Override
 //        public vh onCreateViewHolder(ViewGroup parent, int viewType) {

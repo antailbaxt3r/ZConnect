@@ -4,9 +4,11 @@ package com.zconnect.zutto.zconnect;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,9 +19,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -58,13 +60,12 @@ public class CabPoolAll extends BaseActivity {
     TreeMap<String, CabItemFormat> treeMap = new TreeMap<>();
     Vector<CabItemFormat> vector_fetched = new Vector<>();
     Vector<CabItemFormat> vector_final = new Vector<>();
-    TextView error;
     String DT;
     View.OnClickListener onEmpty;
     ValueEventListener allPools;
-    ProgressBar progressBar;
     FloatingActionButton fab;
     TextView noCabpoolText;
+    private ShimmerFrameLayout shimmerFrameLayoutCabpool;
 
     private SharedPreferences communitySP;
     public String communityReference;
@@ -124,13 +125,14 @@ public class CabPoolAll extends BaseActivity {
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
 
         if (toolbar != null) {
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            toolbar.setNavigationOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onSingleClick(View view) {
                     onBackPressed();
                 }
             });
@@ -161,35 +163,43 @@ public class CabPoolAll extends BaseActivity {
         // Inflate the layout for this fragment
 //        View view = inflater.inflate(R.layout.fragment_cab_pool_main, container, false);
         recyclerView = (RecyclerView) findViewById(R.id.pool_main_rv);
-        progressBar = (ProgressBar) findViewById(R.id.fragment_cab_pool_main_progress_circle);
         noCabpoolText = (TextView) findViewById(R.id.no_cabpool_text_fragment_cab_pooling);
-        error = (TextView) findViewById(R.id.message);
+        shimmerFrameLayoutCabpool = findViewById(R.id.shimmer_view_container_cabpool);
         cabPoolRVAdapter = new CabPoolRVAdapter(CabPoolAll.this, vector_final);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
         recyclerView.setAdapter(cabPoolRVAdapter);
-        progressBar.setVisibility(View.VISIBLE);
+        shimmerFrameLayoutCabpool.startShimmerAnimation();
         recyclerView.setVisibility(View.INVISIBLE);
         communitySP = CabPoolAll.this.getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
         fab = (FloatingActionButton) findViewById(R.id.fab_cab_pool_main);
-        fab.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new OnSingleClickListener()
+         {
             @Override
-            public void onClick(View v) {
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
+            public void onSingleClick(View v) {
 
-                meta.put("type","fromFeature");
+                if (!isNetworkAvailable(v.getContext())) {
+                    Snackbar snack = Snackbar.make(fab, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
+                    snack.show();
+                } else {
 
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta = new HashMap<>();
 
-                counterItemFormat.setUserID(mAuth.getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_SEARCH_POOL_OPEN);
-                counterItemFormat.setTimestamp(System.currentTimeMillis()/1000);
-                counterItemFormat.setMeta(meta);
+                    meta.put("type", "fromFeature");
 
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
-                CabPoolAll.this.startActivity(new Intent(CabPoolAll.this, CabPooling.class));
+                    counterItemFormat.setUserID(mAuth.getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_SEARCH_POOL_OPEN);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis() / 1000);
+                    counterItemFormat.setMeta(meta);
 
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
+                    CabPoolAll.this.startActivity(new Intent(CabPoolAll.this, CabPooling.class));
+                }
             }
         });
 
@@ -219,12 +229,16 @@ public class CabPoolAll extends BaseActivity {
                 vector_final.clear();
 
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
+                    if(shot.child("destination").getValue() != null && shot.child("source").getValue() != null && shot.child("PostedBy").child("ImageThumb").getValue() != null){
                     try {
                         CabItemFormat cabItemFormatShot = shot.getValue(CabItemFormat.class);
+
                         if (!cabItemFormatShot.getDestination().equals(null) && !cabItemFormatShot.getSource().equals(null)) {
                             vector_fetched.add(shot.getValue(CabItemFormat.class));
                         }
                     } catch (Exception e) {
+                        Log.d("CHOOLO", e.getMessage());
+                    }
                     }
                 }
 
@@ -260,18 +274,15 @@ public class CabPoolAll extends BaseActivity {
                 if (vector_final.size() == 0) {
                     recyclerView.setVisibility(View.GONE);
                     noCabpoolText.setVisibility(View.VISIBLE);
-                    error.setVisibility(View.VISIBLE);
-                    error.setOnClickListener(onEmpty);
 
                 } else {
                     recyclerView.setVisibility(View.VISIBLE);
                     noCabpoolText.setVisibility(View.GONE);
-                    error.setVisibility(View.GONE);
                     recyclerView.setAdapter(cabPoolRVAdapter);
                     cabPoolRVAdapter.notifyDataSetChanged();
                 }
-                progressBar.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.VISIBLE);
+                shimmerFrameLayoutCabpool.stopShimmerAnimation();
+                shimmerFrameLayoutCabpool.setVisibility(View.INVISIBLE);
                 if(viaDynamicLinkFlag)
                 {
                     LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
@@ -282,16 +293,9 @@ public class CabPoolAll extends BaseActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayoutCabpool.stopShimmerAnimation();
+                shimmerFrameLayoutCabpool.setVisibility(View.INVISIBLE);
                 recyclerView.setVisibility(View.VISIBLE);
-            }
-        };
-
-        onEmpty = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(CabPoolAll.this, AddCabPool.class);
-                startActivity(intent);
             }
         };
 

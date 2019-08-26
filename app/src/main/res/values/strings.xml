@@ -1,26 +1,14 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">ZConnect</string>
 
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_home">Community Connect</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
     <string name="transition_string">animate</string>
 
     <string name="category_prompt">Choose category</string>
-    <string name="dialog_message">This event has been sent for a review</string>
-    <string name="dialog_title">Access Denied</string>
-    <string name="request">Request</string>
-    <string name="ok">OK</string>
-    <string name="noImage">No Profile Image selected!,Do you want to continue without one?</string>
-    <string name="title_activity_all_events">AllEvents</string>
-    <string name="title_activity_tab_store_room">TabStoreRoom</string>
-    <string name="section_format">Hello World from section: %1$d</string>
-    <string name="title_activity_store_room">StoreRoom</string>
     <string name="about">ZConnect is an upcoming platform which will revolutionize your way of interaction with the community. ZConnect is the online equivalent of any community in which people live together, be it your college, your company, or your locality. ZConnect gives you the power to interact virtually with the people in your community, using ZConnect’s simplified interface. Get alerts on the latest events, updated contacts, offers from shops and second-hand products on sale in your community.</string>
 
     <string-array name="categories">
@@ -36,45 +24,10 @@
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="title_activity_shop">Shops</string>
     <string name="title_activity_shop_list">ShopList</string>
 
 
-    <string name="title_activity_shop_details">Shop Details</string>
-    <string name="title_activity_add_contact">Add Contact</string>
-    <string-array name="hostel">
-
-        <item>AH-1</item>
-        <item>AH-2</item>
-        <item>AH-3</item>
-        <item>AH-4</item>
-        <item>AH-5</item>
-        <item>AH-6</item>
-        <item>AH-7</item>
-        <item>AH-8</item>
-        <item>AH-9</item>
-        <item>CH-1</item>
-        <item>CH-2</item>
-        <item>CH-3</item>
-        <item>CH-4</item>
-        <item>CH-5</item>
-        <item>CH-6</item>
-        <item>CH-7</item>
-    </string-array>
-
-    <string-array name="location">
-        <item>Anywhere</item>
-        <item>Airport</item>
-        <item>Madgaon Railway Station</item>
-        <item>Vasco Railway Station</item>
-        <item>Karmali Railway Station</item>
-        <item>Madgaon Bus Stop</item>
-        <item>Panjim Bus Stop</item>
-        <item>Vasco Bus Stop</item>
-        <item>Bits</item>
-    </string-array>
     <string-array name="time">
         <item>Anytime</item>
         <item>00:00</item>
@@ -104,29 +57,19 @@
     </string-array>
 
 
-    <string name="hostel_prompt">Choose Hostel</string>
     <string name="destination_prompt">Choose Location</string>
     <string name="source_prompt">Choose Location</string>
     <string name="time_prompt">Choose Time</string>
-    <string name="title_activity_phonebook_details">PhonebookDetails</string>
     <string name="title_activity_phonebook_hostel_wise">PhonebookHostelWise</string>
-    <string name="title_activity_phonebook">Phonebook</string>
     <string name="title_activity_about_us">About Us</string>
     <string name="title_activity_advertisement">Advertisement</string>
-    <string name="title_activity_add_product">AddProduct</string>
     <string name="title_activity_view_image">viewImage</string>
-    <string name="title_activity_my_product">My Products</string>
-    <string name="title_activity_my_products">MyProducts</string>
-    <string name="title_activity_add_event">Add Event</string>
     <string name="title_activity_each_category">EachCategory</string>
-    <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_edit_profile">Edit Profile</string>
-    <string name="appwidget_text">Search Infone ...</string>
-    <string name="add_widget">Add widget</string>
+    <string name="appwidget_text">Search Infone …</string>
     <string name="title_activity_offers">Latest Offers</string>
     <string name="title_activity_shop_detail">Shop_detail</string>
 
-    <string name="title_activity_cab_pooling">Cab Pooling</string>
     <string name="title_activity_pool_list">Pools Available</string>
 
     <string name="title_activity_campus__map">Campus Map</string>
@@ -143,19 +86,11 @@
 
     <string name="native_ad_unit_id">ca-app-pub-9212249564562455/8277700418</string>
     <string name="native_ad_unit_id_2">ca-app-pub-9212249564562455/8277700418</string>
-    <string name="native_ad_unit_id_3">ca-app-pub-9212249564562455/8277700418</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="title_activity_tabbed_events">Events</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation</string>
-    <string name="title_activity_communities_around">Communities Around</string>
+    <string name="title_activity_communities_around">Communities</string>
     <string name="title_activity_create_community">CreateCommunity</string>
     <string name="title_activity_nitification_settings">NitificationSettings</string>
     <string name="title_activity_new_message">NewMessageActivity</string>
-    <string name="title_activity_messages">MessagesActivity</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
     <string name="tab_text_3">Tab 3</string>
     <string name="title_activity_cab_pool_locations">CabPoolLocations</string>
     <string name="title_activity_forums_people_list">ForumsPeopleList</string>
@@ -163,29 +98,24 @@
     <string name="infone_search">Infone Search</string>
     <string name="search_infone_hint">Search People</string>
     <string name="title_storeroom_shortlist">Shortlisted Products</string>
-    <string name="GPSAlertDialogTitle">Location Permission</string>
-    <string name="GPSAlertDialogMessage">allow permission</string>
-    <string name="cancel">cancel</string>
-    <string name="title_activity_verfication_page">Verfication</string>
+    <string name="title_activity_verfication_page">Verification</string>
     <string name="title_activity_admin_home">Admin Home</string>
-
-    <string name="title_recents_feature_view">Community Features</string>
 
 
     <string name="create_forum">New Forum</string>
     <string name="forum_first_msg_label">First Message</string>
     <string name="forum_first_msg_hint">Type a welcome message here</string>
 
-    <string name="status_hint">Type what you are thinking...</string>
+    <string name="status_hint">Type what you are thinking…</string>
     <string name="status_hint_ask_questions">Or ask anyone a question</string>
 
 
     <!--add status hints-->
-    <string name="status_hint_1">Is there ...?</string>
-    <string name="status_hint_2">Where can I ...?</string>
-    <string name="status_hint_3">Does anyone have ...?</string>
-    <string name="status_hint_4">Can anyone suggest ...?</string>
-    <string name="status_hint_5">Which is a better option ...?</string>
+    <string name="status_hint_1">Is there …?</string>
+    <string name="status_hint_2">Where can I …?</string>
+    <string name="status_hint_3">Does anyone have …?</string>
+    <string name="status_hint_4">Can anyone suggest …?</string>
+    <string name="status_hint_5">Which is a better option …?</string>
 
 
     <!--admin fragments text-->
@@ -209,7 +139,6 @@
     <string name="invitation_title">Invite Friends</string>
     <string name="invitation_message">Hey, check out this amazing app! ZConnect is a social network exclusively for our community.</string>
     <string name="invitation_deep_link">https://zconnect.page.link/Tbeh</string>
-    <string name="invitation_custom_image"></string>
     <string name="invitation_cta">Call to action</string>
 
 
@@ -252,4 +181,7 @@
     <string name="tc5">We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material we will try to provide at least ​​1 months notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.</string>
 
     <string name="tc6">If you have any questions about these Terms, please contact us at info@zconnect.xyz</string>
+    <string name="decline">Decline</string>
+    <string name="accept">Accept</string>
+    <string name="question">Question</string>
 </resources>

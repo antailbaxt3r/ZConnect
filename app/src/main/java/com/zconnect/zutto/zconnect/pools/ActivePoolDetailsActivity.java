@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -43,10 +44,10 @@ public class ActivePoolDetailsActivity extends BaseActivity {
     private Button btn_payment;
     private RecyclerView recyclerView;
     private TextView offers, orderDeadlineTime, deliveryTime, poolExtraDesc;
-    private LinearLayout ll_progressBar;
     private TextView loading_text;
-
+    private ShimmerFrameLayout shimmerFrameLayout;
     private PoolAddItemAdapter adapter;
+
     private ValueEventListener poolItemListener, poolOfferListener;
 
     private Pool pool;
@@ -137,8 +138,7 @@ public class ActivePoolDetailsActivity extends BaseActivity {
     }
 
     private void loadItemView() {
-        setProgressBarView(View.VISIBLE, "Loading list\nplease wait..");
-        setProgressBarView(View.VISIBLE, "Loading list\nplease wait..");
+
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolItem.URL_POOL_ITEM, pool.getPoolInfo().getShopID(), pool.getPoolInfo().getPoolID()));
         Log.d(TAG, "loadItemView : ref " + ref.toString());
         ref.addValueEventListener(poolItemListener);
@@ -153,6 +153,10 @@ public class ActivePoolDetailsActivity extends BaseActivity {
         text = "3. Orders will be delivered on " + timeUtilities.getMonthName("SHORT") + " " + timeUtilities.getDateTime().getDayOfMonth() + " " + timeUtilities.getDateTime().getYearOfEra() + ", " + timeUtilities.getTimeInHHMMAPM();
         deliveryTime.setText(text);
         poolExtraDesc.setText(pool.getPoolInfo().getExtras());
+        offers.setVisibility(View.INVISIBLE);
+        orderDeadlineTime.setVisibility(View.INVISIBLE);
+        deliveryTime.setVisibility(View.INVISIBLE);
+        poolExtraDesc.setVisibility(View.INVISIBLE);
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolInfo.URL_POOL_OFFER, pool.getPoolInfo().getShopID(), pool.getPoolInfo().getPoolID()));
         Log.d(TAG, "setPoolView : ref " + ref.toString());
         ref.addValueEventListener(poolOfferListener);
@@ -165,13 +169,16 @@ public class ActivePoolDetailsActivity extends BaseActivity {
         orderDeadlineTime = findViewById(R.id.order_deadline_time);
         deliveryTime = findViewById(R.id.order_delivery_time);
         poolExtraDesc = findViewById(R.id.pool_extra_desc);
-        ll_progressBar = findViewById(R.id.ll_progressBar);
         loading_text = findViewById(R.id.loading_text);
 
-        //setup adapter
+        shimmerFrameLayout = findViewById(R.id.shimmer_view_container_pool_list);
+
+        //setup joinedForumsAdapter
         adapter = new PoolAddItemAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+        shimmerFrameLayout.startShimmerAnimation();
+
 
         defineListener();
     }
@@ -186,13 +193,15 @@ public class ActivePoolDetailsActivity extends BaseActivity {
                     dish.setItemID(items.getKey());
                     adapter.insertAtEnd(dish);
                 }
-                setProgressBarView(View.GONE, "");
+                shimmerFrameLayout.stopShimmerAnimation();
+                shimmerFrameLayout.setVisibility(View.INVISIBLE);
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 //TODO on cancel
-                setProgressBarView(View.GONE, "");
+
             }
         };
 
@@ -207,6 +216,9 @@ public class ActivePoolDetailsActivity extends BaseActivity {
                     min_item = discountOffer.getMinQuantity();
                     // if(disPer != 0 && maxDiscount != 0 && minQuantity !=0)
                     offers.setVisibility(View.VISIBLE);
+                    orderDeadlineTime.setVisibility(View.VISIBLE);
+                    deliveryTime.setVisibility(View.VISIBLE);
+                    poolExtraDesc.setVisibility(View.VISIBLE);
                     offers.setText(String.format("1. OFFER: %d%% OFF upto " + getApplicationContext().getString(R.string.Rs) + "%d on a minimum order of %d items.", discount_percentage, max_amount, min_item));
                 }
             }
@@ -218,9 +230,5 @@ public class ActivePoolDetailsActivity extends BaseActivity {
         };
     }
 
-    private void setProgressBarView(int visibility, String message) {
-        ll_progressBar.setVisibility(visibility);
-        loading_text.setText(message);
 
-    }
 }

@@ -36,9 +36,9 @@
                     android:layout_height="wrap_content"
                     android:hint="Name"
                     android:gravity="center"
-                    TagsEditText:met_textColor="@color/white"
+                    TagsEditText:met_textColor="@color/black"
                     TagsEditText:met_textColorHint="@color/secondaryText"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textColorHint="@color/secondaryText"
                     android:textSize="20sp"/>
                 <FrameLayout
@@ -46,7 +46,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp">
-                    <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                    <com.facebook.drawee.view.SimpleDraweeView
+                        xmlns:fresco="http://schemas.android.com/apk/res-auto"
                         android:id="@+id/user_image_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -79,9 +80,9 @@
                     android:text="User Type"
                     android:gravity="center"
                     android:layout_gravity="center"
-                    android:textColor="@color/primaryText"
+                    android:textColor="@color/white"
                     android:background="@drawable/round_button_simple"
-                    android:backgroundTint="@color/white"
+                    android:backgroundTint="@color/deepPurple500"
                     android:textSize="12sp"
                     android:layout_marginTop="@dimen/margin_top_between_non_similar_views"
                     android:paddingStart="@dimen/button_padding_start_end"
@@ -159,6 +160,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/primaryText"
+                    android:text="Anonymous Username"
+                    android:textStyle="bold"
+                    android:paddingBottom="5dp"/>
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/anonymous_username_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Email"
+                    android:textColor="@color/primaryText"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primaryText"
                     android:text="Skills"
                     android:textStyle="bold"
                     android:paddingBottom="5dp"/>
@@ -171,13 +185,13 @@
                     android:hint="Skills"
                     android:inputType="text"
                     android:text=""
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/deepPurple500"
                     TagsEditText:allowSpaceInTag="true"
                     TagsEditText:tagsBackground="@drawable/square"
                     TagsEditText:tagsCloseImageLeft="@drawable/dot"
                     TagsEditText:tagsCloseImagePadding="@dimen/defaultTagsCloseImagePadding"
                     TagsEditText:tagsCloseImageRight="@drawable/ic_close_primary_dark_24dp"
-                    TagsEditText:tagsTextColor="@color/colorPrimaryDark"
+                    TagsEditText:tagsTextColor="@color/deeppurple700"
                     TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize" />
                 <TextView
                     android:layout_width="match_parent"

@@ -35,7 +35,7 @@ public class AddForumTab extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_forum_tab);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
 
         if (toolbar != null) {

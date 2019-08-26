@@ -3,13 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/card_background_color"
+    android:background="@color/white"
     android:orientation="vertical"
     android:layout_marginBottom="@dimen/margin_xx_small">
 
     <RelativeLayout
         android:id="@+id/leader_board_layout"
-        android:background="@color/hint"
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:duplicateParentState="true"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/black"
             android:textStyle="bold"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
@@ -40,12 +40,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/baseline_people_white_24"
-                android:tint="@color/colorPrimaryDark"/>
+                android:tint="@color/black"/>
             <TextView
                 android:id="@+id/total_members"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textSize="14sp"
                 android:text="100+"

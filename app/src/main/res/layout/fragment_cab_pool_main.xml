@@ -6,13 +6,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".CabPoolAll">
 
-    <ProgressBar
-        android:id="@+id/fragment_cab_pool_main_progress_circle"
-        android:layout_width="wrap_content"
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_view_container_cabpool"
+        android:layout_width="match_parent"
+        android:layout_marginTop="50dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:backgroundTint="@color/secondaryText2"
-        android:backgroundTintMode="src_atop"/>
+        android:orientation="vertical"
+        app:duration="2000">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/cabpool_shimmer_item" />
+
+            <include layout="@layout/cabpool_shimmer_item" />
+
+            <include layout="@layout/cabpool_shimmer_item" />
+
+            <include layout="@layout/cabpool_shimmer_item" />
+
+        </LinearLayout>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
     <TextView
         android:id="@+id/no_cabpool_text_fragment_cab_pooling"
         android:layout_width="wrap_content"
@@ -37,7 +56,9 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar_app_bar_home"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:popupTheme="@style/AppTheme.PopupOverlay">
+                <!--idhar-->
 
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
@@ -45,19 +66,10 @@
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingBottom="60dp"
+            android:clipToPadding="false"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:id="@+id/pool_main_rv"/>
-
-        <TextView
-            android:id="@+id/message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"
-            android:gravity="center"
-            android:visibility="gone"
-            android:text="No upcoming Pools.\nAdd one."
-            android:textSize="25sp" />
     </LinearLayout>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_cab_pool_main"
@@ -65,7 +77,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_search_white_24dp"
+        android:src="@drawable/ic_search_white_on_orange_24dd"
         app:backgroundTint="@color/colorHighlight"
         app:elevation="6dp"
         app:pressedTranslationZ="12dp"/>

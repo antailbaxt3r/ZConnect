@@ -11,10 +11,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
-
-
 
     <application
         android:name=".ZConnect"
@@ -25,6 +21,34 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".fragments.UpdateAppActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".OpenStatus"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".AddMembersToForumActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ShareToForum"
+            android:label="Share to Forums"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+                <data android:mimeType="text/*" />
+            </intent-filter>
+        </activity>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -34,7 +58,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-
         <!--
         Hardware acceleration is enabled by default for devices
         with API >= 11. Enabling it explicitly and globally might result
@@ -43,8 +66,7 @@
         <!-- meta data should be placed inside application element -->
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-        <!-- Razon pay API -->
+            android:value="@integer/google_play_services_version" /> <!-- Razon pay API -->
         <meta-data
             android:name="com.razorpay.ApiKey"
             android:value="rzp_live_pMQ3fHFcjSv6kP" />
@@ -61,9 +83,7 @@
         -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/colorPrimary" />
-
-        <!-- On start activity in full screen mode -->
+            android:resource="@color/colorPrimary" /> <!-- On start activity in full screen mode -->
         <activity
             android:name=".LogoFlashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -88,9 +108,7 @@
                     android:host="www.zconnect.com"
                     android:scheme="https" />
             </intent-filter>
-        </activity>
-
-        <!-- Crop Activity -->
+        </activity> <!-- Crop Activity -->
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:screenOrientation="portrait"
@@ -103,7 +121,7 @@
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".OpenEventDetail"
             android:label="Events"
@@ -283,7 +301,8 @@
         <activity
             android:name=".Campus_Map"
             android:label="@string/title_activity_campus__map"
-            android:theme="@style/Map">
+            android:theme="@style/Map"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zconnect.zutto.zconnect.HomeActivity" />
@@ -320,7 +339,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service android:name=".commonModules.instantIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
@@ -377,6 +395,7 @@
             android:label="@string/infone_search"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
+
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.SEARCH" /> -->
             <!-- </intent-filter> -->
@@ -408,7 +427,6 @@
             android:label="@string/title_activity_cab_pool_locations"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".ForumsPeopleList"
             android:label="@string/title_activity_forums_people_list"
@@ -437,6 +455,35 @@
             android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".Internships"
+            android:label="Internships"
+            android:parentActivityName=".HomeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".ApplyInternships"
+            android:label="Apply for Internship"
+            android:parentActivityName=".Internships"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".InternshipsDetails"
+            android:label="Internship Details"
+            android:parentActivityName=".Internships"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".MyInternships"
+            android:label="My Internships"
+            android:parentActivityName=".Internships"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".VerificationPage"
             android:label="@string/title_activity_verfication_page"
@@ -444,6 +491,11 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AdminHome"
+            android:label="@string/title_activity_admin_home"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".WebViewActivity"
             android:label="@string/title_activity_admin_home"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -458,27 +510,19 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".NotificationNoImage"
-            android:label="Text Notification"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".NotificationImage"
-            android:label="Image Notification"
+            android:label="Send Notification"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".NotificationAdmin"
-            android:label="Send Notifications"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Links" />
+        <activity android:name=".Links"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".pools.PoolActivity"
             android:label="Shop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".pools.UpcomingPoolDetailsActivity"
+        <activity
+            android:name=".pools.UpcomingPoolDetailsActivity"
             android:label="Order Details"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -542,9 +586,16 @@
             android:label="Request a Forums Tab"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
-
-
+        <activity
+            android:name=".addActivities.RequestInfoneCat"
+            android:label="Request a Infone Category"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".addActivities.CreatePoll"
+            android:label="Create a Poll"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

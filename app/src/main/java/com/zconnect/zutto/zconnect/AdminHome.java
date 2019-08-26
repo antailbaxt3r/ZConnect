@@ -1,7 +1,11 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -26,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -43,6 +48,8 @@ import com.zconnect.zutto.zconnect.itemFormats.PostedByDetails;
 import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
 import com.zconnect.zutto.zconnect.utilities.VerificationUtilities;
 import com.zconnect.zutto.zconnect.adapters.NewUserRVAdapter;
+
+import static com.zconnect.zutto.zconnect.R.drawable.ic_arrow_back_black_24dp;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.ref;
 
@@ -55,14 +62,29 @@ public class AdminHome extends BaseActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_home);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Admin Home");
         setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(ic_arrow_back_black_24dp);
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            onBackPressed();
+                        }
+                    });
+        }
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -83,7 +105,7 @@ public class AdminHome extends BaseActivity {
 //            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-        // Set up the ViewPager with the sections adapter.
+        // Set up the ViewPager with the sections joinedForumsAdapter.
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
@@ -109,8 +131,7 @@ public class AdminHome extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_admin_home, menu);
-        return true;
+        return false;
     }
 
     @Override
@@ -118,16 +139,7 @@ public class AdminHome extends BaseActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        switch(id) {
-            //noinspection SimplifiableIfStatement
-            case R.id.action_notifications:
-                Intent intent=new Intent(getApplicationContext(),NotificationAdmin.class);
-                startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        return false;
     }
 
 
@@ -167,7 +179,7 @@ public class AdminHome extends BaseActivity {
 
 
         //for admin functionalities
-        private TextView adminFuncTV0, adminFuncTV1,adminFuncTV2;
+        private TextView adminFuncTV0, adminFuncTV1,adminFuncTV2,adminFuncTV3;
         public PlaceholderFragment() {
         }
 
@@ -213,22 +225,37 @@ public class AdminHome extends BaseActivity {
             adminFuncTV0 = rootView.findViewById(R.id.admin_func_0);
             adminFuncTV1 = rootView.findViewById(R.id.admin_func_1);
             adminFuncTV2 = rootView.findViewById(R.id.admin_func_2);
+            adminFuncTV3 = rootView.findViewById(R.id.admin_func_3);
             View.OnClickListener listener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int option = v.getTag().toString().charAt(v.getTag().toString().length()-1) - '0';
-                    switch (option)
-                    {
-                        case 0:
-                            startActivity(new Intent(getContext(), CabPoolLocations.class));
-                            break;
-                        case 1:
-                            startActivity(new Intent(getContext(), AddForumTab.class));
-                            break;
-                        case 2:
-                            startActivity(new Intent(getContext(),MakeAdmin.class));
-                        default:
-                            break;
+
+                    if (!isNetworkAvailable2(v.getContext())) {
+                        Snackbar snack = Snackbar.make(rootView, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                        snackBarText.setTextColor(Color.WHITE);
+                        snack.getView().setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimaryDark));
+                        snack.show();
+                    } else {
+
+                        int option = v.getTag().toString().charAt(v.getTag().toString().length() - 1) - '0';
+                        switch (option) {
+                            case 0:
+                                startActivity(new Intent(getContext(), CabPoolLocations.class));
+                                break;
+                            case 1:
+                                startActivity(new Intent(getContext(), AddForumTab.class));
+                                break;
+                            case 2:
+                                startActivity(new Intent(getContext(), MakeAdmin.class));
+                                break;
+                            case 3:
+                                startActivity(new Intent(getContext(), NotificationImage.class));
+                                break;
+                            default:
+                                break;
+                        }
+
                     }
                 }
             };
@@ -236,6 +263,7 @@ public class AdminHome extends BaseActivity {
             adminFuncTV0.setOnClickListener(listener);
             adminFuncTV1.setOnClickListener(listener);
             adminFuncTV2.setOnClickListener(listener);
+            adminFuncTV3.setOnClickListener(listener);
 
             return rootView;
         }
@@ -243,6 +271,7 @@ public class AdminHome extends BaseActivity {
         private View requestsFromUsersTab(LayoutInflater inflater, ViewGroup container) {
 
             View rootView = inflater.inflate(R.layout.fragment_admin_requests, container, false);
+
             newRequestsDataReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("admin").child("requests");
             newRequestsRV = rootView.findViewById(R.id.new_requests_recycler);
             linearLayoutManager = new LinearLayoutManager(getContext());
@@ -261,7 +290,9 @@ public class AdminHome extends BaseActivity {
                             NewRequestItemFormat newRequest = shot.getValue(NewRequestItemFormat.class);
                             newRequestItemFormats.add(newRequest);
                         }
-                        catch (Exception e) { }
+                        catch (Exception e) {
+                            Log.d("Admin Home", e.toString());
+                        }
                     }
                     if (newRequestItemFormats.isEmpty())
                         noRequestMessage.setVisibility(View.VISIBLE);
@@ -283,7 +314,7 @@ public class AdminHome extends BaseActivity {
                 }
             };
 
-            newRequestsDataReference.addValueEventListener(requestsDataListener);
+            newRequestsDataReference.addListenerForSingleValueEvent(requestsDataListener);
 
             requestsRVAdapter = new NewRequestRVAdapter(rootView.getContext(),newRequestItemFormats);
             newRequestsRV.setAdapter(requestsRVAdapter);
@@ -300,6 +331,7 @@ public class AdminHome extends BaseActivity {
             noUserMessage = rootView.findViewById(R.id.section_label);
             progressBar = rootView.findViewById(R.id.progress_bar);
             progressBar.setVisibility(View.VISIBLE);
+            noUserMessage.setVisibility(View.INVISIBLE);
             usersDatalistener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -337,10 +369,14 @@ public class AdminHome extends BaseActivity {
                             flag = true;
                         }catch (Exception e){}
                     }
-                    progressBar.setVisibility(View.GONE);
-                    if(flag) {
-                        noUserMessage.setVisibility(View.VISIBLE);
-                    }
+
+                    new Handler().postDelayed(() -> {
+                        progressBar.setVisibility(View.GONE);
+                        if(flag) {
+                            noUserMessage.setVisibility(View.VISIBLE);
+                        }
+                    }, 500);
+
                     adapter.notifyDataSetChanged();
                 }
 
@@ -445,4 +481,10 @@ public class AdminHome extends BaseActivity {
             return 3;
         }
     }
+
+    public static boolean isNetworkAvailable2(final Context context) {
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager != null && connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+    }
+
 }

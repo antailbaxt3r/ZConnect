@@ -2,6 +2,10 @@ package com.zconnect.zutto.zconnect.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +28,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.zconnect.zutto.zconnect.ChatActivity;
+import com.zconnect.zutto.zconnect.OnSingleClickListener;
 import com.zconnect.zutto.zconnect.addActivities.CreateForum;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
@@ -234,21 +239,30 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         }
 
         public void createForum(final String uid,Boolean newUser){
-            itemView.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View v) {
-                    CounterItemFormat counterItemFormat = new CounterItemFormat();
-                    HashMap<String, String> meta= new HashMap<>();
-                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                    counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_CREATE_FORUM_OPEN);
-                    counterItemFormat.setTimestamp(System.currentTimeMillis());
-                    counterItemFormat.setMeta(meta);
-                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                    counterPush.pushValues();
-                    final Intent intent = new Intent(context, CreateForum.class);
-                    intent.putExtra("uid", uid);
-                    intent.putExtra("flag", "false");
-                    context.startActivity(intent);
+                public void onSingleClick(View v) {
+
+                    if (!isNetworkAvailable(v.getContext())) {
+                        Snackbar snack = Snackbar.make(createForum, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
+                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                        snackBarText.setTextColor(Color.WHITE);
+                        snack.getView().setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimaryDark));
+                        snack.show();
+                    } else {
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        HashMap<String, String> meta = new HashMap<>();
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_CREATE_FORUM_OPEN);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        counterItemFormat.setMeta(meta);
+                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                        counterPush.pushValues();
+                        final Intent intent = new Intent(context, CreateForum.class);
+                        intent.putExtra("uid", uid);
+                        intent.putExtra("flag", "false");
+                        context.startActivity(intent);
+                    }
                 }
             });
 
@@ -257,6 +271,12 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                 itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
             }
         }
+
+        public boolean isNetworkAvailable(final Context context) {
+            final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+            return connectivityManager != null && connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+        }
+
     }
 
     private class joinedViewHolder extends RecyclerView.ViewHolder {
@@ -294,9 +314,9 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         void openChat(final String uid, final String tabId, final String  name, Boolean newUser){
 
             if(!newUser) {
-                mView.setOnClickListener(new View.OnClickListener() {
+                mView.setOnClickListener(new OnSingleClickListener() {
                     @Override
-                    public void onClick(View view) {
+                    public void onSingleClick(View view) {
                         Intent intent = new Intent(context, ChatActivity.class);
 
                         CounterItemFormat counterItemFormat = new CounterItemFormat();
@@ -386,9 +406,9 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         void openChat(final String uid, final String tabId, final String  name,Boolean newUser){
 
             if(!newUser) {
-                mView.setOnClickListener(new View.OnClickListener() {
+                mView.setOnClickListener(new OnSingleClickListener() {
                     @Override
-                    public void onClick(View view) {
+                    public void onSingleClick(View view) {
                         CounterItemFormat counterItemFormat = new CounterItemFormat();
                         HashMap<String, String> meta = new HashMap<>();
                         meta.put("type", "fromFeature");
@@ -421,9 +441,9 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 
             final DatabaseReference forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tabUID).child(key);
 
-            joinButton.setOnClickListener(new View.OnClickListener() {
+            joinButton.setOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onSingleClick(View v) {
                     CounterItemFormat counterItemFormat = new CounterItemFormat();
                     HashMap<String, String> meta= new HashMap<>();
 
@@ -470,7 +490,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
-    private class  blankViewHolder extends  RecyclerView.ViewHolder{
+    public static class  blankViewHolder extends  RecyclerView.ViewHolder{
 
         public blankViewHolder(View itemView) {
             super(itemView);

@@ -43,10 +43,12 @@ import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
+import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -73,7 +75,7 @@ public class AddCabPool extends BaseActivity {
     private DatabaseReference databaseReferenceCabPool;
     private FirebaseUser mUser;
     private long postTimeMillis;
-    private ArrayList<String> locations= new ArrayList<String>();
+    private ArrayList<String> locations = new ArrayList<String>();
     private ArrayAdapter<String> locationsSpinnerAdapter;
     private ProgressDialog progressDialog;
 
@@ -81,7 +83,7 @@ public class AddCabPool extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_cab_pool);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -114,10 +116,10 @@ public class AddCabPool extends BaseActivity {
         databaseReferenceCabPool.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot shot: dataSnapshot.getChildren()){
+                for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     try {
                         locations.add(shot.child("locationName").getValue().toString());
-                    }catch (Exception e){
+                    } catch (Exception e) {
 
                     }
                 }
@@ -149,13 +151,12 @@ public class AddCabPool extends BaseActivity {
         destination.setAdapter(locationsSpinnerAdapter);
 
 
-
         ref.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
                 name = user.getUsername();
-                number =user.getMobileNumber();
+                number = user.getMobileNumber();
                 imageThumb = user.getImageURLThumbnail();
                 userUID = user.getUserUID();
             }
@@ -264,42 +265,7 @@ public class AddCabPool extends BaseActivity {
                                         newPost.child("to").setValue(T2);
                                         newPost.child("usersListItemFormats").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(usersListItemFormat);
                                         newPost.child("PostTimeMillis").setValue(postTimeMillis);
-                                        postedBy.setValue(null);
-                                        postedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                        mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                postedBy.child("Username").setValue(dataSnapshot.child("username").getValue().toString());
-                                                //needs to be changed after image thumbnail is put
-                                                postedBy.child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());
-                                            }
 
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
-
-                                            }
-                                        });
-
-
-
-                                        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_CABPOOL);
-                                        numberNotificationForFeatures.setCount();
-                                        Log.d("NumberNoti setting for ", FeatureDBName.KEY_CABPOOL);
-
-
-                                        CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                        HashMap<String, String> meta= new HashMap<>();
-
-                                        meta.put("source",String.valueOf(source.getSelectedItem()));
-                                        meta.put("destination",String.valueOf(destination.getSelectedItem()));
-
-                                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                                        counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_ADDED);
-                                        counterItemFormat.setTimestamp(System.currentTimeMillis());
-                                        counterItemFormat.setMeta(meta);
-
-                                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                                        counterPush.pushValues();
 
 
                                         //writing to database for recent items
@@ -323,12 +289,26 @@ public class AddCabPool extends BaseActivity {
                                         newPost2.child("PostTimeMillis").setValue(postTimeMillis);
                                         newPost2PostedBy.setValue(null);
                                         newPost2PostedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+
                                         mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
+                                                postedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                                postedBy.child("Username").setValue(dataSnapshot.child("username").getValue().toString());
+                                                //needs to be changed after image thumbnail is put
+                                                postedBy.child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());
                                                 newPost2PostedBy.child("Username").setValue(dataSnapshot.child("username").getValue().toString());
                                                 //needs to be changed after image thumbnail is put
                                                 newPost2PostedBy.child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());
+                                                UserItemFormat userData = dataSnapshot.getValue(UserItemFormat.class);
+
+                                                GlobalFunctions.createForumWithDetails("Cabpool - " + goingTime +" "+ s_dayOfMonth+"/"+s_monthOfYear,
+                                                        key,userData,"cabpools",
+                                                        "Cabpool:" + "From:" + String.valueOf(source.getSelectedItem()) + "\nTo:" + String.valueOf(destination.getSelectedItem()) + "\nGoing time:" + goingTime + "\nReturning Time:+" + returnTime,
+                                                        "https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/taxi_icon.png?alt=media&token=e2d26476-bc86-4bd3-a33c-b27f744a9491"
+                                                );
+
                                             }
 
                                             @Override
@@ -336,6 +316,27 @@ public class AddCabPool extends BaseActivity {
 
                                             }
                                         });
+
+
+                                        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_CABPOOL);
+                                        numberNotificationForFeatures.setCount();
+                                        Log.d("NumberNoti setting for ", FeatureDBName.KEY_CABPOOL);
+
+
+                                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                        HashMap<String, String> meta = new HashMap<>();
+
+                                        meta.put("source", String.valueOf(source.getSelectedItem()));
+                                        meta.put("destination", String.valueOf(destination.getSelectedItem()));
+
+                                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                        counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_ADDED);
+                                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                        counterItemFormat.setMeta(meta);
+
+                                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                        counterPush.pushValues();
+
 
                                         //writing uid of cabpool to homePosts node in Users1.uid for handling data conistency
                                         mPostedByDetails.child("homePosts").child(key).setValue(true);
@@ -373,19 +374,21 @@ public class AddCabPool extends BaseActivity {
 //                                        NotificationSender notificationSender=new NotificationSender(null,null,null,null,null,null,null,KEY_CABPOOL,true,false,getApplicationContext());
 //                                        notificationSender.execute();
                                         FirebaseMessaging.getInstance().subscribeToTopic(key);
-                                        NotificationSender notificationSender = new NotificationSender(AddCabPool.this,FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        NotificationSender notificationSender = new NotificationSender(AddCabPool.this, FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                                        NotificationItemFormat cabAddNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD,FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        NotificationItemFormat cabAddNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD, FirebaseAuth.getInstance().getCurrentUser().getUid());
                                         cabAddNotification.setCommunityName(communityTitle);
                                         notificationSender.execute(cabAddNotification);
 
                                         GlobalFunctions.addPoints(10);
 
                                         Intent intent = new Intent(AddCabPool.this,CabPoolAll.class);
-
+//
                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         startActivity(intent);
-                                        //AddCabPool.this.startActivity(new Intent(AddCabPool.this, CabPoolAll.class));
+
+
+
 
                                         finish();
 
@@ -432,7 +435,7 @@ public class AddCabPool extends BaseActivity {
 
     }
 
-    public void setDefaults(){
+    public void setDefaults() {
         try {
 
             String source = getIntent().getStringExtra("source");
@@ -457,16 +460,16 @@ public class AddCabPool extends BaseActivity {
             }
 
             String date = getIntent().getStringExtra("date");
-            if(!date.equals("null")){
-                SimpleDateFormat abc=new SimpleDateFormat("dd/M/yyyy");
-                Date a=abc.parse(date);
-                Log.e("msg",String.valueOf(a));
-                s_dayOfMonth= (new SimpleDateFormat("dd")).format(a);
-                s_monthOfYear= (new SimpleDateFormat("MM")).format(a);
-                s_year= (new SimpleDateFormat("yyyy")).format(a);
-                Log.e("msg",s_dayOfMonth);
-                Log.e("msg",s_monthOfYear);
-                Log.e("msg",s_year);
+            if (!date.equals("null")) {
+                SimpleDateFormat abc = new SimpleDateFormat("dd/M/yyyy");
+                Date a = abc.parse(date);
+                Log.e("msg", String.valueOf(a));
+                s_dayOfMonth = (new SimpleDateFormat("dd")).format(a);
+                s_monthOfYear = (new SimpleDateFormat("MM")).format(a);
+                s_year = (new SimpleDateFormat("yyyy")).format(a);
+                Log.e("msg", s_dayOfMonth);
+                Log.e("msg", s_monthOfYear);
+                Log.e("msg", s_year);
                 this.calender.setText(date);
             }
 
@@ -506,10 +509,10 @@ public class AddCabPool extends BaseActivity {
 
     public String getTime() {
 
-        double Av=(T1+T2)/2;
-        Log.e("ABC",String.valueOf(Av));
-        Log.e("ABC",String.valueOf((int)Av));
-        if(Av==(int)Av){
+        double Av = (T1 + T2) / 2;
+        Log.e("ABC", String.valueOf(Av));
+        Log.e("ABC", String.valueOf((int) Av));
+        if (Av == (int) Av) {
 
             String str = decimalFormat.format((int) Av - 00) + ":00";
             return str;

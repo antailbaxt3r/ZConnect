@@ -189,7 +189,7 @@
                     android:text="Pay"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
-                    android:background="@drawable/border_fill"/>
+                    android:background="@drawable/round_button_primary"/>
             </LinearLayout>
         </LinearLayout>
         <!-- Dummy item to prevent EditText from receiving focus -->

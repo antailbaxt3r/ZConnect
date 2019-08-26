@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -34,6 +35,7 @@ public class MyRides extends BaseActivity {
     CabPoolRVAdapter adapter;
     ValueEventListener newListener;
     String name, number, email;
+    ShimmerFrameLayout shimmerFrameLayout;
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
     private FirebaseAuth mAuth;
 
@@ -41,8 +43,9 @@ public class MyRides extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_rides);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
+        shimmerFrameLayout = findViewById(R.id.shimmer_view_container_myRides);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -66,6 +69,8 @@ public class MyRides extends BaseActivity {
         poolrv = (RecyclerView) findViewById(R.id.ridesrv);
         defaultmsg = (TextView) findViewById(R.id.rides_errorMessage1);
         mAuth = FirebaseAuth.getInstance();
+        poolrv.setVisibility(View.INVISIBLE);
+        shimmerFrameLayout.startShimmerAnimation();
         ref.child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -86,6 +91,9 @@ public class MyRides extends BaseActivity {
         poolrv.setHasFixedSize(true);
         poolrv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
         poolrv.setAdapter(adapter);
+        poolrv.setVisibility(View.VISIBLE);
+        shimmerFrameLayout.stopShimmerAnimation();
+        shimmerFrameLayout.setVisibility(View.GONE);
         query.keepSynced(true);
         newListener = new ValueEventListener() {
             @Override

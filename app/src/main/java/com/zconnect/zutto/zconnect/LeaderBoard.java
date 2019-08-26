@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -47,6 +48,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
 
+import static com.zconnect.zutto.zconnect.R.drawable.ic_arrow_back_black_24dp;
+
 public class LeaderBoard extends BaseActivity {
 
     private RecyclerView leaderBoardRV;
@@ -61,18 +64,25 @@ public class LeaderBoard extends BaseActivity {
 
     private TextView currentUserName,currentUserPoints,currentUserRank;
     private SimpleDraweeView currentUserImage;
-    private ProgressBar progressBar;
+    private ShimmerFrameLayout shimmerFrameLayout;
     private LinearLayout leaderBoardContent;
     private String lastUserUID;
-    private int lastUserPointsNum;
+    private int lastUserPointsNum, lastRank = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leader_board);
 
-        Toolbar mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar mActionBarToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mActionBarToolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        mActionBarToolbar.setNavigationIcon(ic_arrow_back_black_24dp);
+        mActionBarToolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+
+        mActionBarToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
 
         mActionBarToolbar.setTitle("Leader Board");
 
@@ -95,11 +105,11 @@ public class LeaderBoard extends BaseActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
-        progressBar = findViewById(R.id.progress_bar);
+        shimmerFrameLayout = findViewById(R.id.shimmer_view_container_leaderboard);
         leaderBoardContent = findViewById(R.id.leader_board_content);
 
         leaderBoardContent.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
+        shimmerFrameLayout.startShimmerAnimation();
 
         currentUserName = findViewById(R.id.current_user_name);
         currentUserPoints = findViewById(R.id.current_user_points);
@@ -151,20 +161,27 @@ public class LeaderBoard extends BaseActivity {
                 if(currentUserLayout.getVisibility() != View.VISIBLE)
                 {
                     currentUserLayout.setVisibility(View.GONE);
-                    for (int j=0;j<leaderBoardItemFormats.size();j++){
-                        leaderBoardItemFormats.get(j).setRank("#"+(j+1));
-                        if(leaderBoardItemFormats.get(j).getUserUID().equals(FirebaseAuth.getInstance().getUid())){
-                            currentUserLayout.setVisibility(View.VISIBLE);
-                            currentUserName.setText(leaderBoardItemFormats.get(j).getName());
-                            currentUserPoints.setText(leaderBoardItemFormats.get(j).getUserPointsNum() + "");
-                            currentUserRank.setText(leaderBoardItemFormats.get(j).getRank());
-                            currentUserImage.setImageURI(leaderBoardItemFormats.get(j).getImage());
-                        }
+                }
+                else
+                {
+                    currentUserLayout.setVisibility(View.VISIBLE);
+                }
+                int j;
+                for (j=lastRank;j<leaderBoardItemFormats.size();j++){
+                    leaderBoardItemFormats.get(j).setRank("#"+(j+1));
+                    if(leaderBoardItemFormats.get(j).getUserUID().equals(FirebaseAuth.getInstance().getUid())){
+                        currentUserLayout.setVisibility(View.VISIBLE);
+                        currentUserName.setText(leaderBoardItemFormats.get(j).getName());
+                        currentUserPoints.setText(leaderBoardItemFormats.get(j).getUserPointsNum() + "");
+                        currentUserRank.setText(leaderBoardItemFormats.get(j).getRank());
+                        currentUserImage.setImageURI(leaderBoardItemFormats.get(j).getImage());
                     }
                 }
+                lastRank=j;
 
                 leaderBoardContent.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayout.setVisibility(View.INVISIBLE);
+                shimmerFrameLayout.stopShimmerAnimation();
                 leaderBoardRVAdapter.notifyDataSetChanged();
                 if(lastUserUID!=null)
                     leaderBoardRVAdapter.setLoaded();
@@ -196,7 +213,7 @@ public class LeaderBoard extends BaseActivity {
                         leaderBoardQuery = leaderBoardRef.orderByChild("userPointsNum").endAt(lastUserPointsNum,lastUserUID).limitToLast(20);
                         leaderBoardQuery.addValueEventListener(leaderBoardListener);
                     }
-                }, 3000);
+                }, 1000);
             }
         });
         leaderBoardRV.setAdapter(leaderBoardRVAdapter);

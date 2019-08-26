@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,14 +41,15 @@ public class viewImage extends BaseActivity {
     View mViewLayout;
     View.OnClickListener handleClickOnView;
     ProgressDialog mProgress;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_image);
         mProgress = new ProgressDialog(this);
-        mProgress.setMessage("Loading...");
-        mProgress.show();
+        progressBar = findViewById(R.id.progressBar_image);
+        progressBar.setVisibility(View.VISIBLE);
 
         Bundle extra = getIntent().getExtras();
         if (extra == null)
@@ -91,7 +93,7 @@ public class viewImage extends BaseActivity {
 
     void shareImage() {
         saveImage saveImage = new saveImage();
-        localAbsoluteFilePath = saveImage.saveImageLocally(event_image, name);
+        localAbsoluteFilePath = saveImage.saveImageLocally(event_image, name,getApplicationContext());
         if (localAbsoluteFilePath != null && localAbsoluteFilePath != "") {
 
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -109,7 +111,7 @@ public class viewImage extends BaseActivity {
         mProgress.setMessage("Saving to gallery...");
         mProgress.show();
         saveImage saveImage = new saveImage();
-        localAbsoluteFilePath = saveImage.saveImageLocally(event_image, name);
+        localAbsoluteFilePath = saveImage.saveImageLocally(event_image, name,getApplicationContext());
         mProgress.dismiss();
         if (localAbsoluteFilePath != null)
             Toast.makeText(this, "Saved Successfully", Toast.LENGTH_LONG).show();
@@ -191,6 +193,7 @@ public class viewImage extends BaseActivity {
         imageView.setImageBitmap(event_image);
         mAttacher = new PhotoViewAttacher(imageView);
         mProgress.dismiss();
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     class getImage extends AsyncTask<String, Integer, Integer> {

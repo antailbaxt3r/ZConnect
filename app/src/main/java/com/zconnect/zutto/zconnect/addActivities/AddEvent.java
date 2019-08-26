@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect.addActivities;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -25,13 +26,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
-import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
-import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
@@ -67,6 +72,7 @@ import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
+import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 
 
@@ -79,6 +85,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -95,7 +102,8 @@ public class AddEvent extends BaseActivity {
     boolean flag = false;
     DatabaseReference mFeaturesStats;
     private Uri mImageUri = null;
-    private ImageView mAddImage;
+    private SimpleDraweeView mAddImage;
+    private RelativeLayout mAddImageLayout;
     private MaterialEditText mEventName;
     private MaterialEditText mEventDescription;
     private MaterialEditText mVenue;
@@ -115,19 +123,15 @@ public class AddEvent extends BaseActivity {
     //new reference created
     private DatabaseReference mPostedByDetails;
 
-    private SlideDateTimeListener listener = new SlideDateTimeListener() {
-        @Override
-        public void onDateTimeSet(Date date) {
-            eventDate = date.toString();
-            dateString = String.valueOf(date.getTime());
-            Date evdate = null;
-            try {
-                evdate = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").parse(eventDate);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+    public void setDate (Calendar c) {
+
+            Date temp = new Date(c.getTimeInMillis());
+
+            eventDate = temp.toString();
+            dateString = String.valueOf(c.getTimeInMillis());
+
             DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
-            DateTime _date = new DateTime(evdate, indianZone);
+            DateTime _date = new DateTime(c, indianZone);
             String minute = String.valueOf(_date.getMinuteOfHour());
             if(_date.getMinuteOfHour() < 10) {
                 minute = "0" + minute;
@@ -136,7 +140,6 @@ public class AddEvent extends BaseActivity {
             dateTime.setText(dateTimeText);
 
         }
-    };
 
     ArrayList<String> venueOptions = new ArrayList<>();
 
@@ -147,7 +150,7 @@ public class AddEvent extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
         LatLngBounds bitsGoa = new LatLngBounds(new LatLng(15.386095, 73.876165), new LatLng(15.396108, 73.878407));
@@ -183,11 +186,13 @@ public class AddEvent extends BaseActivity {
 //            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-        mAddImage = (ImageView) findViewById(R.id.imageButton);
+
+        mAddImageLayout = findViewById(R.id.image_layout);
+        mAddImage =  findViewById(R.id.imageButton);
         mEventName = (MaterialEditText) findViewById(R.id.name);
         mEventDescription = (MaterialEditText) findViewById(R.id.description);
         mStorage = FirebaseStorage.getInstance().getReference();
-        mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
+
         gmapLocationTaken = (CheckBox) findViewById(R.id.add_events_location_checkbox);
         mDatabaseVerified = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents");
         //mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/NotVerifiedPosts");
@@ -201,7 +206,6 @@ public class AddEvent extends BaseActivity {
             EventID = bundle.getString("eventID");
         }
 
-        mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         CalendarButton = (LinearLayout) findViewById(R.id.dateAndTime);
         mVenue = (MaterialEditText) findViewById(R.id.VenueText);
         mDirections = (ImageView) findViewById(R.id.venuePicker);
@@ -213,7 +217,7 @@ public class AddEvent extends BaseActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        mAddImage.setOnClickListener(new View.OnClickListener() {
+        mAddImageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (ContextCompat.checkSelfPermission(
@@ -242,14 +246,62 @@ public class AddEvent extends BaseActivity {
         CalendarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new SlideDateTimePicker.Builder(getSupportFragmentManager())
-                        .setListener(listener)
-                        .setInitialDate(new Date())
-                        .setIs24HourTime(true)
-                        .build()
-                        .show();
+
+                final View dialogView = View.inflate(view.getContext(), R.layout.date_time_picker, null);
+                final AlertDialog alertDialog = new AlertDialog.Builder(view.getContext()).create();
 
 
+                DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
+                TimePicker timePicker = (TimePicker) dialogView.findViewById(R.id.time_picker);
+
+                Button dateButton = dialogView.findViewById(R.id.date_button);
+                Button timeButton = dialogView.findViewById(R.id.time_button);
+
+                dialogView.findViewById(R.id.date_button).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        datePicker.setVisibility(View.VISIBLE);
+                        timePicker.setVisibility(View.GONE);
+
+                        dateButton.setBackground(view.getResources().getDrawable(R.drawable.primary_button));
+                        timeButton.setBackground(view.getResources().getDrawable(R.drawable.secondary_button));
+
+                        dateButton.setTextColor(view.getResources().getColor(R.color.white));
+                        timeButton.setTextColor(view.getResources().getColor(R.color.colorPrimaryDark));
+
+                    }
+                });
+
+                dialogView.findViewById(R.id.time_button).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        datePicker.setVisibility(View.GONE);
+                        timePicker.setVisibility(View.VISIBLE);
+
+                        dateButton.setBackground(view.getResources().getDrawable(R.drawable.secondary_button));
+                        timeButton.setBackground(view.getResources().getDrawable(R.drawable.primary_button));
+
+                        dateButton.setTextColor(view.getResources().getColor(R.color.colorPrimaryDark));
+                        timeButton.setTextColor(view.getResources().getColor(R.color.white));
+                    }
+                });
+
+                dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Calendar calendar = new GregorianCalendar(datePicker.getYear(),
+                                datePicker.getMonth(),
+                                datePicker.getDayOfMonth(),
+                                timePicker.getCurrentHour(),
+                                timePicker.getCurrentMinute());
+
+                        setDate(calendar);
+                        alertDialog.dismiss();
+
+                    }});
+                alertDialog.setView(dialogView);
+                alertDialog.show();
             }
         });
         if (EventID != null) {
@@ -354,7 +406,7 @@ public class AddEvent extends BaseActivity {
             if (!TextUtils.isEmpty(eventNameValue) && !TextUtils.isEmpty(eventDescriptionValue) && mImageUri != null && eventDate != null) {
                 Calendar c = Calendar.getInstance();
                 SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmm");
-                String formattedDate = df.format(c.getTime());
+                final String formattedDate = df.format(c.getTime());
                 final StorageReference filepath = mStorage.child("EventImage").child(formattedDate + mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
                 UploadTask uploadTask = filepath.putFile(mImageUri);
                 uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -381,6 +433,7 @@ public class AddEvent extends BaseActivity {
                                 DatabaseReference newPost = mDatabaseVerified.push();
                                 final DatabaseReference postedByDetails = newPost.child("PostedBy");
                                 postedByDetails.setValue(null);
+
                                 postedByDetails.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -397,6 +450,7 @@ public class AddEvent extends BaseActivity {
                                 });
                                 postTimeMillis = System.currentTimeMillis();
                                 final String key = newPost.getKey();
+                                Log.d("Key",key);
                                 newPost.child("Key").setValue(key);
                                 newPost.child("EventName").setValue(eventNameValue);
                                 newPost.child("EventDescription").setValue(eventDescriptionValue);
@@ -411,17 +465,32 @@ public class AddEvent extends BaseActivity {
                                 newPost.child("UserID").setValue(mAuth.getCurrentUser().getUid());
                                 newPost.child("Verified").setValue("true");
                                 newPost.child("BoostCount").setValue(0);
+                                Intent createForum = new Intent(AddEvent.this,CreateForum.class);
+                                createForum.putExtra(ForumUtilities.KEY_ACTIVITY_TYPE_STR,ForumUtilities.VALUE_CREATE_EVENT_FORUM_STR);
+                                createForum.putExtra(ForumUtilities.KEY_REF_LOCATION,mDatabaseVerified.child(newPost.getKey()).toString());
+                                createForum.putExtra(ForumUtilities.KEY_FORUM_IMAGE_STR,downloadUri.toString());
+                                createForum.putExtra(ForumUtilities.KEY_FORUM_DESC_STR,eventDescriptionValue);
+                                createForum.putExtra(ForumUtilities.KEY_FORUM_TAB_STR,"others");
 
                                 SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
                                 Log.d("Event Date", eventDate);
+                                String stringEventDate = eventDate;
                                 try {
                                     eventTimeMillis = sdf.parse(eventDate).getTime();
+                                    Date date = sdf.parse(eventDate);
+                                    SimpleDateFormat dt1 = new SimpleDateFormat("h:mm a EEE, d MMM yyyy");
+                                    stringEventDate = dt1.format(date);
+
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
 
                                 newPost.child("EventTimeMillis").setValue(eventTimeMillis);
                                 newPost.child("PostTimeMillis").setValue(postTimeMillis);
+                                createForum.putExtra(ForumUtilities.KEY_MESSAGE,"Event Name: "+eventNameValue+"\nDate"+stringEventDate+"\nVenu: "+eventVenue);
+                                createForum.putExtra(ForumUtilities.KEY_FORUM_NAME_STR,eventNameValue+" - "+stringEventDate);
+
+
 
                                 //For Recents
                                 DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(newPost.getKey());
@@ -502,6 +571,7 @@ public class AddEvent extends BaseActivity {
                                     }
                                 });
                                 FirebaseMessaging.getInstance().subscribeToTopic(key);
+                                startActivity(createForum);
 
                             } else {
                                 DatabaseReference newPost = mDatabaseVerified.push();
@@ -524,6 +594,7 @@ public class AddEvent extends BaseActivity {
                                 });
                                 postTimeMillis = System.currentTimeMillis();
                                 final String key = newPost.getKey();
+                                Log.d("key",key);
                                 newPost.child("Key").setValue(key);
                                 newPost.child("EventName").setValue(eventNameValue);
                                 newPost.child("EventDescription").setValue(eventDescriptionValue);
@@ -538,14 +609,29 @@ public class AddEvent extends BaseActivity {
                                 newPost.child("Verified").setValue("false");
                                 newPost.child("UserID").setValue(mAuth.getCurrentUser().getUid());
                                 newPost.child("BoostCount").setValue(0);
+                                Intent createForum = new Intent(AddEvent.this,CreateForum.class);
+                                createForum.putExtra(ForumUtilities.KEY_ACTIVITY_TYPE_STR,ForumUtilities.VALUE_CREATE_EVENT_FORUM_STR);
+                                createForum.putExtra(ForumUtilities.KEY_REF_LOCATION,mDatabaseVerified.child(newPost.getKey()).toString());
+                                createForum.putExtra(ForumUtilities.KEY_FORUM_IMAGE_STR,downloadUri.toString());
+                                createForum.putExtra(ForumUtilities.KEY_FORUM_DESC_STR,eventDescriptionValue);
+                                createForum.putExtra(ForumUtilities.KEY_FORUM_TAB_STR,"others");
 
                                 SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
                                 Log.d("Event Date", eventDate);
+                                String stringEventDate = eventDate;
                                 try {
                                     eventTimeMillis = sdf.parse(eventDate).getTime();
+                                    Date date = sdf.parse(eventDate);
+                                    SimpleDateFormat dt1 = new SimpleDateFormat("h:mm a EEE, d MMM yyyy");
+                                    stringEventDate = dt1.format(date);
+
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
+                                createForum.putExtra(ForumUtilities.KEY_MESSAGE,"Event Name: "+eventNameValue+"\nDate"+stringEventDate+"\nVenu: "+eventVenue);
+                                createForum.putExtra(ForumUtilities.KEY_FORUM_NAME_STR,eventNameValue+" - "+stringEventDate);
+
+
                                 newPost.child("EventTimeMillis").setValue(eventTimeMillis);
                                 newPost.child("PostTimeMillis").setValue(postTimeMillis);
 
@@ -603,6 +689,7 @@ public class AddEvent extends BaseActivity {
                                 });
 
                                 ////writing uid of event to homePosts node in Users1.uid for handling data conistency
+                                startActivity(createForum);
                                 mPostedByDetails.child("homePosts").child(key).setValue(true);
 
                                 //Sending Notifications
@@ -614,11 +701,11 @@ public class AddEvent extends BaseActivity {
 
                             mProgress.dismiss();
                             if (!flag) {
-                                Snackbar snack = Snackbar.make(mEventDescription, "Event sent for verification !!", Snackbar.LENGTH_LONG);
+                               /* Snackbar snack = Snackbar.make(mEventDescription, "Event sent for verification !!", Snackbar.LENGTH_LONG);
                                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                                 snackBarText.setTextColor(Color.WHITE);
                                 snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
-                                snack.show();
+                                snack.show();*/
                             }
 //                        Intent intent = new Intent(AddEvent.this, TabbedEvents.class);
 //                        if (!flag) {
@@ -795,7 +882,8 @@ public class AddEvent extends BaseActivity {
 
                     mImageUri = Uri.parse(path);
                     editImageflag = true;
-                    mAddImage.setImageURI(mImageUri);
+
+                    Picasso.with(this).load(mImageUri).into(mAddImage);
 
                 } catch (IOException e) {
                     e.printStackTrace();

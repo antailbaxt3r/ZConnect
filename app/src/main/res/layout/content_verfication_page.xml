@@ -15,15 +15,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="status"
-        android:textSize="30dp"
+        android:textSize="30sp"
         android:textColor="@color/primaryText"/>
 
-    <ImageButton
-        android:layout_marginTop="@dimen/margin_top_between_non_similar_views"
-        android:id="@+id/verication_image"
+    <RelativeLayout
+        android:id="@+id/image_layout"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@drawable/dashed_border" />
+        android:padding="5dp"
+        android:background="@drawable/dashed_border"
+        android:layout_height="200dp">
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:layout_marginTop="@dimen/margin_top_between_non_similar_views"
+            android:id="@+id/verification_image"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
 
     <EditText
         android:id="@+id/about_new_user"

@@ -64,7 +64,7 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
     FirebaseAuth mAuth;
     SharedPreferences sharedPref;
     Boolean status;
-
+String recieverKey;
     SharedPreferences communitySP;
     String communityReference;
 
@@ -345,14 +345,24 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
     public void setBoost(final String key, final String name) {
 
         final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(key);
+eventDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+    @Override
+    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        recieverKey = (String) dataSnapshot.child("PostedBy").child("UID").getValue();
+    }
 
+    @Override
+    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+    }
+});
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final ImageButton boostBtn = (ImageButton) mView.findViewById(R.id.boostBtn);
         final TextView eventNumLit = (TextView) mView.findViewById(R.id.eventsNumLit);
 
 
 
-        eventDatabase.child("BoostersUids").addValueEventListener(new ValueEventListener() {
+        eventDatabase.child("BoostersUids").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -390,9 +400,13 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
                     if(!flag){
                         Map<String, Object> taskMap = new HashMap<String, Object>();
                         taskMap.put(user.getUid(), user.getUid());
+                        if(eventNumLit.getText().toString().equals("0")){
+                            eventNumLit.setText("1");
+                        }else {
+                            eventNumLit.setText(String.valueOf(Integer.valueOf(eventNumLit.getText().toString()) + 1));
+                        }
                         eventDatabase.child("BoostersUids").updateChildren(taskMap);
-
-
+                        boostBtn.setColorFilter(mView.getContext().getResources().getColor(R.color.lit));
 
                         DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         user.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -401,13 +415,13 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
                                 UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
 
                                 NotificationSender notificationSender = new NotificationSender(itemView.getContext(),FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                NotificationItemFormat eventBoostNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST,FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                NotificationItemFormat eventBoostNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST,FirebaseAuth.getInstance().getCurrentUser().getUid(),recieverKey,1);
                                 eventBoostNotification.setItemKey(key);
                                 eventBoostNotification.setUserImage(userItemFormat.getImageURLThumbnail());
                                 eventBoostNotification.setItemName(name);
                                 eventBoostNotification.setUserName(userItemFormat.getUsername());
                                 eventBoostNotification.setCommunityName(communityTitle);
-
+                                eventBoostNotification.setRecieverKey(recieverKey);
                                 notificationSender.execute(eventBoostNotification);
                             }
 
@@ -417,9 +431,18 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
                             }
 
                         });
+                        flag = true;
 
                     }else {
                         eventDatabase.child("BoostersUids").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
+                            eventNumLit.setText(String.valueOf(Integer.valueOf(eventNumLit.getText().toString())-1));
+                            if(eventNumLit.getText().toString().equals("0")){
+                                eventNumLit.setText("0");
+                            }
+                            boostBtn.setColorFilter(mView.getContext().getResources().getColor(R.color.primaryText));
+                        flag = false;
+
+
 
                     }
                 }

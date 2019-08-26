@@ -117,20 +117,6 @@ exports.countCommunityMembers = functions.database.ref('/communities/{communityI
     .then((usersData) => countRef.set(usersData.numChildren()));
 });
 
-exports.countTotalMessages = functions.database.ref('/communities/{communityID}/features/forums/categories/{catID}')
-.onWrite((change, context)  => {
-  
-  const communityID = context.params.communityID;
-  const catID = context.params.catID;
-  const tabID = change.after.child("tab").val();
-  const countRef = change.after.ref.parent.parent.child(`tabsCategories/${tabID}/${catID}/totalMessages`);
-  const count = change.after.child("Chat").numChildren();
-  
-  return countRef.set(count);
-
-  // return  admin.database().ref('/communities/'+ event.params.communityID +'/features/forums/tabsCategories/'+ event.data.child("tab").val()+'/' + event.params.catID+'/totalMessages').set(event.data.child("Chat").numChildren());
-});
-
 exports.syncTry = functions.database.ref('/communities/{communityID}/Users1/{uid}/')
 .onUpdate((change, context) => {
 	
@@ -161,7 +147,21 @@ exports.syncTry = functions.database.ref('/communities/{communityID}/Users1/{uid
 exports.countForumMembers = functions.database.ref('/communities/{communityID}/features/forums/tabsCategories/{tabID}/{forumID}/users')
 .onUpdate((change, context) => {
 	const totalMembersRef = change.after.ref.parent.child("totalMembers");
-	return totalMembersRef.set(change.after.numChildren());
+	return totalMembersRef.update(change.after.numChildren());
+});
+
+exports.countTotalMessages = functions.database.ref('/communities/{communityID}/features/forums/categories/{catID}')
+.onWrite(async (change, context)  => {
+  
+  const communityID = context.params.communityID;
+  const catID = context.params.catID;
+  const tabID = change.after.child("tab").val();
+  const countRef = change.after.ref.parent.parent.child(`tabsCategories/${tabID}/${catID}/totalMessages`);
+  const count = change.after.child("Chat").numChildren();
+  
+  return countRef.update(count);
+
+  // return  admin.database().ref('/communities/'+ event.params.communityID +'/features/forums/tabsCategories/'+ event.data.child("tab").val()+'/' + event.params.catID+'/totalMessages').set(event.data.child("Chat").numChildren());
 });
 
 exports.syncForumToUserForum_Add = functions.database.ref('/communities/{communityID}/features/forums/tabsCategories/{tabID}/{forumID}/users/{uid}')
@@ -176,8 +176,11 @@ exports.syncForumToUserForum_Add = functions.database.ref('/communities/{communi
     {
       delete forumObj["name"];
     }
-    delete forumObj["users"];
-    return userForumRef.child(forumID).set(forumObj);
+    // else
+    // {
+      delete forumObj["users"];
+    // }
+    return userForumRef.child(forumID).update(forumObj);
   });
 });
 
@@ -210,6 +213,59 @@ exports.countNumberOfForums = functions.database.ref('/communities/{communityID}
 .onWrite((change, context) => {
   const totalJoinedForumsRef = change.after.ref.parent.child('totalJoinedForums');
   return totalJoinedForumsRef.set(change.after.numChildren());
+});
+
+
+exports.updateLastMessageAfterDeletion = functions.database.ref('communities/{communityID}/features/forums/tabsCategories/{tabID}/{forumID}/lastMessage')
+.onDelete((snapshot, context) => {
+  const forumID = context.params.forumID;
+  const chatsRef = snapshot.ref.parent.parent.parent.parent.child('categories').child(forumID).child('Chat');
+  return chatsRef.orderByChild('timeDate').limitToLast(1).once('value', messageSnapshot => {
+    const messageKey = Object.keys(messageSnapshot.val())[0];
+    const secondLastMessage = messageSnapshot.val()[messageKey];
+    secondLastMessage["key"] = messageKey;
+    return snapshot.ref.set(secondLastMessage);
+  });
+});
+
+exports.addTitleImagePersChatUserForums = functions.database.ref('/communities/{communityID}/features/forums/tabsCategories/personalChats/{forumID}')
+.onCreate((snapshot, context) => {
+  // return;
+  let { forumID } = context.params;
+  snapshot.ref.child('totalMessages').set(0);
+  console.log("1 ", forumID, snapshot.val());
+  if(Object.keys(snapshot.child("users").val()).length!==2)
+    return console.log("Both users did not get added in the personal chat at once");
+  const uid1 = Object.keys(snapshot.child("users").val())[0];
+  const uid2 = Object.keys(snapshot.child("users").val())[1];
+  console.log("User 1 ", uid1, "User 2 ", uid2);
+  const userForumRef1 = snapshot.ref.parent.parent.parent.child("userForums").child(uid1).child("joinedForums");
+  const userForumRef2 = snapshot.ref.parent.parent.parent.child("userForums").child(uid2).child("joinedForums");
+  const userForumsRef = snapshot.ref.parent.parent.parent.child("userForums");
+  const forumObj = snapshot.val();
+  const _forumObj1 = {...forumObj, name: forumObj.users[uid2].name,
+                                  image: forumObj.users[uid2].imageThumb,
+                                  imageThumb: forumObj.users[uid2].imageThumb,
+                                  };
+  const _forumObj2 = {...forumObj, name: forumObj.users[uid1].name,
+                                  image: forumObj.users[uid1].imageThumb,
+                                  imageThumb: forumObj.users[uid1].imageThumb};
+  delete _forumObj1["users"];
+  delete _forumObj2["users"];
+  userForumRef1.child(forumID).update(_forumObj1);
+  userForumRef2.child(forumID).update(_forumObj2);
+  console.log("Name 1 ", _forumObj1.name, "Name 2 ", _forumObj2.name);
+  console.log("Image 1 ", _forumObj1.imageThumb, "Image 2 ", _forumObj2.imageThumb);
+  var updatedData = {};
+  updatedData[uid1 + "/joinedForums/" + forumID] = {..._forumObj1};
+  updatedData[uid2 + "/joinedForums/" + forumID] = {..._forumObj2};
+  return userForumsRef.update(updatedData);
+});
+
+exports.countNumberOfInAppNotifs = functions.database.ref('/communities/{communityID}/Users1/{uid}/notifications')
+.onWrite((change, context) => {
+  const totalInAppNotifsRef = change.after.ref.parent.child('notificationStatus/totalNotifications');
+  return totalInAppNotifsRef.set(change.after.numChildren());
 });
 
 //for new apps
@@ -250,6 +306,30 @@ exports.syncUserPointsAndUserPointsNum2 = functions.database.ref('/communities/{
         }
 			// }
 		});
+});
+
+exports.addNewShopPoolToHome = functions.database.ref('communities/{communityID}/features/shops/pools/current/{poolID}')
+.onCreate((snapshot, context) => {
+  let shopPostObj = {};
+  const { communityID } = context.params;
+  
+  return snapshot.ref.parent.once('value', poolSnapshot => {
+    let poolObj = poolSnapshot.val();
+    let homeRef = poolSnapshot.ref.root.child(`communities/${communityID}/home`).push();
+    shopPostObj = {
+      'Key': homeRef.key,
+      'PostTimeMillis': (new Date()).getTime(),
+      'desc': poolObj.poolInfo.description,
+      'desc2': "",
+      'feature': 'shops',
+      'id': homeRef.key,
+      'imageurl': poolObj.poolInfo.imageURL,
+      'name': poolObj.poolInfo.name,
+      'recentType': 'ShopPost',
+      'timestampOrderReceivingDeadline':poolObj.timestampOrderReceivingDeadline,
+    };
+    return homeRef.set(shopPostObj);
+  });
 });
 
 exports.getPayment = functions.database.ref('communities/{communityID}/features/shops/orders/current/{uid}/{orderID}/paymentGatewayID')
@@ -461,19 +541,65 @@ exports.countCommunitiesJoined = functions.database.ref('userCommunities/{uid}/c
     return countRef.set(change.after.numChildren());
 });
 
-exports.updateLastMessageAfterDeletion = functions.database.ref('communities/{communityID}/features/forums/tabsCategories/{tabID}/{forumID}/lastMessage')
+exports.deleteForumInAppNotif = functions.database.ref('communities/{communityID}/features/forums/categories/{forumID}')
 .onDelete((snapshot, context) => {
-  const forumID = context.params.forumID;
-  const chatsRef = snapshot.ref.parent.parent.parent.parent.child('categories').child(forumID).child('Chat');
-  return chatsRef.orderByChild('timeDate').limitToLast(1).once('value', messageSnapshot => {
-    const messageKey = Object.keys(messageSnapshot.val())[0];
-    const secondLastMessage = messageSnapshot.val()[messageKey];
-    secondLastMessage["key"] = messageKey;
-    return snapshot.ref.set(secondLastMessage);
+  let { forumID, communityID } = context.params;
+  const forumInAppNotifsRef = snapshot.ref.parent.parent.child("inAppNotifications").child(forumID);
+  const personal_inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/Users1`);
+  return forumInAppNotifsRef.once('value', notificationsSnapshot => {
+    return notificationsSnapshot.forEach(notif => {
+      if(notif.hasChild('receiverUID'))
+        personal_inAppNotifsRef.child(notif.child('receiverUID').val()).child("notifications").child(notif.key).remove();
+      notif.ref.remove();
+    });
   });
 });
 
-exports.addTitleImagePersChatUserForums = functions.database.ref('/communities/{communityID}/features/forums/tabsCategories/{tabID}/{forumID}')
+exports.deleteStoreroomInAppNotif = functions.database.ref('communities/{communityID}/features/storeroom/products/{productID}')
+.onDelete((snapshot, context) => {
+  let { productID, communityID } = context.params;
+  const productInAppNotifsRef = snapshot.ref.parent.parent.child('inAppNotifications').child(productID);
+  const personal_inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/Users1`);
+  return productInAppNotifsRef.once('value', notificationsSnapshot => {
+    return notificationsSnapshot.forEach(notif => {
+      if(notif.hasChild('receiverUID'))
+        personal_inAppNotifsRef.child(notif.child('receiverUID').val()).child("notifications").child(notif.key).remove();
+      notif.ref.remove();
+    });
+  });
+});
+
+exports.deleteEventsInAppNotif = functions.database.ref('communities/{communityID}/features/events/activeEvents/{eventID}')
+.onDelete((snapshot, context) => {
+  let { eventID, communityID } = context.params;
+  const eventInAppNotifsRef = snapshot.ref.parent.parent.child('inAppNotifications').child(eventID);
+  const personal_inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/Users1`);
+  return eventInAppNotifsRef.once('value', notificationsSnapshot => {
+    return notificationsSnapshot.forEach(notif => {
+      if(notif.hasChild('receiverUID'))
+        personal_inAppNotifsRef.child(notif.child('receiverUID').val()).child("notifications").child(notif.key).remove();
+      notif.ref.remove();
+    });
+  });
+});
+
+exports.deleteStatusesInAppNotif = functions.database.ref('communities/{communityID}/home/{statusID}')
+.onDelete((snanpshot, context) => {
+  if(snanpshot.child('feature').val()!=="Message")
+    return console.log("Deleted post is not a status.");
+  let { statusID, communityID } = context.params;
+  const statusesInAppNotifsRef = snanpshot.ref.parent.parent.child(`features/statuses/inAppNotifications/${statusID}`);
+  const personal_inAppNotifsRef = snanpshot.ref.root.child(`communities/${communityID}/Users1`);
+  return statusesInAppNotifsRef.once('value', notificationsSnapshot => {
+    return notificationsSnapshot.forEach(notif => {
+      if(notif.hasChild('receiverUID'))
+        personal_inAppNotifsRef.child(notif.child('receiverUID').val()).child('notifications').child(notif.key).remove();
+      notif.ref.remove();
+    });
+  });
+});
+
+exports.syncCabChatsWithCabForums = functions.database.ref('communities/{communityID}/features/cabPool/allCabs/{cabID}/Chat/{messageID}/')
 .onCreate((snapshot, context) => {
   let { tabID, forumID } = context.params;
   console.log("1 ", tabID, forumID, snapshot.val());
@@ -509,53 +635,48 @@ exports.addTitleImagePersChatUserForums = functions.database.ref('/communities/{
   && userForumRef2.child(forumID).set(_forumObj2);
 });
 
-exports.deleteForumInAppNotif = functions.database.ref('communities/{communityID}/features/forums/categories/{forumID}')
-.onDelete((snapshot, context) => {
-  let { forumID, communityID } = context.params;
-  const forumInAppNotifsRef = snapshot.ref.parent.parent.child("inAppNotifications").child(forumID);
-  const global_inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/globalNotifications`);
-  const personal_inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/Users1`);
-  return forumInAppNotifsRef.once('value', notificationsSnapshot => {
-    return notificationsSnapshot.forEach(notif => {
-      if(notif.hasChild('receiverUID'))
-        personal_inAppNotifsRef.child(notif.child('receiverUID').val()).child(notif.key).remove();
-      else
-        global_inAppNotifsRef.child(notif.key).remove();
-      notif.ref.remove();
+exports.syncCabForumsWithCabChats = functions.database.ref('communities/{communityID}/features/forums/categories/{cabID}/Chat/{messageID}/')
+.onWrite((change, context) => {
+  const { communityID, cabID, messageID } = context.params;
+  return change.after.ref.parent.parent.child('tab').once('value', tabSnapShot => {
+    if(tabSnapShot.val()!=="cabpools")
+      return;
+      const cabChatRef = change.before.ref.root.child(`communities/${communityID}/features/cabPool/allCabs/${cabID}/Chat`);
+      // eslint-disable-next-line consistent-return
+      return cabChatRef.once('value', chatSnapshot => {
+        if(chatSnapshot.hasChild(messageID))
+        {
+          return console.log("Already synced this message: ", change.after.child('message').val());
+        }
+        return cabChatRef.child(messageID).set(change.after.val());
+>>>>>>> anshuman-test
     });
   });
 });
 
-exports.deleteStoreroomInAppNotif = functions.database.ref('communities/{communityID}/features/storeroom/products/{productID}')
-.onDelete((snapshot, context) => {
-  let { productID, communityID } = context.params;
-  const productInAppNotifsRef = snapshot.parent.parent.child('inAppNotifications').child(productID);
-  const global_inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/globalNotifications`);
-  const personal_inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/Users1`);
-  return productInAppNotifsRef.once('value', notificationsSnapshot => {
-    return notificationsSnapshot.forEach(notif => {
-      if(notif.hasChild('receiverUID'))
-        personal_inAppNotifsRef.child(notif.child('receiverUID').val()).child(notif.key).remove();
-      else
-        global_inAppNotifsRef.child(notif.key).remove();
-      notif.ref.remove();
+exports.addUserInternships = functions.database.ref('communities/{communityID}/features/internships/opportunities/{internshipID}/users/{uid}')
+.onCreate((snapshot, context) => {
+  const { internshipID, uid } = context.params;
+  return snapshot.ref.parent.parent.once('value', internshipSnapshot => {
+    const internshipObj = internshipSnapshot.val();
+    delete internshipObj["users"];
+    const addUserInternshipsRef = snapshot.ref.parent.parent.parent.parent.child('usersInternships').child('appliedInternships').child(uid);
+    return addUserInternshipsRef.child(internshipID).set(internshipObj);
     });
-  });
 });
 
-exports.deleteEventsInAppNotif = functions.database.ref('communities/{communityID}/features/events/activeEvents/{eventID}')
-.onDelete((snapshot, context) => {
-  let { eventID, communityID } = context.params;
-  const eventInAppNotifsRef = snapshot.parent.parent.child('inAppNotifications').child(eventID);
-  const global_inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/globalNotifications`);
-  const personal_inAppNotifsRef = snapshot.ref.root.child(`communities/${communityID}/Users1`);
-  return eventInAppNotifsRef.once('value', notificationsSnapshot => {
-    return notificationsSnapshot.forEach(notif => {
-      if(notif.hasChild('receiverUID'))
-        personal_inAppNotifsRef.child(notif.child('receiverUID').val()).child(notif.key).remove();
-      else
-        global_inAppNotifsRef.child(notif.key).remove();
-      notif.ref.remove();
-    });
+exports.createCommunity = functions.database.ref('createCommunity/{communityID}')
+.onCreate(async (snanpshot, context) => {
+  if(!snanpshot.child('create').val())
+    return;
+  const { communityID } = context.params;
+  const newCommunityRef = snanpshot.ref.root.child(`communities/${communityID}`);
+  await snanpshot.ref.root.child('communities/templateNew').once('value', templateSnapshot => {
+    newCommunityRef.set(templateSnapshot.val());
+  });
+  const newCommunityInfoRef = snanpshot.ref.root.child(`communitiesInfo/${communityID}`);
+  await snanpshot.ref.root.child('communitiesInfo/templateNew').once('value', templateSnapshot => {
+    newCommunityInfoRef.set(templateSnapshot.val());
+>>>>>>> anshuman-test
   });
 });

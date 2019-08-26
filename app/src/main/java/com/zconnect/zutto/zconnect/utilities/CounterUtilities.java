@@ -3,6 +3,11 @@ package com.zconnect.zutto.zconnect.utilities;
 public class CounterUtilities {
 
     //infone
+
+    public static final String KEY_INFONE_REQUEST_CATEGORY = "infoneRequestCategory";
+
+    public static final String KEY_INFONE_REQUEST_CATEGORY_OPEN = "infoneRequestCategoryOpen";
+
     //checked
     public static final String KEY_INFONE_ADD_CONTACT_OPEN = "infoneAddContactOpen";
     //checked
@@ -23,6 +28,13 @@ public class CounterUtilities {
     public static final String KEY_INFONE_CALL = "infoneCall";
     //checked
     public static final String KEY_INFONE_VALIDATE = "infoneValidate";
+
+
+    public static final String KEY_INTERNSHIPS_OPEN = "internshipsOpen";
+
+    public static final String KEY_INTERNSHIPS_APPLY = "internshipsApply";
+
+    public static final String KEY_INTERNSHIPS_MY_INTERNSHIPS_OPEN = "internshipsMyInternshipsOpen";
 
     //cabPool
     //checked
@@ -138,6 +150,12 @@ public class CounterUtilities {
     //checked
     public static final String KEY_FORUMS_EDIT_FORUM_OPEN = "forumsEditForumOpen";
 
+    public static final String KEY_FORUMS_ANOYMOUS_MESSAGE_ADD = "forumsAnonymousMessageAdd";
+
+    public static final String KEY_FORUMS_ANOYMOUS_MESSAGE_VIEW = "forumsAnonymousMessageView";
+
+    public static final String KEY_FORUMS_DARK_CHAT_OPEN = "forumsDarkChatOpen";
+
     //profile
     //checked
     public static final String KEY_PROFILE_OPEN = "profileOpen";
@@ -156,6 +174,8 @@ public class CounterUtilities {
     //checked
     public static final String KEY_PROFILE_EDIT_OPEN = "profileEdit";
 
+    public static final String KEY_PROFILE_MATCHED = "profileMatched";
+
     //notifications
     public static final String KEY_NOTIFICATIONS_OPEN = "notificationsOpen";
 
@@ -168,6 +188,10 @@ public class CounterUtilities {
 
     public static final String KEY_NOTICES_DELETE_NOTICE = "deleteNotice";
 
+    //Links
+    public static final String KEY_LINKS_OPEN = "linksOpen";
+
+    public static final String KEY_LINKS_CLICK = "linksClick";
 
     //Shops
     public static final String KEY_SHOPS_OPEN = "shopsOpen";
@@ -203,5 +227,12 @@ public class CounterUtilities {
     public static final String KEY_RECENTS_SCROLL_TOP = "recentsScrollTop";
     //checked
     public static final String KEY_RECENTS_BANNER_CLICK = "recentsBannerClick";
+
+    //for polls
+    public static final String KEY_RECENTS_ADD_POLL = "recentsAddPoll";
+    public static final String KEY_RECENTS_VOTE_POLL = "recentsVotePoll";
+
+    //for update app
+    public static final String KEY_RECENTS_UPDATE_APP_CLICK = "recentsUpdateAppClick";
 
 }
