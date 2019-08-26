@@ -233,7 +233,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
             }
             else
             {   progressDialog.dismiss();
-                Toast.makeText(getApplicationContext(), "Could not connect to server.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Could not connect to server sdfs.", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -248,10 +248,14 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
                     urlc.setRequestProperty("Connection", "close");
                     urlc.setConnectTimeout(1500);
                     urlc.connect();
+                    Log.e("YOLO","6");
                     return (urlc.getResponseCode() == 200);
                 } catch (IOException e) {
+                    Log.e("YOLO","5");
                     Log.e(TAG, "Error checking internet connection", e);
                     return false;
+
+
                 }
             }
         };
@@ -260,15 +264,19 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
             //Give the task 5 seconds to complete
             //if not it raises a timeout exception
             Object result = future.get(5, TimeUnit.SECONDS);
+            Log.e("YOLO","1");
             //finished in time
             return (boolean) result;
         }catch (TimeoutException ex){
             //Didn't finish in time
+            Log.e("YOLO","2");
             return false;
         } catch (InterruptedException e) {
+            Log.e("YOLO","3");
             e.printStackTrace();
             return false;
         } catch (ExecutionException e) {
+            Log.e("YOLO","4");
             e.printStackTrace();
             return false;
         }

@@ -102,33 +102,33 @@ public class LogoFlashActivity extends BaseActivity {
 
         if (communityReference != null) {
 
-            DatabaseReference duplicateCommunity = FirebaseDatabase.getInstance().getReference().child("communities").child("newTest");
-
-            duplicateCommunity.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    FirebaseDatabase.getInstance().getReference().child("communities").child("template").setValue(dataSnapshot.getValue());
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-
-            DatabaseReference duplicateCommunityInfo = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child("newTest");
-
-            duplicateCommunityInfo.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child("template").setValue(dataSnapshot.getValue());
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
+//            DatabaseReference duplicateCommunity = FirebaseDatabase.getInstance().getReference().child("communities").child("templateNew");
+//
+//            duplicateCommunity.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    FirebaseDatabase.getInstance().getReference().child("communities").child("uiet").setValue(dataSnapshot.getValue());
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                }
+//            });
+//
+//            DatabaseReference duplicateCommunityInfo = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child("templateNew");
+//
+//            duplicateCommunityInfo.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child("uiet").setValue(dataSnapshot.getValue());
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                }
+//            });
 
 
             mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui/logoFlash");

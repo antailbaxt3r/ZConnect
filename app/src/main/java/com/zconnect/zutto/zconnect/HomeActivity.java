@@ -985,20 +985,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         editProfileValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                navHeaderImageUrl = dataSnapshot.child("imageURL").getValue(String.class);
-                String _username = dataSnapshot.getValue(UserItemFormat.class).getUsername();
-                if(_username!=null || !_username.isEmpty())
-                    navHeaderUserNameTv.setText(dataSnapshot.getValue(UserItemFormat.class).getUsername());
-                else
-                    navHeaderUserNameTv.setText("ZConnect");
-                if(navHeaderImageUrl!= null){
-                    navHeaderImage = findViewById(R.id.iv_z_connect_logo_nav_header1);
-                    try {
-                        navHeaderImage.setImageURI(Uri.parse(navHeaderImageUrl));
-                    }catch (Exception e){
 
-                    }
-                }
                 if(!dataSnapshot.hasChild("mobileNumber")){
                     DatabaseReference referredUsersRef = FirebaseDatabase.getInstance().getReference().child("referredUsers");
                     referredUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -1030,6 +1017,25 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             UserUtilities.currentUser = dataSnapshot.getValue(UserItemFormat.class);
+
+                            try {
+
+                                navHeaderImageUrl = dataSnapshot.child("imageURL").getValue(String.class);
+                                String _username = dataSnapshot.getValue(UserItemFormat.class).getUsername();
+                                if (_username != null || !_username.isEmpty())
+                                    navHeaderUserNameTv.setText(dataSnapshot.getValue(UserItemFormat.class).getUsername());
+                                else
+                                    navHeaderUserNameTv.setText("ZConnect");
+                                if (navHeaderImageUrl != null) {
+                                    navHeaderImage = findViewById(R.id.iv_z_connect_logo_nav_header1);
+                                    try {
+                                        navHeaderImage.setImageURI(Uri.parse(navHeaderImageUrl));
+                                    } catch (Exception e) {
+
+                                    }
+                                }
+
+                            }catch (Exception e){}
 
                             if (!dataSnapshot.hasChild("userType")) {
                                 UserUtilities.currentUser.setUserType(UsersTypeUtilities.KEY_VERIFIED);
