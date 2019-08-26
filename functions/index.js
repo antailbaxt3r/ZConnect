@@ -1,4 +1,3 @@
-
 'use strict';
 
 const functions = require('firebase-functions');
@@ -601,38 +600,13 @@ exports.deleteStatusesInAppNotif = functions.database.ref('communities/{communit
 
 exports.syncCabChatsWithCabForums = functions.database.ref('communities/{communityID}/features/cabPool/allCabs/{cabID}/Chat/{messageID}/')
 .onCreate((snapshot, context) => {
-  let { tabID, forumID } = context.params;
-  console.log("1 ", tabID, forumID, snapshot.val());
-  if(tabID === null || forumID === null)
-  {
-    console.warn(`Invalid params, expected 'tabID' and 'forumID'`, context.params);
-    tabID = snapshot.ref.parent.id;
-    forumID = snapshot.ref.id;
-    console.log("2", tabID, forumID, snapshot.val());
-  }
-  if(tabID!=="personalChats")
-    return console.log("Not a personal chat.");
-  if(Object.keys(snapshot.child("users").val()).length!==2)
-    return console.log("Both users did not get added in the personal chat at once");
-  const uid1 = Object.keys(snapshot.child("users").val())[0];
-  const uid2 = Object.keys(snapshot.child("users").val())[1];
-  console.log("User 1 ", uid1, "User 2 ", uid2);
-  const userForumRef1 = snapshot.ref.parent.parent.parent.child("userForums").child(uid1).child("joinedForums");
-  const userForumRef2 = snapshot.ref.parent.parent.parent.child("userForums").child(uid2).child("joinedForums");
-  const forumObj = snapshot.val();
-  const _forumObj1 = {...forumObj, name: forumObj.users[uid2].name,
-                                  image: forumObj.users[uid2].imageThumb,
-                                  imageThumb: forumObj.users[uid2].imageThumb};
-  const _forumObj2 = {...forumObj, name: forumObj.users[uid1].name,
-                                  image: forumObj.users[uid1].imageThumb,
-                                  imageThumb: forumObj.users[uid1].imageThumb};
-  console.log("Name 1 ", _forumObj1.name, "Name 2 ", _forumObj2.name);
-  console.log("Image 1 ", _forumObj1.imageThumb, "Image 2 ", _forumObj2.imageThumb);  
-  delete _forumObj1["users"];
-  delete _forumObj2["users"];
-  console.log("name 1 ", _forumObj1.name, "name 2 ", _forumObj2.name);
-  return userForumRef1.child(forumID).set(_forumObj1)
-  && userForumRef2.child(forumID).set(_forumObj2);
+  const { communityID, cabID, messageID } = context.params;
+  const chatForumRef = snapshot.ref.root.child(`communities/${communityID}/features/forums/categories/${cabID}/Chat`);
+  return chatForumRef.once('value', chatSnapshot => {
+    if(chatSnapshot.hasChild(messageID))
+      return console.log("Already synced this message: ", snapshot.child('message').val());
+    return chatForumRef.child(messageID).set(snapshot.val());
+  });
 });
 
 exports.syncCabForumsWithCabChats = functions.database.ref('communities/{communityID}/features/forums/categories/{cabID}/Chat/{messageID}/')
