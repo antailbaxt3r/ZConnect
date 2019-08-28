@@ -38,7 +38,7 @@ android {
             abortOnError false
         }
     }
-}Minr bug
+}
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
