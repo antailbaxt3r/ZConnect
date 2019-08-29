@@ -63,6 +63,7 @@ import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
+import com.zconnect.zutto.zconnect.utilities.PermissionUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.io.IOException;
@@ -119,6 +120,8 @@ public class CreateForum extends BaseActivity {
 
     //For Cabpols and Events
     Intent callingActivityIntent;
+
+    private PermissionUtilities permissionUtilities;
 
 
     @Override
@@ -209,6 +212,13 @@ public class CreateForum extends BaseActivity {
 
             }
         });
+
+        permissionUtilities = new PermissionUtilities(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!permissionUtilities.isEnabled(PermissionUtilities.READ_EXTERNAL_STORAGE))
+                permissionUtilities.request(permissionUtilities.READ_EXTERNAL_STORAGE);
+        }
+
         addForumName = (MaterialEditText) findViewById(R.id.edit_forum_name_activity_create_forum);
         addForumIcon = (FrameLayout) findViewById(R.id.layout_add_icon_activity_create_forum);
         firstMessage = (MaterialEditText) findViewById(R.id.edit_first_msg_create_forum_alert);
@@ -932,9 +942,14 @@ public class CreateForum extends BaseActivity {
                     finish();
                 }
             }
-            return newPush.getKey().toString();
-        }
-
-
+        return newPush.getKey();
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionUtilities.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+}
 

@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Parcelable;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -55,6 +56,7 @@ import com.zconnect.zutto.zconnect.adapters.InfoneContactsRVAdapter;
 import com.zconnect.zutto.zconnect.addActivities.AddInfoneCat;
 import com.zconnect.zutto.zconnect.addActivities.AddInfoneContact;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.PermissionUtilities;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -96,6 +98,8 @@ public class InfoneContactListActivity extends BaseActivity {
 
     //Elements for call verification(All belong to the popup dialog
     public static boolean hasCalled = false;
+
+    private PermissionUtilities permissionUtilities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,6 +182,12 @@ public class InfoneContactListActivity extends BaseActivity {
 
             }
         });
+
+        permissionUtilities = new PermissionUtilities(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!permissionUtilities.isEnabled(PermissionUtilities.CALL_PHONE))
+                permissionUtilities.request(permissionUtilities.CALL_PHONE);
+        }
 
         setAdapter("lite",false);
 
@@ -493,26 +503,6 @@ public class InfoneContactListActivity extends BaseActivity {
                         number = number.replace(' ', '\0');
                     }
                     String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-
-//                    Bitmap photo = null;
-//
-//                    try {
-//                        InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(getApplicationContext().getContentResolver(),
-//                                ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, new Long(id)));
-//
-//                        if (inputStream != null) {
-//                            photo = BitmapFactory.decodeStream(inputStream);
-//                        }
-//
-//                        assert inputStream != null;
-//                        inputStream.close();
-//
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                    catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
                     if(number.length()<1)
                         Toast.makeText(getApplicationContext(), "Contact does not have a number.", Toast.LENGTH_SHORT).show();
                     else
@@ -522,4 +512,10 @@ public class InfoneContactListActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionUtilities.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 }

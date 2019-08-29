@@ -67,6 +67,7 @@ import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.PermissionUtilities;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -103,6 +104,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
     private Long postTimeMillis;
     private boolean isAsk;
     private int numberOfViewsInAddProduct;
+    private PermissionUtilities permissionUtilities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +142,11 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
 //            getWindow().setStatusBarColor(colorDarkPrimary);
 //            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
+        permissionUtilities = new PermissionUtilities(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!permissionUtilities.isEnabled(PermissionUtilities.READ_EXTERNAL_STORAGE))
+                permissionUtilities.request(permissionUtilities.READ_EXTERNAL_STORAGE);
         }
         mAddImageLayout = findViewById(R.id.image_layout);
         mAddImage = findViewById(R.id.imageButton);
@@ -575,6 +582,13 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
 //        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 //        imm.hideSoftInputFromWindow(productTags.getWindowToken(), 0);
 //        //productTags.clearFocus();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionUtilities.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
 }

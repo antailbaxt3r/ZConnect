@@ -39,6 +39,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
+import com.zconnect.zutto.zconnect.utilities.PermissionUtilities;
 
 import java.io.IOException;
 
@@ -56,6 +57,7 @@ public class CreateCommunity extends BaseActivity {
     private FirebaseAuth mAuth;
     private ProgressDialog mProgress;
     private Double lat,lon;
+    private PermissionUtilities permissionUtilities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +101,11 @@ public class CreateCommunity extends BaseActivity {
         }catch (Exception e){
             lat = 0.0;
             lon = 0.0;
+        }
+        permissionUtilities = new PermissionUtilities(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!permissionUtilities.isEnabled(PermissionUtilities.READ_EXTERNAL_STORAGE))
+                permissionUtilities.request(permissionUtilities.READ_EXTERNAL_STORAGE);
         }
 
         communityName= (MaterialEditText) findViewById(com.zconnect.zutto.zconnect.R.id.community_name);
@@ -248,5 +255,12 @@ public class CreateCommunity extends BaseActivity {
                 Toast.makeText(this, "Please select a community image", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionUtilities.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

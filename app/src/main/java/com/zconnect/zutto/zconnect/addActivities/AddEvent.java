@@ -74,6 +74,7 @@ import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
 import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.PermissionUtilities;
 
 
 import org.joda.time.DateTime;
@@ -122,6 +123,8 @@ public class AddEvent extends BaseActivity {
 
     //new reference created
     private DatabaseReference mPostedByDetails;
+
+    private PermissionUtilities permissionUtilities;
 
     public void setDate (Calendar c) {
 
@@ -185,6 +188,12 @@ public class AddEvent extends BaseActivity {
 //            getWindow().setStatusBarColor(colorDarkPrimary);
 //            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
+
+        permissionUtilities = new PermissionUtilities(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!permissionUtilities.isEnabled(PermissionUtilities.READ_EXTERNAL_STORAGE))
+                permissionUtilities.request(permissionUtilities.READ_EXTERNAL_STORAGE);
         }
 
         mAddImageLayout = findViewById(R.id.image_layout);
@@ -909,6 +918,13 @@ public class AddEvent extends BaseActivity {
             selectedFromMap = true;
         }
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionUtilities.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
 

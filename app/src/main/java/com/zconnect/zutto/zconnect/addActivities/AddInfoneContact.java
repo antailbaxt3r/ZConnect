@@ -49,6 +49,7 @@ import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.PermissionUtilities;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -84,6 +85,8 @@ public class AddInfoneContact extends BaseActivity {
     private DatabaseReference categoryInfo;
     private ProgressDialog mProgress;
     private FirebaseAuth mAuth;
+
+    private PermissionUtilities permissionUtilities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +124,14 @@ public class AddInfoneContact extends BaseActivity {
         catAdmin = getIntent().getExtras().getString("categoryadmin");
         String contactName = getIntent().getStringExtra("contactName");
         String contactNumber = getIntent().getStringExtra("contactNumber");
+
+        permissionUtilities = new PermissionUtilities(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!permissionUtilities.isEnabled(PermissionUtilities.READ_CONTACTS))
+                permissionUtilities.request(permissionUtilities.READ_CONTACTS);
+            if(!permissionUtilities.isEnabled(PermissionUtilities.READ_EXTERNAL_STORAGE))
+                permissionUtilities.request(permissionUtilities.READ_EXTERNAL_STORAGE);
+        }
 //        Bitmap contactPhoto = (Bitmap) getIntent().getParcelableExtra("contactPhoto");
 //        Uri photoUri=null;
         addImage = (SimpleDraweeView) findViewById(R.id.image_add_infone_add);
@@ -479,5 +490,12 @@ public class AddInfoneContact extends BaseActivity {
             view = new View(activity);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionUtilities.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

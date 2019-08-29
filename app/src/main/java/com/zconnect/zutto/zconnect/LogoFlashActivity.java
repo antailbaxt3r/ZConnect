@@ -74,13 +74,6 @@ public class LogoFlashActivity extends BaseActivity {
     private String mReferrerUid;
             DatabaseReference communitiesInfoRef = FirebaseDatabase.getInstance().getReference().child("communitiesInfo");
 
-    String[] PERMISSIONS = {
-            android.Manifest.permission.READ_EXTERNAL_STORAGE,
-            android.Manifest.permission.CALL_PHONE,
-            android.Manifest.permission.READ_CONTACTS,
-            android.Manifest.permission.ACCESS_FINE_LOCATION
-    };
-
 
 
     @Override
@@ -298,31 +291,15 @@ public class LogoFlashActivity extends BaseActivity {
 
             @Override
             public void run() {
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (arePermissionsEnabled()) {
-                        // Do not wait so that user doesn't realise this is a new launch.
-                        Log.d(TAG, " goint to home act 1");
-                        Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
-                        intent.putExtra("isReferred", mReferrerUid!=null);
-                        intent.putExtra("referredBy", mReferrerUid);
-                        Log.d(TAG,"goint to home act 1 " + mReferrerUid);
-                        if(!flag)
-                            startActivity(intent);
-                        finish();
-                    }else {
-                        requestMultiplePermissions();
-                    }
-                }else {
-                    Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
-                    intent.putExtra("isReferred", mReferrerUid!=null);
-                    intent.putExtra("referredBy", mReferrerUid);
-                    Log.d(TAG,"goint to home act 1 " + mReferrerUid);
-                    if(!flag)
-                        startActivity(intent);
-                    finish();
-                }
-
+//                Do not wait so that user doesn't realise this is a new launch.
+                Log.d(TAG, " goint to home act 1");
+                Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
+                intent.putExtra("isReferred", mReferrerUid!=null);
+                intent.putExtra("referredBy", mReferrerUid);
+                Log.d(TAG,"goint to home act 1 " + mReferrerUid);
+                if(!flag)
+                    startActivity(intent);
+                finish();
             }
         }, 2000);
 
@@ -853,93 +830,41 @@ public class LogoFlashActivity extends BaseActivity {
 //        }
 //    }
 
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private boolean arePermissionsEnabled(){
-        for(String permission : PERMISSIONS){
-            if(checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED)
-                return false;
-        }
-        return true;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void requestMultiplePermissions(){
-        List<String> remainingPermissions = new ArrayList<>();
-        for (String permission : PERMISSIONS) {
-            if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
-                remainingPermissions.add(permission);
-            }
-        }
-        requestPermissions(remainingPermissions.toArray(new String[remainingPermissions.size()]), 101);
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == 101){
-            for(int i=0;i<grantResults.length;i++){
-                if(grantResults[i] != PackageManager.PERMISSION_GRANTED){
-                    if(shouldShowRequestPermissionRationale(permissions[i])){
-                        new AlertDialog.Builder(this)
-                                .setMessage("The application needs all the permission")
-                                .setPositiveButton("Allow", (dialog, which) -> requestMultiplePermissions())
-                                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
-                                .create()
-                                .show();
-                    }
-                    return;
-                }
-            }
-            Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
-            intent.putExtra("isReferred", mReferrerUid!=null);
-            intent.putExtra("referredBy", mReferrerUid);
-            startActivity(intent);
-            finish();
-        }
-    }
-//
-//
-//    public boolean checkPermission() {
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
-//                || ContextCompat.checkSelfPermission(LogoFlashActivity.this, PERMISSIONS) == PackageManager.PERMISSION_GRANTED) {
-//            return true;
+//    @RequiresApi(api = Build.VERSION_CODES.M)
+//    private void requestMultiplePermissions(){
+//        List<String> remainingPermissions = new ArrayList<>();
+//        for (String permission : PERMISSIONS) {
+//            if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+//                remainingPermissions.add(permission);
+//            }
 //        }
-//        if (ActivityCompat.shouldShowRequestPermissionRationale(LogoFlashActivity.this, PERMISSIONS)) {
-//            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(LogoFlashActivity.this);
-//            alertBuilder.setCancelable(true);
-//            alertBuilder.setTitle("Permission necessary");
-//            alertBuilder.setMessage("Permission to read storage is required .");
-//            alertBuilder.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
-//                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-//                public void onClick(DialogInterface dialog, int which) {
-//                    ActivityCompat.requestPermissions(LogoFlashActivity.this, PERMISSIONS, 7);
-//                }
-//            });
-//            AlertDialog alert = alertBuilder.create();
-//            alert.show();
-//        } else {
-//            ActivityCompat.requestPermissions(LogoFlashActivity.this, PERMISSIONS, RC_PERM_REQ_EXT_STORAGE);
-//        }
-//        return false;
+//        requestPermissions(remainingPermissions.toArray(new String[remainingPermissions.size()]), 101);
 //    }
 
+//    @TargetApi(Build.VERSION_CODES.M)
 //    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        if (requestCode == RC_PERM_REQ_EXT_STORAGE) {
-//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
-//                Log.d(TAG,"goint to home act 2");
-//                intent.putExtra("isReferred", mReferrerUid!=null);
-//                intent.putExtra("referredBy", mReferrerUid);
-//                startActivity(intent);
-//                finish();
-//            } else {
-//                Toast.makeText(this, "Permission Denied !, Retrying.", Toast.LENGTH_SHORT).show();
-//                checkPermission();
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+//                                           @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if(requestCode == 101){
+//            for(int i=0;i<grantResults.length;i++){
+//                if(grantResults[i] != PackageManager.PERMISSION_GRANTED){
+//                    if(shouldShowRequestPermissionRationale(permissions[i])){
+//                        new AlertDialog.Builder(this)
+//                                .setMessage("The application needs all the permission")
+//                                .setPositiveButton("Allow", (dialog, which) -> requestMultiplePermissions())
+//                                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+//                                .create()
+//                                .show();
+//                    }
+//                    return;
+//                }
 //            }
+//            Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
+//            intent.putExtra("isReferred", mReferrerUid!=null);
+//            intent.putExtra("referredBy", mReferrerUid);
+//            startActivity(intent);
+//            finish();
 //        }
 //    }
 }
