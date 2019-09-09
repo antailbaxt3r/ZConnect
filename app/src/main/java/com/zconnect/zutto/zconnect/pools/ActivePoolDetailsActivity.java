@@ -44,6 +44,7 @@ public class ActivePoolDetailsActivity extends BaseActivity {
     private Button btn_payment;
     private RecyclerView recyclerView;
     private TextView offers, orderDeadlineTime, deliveryTime, poolExtraDesc;
+    private LinearLayout offerLayout;
     private TextView loading_text;
     private ShimmerFrameLayout shimmerFrameLayout;
     private PoolAddItemAdapter adapter;
@@ -171,6 +172,7 @@ public class ActivePoolDetailsActivity extends BaseActivity {
         poolExtraDesc = findViewById(R.id.pool_extra_desc);
         loading_text = findViewById(R.id.loading_text);
 
+        offerLayout = findViewById(R.id.offer_linear_layout);
         shimmerFrameLayout = findViewById(R.id.shimmer_view_container_pool_list);
 
         //setup joinedForumsAdapter
@@ -219,7 +221,11 @@ public class ActivePoolDetailsActivity extends BaseActivity {
                     orderDeadlineTime.setVisibility(View.VISIBLE);
                     deliveryTime.setVisibility(View.VISIBLE);
                     poolExtraDesc.setVisibility(View.VISIBLE);
-                    offers.setText(String.format("1. OFFER: %d%% OFF upto " + getApplicationContext().getString(R.string.Rs) + "%d on a minimum order of %d items.", discount_percentage, max_amount, min_item));
+                    offers.setText(String.format("%d%% OFF upto " + getApplicationContext().getString(R.string.Rs) + "%d on a minimum order of %d items.", discount_percentage, max_amount, min_item));
+
+                    if (discount_percentage == 0){
+                        offerLayout.setVisibility(View.GONE);
+                    }
                 }
             }
 

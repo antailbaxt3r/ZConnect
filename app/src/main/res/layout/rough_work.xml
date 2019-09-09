@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/offer_linear_layout"
+        android:padding="@dimen/padding_medium">
+        <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+        <!--<ImageView-->
+        <!--android:id="@+id/info_icon"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@drawable/outline_info_black_24" />-->
+        <!--<TextView-->
+        <!--android:id="@+id/pool_description"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textColor="@color/primaryText"-->
+        <!--android:layout_toEndOf="@+id/info_icon"-->
+        <!--android:layout_marginStart="@dimen/margin_small"/>-->
+        <!--</RelativeLayout>-->
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="@dimen/border_radius_5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="@dimen/border_radius_5dp"
+            android:elevation="5dp"
+            app:cardCornerRadius="15dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_10"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="1. OFFER:"
+                        android:layout_weight="4"
+                        android:textColor="@color/deeppurple700"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/pool_offers"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="0% OFF upto 0 on a minimum order of 0 items."
+                        android:textColor="@color/primaryText"
+                        android:visibility="visible" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/order_deadline_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2. Orders will be taken till "
+                    android:textColor="@color/primaryText" />
+
+                <TextView
+                    android:id="@+id/order_delivery_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3. Orders will be delivered on "
+                    android:textColor="@color/primaryText" />
+
+                <TextView
+                    android:id="@+id/pool_extra_desc"
+                    style="@style/TextAppearance.AppCompat.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:textColor="@color/deepPurple500"
+                    android:maxLines="2"
+                    android:text="Extra Desceuysgfdsizvn ydfgnscduff gndbvzs udffyac dgysgdf ngyavcb"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+
+</LinearLayout>
