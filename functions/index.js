@@ -307,11 +307,13 @@ exports.syncUserPointsAndUserPointsNum2 = functions.database.ref('/communities/{
 		});
 });
 
-exports.addNewShopPoolToHome = functions.database.ref('communities/{communityID}/features/shops/pools/current/{poolID}')
-.onCreate((snapshot, context) => {
+exports.addNewShopPoolToHome = functions.database.ref('communities/{communityID}/features/shops/pools/current/{poolID}/status')
+.onUpdate((change, context) => {
   let shopPostObj = {};
   const { communityID } = context.params;
-  
+  const snapshot = change.after;
+  if(snapshot.val()!=="active")
+    return console.log("Not active yet.");
   return snapshot.ref.parent.once('value', poolSnapshot => {
     let poolObj = poolSnapshot.val();
     let homeRef = poolSnapshot.ref.root.child(`communities/${communityID}/home`).push();

@@ -49,6 +49,7 @@ import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.commonModules.NotificationService;
 import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
@@ -417,6 +418,34 @@ public class LogoFlashActivity extends BaseActivity {
                     });
         }
     }
+
+//    private void findNullUserTypeAndSet() {
+//        temporary = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
+//        temporary.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+//                {
+//                    if(!snapshot.hasChild("userType"))
+//                    {
+//                        try {
+////                            snapshot.getRef().child("userType").setValue("verified");
+//                            Log.d("NO_USER_TYPE", snapshot.getKey() + " email: " + snapshot.child("email").getValue().toString());
+//                        }
+//                        catch (Exception e)
+//                        {
+//                            Log.d("NO_USER_TYPE_ERR", snapshot.getKey() + " No email ID");
+//                        }
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
 //    private void userCommunitiesScript() {
 //        temporary = FirebaseDatabase.getInstance().getReference().child("userCommunities");
