@@ -54,6 +54,7 @@ import com.zconnect.zutto.zconnect.itemFormats.Event;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.PermissionUtilities;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
 
 import java.io.IOException;
@@ -84,6 +85,8 @@ public class AddStatus extends BaseActivity {
     private Uri mImageUri = null;
     private StorageReference mStorage;
     private static final int GALLERY_REQUEST = 7;
+    private PermissionUtilities permissionUtilities;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +121,11 @@ public class AddStatus extends BaseActivity {
 //            getWindow().setStatusBarColor(colorDarkPrimary);
 //            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
+        permissionUtilities = new PermissionUtilities(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!permissionUtilities.isEnabled(PermissionUtilities.READ_EXTERNAL_STORAGE))
+                permissionUtilities.request(permissionUtilities.READ_EXTERNAL_STORAGE);
         }
 
         mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -377,6 +385,13 @@ public class AddStatus extends BaseActivity {
             }
         }
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionUtilities.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
 }

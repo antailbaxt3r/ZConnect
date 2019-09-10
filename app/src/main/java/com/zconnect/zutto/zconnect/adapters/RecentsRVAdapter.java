@@ -1372,7 +1372,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
                 else
                 {
-                    Log.d("AAAAAAAAAAA", "AAAAA");
                     holder.updateAppRecentItem.setVisibility(View.VISIBLE);
                     holder.prePostDetails.setVisibility(View.GONE);
                     holder.infoneRecentItem.setVisibility(View.GONE);

@@ -74,6 +74,7 @@ import com.zconnect.zutto.zconnect.itemFormats.UserSeenNotifItemFormat;
 import com.zconnect.zutto.zconnect.pools.MyOrdersActivity;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.PermissionUtilities;
 import com.zconnect.zutto.zconnect.utilities.RequestCodes;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
@@ -154,6 +155,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     public TabLayout.Tab recentsT, forumsT, addT, infoneT, profileT, notificationsT;
     HomeBottomSheet bottomSheetFragment;
     private LinearLayoutManager recentsLinearLayoutManager;
+
+    private PermissionUtilities permissionUtilities;
+    private HomeActivity _this;
 
     public HomeActivity() {
 
@@ -283,6 +287,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
+
+        _this = this;
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -626,6 +632,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                             newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(), "Add", HomeActivity.this);
                             tabs.getTabAt(prePos);
                         }else {
+                            permissionUtilities = new PermissionUtilities(_this);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                if(!permissionUtilities.isEnabled(PermissionUtilities.READ_EXTERNAL_STORAGE))
+                                    permissionUtilities.request(permissionUtilities.READ_EXTERNAL_STORAGE);
+                            }
                             bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
                         }
                         break;
@@ -747,6 +758,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                             newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(), "Add", HomeActivity.this);
                             tabs.getTabAt(prePos);
                         } else {
+                            permissionUtilities = new PermissionUtilities(_this);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                if(!permissionUtilities.isEnabled(PermissionUtilities.READ_EXTERNAL_STORAGE))
+                                    permissionUtilities.request(permissionUtilities.READ_EXTERNAL_STORAGE);
+                            }
                             bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
                         }
                         break;
@@ -1714,6 +1730,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public void getLayoutManager(LinearLayoutManager linearLayoutManager) {
         recentsLinearLayoutManager = linearLayoutManager;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionUtilities.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
 }

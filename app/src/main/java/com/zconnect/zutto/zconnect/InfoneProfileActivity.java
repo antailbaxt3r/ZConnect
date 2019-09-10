@@ -1,5 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,10 +14,12 @@ import android.os.Build;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -57,6 +61,7 @@ import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.PermissionUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
@@ -161,6 +166,7 @@ public class InfoneProfileActivity extends BaseActivity {
     private String name, desc, mobileNumber;
     LinearLayout linearLayout;
     ProgressBar progressBar;
+    private PermissionUtilities permissionUtilities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -194,6 +200,12 @@ public class InfoneProfileActivity extends BaseActivity {
 //            getWindow().setStatusBarColor(colorDarkPrimary);
 //            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
+
+        permissionUtilities = new PermissionUtilities(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!permissionUtilities.isEnabled(PermissionUtilities.CALL_PHONE))
+                permissionUtilities.request(permissionUtilities.CALL_PHONE);
         }
 
         progressBar = (ProgressBar) findViewById(R.id.infone_profile_progress_circle);
@@ -556,7 +568,7 @@ public class InfoneProfileActivity extends BaseActivity {
                 hasCalled = true;
                 Intent intent = new Intent(Intent.ACTION_CALL);
                 intent.setData(Uri.parse("tel:" + phone1Et.getText().toString()));
-                if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider cal
                     // ling
                     //    ActivityCompat#requestPermissions
@@ -586,11 +598,11 @@ public class InfoneProfileActivity extends BaseActivity {
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(InfoneProfileActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                if (ContextCompat.checkSelfPermission(InfoneProfileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
                         PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(
                             InfoneProfileActivity.this,
-                            new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             12345
                     );
                 }
@@ -1154,4 +1166,10 @@ public class InfoneProfileActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionUtilities.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 }

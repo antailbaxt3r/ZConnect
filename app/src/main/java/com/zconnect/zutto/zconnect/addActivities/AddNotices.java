@@ -63,6 +63,7 @@ import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.PermissionUtilities;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -96,6 +97,7 @@ public class AddNotices extends BaseActivity {
     private LinearLayout expiryDateLL;
     private static TextView expiryDateTV;
     private static Map<String, Integer> expiryDate;
+    private PermissionUtilities permissionUtilities;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -127,6 +129,11 @@ public class AddNotices extends BaseActivity {
 //            getWindow().setStatusBarColor(colorDarkPrimary);
 //            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
+        permissionUtilities = new PermissionUtilities(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!permissionUtilities.isEnabled(PermissionUtilities.READ_EXTERNAL_STORAGE))
+                permissionUtilities.request(permissionUtilities.READ_EXTERNAL_STORAGE);
         }
         mAddPhotoLayout = findViewById(R.id.image_layout);
         mAddPhoto = findViewById(R.id.imageButton);
@@ -435,5 +442,12 @@ public class AddNotices extends BaseActivity {
             String expiryDateText = "Valid till: " + day + "/" + (month+1) + "/" + (year%100);
             expiryDateTV.setText(expiryDateText);
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionUtilities.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
