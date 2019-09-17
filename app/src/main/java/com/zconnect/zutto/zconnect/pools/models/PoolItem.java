@@ -26,11 +26,12 @@ public class PoolItem implements Serializable{
     private String imageThumb;
     private int maxQuantity;
     private int quantity;
+    private boolean visible;
 
     public PoolItem() {
     }
 
-    public PoolItem(String itemID, String name, int price, String description, String imageURL, String imageThumb, int maxQuantity, int quantity) {
+    public PoolItem(String itemID, String name, int price, String description, String imageURL, String imageThumb, int maxQuantity, int quantity, boolean visible) {
         this.itemID = itemID;
         this.name = name;
         this.price = price;
@@ -39,6 +40,15 @@ public class PoolItem implements Serializable{
         this.imageThumb = imageThumb;
         this.maxQuantity = maxQuantity;
         this.quantity = quantity;
+        this.visible = visible;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     public String getItemID() {

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,12 +22,13 @@ import com.zconnect.zutto.zconnect.pools.models.PoolItem;
 public class PoolAddItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private Button increment, decrement, add;
-    private RelativeLayout rl_btn;
+    private RelativeLayout rl_btn, part2;
     private SimpleDraweeView dishImage;
     private TextView name, description, quantity, price;
     private PoolAddItemAdapter adapter;
     private int number = 0;
     private PoolItem item;
+    private LinearLayout mask;
 
     public PoolAddItemViewHolder(View itemView, PoolAddItemAdapter adapter) {
         super(itemView);
@@ -45,6 +47,8 @@ public class PoolAddItemViewHolder extends RecyclerView.ViewHolder implements Vi
         dishImage = itemView.findViewById(R.id.item_image);
         description = itemView.findViewById(R.id.item_description);
         quantity = itemView.findViewById(R.id.quantity_display);
+        mask = itemView.findViewById(R.id.mask_layer);
+        part2 = itemView.findViewById(R.id.part2);
     }
 
     public void populate(final PoolItem item) {
@@ -59,6 +63,17 @@ public class PoolAddItemViewHolder extends RecyclerView.ViewHolder implements Vi
         increment.setOnClickListener(this);
         decrement.setOnClickListener(this);
         add.setOnClickListener(this);
+        if (!item.isVisible()){
+            mask.setVisibility(View.VISIBLE);
+            part2.setVisibility(View.INVISIBLE);
+            add.setClickable(false);
+            name.setTextColor(itemView.getResources().getColor(R.color.grey300));
+            itemView.setClickable(false);
+
+        }else{
+            mask.setVisibility(View.GONE);
+            part2.setVisibility(View.VISIBLE);
+        }
 
 
         dishImage.setOnClickListener(new View.OnClickListener() {
